@@ -50,7 +50,6 @@
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
     
-    /* Hide Google Default Ugly Top Banner */
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     body { top: 0px !important; }
     #google_translate_element { display: none; }
@@ -63,6 +62,67 @@
 
   <!-- Hidden Google Translate Anchor -->
   <div id="google_translate_element"></div>
+
+  <!-- ========================================================= -->
+  <!-- 0. ROLE-BASED AUTHENTICATION LOGIN PORTAL                -->
+  <!-- ========================================================= -->
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto">
+      
+      <!-- Brand & Security Header -->
+      <div class="text-center space-y-2">
+        <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
+          <i data-lucide="shield-check" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kisan<span class="text-emerald-600">Route</span> Auth Portal</h2>
+        <p class="text-xs text-slate-500">Secure Individual Role-Isolated Terminal &bull; SIH 2026</p>
+      </div>
+
+      <!-- Login Form -->
+      <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Username / Mobile ID</label>
+          <input type="text" id="login-username" placeholder="e.g. admin, farmer1, driver, vendor" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Password / Security PIN</label>
+          <input type="password" id="login-password" placeholder="Enter password (default: 1234)" value="1234" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i data-lucide="lock" class="w-4 h-4"></i> Secure Login to Workspace
+        </button>
+      </form>
+
+      <!-- 1-Click Quick Testing Access Chips -->
+      <div class="pt-4 border-t border-slate-100 space-y-3 text-xs">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">Quick 1-Click Test Access:</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <button onclick="quickFillLogin('admin')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            🛡️ Admin Audit Hub
+          </button>
+          <button onclick="quickFillLogin('farmer1')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            🌱 Farmer 1 (Rameshwar)
+          </button>
+          <button onclick="quickFillLogin('farmer2')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            🥔 Farmer 2 (Harpreet)
+          </button>
+          <button onclick="quickFillLogin('driver')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            🚚 Logistics Driver
+          </button>
+          <button onclick="quickFillLogin('vendor')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            🛒 B2B Vendor / Buyer
+          </button>
+          <button onclick="quickFillLogin('lead')" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/60 font-bold text-slate-800 text-left transition">
+            👑 Lead Cluster Owner
+          </button>
+        </div>
+        <p class="text-[10px] text-center text-slate-400">Farmers 3 to 10 can also log in directly using usernames: <code class="font-mono text-slate-600">farmer3</code> to <code class="font-mono text-slate-600">farmer10</code> (PIN: 1234).</p>
+      </div>
+
+    </div>
+  </div>
 
   <!-- 1. LIVE APMC MANDI LIVE TICKER (MICRO-FEATURE) -->
   <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
@@ -78,7 +138,7 @@
     </div>
   </div>
 
-  <!-- TOP HEADER & ROLE SWITCHER -->
+  <!-- TOP HEADER WITH LOGGED-IN IDENTITY & LOGOUT BUTTON -->
   <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
@@ -95,14 +155,14 @@
         </div>
       </div>
 
-      <!-- ALL-INDIA 22+ LANGUAGES REALTIME TRANSLATION SELECTOR -->
+      <!-- Language Selector -->
       <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
         <div class="flex items-center gap-1.5 pl-2 text-emerald-400 font-bold text-xs">
           <i data-lucide="languages" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">भाषा / Language:</span>
+          <span class="hidden sm:inline">भाषा / Lang:</span>
         </div>
         <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-slate-900 text-white font-bold text-xs p-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-          <option value="en">English (Default)</option>
+          <option value="en">English</option>
           <option value="hi">हिंदी (Hindi)</option>
           <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
           <option value="bn">বাংলা (Bengali)</option>
@@ -119,20 +179,18 @@
           <option value="mai">मैथिली (Maithili)</option>
           <option value="bho">भोजपुरी (Bhojpuri)</option>
           <option value="ne">नेपाली (Nepali)</option>
-          <option value="sd">سنڌي (Sindhi)</option>
-          <option value="kok">कोंकणी (Konkani)</option>
-          <option value="doi">डोगरी (Dogri)</option>
         </select>
       </div>
 
-      <!-- Quick Role Switcher -->
-      <div class="flex items-center gap-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 text-xs overflow-x-auto">
-        <span class="text-slate-400 pl-2 font-medium">Switch Role:</span>
-        <button onclick="setRole('buyer')" id="btn-role-buyer" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-950 transition">Customer / B2B Buyer (Tracking)</button>
-        <button onclick="setRole('driver')" id="btn-role-driver" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Logistics Driver & Simulator</button>
-        <button onclick="setRole('admin')" id="btn-role-admin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Admin Audit Hub (10 Farmers)</button>
-        <button onclick="setRole('member_farmer')" id="btn-role-member" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Member Farmer (Tools & Tasks)</button>
-        <button onclick="setRole('lead_farmer')" id="btn-role-lead" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Lead Process Owner</button>
+      <!-- Logged-in Role Identity & Logout -->
+      <div class="flex items-center gap-3 bg-slate-800 p-1.5 px-3 rounded-2xl border border-slate-700 text-xs">
+        <div class="text-right">
+          <span class="text-[10px] text-slate-400 block font-semibold">Active User Session:</span>
+          <span id="session-user-badge" class="text-emerald-400 font-black">Not Logged In</span>
+        </div>
+        <button onclick="logoutUser()" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl font-bold transition flex items-center gap-1">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout
+        </button>
       </div>
     </div>
   </header>
@@ -143,7 +201,7 @@
     <!-- ======================================================= -->
     <!-- 1. CUSTOMER / B2B BUYER (AMAZON / FLIPKART TRACKING)    -->
     <!-- ======================================================= -->
-    <div id="view-buyer" class="role-workspace space-y-6">
+    <div id="view-buyer" class="role-workspace space-y-6 hidden">
       
       <!-- Live Order Tracking Hero Card -->
       <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/60 space-y-6">
@@ -423,16 +481,14 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 4. MEMBER FARMER DASHBOARD (TOOLS + PENDING/COMPLETED)   -->
+    <!-- 4. MEMBER FARMER DASHBOARD (ISOLATED INDIVIDUAL VIEW)    -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
       <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-bold text-slate-500 uppercase">Farmer Profile:</span>
-          <select id="farmer-selector" onchange="switchFarmerProfile()" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            <!-- Populated by JS -->
-          </select>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase">Verified Member Account:</span>
+          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs">FARMER #01</span>
         </div>
         
         <div class="flex items-center gap-2">
@@ -447,7 +503,7 @@
 
       <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
         <div>
-          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Individual Farmer Workspace</span>
+          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Dashboard</span>
           <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
           <p class="text-xs text-emerald-200 mt-1" id="farmer-profile-sub">Allocated Produce: Desi Fresh Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
         </div>
@@ -463,7 +519,7 @@
         </div>
       </div>
 
-      <!-- 6 ESSENTIAL FARMER UTILITY MICRO-CARDS -->
+      <!-- 6 Utility Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
         
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
@@ -471,9 +527,9 @@
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
             <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded">NPK 4:2:1</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Recommended for 1 Acre Tomato: <b>45kg Urea + 50kg DAP + 20kg MOP</b></p>
+          <p class="text-slate-600 text-[11px]">Recommended for 1 Acre: <b>45kg Urea + 50kg DAP + 20kg MOP</b></p>
           <button onclick="alert('Fertilizer Dosage: 45kg Urea, 50kg DAP applied at flowering stage.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
-            Calculate Custom Acre Dose
+            Calculate Custom Dose
           </button>
         </div>
 
@@ -483,7 +539,7 @@
             <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded">No Rain Next 48h</span>
           </div>
           <p class="text-slate-600 text-[11px]">Best Pesticide Window: <b>Today 04:00 PM - 06:30 PM</b> (Wind: 4 km/h)</p>
-          <button onclick="alert('Weather Alert: Clear skies in Faridabad till Saturday. Ideal for harvesting & open drying.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+          <button onclick="alert('Weather Alert: Clear skies in Faridabad till Saturday. Ideal for harvesting & drying.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
             View 7-Day Advisory
           </button>
         </div>
@@ -527,7 +583,7 @@
             <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded">Faridabad FPO</span>
           </div>
           <p class="text-slate-600 text-[11px]">Mahindra 575 DI Tractor: <b>₹450/hr</b> (Rotavator attached)</p>
-          <button onclick="alert('Tractor Booked for Dhauj Farm for Tomorrow 07:00 AM.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+          <button onclick="alert('Tractor Booked for your Farm for Tomorrow 07:00 AM.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
             Book Shared Machinery
           </button>
         </div>
@@ -719,31 +775,161 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC, MAPS & AI COPILOT ENGINE -->
+  <!-- JAVASCRIPT LOGIC, MAPS & AUTHENTICATED ACCESS CONTROLLER -->
   <script>
     let clusterFarmers = [
-      { id: "F1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F2", name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Table Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F3", name: "Satish Gurjar", village: "Ballabhgarh", pincode: "121002", crop: "Sharbati Wheat", qty: 1800, rate: 28, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F4", name: "Manoj Bhati", village: "Sainik Colony", pincode: "121008", crop: "Baby Spinach", qty: 250, rate: 35, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F5", name: "Jaipal Rawat", village: "Faridabad NIT", pincode: "121001", crop: "Red Onion", qty: 950, rate: 22, destoned: true, moisture: true, ai_graded: true, crated: false, audit_pass: false },
-      { id: "F6", name: "Balwan Singh", village: "Dhauj", pincode: "121007", crop: "Green Chilli", qty: 180, rate: 45, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F7", name: "Dharamvir Yadav", village: "Tigaon", pincode: "121005", crop: "Cauliflower", qty: 420, rate: 20, destoned: true, moisture: false, ai_graded: false, crated: false, audit_pass: false },
-      { id: "F8", name: "Suresh Chand", village: "Sector 29", pincode: "121004", crop: "Capsicum", qty: 310, rate: 40, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F9", name: "Kaptan Poswal", village: "Badarpur Border", pincode: "121009", crop: "Desi Tomato", qty: 500, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F10", name: "Narender Nagar", village: "Greater Faridabad", pincode: "121010", crop: "Mustard Seeds", qty: 600, rate: 52, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true }
+      { id: "F1", user: "farmer1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F2", user: "farmer2", name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Table Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F3", user: "farmer3", name: "Satish Gurjar", village: "Ballabhgarh", pincode: "121002", crop: "Sharbati Wheat", qty: 1800, rate: 28, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F4", user: "farmer4", name: "Manoj Bhati", village: "Sainik Colony", pincode: "121008", crop: "Baby Spinach", qty: 250, rate: 35, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F5", user: "farmer5", name: "Jaipal Rawat", village: "Faridabad NIT", pincode: "121001", crop: "Red Onion", qty: 950, rate: 22, destoned: true, moisture: true, ai_graded: true, crated: false, audit_pass: false },
+      { id: "F6", user: "farmer6", name: "Balwan Singh", village: "Dhauj", pincode: "121007", crop: "Green Chilli", qty: 180, rate: 45, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F7", user: "farmer7", name: "Dharamvir Yadav", village: "Tigaon", pincode: "121005", crop: "Cauliflower", qty: 420, rate: 20, destoned: true, moisture: false, ai_graded: false, crated: false, audit_pass: false },
+      { id: "F8", user: "farmer8", name: "Suresh Chand", village: "Sector 29", pincode: "121004", crop: "Capsicum", qty: 310, rate: 40, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F9", user: "farmer9", name: "Kaptan Poswal", village: "Badarpur Border", pincode: "121009", crop: "Desi Tomato", qty: 500, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F10", user: "farmer10", name: "Narender Nagar", village: "Greater Faridabad", pincode: "121010", crop: "Mustard Seeds", qty: 600, rate: 52, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true }
     ];
 
-    let currentSelectedFarmer = "F1";
+    let currentLoggedInUser = null;
     let trackingMap, driverMap;
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       renderAdminFarmerTable();
-      populateFarmerDropdown();
-      renderFarmerTasks();
-      initTrackingMap();
     });
+
+    // =========================================================
+    // AUTHENTICATION & ROLE-BASED ACCESS ENFORCER
+    // =========================================================
+    function quickFillLogin(roleKey) {
+      document.getElementById('login-username').value = roleKey;
+      document.getElementById('login-password').value = "1234";
+      handleUserLogin(new Event('submit'));
+    }
+
+    function handleUserLogin(e) {
+      if (e) e.preventDefault();
+      const u = document.getElementById('login-username').value.trim().toLowerCase();
+      const p = document.getElementById('login-password').value.trim();
+
+      if (!u) {
+        alert("Please enter a valid username!");
+        return;
+      }
+
+      // Hide Auth Screen
+      document.getElementById('auth-portal-screen').classList.add('hidden');
+      currentLoggedInUser = u;
+
+      // Hide all workspaces first
+      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
+
+      // 1. Admin Login
+      if (u === 'admin') {
+        document.getElementById('session-user-badge').innerText = "Admin (Audit Hub Lead)";
+        document.getElementById('view-admin').classList.remove('hidden');
+      } 
+      // 2. Driver Login
+      else if (u === 'driver' || u === 'driver1') {
+        document.getElementById('session-user-badge').innerText = "Driver: Vikram Singh (HR-38-AF-4829)";
+        document.getElementById('view-driver').classList.remove('hidden');
+        setTimeout(initDriverMap, 150);
+      }
+      // 3. Buyer / Vendor Login
+      else if (u === 'vendor' || u === 'buyer' || u === 'bigbasket') {
+        document.getElementById('session-user-badge').innerText = "B2B Buyer: BigBasket Wholesale";
+        document.getElementById('view-buyer').classList.remove('hidden');
+        setTimeout(initTrackingMap, 150);
+      }
+      // 4. Lead Cluster Owner
+      else if (u === 'lead' || u === 'gurpreet') {
+        document.getElementById('session-user-badge').innerText = "Lead Owner: Sardar Gurpreet Singh";
+        document.getElementById('view-lead_farmer').classList.remove('hidden');
+      }
+      // 5. Individual Farmer (farmer1 to farmer10)
+      else if (u.startsWith('farmer')) {
+        const farmerNum = u.replace('farmer', '');
+        const targetFarmer = clusterFarmers.find(f => f.id === `F${farmerNum}`) || clusterFarmers[0];
+        
+        document.getElementById('session-user-badge').innerText = `${targetFarmer.name} (${targetFarmer.crop})`;
+        document.getElementById('farmer-display-id').innerText = `FARMER #${targetFarmer.id.replace('F', '')}`;
+        document.getElementById('view-member_farmer').classList.remove('hidden');
+        
+        renderIndividualFarmerData(targetFarmer);
+      } 
+      // Fallback: Default to Member Farmer 1
+      else {
+        alert(`Logged in as Custom Farmer Profile: ${u}`);
+        document.getElementById('session-user-badge').innerText = `Farmer: ${u}`;
+        document.getElementById('farmer-display-id').innerText = `MEMBER ID: ${u.toUpperCase()}`;
+        document.getElementById('view-member_farmer').classList.remove('hidden');
+        renderIndividualFarmerData(clusterFarmers[0]);
+      }
+
+      lucide.createIcons();
+    }
+
+    function logoutUser() {
+      currentLoggedInUser = null;
+      document.getElementById('session-user-badge').innerText = "Not Logged In";
+      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
+      document.getElementById('login-username').value = "";
+      document.getElementById('auth-portal-screen').classList.remove('hidden');
+    }
+
+    // Render Individual Farmer's Private Tasks & Details
+    function renderIndividualFarmerData(f) {
+      document.getElementById('farmer-profile-name').innerText = f.name;
+      document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
+      document.getElementById('farmer-pincode-badge').innerText = `Pincode: ${f.pincode} (${f.village})`;
+      document.getElementById('farmer-expected-payout').innerText = `₹${(f.qty * f.rate).toLocaleString()}`;
+
+      const pendingList = document.getElementById('pending-tasks-list');
+      const completedList = document.getElementById('completed-tasks-list');
+      pendingList.innerHTML = '';
+      completedList.innerHTML = '';
+
+      const taskDefs = [
+        { key: 'destoned', name: 'Destoning & Cleaning', desc: 'Remove soil, stones, and foreign matter.' },
+        { key: 'moisture', name: 'Moisture Control (<12%)', desc: 'Sun-dry produce to avoid transit decay.' },
+        { key: 'ai_graded', name: 'AI Quality Scan', desc: 'Scan sample crates for Grade A certification.' },
+        { key: 'crated', name: 'Crate Packing & QR Tag', desc: 'Pack into 25kg ventilated plastic crates.' }
+      ];
+
+      let pendingCount = 0, completedCount = 0;
+      taskDefs.forEach(t => {
+        if (f[t.key]) {
+          completedCount++;
+          completedList.innerHTML += `
+            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center">
+              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-800">${t.desc}</p></div>
+              <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
+            </div>
+          `;
+        } else {
+          pendingCount++;
+          pendingList.innerHTML += `
+            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center">
+              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
+              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-sm">MARK DONE</button>
+            </div>
+          `;
+        }
+      });
+      document.getElementById('pending-tasks-count').innerText = `${pendingCount} Pending`;
+      document.getElementById('completed-tasks-count').innerText = `${completedCount} Completed`;
+      lucide.createIcons();
+    }
+
+    function completeCurrentFarmerTask(farmerId, taskKey) {
+      const f = clusterFarmers.find(x => x.id === farmerId);
+      if (f) {
+        f[taskKey] = true;
+        if (f.destoned && f.moisture && f.ai_graded && f.crated) f.audit_pass = true;
+        renderIndividualFarmerData(f);
+        renderAdminFarmerTable();
+      }
+    }
 
     // REALTIME FULL WEBSITE TRANSLATION (ALL-INDIA 22+ LANGUAGES)
     function translateWebsiteRealtime(langCode) {
@@ -764,31 +950,12 @@
       }
     }
 
-    // Role Switcher
-    function setRole(role) {
-      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
-      const activeView = document.getElementById(`view-${role}`);
-      if (activeView) activeView.classList.remove('hidden');
-
-      const roleButtons = ['buyer', 'driver', 'admin', 'member_farmer', 'lead_farmer'];
-      roleButtons.forEach(r => {
-        const btn = document.getElementById(`btn-role-${r === 'member_farmer' ? 'member' : (r === 'lead_farmer' ? 'lead' : r)}`);
-        if (btn) btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition";
-      });
-
-      const activeBtn = document.getElementById(`btn-role-${role === 'member_farmer' ? 'member' : (role === 'lead_farmer' ? 'lead' : role)}`);
-      if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-950 transition";
-
-      if (role === 'buyer' && trackingMap) {
-        setTimeout(() => { trackingMap.invalidateSize(); trackingMap.setView([28.38, 77.31], 12); }, 150);
-      } else if (role === 'driver') {
-        setTimeout(initDriverMap, 150);
-      }
-    }
-
     // Leaflet Tracking Map (Buyer Screen)
     function initTrackingMap() {
-      if (trackingMap) return;
+      if (trackingMap) {
+        trackingMap.invalidateSize();
+        return;
+      }
       trackingMap = L.map('tracking-map').setView([28.38, 77.31], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(trackingMap);
 
@@ -799,7 +966,7 @@
       ];
 
       L.marker(routePoints[0]).addTo(trackingMap).bindPopup("<b>Farm Gate: Dhauj Hub</b><br>650kg Tomato Picked");
-      const truckMarker = L.marker(routePoints[1]).addTo(trackingMap).bindPopup("<b>🚚 Truck HR-38-AF-4829</b><br>Moving: 42 km/h (ETA: 1h 45m)").openPopup();
+      L.marker(routePoints[1]).addTo(trackingMap).bindPopup("<b>🚚 Truck HR-38-AF-4829</b><br>Moving: 42 km/h (ETA: 1h 45m)").openPopup();
       L.marker(routePoints[2]).addTo(trackingMap).bindPopup("<b>Destination: Sector 15 APMC Hub</b>");
 
       const poly = L.polyline(routePoints, { color: '#10b981', weight: 4, dashArray: '6, 8' }).addTo(trackingMap);
@@ -856,8 +1023,6 @@
 
     // Status Updates for Tracking Stepper
     function updateDeliveryStatus(state) {
-      const transitCard = document.getElementById("step-transit-card");
-      const deliveryCard = document.getElementById("step-delivery-card");
       const transitTitle = document.getElementById("step-transit-title");
       const transitSub = document.getElementById("step-transit-sub");
       const etaText = document.getElementById("buyer-delivery-eta");
@@ -875,7 +1040,7 @@
       } else if (state === 'delivered') {
         transitTitle.innerText = "Transit Completed";
         transitSub.innerText = "Vehicle arrived at Buyer Gate";
-        deliveryCard.className = "p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 space-y-1";
+        document.getElementById("step-delivery-card").className = "p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 space-y-1";
         document.getElementById("step-delivery-title").innerText = "Delivered & Verified";
         alert("Status Updated: OTP 4829 Verified! Escrow payment ₹15,600 released directly to Farmer Bank Account.");
       }
@@ -917,7 +1082,6 @@
       if (farmer) {
         farmer.destoned = true; farmer.moisture = true; farmer.ai_graded = true; farmer.crated = true; farmer.audit_pass = true;
         renderAdminFarmerTable();
-        renderFarmerTasks();
         alert(`Admin passed quality audit for ${farmer.name}!`);
       }
     }
@@ -927,79 +1091,11 @@
         f.destoned = true; f.moisture = true; f.ai_graded = true; f.crated = true; f.audit_pass = true;
       });
       renderAdminFarmerTable();
-      renderFarmerTasks();
       alert("All 10 Farmers marked VERIFIED & APPROVED!");
     }
 
-    function populateFarmerDropdown() {
-      const select = document.getElementById('farmer-selector');
-      select.innerHTML = '';
-      clusterFarmers.forEach(f => {
-        select.innerHTML += `<option value="${f.id}">Farmer #${f.id.replace('F', '')}: ${f.name} (${f.crop})</option>`;
-      });
-    }
-
-    function switchFarmerProfile() {
-      currentSelectedFarmer = document.getElementById('farmer-selector').value;
-      renderFarmerTasks();
-    }
-
-    function renderFarmerTasks() {
-      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer) || clusterFarmers[0];
-      document.getElementById('farmer-profile-name').innerText = f.name;
-      document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
-      document.getElementById('farmer-pincode-badge').innerText = `Pincode: ${f.pincode} (${f.village})`;
-      document.getElementById('farmer-expected-payout').innerText = `₹${(f.qty * f.rate).toLocaleString()}`;
-
-      const pendingList = document.getElementById('pending-tasks-list');
-      const completedList = document.getElementById('completed-tasks-list');
-      pendingList.innerHTML = '';
-      completedList.innerHTML = '';
-
-      const taskDefs = [
-        { key: 'destoned', name: 'Destoning & Cleaning', desc: 'Remove soil, stones, and foreign matter.' },
-        { key: 'moisture', name: 'Moisture Control (<12%)', desc: 'Sun-dry produce to avoid decay.' },
-        { key: 'ai_graded', name: 'AI Smartphone Quality Scan', desc: 'Scan sample crates for Grade A certification.' },
-        { key: 'crated', name: 'Standard Crate Packing & QR Tag', desc: 'Pack into 25kg ventilated plastic crates.' }
-      ];
-
-      let pendingCount = 0, completedCount = 0;
-      taskDefs.forEach(t => {
-        if (f[t.key]) {
-          completedCount++;
-          completedList.innerHTML += `
-            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center">
-              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-800">${t.desc}</p></div>
-              <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
-            </div>
-          `;
-        } else {
-          pendingCount++;
-          pendingList.innerHTML += `
-            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center">
-              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
-              <button onclick="completeIndividualTask('${t.key}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-sm">MARK DONE</button>
-            </div>
-          `;
-        }
-      });
-      document.getElementById('pending-tasks-count').innerText = `${pendingCount} Pending`;
-      document.getElementById('completed-tasks-count').innerText = `${completedCount} Completed`;
-    }
-
-    function completeIndividualTask(taskKey) {
-      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer);
-      if (f) {
-        f[taskKey] = true;
-        if (f.destoned && f.moisture && f.ai_graded && f.crated) f.audit_pass = true;
-        renderFarmerTasks();
-        renderAdminFarmerTable();
-      }
-    }
-
     function speakFarmerTasks() {
-      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer) || clusterFarmers[0];
-      const text = `नमस्ते किसान ${f.name} जी. आपकी फसल ${f.crop} की कुल मात्रा ${f.qty} किलो है. आपका अनुमानित भुगतान पंद्रह हजार छह सौ रुपये है.`;
+      const text = `नमस्ते किसान जी. आपकी फसल की कुल मात्रा दर्ज हो चुकी है. आपका भुगतान एस्क्रो खाते में सुरक्षित है.`;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'hi-IN';
       window.speechSynthesis.speak(utterance);
@@ -1015,7 +1111,7 @@
       const qrContainer = document.getElementById('qrcode');
       qrContainer.innerHTML = "";
       new QRCode(qrContainer, {
-        text: "KISANROUTE-BATCH-FBD-8821-FARMER-RAMESHWAR-GRADE-A",
+        text: "KISANROUTE-BATCH-FBD-8821-FARMER-GRADE-A",
         width: 140,
         height: 140
       });
@@ -1040,7 +1136,7 @@
     function driverVerifyOTP() {
       const val = document.getElementById('driver-input-otp').value.trim();
       if (val === "4829") {
-        alert("OTP 4829 Verified!\n\n100% Escrow funds released:\n₹15,600 transferred directly to Rameshwar Sharma UPI.");
+        alert("OTP 4829 Verified!\n\n100% Escrow funds released:\n₹15,600 transferred directly to Farmer UPI.");
         updateDeliveryStatus('delivered');
       } else {
         alert("Invalid OTP! Try: 4829");
@@ -1103,29 +1199,19 @@
     function processAIAutonomousAction(query) {
       const q = query.toLowerCase();
 
-      if (q.includes('approve') || q.includes('audit all') || q.includes('pass all')) {
-        setRole('admin');
+      if (q.includes('approve') || q.includes('audit all')) {
         auditAllPassed();
-        appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers. All 4,850 kg yield is cleared for logistics dispatch!`);
-      } else if (q.includes('invoice') || q.includes('pdf') || q.includes('gst') || q.includes('bill')) {
+        appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers for logistics dispatch!`);
+      } else if (q.includes('invoice') || q.includes('pdf') || q.includes('bill')) {
         downloadGSTInvoicePDF();
-        appendChatMessage('ai', `📄 <b>Action Executed:</b> Generated and downloaded <b>KisanRoute_GST_Invoice_INV-2026-FBD-8821.pdf</b>.`);
-      } else if (q.includes('track') || q.includes('truck') || q.includes('map')) {
-        setRole('buyer');
-        appendChatMessage('ai', `🚚 <b>Action Executed:</b> Switched to Buyer View. Truck <b>HR-38-AF-4829</b> (Vikram Singh) ETA is <b>05:30 PM</b>.`);
-      } else if (q.includes('rameshwar') || q.includes('farmer 1') || q.includes('f1')) {
-        setRole('member_farmer');
-        document.getElementById('farmer-selector').value = 'F1';
-        switchFarmerProfile();
-        const f1 = clusterFarmers[0];
-        appendChatMessage('ai', `🌱 <b>Farmer Summary:</b> Rameshwar Sharma (Dhauj) &bull; Crop: Desi Tomato (${f1.qty} kg) &bull; Payout: <b>₹15,600</b>.`);
+        appendChatMessage('ai', `📄 <b>Action Executed:</b> Generated and downloaded GST Tax Invoice PDF.`);
+      } else if (q.includes('track') || q.includes('truck')) {
+        appendChatMessage('ai', `🚚 <b>Logistics Tracking:</b> Active Truck <b>HR-38-AF-4829</b> (Vikram Singh) moving at 42 km/h. ETA 05:30 PM.`);
       } else if (q.includes('4829') || q.includes('verify otp')) {
-        setRole('driver');
-        document.getElementById('driver-input-otp').value = '4829';
         driverVerifyOTP();
-        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified! ₹15,600 payout released.`);
+        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified! Payout released.`);
       } else {
-        appendChatMessage('ai', `🤖 <b>KisanAI Overview:</b> 10 Farmers active in Faridabad Hub &bull; 4,850 kg yield pooled &bull; 15 Geofenced Pincodes.`);
+        appendChatMessage('ai', `🤖 <b>KisanAI:</b> Secure isolated session active for <b>${currentLoggedInUser || 'Guest'}</b>.`);
       }
     }
   </script>

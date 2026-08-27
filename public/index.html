@@ -69,7 +69,6 @@
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto">
       
-      <!-- Brand & Security Header -->
       <div class="text-center space-y-2">
         <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
           <i data-lucide="shield-check" class="w-8 h-8"></i>
@@ -118,7 +117,6 @@
             👑 Lead Cluster Owner
           </button>
         </div>
-        <p class="text-[10px] text-center text-slate-400">Farmers 3 to 10 can also log in directly using usernames: <code class="font-mono text-slate-600">farmer3</code> to <code class="font-mono text-slate-600">farmer10</code> (PIN: 1234).</p>
       </div>
 
     </div>
@@ -138,7 +136,7 @@
     </div>
   </div>
 
-  <!-- TOP HEADER WITH LOGGED-IN IDENTITY & LOGOUT BUTTON -->
+  <!-- TOP HEADER WITH LOGGED-IN IDENTITY, OFFLINE BADGE & LOGOUT -->
   <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
@@ -153,6 +151,13 @@
           </div>
           <p class="text-[11px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Mandi Pincodes</p>
         </div>
+      </div>
+
+      <!-- Live Network Sync Status (Offline Caching Engine) -->
+      <div class="flex items-center gap-2">
+        <span id="network-status-badge" class="px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Synced (Online)
+        </span>
       </div>
 
       <!-- Language Selector -->
@@ -481,29 +486,45 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 4. MEMBER FARMER DASHBOARD (ISOLATED INDIVIDUAL VIEW)    -->
+    <!-- 4. MEMBER FARMER DASHBOARD (WITH BAHI KHATA & VOICE)    -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
+      <!-- Top Action Bar with Local Voice Commander -->
       <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-500 uppercase">Verified Member Account:</span>
           <span id="farmer-display-id" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs">FARMER #01</span>
         </div>
         
-        <div class="flex items-center gap-2">
-          <button onclick="speakFarmerTasks()" class="px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
-            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye (Voice Hindi)
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- 1. Local Voice Assistant Mic Trigger -->
+          <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
-          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl" id="farmer-pincode-badge">
+          
+          <button onclick="speakFarmerTasks()" class="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
+            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye
+          </button>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl" id="farmer-pincode-badge">
             Pincode: 121007 (Dhauj)
           </span>
         </div>
       </div>
 
+      <!-- Live Voice Feedback Alert Banner -->
+      <div id="voice-transcript-card" class="bg-amber-50 border border-amber-300 p-3 rounded-2xl text-xs text-amber-900 hidden flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+          <p id="voice-transcript-text" class="font-medium">Listening... bolna shuru karein...</p>
+        </div>
+        <span class="text-[10px] font-bold uppercase bg-amber-200 text-amber-800 px-2 py-0.5 rounded">Voice AI</span>
+      </div>
+
+      <!-- Farmer Profile Banner & Income/Profit Card -->
       <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
         <div>
-          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Dashboard</span>
+          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Workspace</span>
           <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
           <p class="text-xs text-emerald-200 mt-1" id="farmer-profile-sub">Allocated Produce: Desi Fresh Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
         </div>
@@ -513,8 +534,90 @@
             <p class="text-xl font-black text-emerald-300" id="farmer-expected-payout">₹15,600</p>
           </div>
           <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
-            <p class="text-[10px] text-emerald-200 font-bold uppercase">Profit Gain</p>
-            <p class="text-xl font-black text-white">2.2x vs Mandi</p>
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Net Fasal Munafa</p>
+            <p class="text-xl font-black text-white" id="farmer-net-profit-badge">₹10,850</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- 2. DIGITAL BAHI-KHATA (FARMER EXPENSE & PROFIT LEDGER) -->
+      <!-- ===================================================== -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-600"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            </h3>
+            <p class="text-xs text-slate-500">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+          </div>
+          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 self-start">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
+          </button>
+        </div>
+
+        <!-- Add Expense Inline Form -->
+        <div id="expense-form-box" class="p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kharcha Category</label>
+              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold">
+                <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
+                <option value="Beej (Seeds)">Beej & Plant Seeds</option>
+                <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
+                <option value="Labor & Majdoori">Labor & Harvesting</option>
+                <option value="Pesticide & Spray">Pesticide / Dawai</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Description</label>
+              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Amount (₹)</label>
+              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 text-xs">
+            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-500 font-bold">Cancel</button>
+            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-white rounded-xl font-bold shadow-md">Save in Bahi-Khata</button>
+          </div>
+        </div>
+
+        <!-- Ledger Table & Calculations -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
+          <div class="lg:col-span-2 overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5">Category</th>
+                  <th class="p-2.5">Description</th>
+                  <th class="p-2.5 text-right">Kharcha Amount</th>
+                  <th class="p-2.5 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
+            <div class="flex justify-between font-semibold text-slate-600">
+              <span>Total Batch Income:</span>
+              <span class="font-bold text-slate-900" id="ledger-gross-income">₹15,600</span>
+            </div>
+            <div class="flex justify-between font-semibold text-rose-600">
+              <span>Total Farm Expenses:</span>
+              <span class="font-bold" id="ledger-total-expenses">-₹4,750</span>
+            </div>
+            <div class="pt-2 border-t border-emerald-200 flex justify-between items-center">
+              <div>
+                <p class="font-black text-slate-900 text-sm">Net Fasal Munafa:</p>
+                <p class="text-[10px] text-emerald-700 font-bold">(In Pocket Profit)</p>
+              </div>
+              <span class="text-xl font-black text-emerald-700" id="ledger-net-profit">₹10,850</span>
+            </div>
           </div>
         </div>
       </div>
@@ -775,31 +878,152 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC, MAPS & AUTHENTICATED ACCESS CONTROLLER -->
+  <!-- JAVASCRIPT LOGIC, MAPS, OFFLINE CACHING & BAHI KHATA -->
   <script>
     let clusterFarmers = [
-      { id: "F1", user: "farmer1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F2", user: "farmer2", name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Table Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F3", user: "farmer3", name: "Satish Gurjar", village: "Ballabhgarh", pincode: "121002", crop: "Sharbati Wheat", qty: 1800, rate: 28, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F4", user: "farmer4", name: "Manoj Bhati", village: "Sainik Colony", pincode: "121008", crop: "Baby Spinach", qty: 250, rate: 35, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F5", user: "farmer5", name: "Jaipal Rawat", village: "Faridabad NIT", pincode: "121001", crop: "Red Onion", qty: 950, rate: 22, destoned: true, moisture: true, ai_graded: true, crated: false, audit_pass: false },
-      { id: "F6", user: "farmer6", name: "Balwan Singh", village: "Dhauj", pincode: "121007", crop: "Green Chilli", qty: 180, rate: 45, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F7", user: "farmer7", name: "Dharamvir Yadav", village: "Tigaon", pincode: "121005", crop: "Cauliflower", qty: 420, rate: 20, destoned: true, moisture: false, ai_graded: false, crated: false, audit_pass: false },
-      { id: "F8", user: "farmer8", name: "Suresh Chand", village: "Sector 29", pincode: "121004", crop: "Capsicum", qty: 310, rate: 40, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F9", user: "farmer9", name: "Kaptan Poswal", village: "Badarpur Border", pincode: "121009", crop: "Desi Tomato", qty: 500, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-      { id: "F10", user: "farmer10", name: "Narender Nagar", village: "Greater Faridabad", pincode: "121010", crop: "Mustard Seeds", qty: 600, rate: 52, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true }
+      { 
+        id: "F1", user: "farmer1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true,
+        expenses: [
+          { id: 1, cat: "Khad & Fertilizer", desc: "1 Bag Urea + 1 Bag DAP", amt: 1850 },
+          { id: 2, cat: "Beej (Seeds)", desc: "Hybrid Tomato F1 Seeds", amt: 900 },
+          { id: 3, cat: "Diesel & Tractor", desc: "Rotavator field prep (3 hrs)", amt: 1400 },
+          { id: 4, cat: "Labor & Majdoori", desc: "Plucking & crate packing", amt: 600 }
+        ]
+      },
+      { 
+        id: "F2", user: "farmer2", name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Table Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true,
+        expenses: [
+          { id: 1, cat: "Beej (Seeds)", desc: "Kufri Pukhraj Seed Bags", amt: 3200 },
+          { id: 2, cat: "Khad & Fertilizer", desc: "NPK 12:32:16 Fertilizer", amt: 2100 }
+        ]
+      },
+      { id: "F3", user: "farmer3", name: "Satish Gurjar", village: "Ballabhgarh", pincode: "121002", crop: "Sharbati Wheat", qty: 1800, rate: 28, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] },
+      { id: "F4", user: "farmer4", name: "Manoj Bhati", village: "Sainik Colony", pincode: "121008", crop: "Baby Spinach", qty: 250, rate: 35, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] },
+      { id: "F5", user: "farmer5", name: "Jaipal Rawat", village: "Faridabad NIT", pincode: "121001", crop: "Red Onion", qty: 950, rate: 22, destoned: true, moisture: true, ai_graded: true, crated: false, audit_pass: false, expenses: [] },
+      { id: "F6", user: "farmer6", name: "Balwan Singh", village: "Dhauj", pincode: "121007", crop: "Green Chilli", qty: 180, rate: 45, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] },
+      { id: "F7", user: "farmer7", name: "Dharamvir Yadav", village: "Tigaon", pincode: "121005", crop: "Cauliflower", qty: 420, rate: 20, destoned: true, moisture: false, ai_graded: false, crated: false, audit_pass: false, expenses: [] },
+      { id: "F8", user: "farmer8", name: "Suresh Chand", village: "Sector 29", pincode: "121004", crop: "Capsicum", qty: 310, rate: 40, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] },
+      { id: "F9", user: "farmer9", name: "Kaptan Poswal", village: "Badarpur Border", pincode: "121009", crop: "Desi Tomato", qty: 500, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] },
+      { id: "F10", user: "farmer10", name: "Narender Nagar", village: "Greater Faridabad", pincode: "121010", crop: "Mustard Seeds", qty: 600, rate: 52, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true, expenses: [] }
     ];
 
     let currentLoggedInUser = null;
+    let currentFarmerObject = null;
     let trackingMap, driverMap;
+    let speechRecognition = null;
+    let isRecordingVoice = false;
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       renderAdminFarmerTable();
+      initOfflineCachingEngine();
+      initSpeechRecognitionModule();
     });
 
     // =========================================================
-    // AUTHENTICATION & ROLE-BASED ACCESS ENFORCER
+    // 1. OFFLINE CACHING & AUTO-SYNC ENGINE
+    // =========================================================
+    function initOfflineCachingEngine() {
+      // Load cached farmer records from localStorage if present
+      const cached = localStorage.getItem('kisanroute_cluster_cache');
+      if (cached) {
+        try {
+          clusterFarmers = JSON.parse(cached);
+          renderAdminFarmerTable();
+        } catch(e) {}
+      }
+
+      window.addEventListener('online', () => {
+        const badge = document.getElementById('network-status-badge');
+        badge.className = "px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Synced (Online)`;
+        saveClusterToCache();
+      });
+
+      window.addEventListener('offline', () => {
+        const badge = document.getElementById('network-status-badge');
+        badge.className = "px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Khet Offline Mode (Cached)`;
+      });
+    }
+
+    function saveClusterToCache() {
+      localStorage.setItem('kisanroute_cluster_cache', JSON.stringify(clusterFarmers));
+    }
+
+    // =========================================================
+    // 2. LOCAL DIALECT VOICE ASSISTANT (SPEECH-TO-TEXT)
+    // =========================================================
+    function initSpeechRecognitionModule() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRec) {
+        speechRecognition = new SpeechRec();
+        speechRecognition.continuous = false;
+        speechRecognition.lang = 'hi-IN'; // Default to Hindi / Indian Dialect
+        speechRecognition.interimResults = true;
+
+        speechRecognition.onstart = () => {
+          isRecordingVoice = true;
+          document.getElementById('voice-transcript-card').classList.remove('hidden');
+          document.getElementById('voice-transcript-text').innerText = "Sun raha hoon... Kripya boliye (e.g. 'Tamatar ka bahi khata update karo' ya 'Task pura hua')...";
+          document.getElementById('voice-btn-text').innerText = "Listening...";
+        };
+
+        speechRecognition.onresult = (event) => {
+          const text = event.results[0][0].transcript;
+          document.getElementById('voice-transcript-text').innerText = `Aapne bola: "${text}"`;
+          handleVoiceCommandIntent(text.toLowerCase());
+        };
+
+        speechRecognition.onerror = () => {
+          isRecordingVoice = false;
+          document.getElementById('voice-btn-text').innerText = "बोलकर काम करें (Mic)";
+        };
+
+        speechRecognition.onend = () => {
+          isRecordingVoice = false;
+          document.getElementById('voice-btn-text').innerText = "बोलकर काम करें (Mic)";
+          setTimeout(() => {
+            document.getElementById('voice-transcript-card').classList.add('hidden');
+          }, 4000);
+        };
+      }
+    }
+
+    function toggleSpeechRecording() {
+      if (!speechRecognition) {
+        alert("Aapka browser Speech Recognition support nahi karta. Chrome browser use karein!");
+        return;
+      }
+      if (isRecordingVoice) {
+        speechRecognition.stop();
+      } else {
+        speechRecognition.start();
+      }
+    }
+
+    function handleVoiceCommandIntent(transcript) {
+      if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
+        toggleAddExpenseForm();
+        speakVoiceFeedback("Bahi-khata kharcha form khol diya gaya hai.");
+      } else if (transcript.includes('task') || transcript.includes('saaf') || transcript.includes('clean') || transcript.includes('pura')) {
+        if (currentFarmerObject) {
+          completeCurrentFarmerTask(currentFarmerObject.id, 'destoned');
+          speakVoiceFeedback("Destoning aur cleaning task mark done ho gaya.");
+        }
+      } else if (transcript.includes('munafa') || transcript.includes('paisa') || transcript.includes('batao')) {
+        speakFarmerTasks();
+      }
+    }
+
+    function speakVoiceFeedback(msg) {
+      const utter = new SpeechSynthesisUtterance(msg);
+      utter.lang = 'hi-IN';
+      window.speechSynthesis.speak(utter);
+    }
+
+    // =========================================================
+    // 3. AUTHENTICATION & ROLE-BASED ACCESS CONTROL
     // =========================================================
     function quickFillLogin(roleKey) {
       document.getElementById('login-username').value = roleKey;
@@ -810,60 +1034,49 @@
     function handleUserLogin(e) {
       if (e) e.preventDefault();
       const u = document.getElementById('login-username').value.trim().toLowerCase();
-      const p = document.getElementById('login-password').value.trim();
 
       if (!u) {
         alert("Please enter a valid username!");
         return;
       }
 
-      // Hide Auth Screen
       document.getElementById('auth-portal-screen').classList.add('hidden');
       currentLoggedInUser = u;
 
-      // Hide all workspaces first
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
 
-      // 1. Admin Login
       if (u === 'admin') {
         document.getElementById('session-user-badge').innerText = "Admin (Audit Hub Lead)";
         document.getElementById('view-admin').classList.remove('hidden');
-      } 
-      // 2. Driver Login
-      else if (u === 'driver' || u === 'driver1') {
+      } else if (u === 'driver' || u === 'driver1') {
         document.getElementById('session-user-badge').innerText = "Driver: Vikram Singh (HR-38-AF-4829)";
         document.getElementById('view-driver').classList.remove('hidden');
         setTimeout(initDriverMap, 150);
-      }
-      // 3. Buyer / Vendor Login
-      else if (u === 'vendor' || u === 'buyer' || u === 'bigbasket') {
+      } else if (u === 'vendor' || u === 'buyer' || u === 'bigbasket') {
         document.getElementById('session-user-badge').innerText = "B2B Buyer: BigBasket Wholesale";
         document.getElementById('view-buyer').classList.remove('hidden');
         setTimeout(initTrackingMap, 150);
-      }
-      // 4. Lead Cluster Owner
-      else if (u === 'lead' || u === 'gurpreet') {
+      } else if (u === 'lead' || u === 'gurpreet') {
         document.getElementById('session-user-badge').innerText = "Lead Owner: Sardar Gurpreet Singh";
         document.getElementById('view-lead_farmer').classList.remove('hidden');
-      }
-      // 5. Individual Farmer (farmer1 to farmer10)
-      else if (u.startsWith('farmer')) {
+      } else if (u.startsWith('farmer')) {
         const farmerNum = u.replace('farmer', '');
         const targetFarmer = clusterFarmers.find(f => f.id === `F${farmerNum}`) || clusterFarmers[0];
         
+        currentFarmerObject = targetFarmer;
         document.getElementById('session-user-badge').innerText = `${targetFarmer.name} (${targetFarmer.crop})`;
         document.getElementById('farmer-display-id').innerText = `FARMER #${targetFarmer.id.replace('F', '')}`;
         document.getElementById('view-member_farmer').classList.remove('hidden');
         
         renderIndividualFarmerData(targetFarmer);
-      } 
-      // Fallback: Default to Member Farmer 1
-      else {
-        alert(`Logged in as Custom Farmer Profile: ${u}`);
+        renderBahiKhataLedger(targetFarmer);
+      } else {
+        currentFarmerObject = clusterFarmers[0];
         document.getElementById('session-user-badge').innerText = `Farmer: ${u}`;
         document.getElementById('farmer-display-id').innerText = `MEMBER ID: ${u.toUpperCase()}`;
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(clusterFarmers[0]);
+        renderBahiKhataLedger(clusterFarmers[0]);
       }
 
       lucide.createIcons();
@@ -871,13 +1084,86 @@
 
     function logoutUser() {
       currentLoggedInUser = null;
+      currentFarmerObject = null;
       document.getElementById('session-user-badge').innerText = "Not Logged In";
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
       document.getElementById('login-username').value = "";
       document.getElementById('auth-portal-screen').classList.remove('hidden');
     }
 
-    // Render Individual Farmer's Private Tasks & Details
+    // =========================================================
+    // 4. DIGITAL BAHI-KHATA (EXPENSE & PROFIT LEDGER ENGINE)
+    // =========================================================
+    function toggleAddExpenseForm() {
+      const box = document.getElementById('expense-form-box');
+      box.classList.toggle('hidden');
+    }
+
+    function renderBahiKhataLedger(farmer) {
+      if (!farmer.expenses) farmer.expenses = [];
+      const tbody = document.getElementById('bahi-khata-tbody');
+      tbody.innerHTML = '';
+
+      let totalExp = 0;
+      farmer.expenses.forEach((item, index) => {
+        totalExp += Number(item.amt);
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="p-2.5 font-bold text-slate-800">${item.cat}</td>
+            <td class="p-2.5 text-slate-600">${item.desc}</td>
+            <td class="p-2.5 text-right font-bold text-rose-600">₹${Number(item.amt).toLocaleString()}</td>
+            <td class="p-2.5 text-center">
+              <button onclick="deleteFarmerExpense(${index})" class="text-rose-500 hover:text-rose-700 p-1 font-bold text-xs">&times;</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      if (farmer.expenses.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Koi kharcha darj nahi hai. 'Kharcha Jodein' par click karein.</td></tr>`;
+      }
+
+      const gross = farmer.qty * farmer.rate;
+      const net = gross - totalExp;
+
+      document.getElementById('ledger-gross-income').innerText = `₹${gross.toLocaleString()}`;
+      document.getElementById('ledger-total-expenses').innerText = `-₹${totalExp.toLocaleString()}`;
+      document.getElementById('ledger-net-profit').innerText = `₹${net.toLocaleString()}`;
+      document.getElementById('farmer-net-profit-badge').innerText = `₹${net.toLocaleString()}`;
+    }
+
+    function saveFarmerExpense() {
+      if (!currentFarmerObject) return;
+      const cat = document.getElementById('exp-category').value;
+      const desc = document.getElementById('exp-desc').value.trim() || cat;
+      const amt = Number(document.getElementById('exp-amount').value);
+
+      if (!amt || amt <= 0) {
+        alert("Valid amount dalein!");
+        return;
+      }
+
+      if (!currentFarmerObject.expenses) currentFarmerObject.expenses = [];
+      currentFarmerObject.expenses.push({ id: Date.now(), cat, desc, amt });
+
+      document.getElementById('exp-desc').value = '';
+      document.getElementById('exp-amount').value = '';
+      toggleAddExpenseForm();
+
+      renderBahiKhataLedger(currentFarmerObject);
+      saveClusterToCache();
+      alert(`Bahi-Khata: ₹${amt} expense successfully saved!`);
+    }
+
+    function deleteFarmerExpense(idx) {
+      if (currentFarmerObject && currentFarmerObject.expenses) {
+        currentFarmerObject.expenses.splice(idx, 1);
+        renderBahiKhataLedger(currentFarmerObject);
+        saveClusterToCache();
+      }
+    }
+
+    // Render Individual Farmer Data
     function renderIndividualFarmerData(f) {
       document.getElementById('farmer-profile-name').innerText = f.name;
       document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
@@ -928,6 +1214,7 @@
         if (f.destoned && f.moisture && f.ai_graded && f.crated) f.audit_pass = true;
         renderIndividualFarmerData(f);
         renderAdminFarmerTable();
+        saveClusterToCache();
       }
     }
 
@@ -1082,6 +1369,7 @@
       if (farmer) {
         farmer.destoned = true; farmer.moisture = true; farmer.ai_graded = true; farmer.crated = true; farmer.audit_pass = true;
         renderAdminFarmerTable();
+        saveClusterToCache();
         alert(`Admin passed quality audit for ${farmer.name}!`);
       }
     }
@@ -1091,14 +1379,23 @@
         f.destoned = true; f.moisture = true; f.ai_graded = true; f.crated = true; f.audit_pass = true;
       });
       renderAdminFarmerTable();
+      saveClusterToCache();
       alert("All 10 Farmers marked VERIFIED & APPROVED!");
     }
 
     function speakFarmerTasks() {
-      const text = `नमस्ते किसान जी. आपकी फसल की कुल मात्रा दर्ज हो चुकी है. आपका भुगतान एस्क्रो खाते में सुरक्षित है.`;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'hi-IN';
-      window.speechSynthesis.speak(utterance);
+      if (currentFarmerObject) {
+        const gross = currentFarmerObject.qty * currentFarmerObject.rate;
+        let totalExp = 0;
+        if (currentFarmerObject.expenses) {
+          currentFarmerObject.expenses.forEach(x => totalExp += Number(x.amt));
+        }
+        const net = gross - totalExp;
+        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई पंद्रह हजार छह सौ रुपये है. खर्चे निकालने के बाद आपका शुद्ध मुनाफा ${net} रुपये है.`;
+        speakVoiceFeedback(text);
+      } else {
+        speakVoiceFeedback("नमस्ते किसान जी. आपका भुगतान एस्क्रो खाते में सुरक्षित है.");
+      }
     }
 
     function shareOnWhatsApp() {

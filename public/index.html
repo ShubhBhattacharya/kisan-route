@@ -22,11 +22,23 @@
   <!-- QRCode.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+  <!-- Google Universal Translation Engine -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,pa,bn,te,ta,mr,gu,kn,ml,or,as,ur,sa,mai,ne,sd,kok,doi,bho,en',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; top: 0px !important; }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
     #tracking-map, #driver-map { height: 360px !important; min-height: 360px !important; width: 100% !important; border-radius: 1rem; z-index: 10; }
     .badge-done { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
@@ -37,9 +49,20 @@
     #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
+    
+    /* Hide Google Default Ugly Top Banner */
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    body { top: 0px !important; }
+    #google_translate_element { display: none; }
+    .goog-tooltip { display: none !important; }
+    .goog-tooltip:hover { display: none !important; }
+    .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
+
+  <!-- Hidden Google Translate Anchor -->
+  <div id="google_translate_element"></div>
 
   <!-- 1. LIVE APMC MANDI LIVE TICKER (MICRO-FEATURE) -->
   <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
@@ -70,6 +93,36 @@
           </div>
           <p class="text-[11px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Mandi Pincodes</p>
         </div>
+      </div>
+
+      <!-- ALL-INDIA 22+ LANGUAGES REALTIME TRANSLATION SELECTOR -->
+      <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
+        <div class="flex items-center gap-1.5 pl-2 text-emerald-400 font-bold text-xs">
+          <i data-lucide="languages" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">भाषा / Language:</span>
+        </div>
+        <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-slate-900 text-white font-bold text-xs p-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+          <option value="en">English (Default)</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+          <option value="bn">বাংলা (Bengali)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+          <option value="ta">தமிழ் (Tamil)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="gu">ગુજરાતી (Gujarati)</option>
+          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          <option value="ml">മലയാളം (Malayalam)</option>
+          <option value="or">ଓଡ଼ିଆ (Odia)</option>
+          <option value="as">অসমীয়া (Assamese)</option>
+          <option value="ur">اردو (Urdu)</option>
+          <option value="sa">संस्कृतम् (Sanskrit)</option>
+          <option value="mai">मैथिली (Maithili)</option>
+          <option value="bho">भोजपुरी (Bhojpuri)</option>
+          <option value="ne">नेपाली (Nepali)</option>
+          <option value="sd">سنڌي (Sindhi)</option>
+          <option value="kok">कोंकणी (Konkani)</option>
+          <option value="doi">डोगरी (Dogri)</option>
+        </select>
       </div>
 
       <!-- Quick Role Switcher -->
@@ -189,7 +242,6 @@
               </button>
             </div>
 
-            <!-- WhatsApp Alert & Dispute Buttons -->
             <div class="grid grid-cols-2 gap-2">
               <button onclick="shareOnWhatsApp()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
                 <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Send WhatsApp
@@ -375,7 +427,6 @@
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
-      <!-- Top Selection & Voice Assistant Header -->
       <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <span class="text-xs font-bold text-slate-500 uppercase">Farmer Profile:</span>
@@ -385,7 +436,6 @@
         </div>
         
         <div class="flex items-center gap-2">
-          <!-- Voice Readout Button (Micro-feature) -->
           <button onclick="speakFarmerTasks()" class="px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
             <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye (Voice Hindi)
           </button>
@@ -395,7 +445,6 @@
         </div>
       </div>
 
-      <!-- Farmer Main Stats Card -->
       <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
         <div>
           <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Individual Farmer Workspace</span>
@@ -417,7 +466,6 @@
       <!-- 6 ESSENTIAL FARMER UTILITY MICRO-CARDS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
         
-        <!-- Tool 1: Soil Health & Fertilizer Calculator -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-emerald-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
@@ -429,7 +477,6 @@
           </button>
         </div>
 
-        <!-- Tool 2: Weather & Rain Spray Alert -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-blue-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Weather Spray Window</span>
@@ -441,7 +488,6 @@
           </button>
         </div>
 
-        <!-- Tool 3: QR Batch Crate Generator -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-purple-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="qr-code" class="w-4 h-4"></i> Crate QR Label</span>
@@ -453,7 +499,6 @@
           </button>
         </div>
 
-        <!-- Tool 4: KCC Loan & PM-KUSUM Subsidy -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-amber-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="badge-percent" class="w-4 h-4"></i> KCC Credit & Solar Subsidy</span>
@@ -465,7 +510,6 @@
           </button>
         </div>
 
-        <!-- Tool 5: Seed & Fertilizer Authenticity -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-emerald-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> Asli Seed & Khad Scanner</span>
@@ -477,7 +521,6 @@
           </button>
         </div>
 
-        <!-- Tool 6: Shared Tractor & Harvester Pool -->
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div class="flex justify-between items-center text-slate-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4"></i> Shared Machinery Hub</span>
@@ -493,8 +536,6 @@
 
       <!-- Pending vs Completed Tasks Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <!-- Pending Tasks Column -->
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <div class="flex justify-between items-center border-b border-slate-100 pb-3">
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -505,7 +546,6 @@
           <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
         </div>
 
-        <!-- Completed Tasks Column -->
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <div class="flex justify-between items-center border-b border-slate-100 pb-3">
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -515,7 +555,6 @@
           </div>
           <div id="completed-tasks-list" class="space-y-3 text-xs"></div>
         </div>
-
       </div>
 
     </div>
@@ -705,6 +744,25 @@
       renderFarmerTasks();
       initTrackingMap();
     });
+
+    // REALTIME FULL WEBSITE TRANSLATION (ALL-INDIA 22+ LANGUAGES)
+    function translateWebsiteRealtime(langCode) {
+      if (langCode === 'en') {
+        const iframe = document.querySelector('iframe.goog-te-banner-frame');
+        if (iframe) {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+          const closeBtn = doc.querySelector('.goog-close-link');
+          if (closeBtn) closeBtn.click();
+        }
+        location.reload();
+        return;
+      }
+      const select = document.querySelector('select.goog-te-combo');
+      if (select) {
+        select.value = langCode;
+        select.dispatchEvent(new Event('change'));
+      }
+    }
 
     // Role Switcher
     function setRole(role) {
@@ -939,7 +997,6 @@
       }
     }
 
-    // Voice Readout (Micro-feature: Web Speech API)
     function speakFarmerTasks() {
       const f = clusterFarmers.find(x => x.id === currentSelectedFarmer) || clusterFarmers[0];
       const text = `नमस्ते किसान ${f.name} जी. आपकी फसल ${f.crop} की कुल मात्रा ${f.qty} किलो है. आपका अनुमानित भुगतान पंद्रह हजार छह सौ रुपये है.`;
@@ -948,13 +1005,11 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    // WhatsApp Sharing (Micro-feature)
     function shareOnWhatsApp() {
       const text = encodeURIComponent("KisanRoute Alert: Order #OD-2026-FBD-8821 for 650kg Tomato is Dispatched via Mini Truck HR-38-AF-4829. Secret OTP: 4829.");
       window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
-    // QR Code Generator (Micro-feature)
     function showQRCodeModal() {
       document.getElementById('qr-modal').classList.remove('hidden');
       const qrContainer = document.getElementById('qrcode');

@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pm-kisan",
+    "title": "PM Kisan Samman Nidhi",
+    "benefit": "₹6,000 per year direct bank transfer in 3 installments",
+    "eligibility": "Small and marginal landholder farmer families",
+    "link": "https://pmkisan.gov.in"
+  },
+  {
+    "id": "pmfby",
+    "title": "Pradhan Mantri Fasal Bima Yojana",
+    "benefit": "Comprehensive crop insurance against non-preventable natural risks",
+    "eligibility": "All farmers including sharecroppers growing notified crops",
+    "link": "https://pmfby.gov.in"
+  },
+  {
+    "id": "enam",
+    "title": "e-NAM (National Agriculture Market)",
+    "benefit": "Pan-India electronic trading portal for farm produce",
+    "eligibility": "All farmers and FPOs with valid APMC registration",
+    "link": "https://enam.gov.in"
+  }
+]

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KisanRoute Enterprise - Smart Logistics & 10-Farmer Audit Hub</title>
+  
+  <!-- Custom Green Agri Sprout Logo (Favicon) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
+
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Leaflet Maps CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- html2pdf.js for Real PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    #tracking-map, #driver-map { height: 360px !important; min-height: 360px !important; width: 100% !important; border-radius: 1rem; z-index: 10; }
+    .badge-done { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-pending { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+    .status-step-done { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
+    .status-step-current { border-color: #f59e0b; background-color: #fffbeb; color: #92400e; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
+
+  <!-- 1. LIVE APMC MANDI LIVE TICKER (MICRO-FEATURE) -->
+  <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
+    <span class="bg-emerald-600 text-slate-950 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0">Live Mandi Rates</span>
+    <div class="w-full overflow-hidden">
+      <div class="animate-marquee space-x-6">
+        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Cluster: ₹24/kg (+100%)</b></span>
+        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
+        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
+        <span>🧅 Onion: Mandi ₹16/kg &bull; <b class="text-white">KisanRoute: ₹22/kg</b></span>
+        <span>🌦️ Faridabad Weather: 28°C (Humidity: 62%) &bull; Ideal Harvesting Conditions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP HEADER & ROLE SWITCHER -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-3">
+        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 p-2.5 rounded-2xl shadow-md font-black">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-black tracking-tight text-white">Kisan<span class="text-emerald-400">Route</span></span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded-full border border-emerald-500/30">SIH 2026 ENTERPRISE</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Mandi Pincodes</p>
+        </div>
+      </div>
+
+      <!-- Quick Role Switcher -->
+      <div class="flex items-center gap-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 text-xs overflow-x-auto">
+        <span class="text-slate-400 pl-2 font-medium">Switch Role:</span>
+        <button onclick="setRole('buyer')" id="btn-role-buyer" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-950 transition">Customer / B2B Buyer (Tracking)</button>
+        <button onclick="setRole('driver')" id="btn-role-driver" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Logistics Driver & Simulator</button>
+        <button onclick="setRole('admin')" id="btn-role-admin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Admin Audit Hub (10 Farmers)</button>
+        <button onclick="setRole('member_farmer')" id="btn-role-member" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Member Farmer (Tools & Tasks)</button>
+        <button onclick="setRole('lead_farmer')" id="btn-role-lead" class="px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition">Lead Process Owner</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+
+    <!-- ======================================================= -->
+    <!-- 1. CUSTOMER / B2B BUYER (AMAZON / FLIPKART TRACKING)    -->
+    <!-- ======================================================= -->
+    <div id="view-buyer" class="role-workspace space-y-6">
+      
+      <!-- Live Order Tracking Hero Card -->
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/60 space-y-6">
+        
+        <!-- Order Header & ETA -->
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-4 border-b border-white/10">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5" id="order-status-badge">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Transit Status: DISPATCHED
+              </span>
+              <span class="text-xs text-slate-400 font-mono-code font-bold">Order #OD-2026-FBD-8821</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black mt-2 tracking-tight">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-0.5">Dispatched from <span class="text-emerald-400 font-bold">Dhauj Farm Hub (Pincode: 121007)</span> &bull; Billed to: <span class="text-white font-bold">BigBasket Wholesale</span></p>
+          </div>
+
+          <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-left sm:text-right space-y-1">
+            <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider block">Tentative Delivery ETA</span>
+            <p class="text-xl font-black text-white" id="buyer-delivery-eta">Today, 27-Aug-2026</p>
+            <p class="text-xs text-emerald-300 font-bold flex sm:justify-end items-center gap-1">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i> Expected by 05:30 PM (In ~1h 45m)
+            </p>
+          </div>
+        </div>
+
+        <!-- 5-Step Visual Tracking Stepper -->
+        <div class="space-y-3">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Order Delivery Timeline</p>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
+                <span>1. Placed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <p class="font-bold text-white">Escrow Locked</p>
+              <p class="text-[10px] text-slate-300">₹16,380 safe</p>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
+                <span>2. AI Quality</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <p class="font-bold text-white">Grade A Certified</p>
+              <p class="text-[10px] text-slate-300">96% Fresh score</p>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
+                <span>3. Packed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+              </div>
+              <p class="font-bold text-white">26 Crates Sealed</p>
+              <p class="text-[10px] text-slate-300">QR Barcoded</p>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-amber-500/20 border-2 border-amber-400 space-y-1 relative" id="step-transit-card">
+              <div class="flex items-center justify-between text-xs font-bold text-amber-300">
+                <span>4. In-Transit</span> <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+              </div>
+              <p class="font-bold text-white" id="step-transit-title">Truck on Highway</p>
+              <p class="text-[10px] text-amber-200" id="step-transit-sub">Near NIT-3 (14 km away)</p>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-1 opacity-70" id="step-delivery-card">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+                <span>5. Destination</span> <i data-lucide="shield-alert" class="w-4 h-4"></i>
+              </div>
+              <p class="font-bold text-slate-200" id="step-delivery-title">OTP Verification</p>
+              <p class="text-[10px] text-slate-400">Share OTP at gate</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Driver Info, Secret Delivery OTP & Map -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+          <div class="space-y-4">
+            
+            <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3">
+              <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30">
+                <i data-lucide="truck" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <p class="text-[11px] text-slate-400 uppercase font-bold">Assigned Logistics Vehicle</p>
+                <p class="text-xs font-black text-white">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
+                <p class="text-[11px] text-emerald-300 font-medium mt-0.5">Driver: Vikram Singh (+91 98110-44910)</p>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-tr from-slate-900 to-slate-800 border border-emerald-500/40 p-4 rounded-2xl flex items-center justify-between">
+              <div>
+                <p class="text-[10px] text-emerald-300 font-extrabold uppercase">Your Secret Delivery OTP</p>
+                <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
+                <p class="text-[10px] text-slate-400">Share with driver upon arrival</p>
+              </div>
+              <button onclick="downloadGSTInvoicePDF()" class="px-3.5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl transition shadow-lg flex items-center gap-1.5">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> PDF Bill
+              </button>
+            </div>
+
+            <!-- WhatsApp Alert & Dispute Buttons -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="shareOnWhatsApp()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Send WhatsApp
+              </button>
+              <button onclick="triggerAutoRefundDispute()" class="py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Dispute
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-white flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live GPS Fleet Tracker (15 Faridabad Pincodes)
+              </span>
+              <span class="text-emerald-400 font-bold">Speed: 42 km/h &bull; Distance: 7.2 km</span>
+            </div>
+            <div id="tracking-map"></div>
+          </div>
+        </div>
+
+        <!-- Simulation Action Triggers -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10 text-xs">
+          <span class="text-slate-400 font-medium">Test Live Order Milestones:</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="updateDeliveryStatus('dispatched')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition">1. Dispatched</button>
+            <button onclick="updateDeliveryStatus('near')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-amber-300 rounded-lg font-semibold transition">2. Near Destination (2.5 km)</button>
+            <button onclick="updateDeliveryStatus('delivered')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg font-bold transition">3. Mark Delivered</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Marketplace Fresh Produce Catalog -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-base font-bold text-slate-900">Direct Farm Produce Batches (Escrow Guaranteed)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+            <div class="flex justify-between items-start">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
+              <span class="text-base font-black text-emerald-700">₹24/kg</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm">Desi Fresh Tomato</h4>
+            <p class="text-slate-500">Dhauj Farm &bull; 650 kg Batch</p>
+            <button onclick="alert('Order Placed! ₹15,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+          </div>
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+            <div class="flex justify-between items-start">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
+              <span class="text-base font-black text-emerald-700">₹18/kg</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm">Table Potato (Sugar-Free)</h4>
+            <p class="text-slate-500">Tigaon Farm &bull; 1,200 kg Batch</p>
+            <button onclick="alert('Order Placed! ₹21,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+          </div>
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+            <div class="flex justify-between items-start">
+              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
+              <span class="text-base font-black text-emerald-700">₹28/kg</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm">Sharbati Premium Wheat</h4>
+            <p class="text-slate-500">Ballabhgarh &bull; 1,800 kg Batch</p>
+            <button onclick="alert('Order Placed! ₹50,400 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- 2. LOGISTICS DRIVER & SMART VEHICLE ALLOTMENT           -->
+    <!-- ======================================================= -->
+    <div id="view-driver" class="role-workspace space-y-6 hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Smart Vehicle Allotment Simulator</h3>
+            <p class="text-xs text-slate-500">Auto-allots vehicle based on batch weight across 15 Faridabad pincodes.</p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Batch Weight Slider (kg):</label>
+            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-emerald-600 cursor-pointer" />
+            <div class="flex justify-between text-xs text-slate-500 font-semibold mt-1">
+              <span>10 kg (Bike)</span>
+              <span id="weight-display" class="text-emerald-700 font-bold text-sm bg-emerald-50 px-2 py-0.5 rounded-md">650 kg</span>
+              <span>3,000 kg (Truck)</span>
+            </div>
+          </div>
+
+          <div id="allotment-result-card" class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 space-y-2 text-xs">
+            <p class="text-emerald-800 font-bold uppercase tracking-wider text-[10px]">Allotted Transport Vehicle</p>
+            <h4 id="vehicle-title" class="font-bold text-slate-900 text-base">Mini Truck (Tata Ace)</h4>
+            <div class="space-y-1 text-slate-600 pt-1">
+              <p>Max Capacity: <span class="font-semibold text-slate-800" id="vehicle-cap">1,000 kg</span></p>
+              <p>Calculated Trip Fare: <span class="font-bold text-emerald-800" id="vehicle-trip-cost">₹1,120</span></p>
+              <p>Diesel Saved via Grouping: <b class="text-emerald-700">18.4 Litres (₹1,650)</b></p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 space-y-2">
+            <label class="block text-xs font-bold text-slate-800">Buyer Delivery OTP Verification:</label>
+            <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50" />
+            <button onclick="driverVerifyOTP()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition">
+              Verify OTP & Release Escrow to Farmers
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Live Geofenced 15-Pincode Faridabad Route Map</h4>
+              <p class="text-xs text-slate-500">Waypoints: Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+            </div>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">32 km VRPTW Optimized</span>
+          </div>
+          <div id="driver-map"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- 3. ADMIN AUDIT HUB: 10-FARMER GRANULAR STATUS MATRIX    -->
+    <!-- ======================================================= -->
+    <div id="view-admin" class="role-workspace space-y-6 hidden">
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster Farmers</p>
+          <h3 class="text-2xl font-black text-slate-900 mt-1">10 Farmers</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase">Total Pooled Batch</p>
+          <h3 class="text-2xl font-black text-emerald-700 mt-1">4,850 kg</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase">Quality Audit Passed</p>
+          <h3 class="text-2xl font-black text-slate-900 mt-1" id="admin-passed-count">8 / 10 Farmers</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold text-slate-400 uppercase">Escrow Vault</p>
+          <h3 class="text-2xl font-black text-emerald-700 mt-1">₹1,16,400</h3>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4 p-6">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">10-Farmer Granular Process Audit Table</h3>
+            <p class="text-xs text-slate-500">Admin oversight on individual purification, sorting, crating and payout clearances.</p>
+          </div>
+          <button onclick="auditAllPassed()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow-sm flex items-center gap-1.5">
+            <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+              <tr>
+                <th class="p-3">Farmer & Location</th>
+                <th class="p-3">Crop / Yield</th>
+                <th class="p-3 text-center">1. Destoning & Clean</th>
+                <th class="p-3 text-center">2. Moisture &lt;12%</th>
+                <th class="p-3 text-center">3. AI Grade Scan</th>
+                <th class="p-3 text-center">4. Crate & QR Tag</th>
+                <th class="p-3">Payout Due</th>
+                <th class="p-3 text-center">Admin Audit Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium">
+              <!-- Dynamically Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- 4. MEMBER FARMER DASHBOARD (TOOLS + PENDING/COMPLETED)   -->
+    <!-- ======================================================= -->
+    <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
+      
+      <!-- Top Selection & Voice Assistant Header -->
+      <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-slate-500 uppercase">Farmer Profile:</span>
+          <select id="farmer-selector" onchange="switchFarmerProfile()" class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <!-- Populated by JS -->
+          </select>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <!-- Voice Readout Button (Micro-feature) -->
+          <button onclick="speakFarmerTasks()" class="px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
+            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye (Voice Hindi)
+          </button>
+          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl" id="farmer-pincode-badge">
+            Pincode: 121007 (Dhauj)
+          </span>
+        </div>
+      </div>
+
+      <!-- Farmer Main Stats Card -->
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Individual Farmer Workspace</span>
+          <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
+          <p class="text-xs text-emerald-200 mt-1" id="farmer-profile-sub">Allocated Produce: Desi Fresh Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
+        </div>
+        <div class="flex gap-3 text-center">
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Expected Direct UPI</p>
+            <p class="text-xl font-black text-emerald-300" id="farmer-expected-payout">₹15,600</p>
+          </div>
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Profit Gain</p>
+            <p class="text-xl font-black text-white">2.2x vs Mandi</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 ESSENTIAL FARMER UTILITY MICRO-CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+        
+        <!-- Tool 1: Soil Health & Fertilizer Calculator -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-emerald-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
+            <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded">NPK 4:2:1</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Recommended for 1 Acre Tomato: <b>45kg Urea + 50kg DAP + 20kg MOP</b></p>
+          <button onclick="alert('Fertilizer Dosage: 45kg Urea, 50kg DAP applied at flowering stage.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+            Calculate Custom Acre Dose
+          </button>
+        </div>
+
+        <!-- Tool 2: Weather & Rain Spray Alert -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-blue-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Weather Spray Window</span>
+            <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded">No Rain Next 48h</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Best Pesticide Window: <b>Today 04:00 PM - 06:30 PM</b> (Wind: 4 km/h)</p>
+          <button onclick="alert('Weather Alert: Clear skies in Faridabad till Saturday. Ideal for harvesting & open drying.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+            View 7-Day Advisory
+          </button>
+        </div>
+
+        <!-- Tool 3: QR Batch Crate Generator -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-purple-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="qr-code" class="w-4 h-4"></i> Crate QR Label</span>
+            <span class="text-[10px] bg-purple-100 px-2 py-0.5 rounded">Traceable</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Generate batch QR code sticker for buyer farmgate traceability.</p>
+          <button onclick="showQRCodeModal()" class="w-full py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-[10px] transition">
+            Generate Crate QR Label
+          </button>
+        </div>
+
+        <!-- Tool 4: KCC Loan & PM-KUSUM Subsidy -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-amber-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="badge-percent" class="w-4 h-4"></i> KCC Credit & Solar Subsidy</span>
+            <span class="text-[10px] bg-amber-100 px-2 py-0.5 rounded">4% Interest</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Eligible KCC Limit: <b>₹1,60,000</b> | PM-KUSUM Solar: <b>60% Subsidy</b></p>
+          <button onclick="alert('KCC Pre-Approved Limit: ₹1,60,000 at 4% subvention interest. Bank branch: Ballabhgarh PNB.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+            Check KCC Pre-Approval
+          </button>
+        </div>
+
+        <!-- Tool 5: Seed & Fertilizer Authenticity -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-emerald-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> Asli Seed & Khad Scanner</span>
+            <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded">Govt Verified</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Scan fertilizer QR/Barcode to verify IFFCO / KRIBHCO genuine bag.</p>
+          <button onclick="alert('Bag Verified: IFFCO Neem Coated Urea (Batch #9921-HR) Genuine Certified!')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+            Verify Fertilizer Bag
+          </button>
+        </div>
+
+        <!-- Tool 6: Shared Tractor & Harvester Pool -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+          <div class="flex justify-between items-center text-slate-700 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4"></i> Shared Machinery Hub</span>
+            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded">Faridabad FPO</span>
+          </div>
+          <p class="text-slate-600 text-[11px]">Mahindra 575 DI Tractor: <b>₹450/hr</b> (Rotavator attached)</p>
+          <button onclick="alert('Tractor Booked for Dhauj Farm for Tomorrow 07:00 AM.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg text-[10px] transition">
+            Book Shared Machinery
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Pending vs Completed Tasks Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Pending Tasks Column -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
+            </h3>
+            <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
+          </div>
+          <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
+        </div>
+
+        <!-- Completed Tasks Column -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
+            </h3>
+            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
+          </div>
+          <div id="completed-tasks-list" class="space-y-3 text-xs"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- 5. LEAD PROCESS OWNER WORKSPACE                         -->
+    <!-- ======================================================= -->
+    <div id="view-lead_farmer" class="role-workspace space-y-6 hidden">
+      <div class="bg-gradient-to-r from-emerald-900 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">Lead Process Owner</span>
+          <h2 class="text-2xl font-black mt-2">Sardar Gurpreet Singh (Cluster Head)</h2>
+          <p class="text-xs text-emerald-200 mt-1">Supervising 10 Member Farmers &bull; Faridabad Cluster Hub #04</p>
+        </div>
+        <div class="flex gap-3">
+          <div class="bg-white/10 p-3 rounded-2xl border border-white/10 text-center">
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Pooled Weight</p>
+            <p class="text-xl font-black">4,850 kg</p>
+          </div>
+          <button onclick="downloadGSTInvoicePDF()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl transition flex items-center gap-1.5 shadow-lg">
+            <i data-lucide="download" class="w-4 h-4"></i> Download Tax Invoice (PDF)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: QR CODE GENERATOR (MICRO-FEATURE)                  -->
+  <!-- ========================================================= -->
+  <div id="qr-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+        <h4 class="font-bold text-slate-900 text-sm">Crate Batch QR Label</h4>
+        <button onclick="closeQRModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+      </div>
+      <div id="qrcode" class="flex justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200"></div>
+      <p class="text-[11px] text-slate-600 font-mono-code font-bold">BATCH #FBD-8821 &bull; 650kg Tomato (Grade A)</p>
+      <button onclick="alert('Print command sent to portable bluetooth thermal printer!')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition">
+        Print Thermal QR Sticker
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- FLOATING AI COPILOT CHATBOT DRAWER                        -->
+  <!-- ========================================================= -->
+  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
+    
+    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-4 text-white flex justify-between items-center border-b border-slate-700">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
+          <i data-lucide="bot" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-xs leading-none">KisanAI Copilot</h4>
+          <span class="text-[10px] text-emerald-400 font-medium">Autonomous Agri Action Engine</span>
+        </div>
+      </div>
+      <button onclick="toggleAIChat()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+      <div class="flex gap-2.5 items-start">
+        <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
+          <p>Namaste! I am <b>KisanAI Copilot</b>. I have full real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and GST invoices.</p>
+          <p class="text-[11px] text-slate-500">Try asking or commanding me:</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
+      <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        ⚡ Approve All Farmers
+      </button>
+      <button onclick="executeQuickPrompt('Download GST Invoice PDF')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        📄 Download GST Bill
+      </button>
+      <button onclick="executeQuickPrompt('Show live truck tracking map')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        🚚 Show Live Tracking
+      </button>
+      <button onclick="executeQuickPrompt('Check Farmer 1 status')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        🌱 Check Rameshwar Status
+      </button>
+    </div>
+
+    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
+      <button type="submit" class="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition shadow-md">
+        <i data-lucide="send" class="w-4 h-4"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- FLOATING AI TRIGGER BUTTON -->
+  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40">
+    <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
+    <span class="pr-1 text-slate-950 font-bold">Ask KisanAI</span>
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping"></span>
+  </button>
+
+  <!-- ========================================================= -->
+  <!-- HIDDEN PRINTABLE GST TAX INVOICE TEMPLATE                 -->
+  <!-- ========================================================= -->
+  <div class="hidden">
+    <div id="invoice-pdf-template" class="p-8 bg-white text-slate-900 max-w-3xl mx-auto space-y-6 border border-slate-300" style="font-family: Arial, sans-serif; font-size: 13px;">
+      <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 12px;">
+        <div>
+          <h1 style="font-size: 20px; font-weight: 800; color: #047857; margin: 0;">FARIDABAD AGRO PRODUCER CO. LTD. (FPO)</h1>
+          <p style="margin: 2px 0; color: #64748b; font-size: 11px;">Dhauj Cluster Hub #04, Faridabad, Haryana - 121007</p>
+          <p style="margin: 2px 0; font-weight: bold;">GSTIN: 06AAAAA0000A1Z5 &bull; PAN: AAAAF0000A</p>
+        </div>
+        <div style="text-align: right;">
+          <h2 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">TAX INVOICE</h2>
+          <p style="margin: 2px 0; font-size: 11px;">Invoice No: <b>INV-2026-FBD-8821</b></p>
+          <p style="margin: 2px 0; font-size: 11px;">Date: <b>27-Aug-2026</b></p>
+          <p style="margin: 2px 0; font-size: 11px;">E-Way Bill: <b>8819-2039-2011</b></p>
+        </div>
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12px;">
+        <thead>
+          <tr style="background-color: #f1f5f9; border-top: 1px solid #94a3b8; border-bottom: 1px solid #94a3b8;">
+            <th style="padding: 8px;">Item Description</th>
+            <th style="padding: 8px;">HSN Code</th>
+            <th style="padding: 8px; text-align: right;">Qty (kg)</th>
+            <th style="padding: 8px; text-align: right;">Rate (₹/kg)</th>
+            <th style="padding: 8px; text-align: right;">Taxable Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 8px;"><b>Desi Fresh Tomato (Grade A Certified)</b></td>
+            <td style="padding: 8px; font-family: monospace;">07020000</td>
+            <td style="padding: 8px; text-align: right; font-weight: bold;">650</td>
+            <td style="padding: 8px; text-align: right;">₹24.00</td>
+            <td style="padding: 8px; text-align: right; font-weight: bold;">₹15,600.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #cbd5e1; padding-bottom: 12px;">
+        <div style="max-width: 50%; font-size: 11px; color: #475569;">
+          <p style="margin: 2px 0;">1. Pre-certified Grade A by FPO Process Supervisor.</p>
+          <p style="margin: 2px 0;">2. Escrow funds released via Driver OTP Verification.</p>
+        </div>
+        <div style="width: 45%;">
+          <table style="width: 100%; font-size: 12px;">
+            <tr><td>Taxable:</td><td style="text-align: right; font-weight: bold;">₹15,600.00</td></tr>
+            <tr><td>CGST (2.5%):</td><td style="text-align: right;">₹390.00</td></tr>
+            <tr><td>SGST (2.5%):</td><td style="text-align: right;">₹390.00</td></tr>
+            <tr style="border-top: 2px solid #0f172a; font-size: 14px; font-weight: 800; color: #047857;">
+              <td>Total Payable:</td><td style="text-align: right;">₹16,380.00</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC, MAPS & AI COPILOT ENGINE -->
+  <script>
+    let clusterFarmers = [
+      { id: "F1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F2", name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Table Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F3", name: "Satish Gurjar", village: "Ballabhgarh", pincode: "121002", crop: "Sharbati Wheat", qty: 1800, rate: 28, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F4", name: "Manoj Bhati", village: "Sainik Colony", pincode: "121008", crop: "Baby Spinach", qty: 250, rate: 35, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F5", name: "Jaipal Rawat", village: "Faridabad NIT", pincode: "121001", crop: "Red Onion", qty: 950, rate: 22, destoned: true, moisture: true, ai_graded: true, crated: false, audit_pass: false },
+      { id: "F6", name: "Balwan Singh", village: "Dhauj", pincode: "121007", crop: "Green Chilli", qty: 180, rate: 45, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F7", name: "Dharamvir Yadav", village: "Tigaon", pincode: "121005", crop: "Cauliflower", qty: 420, rate: 20, destoned: true, moisture: false, ai_graded: false, crated: false, audit_pass: false },
+      { id: "F8", name: "Suresh Chand", village: "Sector 29", pincode: "121004", crop: "Capsicum", qty: 310, rate: 40, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F9", name: "Kaptan Poswal", village: "Badarpur Border", pincode: "121009", crop: "Desi Tomato", qty: 500, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
+      { id: "F10", name: "Narender Nagar", village: "Greater Faridabad", pincode: "121010", crop: "Mustard Seeds", qty: 600, rate: 52, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true }
+    ];
+
+    let currentSelectedFarmer = "F1";
+    let trackingMap, driverMap;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      renderAdminFarmerTable();
+      populateFarmerDropdown();
+      renderFarmerTasks();
+      initTrackingMap();
+    });
+
+    // Role Switcher
+    function setRole(role) {
+      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
+      const activeView = document.getElementById(`view-${role}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      const roleButtons = ['buyer', 'driver', 'admin', 'member_farmer', 'lead_farmer'];
+      roleButtons.forEach(r => {
+        const btn = document.getElementById(`btn-role-${r === 'member_farmer' ? 'member' : (r === 'lead_farmer' ? 'lead' : r)}`);
+        if (btn) btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-300 hover:text-white transition";
+      });
+
+      const activeBtn = document.getElementById(`btn-role-${role === 'member_farmer' ? 'member' : (role === 'lead_farmer' ? 'lead' : role)}`);
+      if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg font-bold bg-emerald-500 text-slate-950 transition";
+
+      if (role === 'buyer' && trackingMap) {
+        setTimeout(() => { trackingMap.invalidateSize(); trackingMap.setView([28.38, 77.31], 12); }, 150);
+      } else if (role === 'driver') {
+        setTimeout(initDriverMap, 150);
+      }
+    }
+
+    // Leaflet Tracking Map (Buyer Screen)
+    function initTrackingMap() {
+      if (trackingMap) return;
+      trackingMap = L.map('tracking-map').setView([28.38, 77.31], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(trackingMap);
+
+      const routePoints = [
+        [28.336, 77.161], // Dhauj
+        [28.375, 77.290], // Current Truck Location
+        [28.421, 77.305]  // Destination Sector 15
+      ];
+
+      L.marker(routePoints[0]).addTo(trackingMap).bindPopup("<b>Farm Gate: Dhauj Hub</b><br>650kg Tomato Picked");
+      const truckMarker = L.marker(routePoints[1]).addTo(trackingMap).bindPopup("<b>🚚 Truck HR-38-AF-4829</b><br>Moving: 42 km/h (ETA: 1h 45m)").openPopup();
+      L.marker(routePoints[2]).addTo(trackingMap).bindPopup("<b>Destination: Sector 15 APMC Hub</b>");
+
+      const poly = L.polyline(routePoints, { color: '#10b981', weight: 4, dashArray: '6, 8' }).addTo(trackingMap);
+      trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
+    }
+
+    // Leaflet Driver Map
+    function initDriverMap() {
+      if (driverMap) {
+        driverMap.invalidateSize();
+        return;
+      }
+      driverMap = L.map('driver-map').setView([28.38, 77.31], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
+
+      const points = [
+        [28.336, 77.161],
+        [28.341, 77.320],
+        [28.408, 77.317],
+        [28.421, 77.305]
+      ];
+      points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
+      const poly = L.polyline(points, { color: '#10b981', weight: 4 }).addTo(driverMap);
+      driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
+    }
+
+    // Vehicle Allocation Logic
+    function calculateVehicleAllocation() {
+      const weight = parseInt(document.getElementById("weight-slider").value);
+      document.getElementById("weight-display").innerText = `${weight} kg`;
+
+      let vehicle = "Heavy Truck (Multi-Axle)";
+      let cap = "5,000 kg";
+      let rate = 60;
+
+      if (weight <= 50) {
+        vehicle = "Motorcycle (Express Delivery)";
+        cap = "50 kg";
+        rate = 10;
+      } else if (weight <= 350) {
+        vehicle = "Commercial E-Rickshaw";
+        cap = "350 kg";
+        rate = 20;
+      } else if (weight <= 1000) {
+        vehicle = "Mini Truck (Tata Ace)";
+        cap = "1,000 kg";
+        rate = 35;
+      }
+
+      document.getElementById("vehicle-title").innerText = vehicle;
+      document.getElementById("vehicle-cap").innerText = cap;
+      document.getElementById("vehicle-trip-cost").innerText = `₹${rate * 32}`;
+    }
+
+    // Status Updates for Tracking Stepper
+    function updateDeliveryStatus(state) {
+      const transitCard = document.getElementById("step-transit-card");
+      const deliveryCard = document.getElementById("step-delivery-card");
+      const transitTitle = document.getElementById("step-transit-title");
+      const transitSub = document.getElementById("step-transit-sub");
+      const etaText = document.getElementById("buyer-delivery-eta");
+
+      if (state === 'dispatched') {
+        transitTitle.innerText = "Dispatched from Farm";
+        transitSub.innerText = "Vehicle left Dhauj Hub at 03:15 PM";
+        etaText.innerText = "Today, 27-Aug by 05:30 PM";
+        alert("Status Updated: Order #OD-2026-FBD-8821 dispatched from Dhauj Farm Hub!");
+      } else if (state === 'near') {
+        transitTitle.innerText = "Arriving at Sector 15";
+        transitSub.innerText = "Driver is 2.5 km away (Near Badkhal Flyover)";
+        etaText.innerText = "Arriving in 15 Minutes!";
+        alert("Status Updated: Driver is now 2.5 km away from delivery destination!");
+      } else if (state === 'delivered') {
+        transitTitle.innerText = "Transit Completed";
+        transitSub.innerText = "Vehicle arrived at Buyer Gate";
+        deliveryCard.className = "p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 space-y-1";
+        document.getElementById("step-delivery-title").innerText = "Delivered & Verified";
+        alert("Status Updated: OTP 4829 Verified! Escrow payment ₹15,600 released directly to Farmer Bank Account.");
+      }
+    }
+
+    // Admin Matrix
+    function renderAdminFarmerTable() {
+      const tbody = document.getElementById('admin-farmer-tbody');
+      tbody.innerHTML = '';
+      let passedCount = 0;
+
+      clusterFarmers.forEach(f => {
+        if (f.audit_pass) passedCount++;
+        const totalAmt = f.qty * f.rate;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="p-3 font-bold text-slate-900">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
+            <td class="p-3"><span class="font-bold text-emerald-800">${f.crop}</span><br><span class="text-[10px] text-slate-500 font-semibold">${f.qty} kg</span></td>
+            <td class="p-3 text-center">${f.destoned ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">CLEANED</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">PENDING</span>'}</td>
+            <td class="p-3 text-center">${f.moisture ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">11.4% OK</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">&gt;14% HIGH</span>'}</td>
+            <td class="p-3 text-center">${f.ai_graded ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">GRADE A</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">PENDING</span>'}</td>
+            <td class="p-3 text-center">${f.crated ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">SEALED</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">UNPACKED</span>'}</td>
+            <td class="p-3 font-bold text-slate-900">₹${totalAmt.toLocaleString()}</td>
+            <td class="p-3 text-center">
+              ${f.audit_pass 
+                ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">VERIFIED</span>' 
+                : `<button onclick="toggleAuditStatus('${f.id}')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-lg transition">AUDIT & PASS</button>`
+              }
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('admin-passed-count').innerText = `${passedCount} / 10 Farmers`;
+    }
+
+    function toggleAuditStatus(farmerId) {
+      const farmer = clusterFarmers.find(f => f.id === farmerId);
+      if (farmer) {
+        farmer.destoned = true; farmer.moisture = true; farmer.ai_graded = true; farmer.crated = true; farmer.audit_pass = true;
+        renderAdminFarmerTable();
+        renderFarmerTasks();
+        alert(`Admin passed quality audit for ${farmer.name}!`);
+      }
+    }
+
+    function auditAllPassed() {
+      clusterFarmers.forEach(f => {
+        f.destoned = true; f.moisture = true; f.ai_graded = true; f.crated = true; f.audit_pass = true;
+      });
+      renderAdminFarmerTable();
+      renderFarmerTasks();
+      alert("All 10 Farmers marked VERIFIED & APPROVED!");
+    }
+
+    function populateFarmerDropdown() {
+      const select = document.getElementById('farmer-selector');
+      select.innerHTML = '';
+      clusterFarmers.forEach(f => {
+        select.innerHTML += `<option value="${f.id}">Farmer #${f.id.replace('F', '')}: ${f.name} (${f.crop})</option>`;
+      });
+    }
+
+    function switchFarmerProfile() {
+      currentSelectedFarmer = document.getElementById('farmer-selector').value;
+      renderFarmerTasks();
+    }
+
+    function renderFarmerTasks() {
+      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer) || clusterFarmers[0];
+      document.getElementById('farmer-profile-name').innerText = f.name;
+      document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
+      document.getElementById('farmer-pincode-badge').innerText = `Pincode: ${f.pincode} (${f.village})`;
+      document.getElementById('farmer-expected-payout').innerText = `₹${(f.qty * f.rate).toLocaleString()}`;
+
+      const pendingList = document.getElementById('pending-tasks-list');
+      const completedList = document.getElementById('completed-tasks-list');
+      pendingList.innerHTML = '';
+      completedList.innerHTML = '';
+
+      const taskDefs = [
+        { key: 'destoned', name: 'Destoning & Cleaning', desc: 'Remove soil, stones, and foreign matter.' },
+        { key: 'moisture', name: 'Moisture Control (<12%)', desc: 'Sun-dry produce to avoid decay.' },
+        { key: 'ai_graded', name: 'AI Smartphone Quality Scan', desc: 'Scan sample crates for Grade A certification.' },
+        { key: 'crated', name: 'Standard Crate Packing & QR Tag', desc: 'Pack into 25kg ventilated plastic crates.' }
+      ];
+
+      let pendingCount = 0, completedCount = 0;
+      taskDefs.forEach(t => {
+        if (f[t.key]) {
+          completedCount++;
+          completedList.innerHTML += `
+            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center">
+              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-800">${t.desc}</p></div>
+              <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
+            </div>
+          `;
+        } else {
+          pendingCount++;
+          pendingList.innerHTML += `
+            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center">
+              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
+              <button onclick="completeIndividualTask('${t.key}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-sm">MARK DONE</button>
+            </div>
+          `;
+        }
+      });
+      document.getElementById('pending-tasks-count').innerText = `${pendingCount} Pending`;
+      document.getElementById('completed-tasks-count').innerText = `${completedCount} Completed`;
+    }
+
+    function completeIndividualTask(taskKey) {
+      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer);
+      if (f) {
+        f[taskKey] = true;
+        if (f.destoned && f.moisture && f.ai_graded && f.crated) f.audit_pass = true;
+        renderFarmerTasks();
+        renderAdminFarmerTable();
+      }
+    }
+
+    // Voice Readout (Micro-feature: Web Speech API)
+    function speakFarmerTasks() {
+      const f = clusterFarmers.find(x => x.id === currentSelectedFarmer) || clusterFarmers[0];
+      const text = `नमस्ते किसान ${f.name} जी. आपकी फसल ${f.crop} की कुल मात्रा ${f.qty} किलो है. आपका अनुमानित भुगतान पंद्रह हजार छह सौ रुपये है.`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'hi-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // WhatsApp Sharing (Micro-feature)
+    function shareOnWhatsApp() {
+      const text = encodeURIComponent("KisanRoute Alert: Order #OD-2026-FBD-8821 for 650kg Tomato is Dispatched via Mini Truck HR-38-AF-4829. Secret OTP: 4829.");
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    // QR Code Generator (Micro-feature)
+    function showQRCodeModal() {
+      document.getElementById('qr-modal').classList.remove('hidden');
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = "";
+      new QRCode(qrContainer, {
+        text: "KISANROUTE-BATCH-FBD-8821-FARMER-RAMESHWAR-GRADE-A",
+        width: 140,
+        height: 140
+      });
+    }
+
+    function closeQRModal() {
+      document.getElementById('qr-modal').classList.add('hidden');
+    }
+
+    function downloadGSTInvoicePDF() {
+      const element = document.getElementById('invoice-pdf-template');
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'KisanRoute_GST_Invoice_INV-2026-FBD-8821.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function driverVerifyOTP() {
+      const val = document.getElementById('driver-input-otp').value.trim();
+      if (val === "4829") {
+        alert("OTP 4829 Verified!\n\n100% Escrow funds released:\n₹15,600 transferred directly to Rameshwar Sharma UPI.");
+        updateDeliveryStatus('delivered');
+      } else {
+        alert("Invalid OTP! Try: 4829");
+      }
+    }
+
+    function triggerAutoRefundDispute() {
+      alert("Dispute Raised: Transit decay recorded. Auto-Refund of ₹16,380 processed back to Buyer Wallet!");
+    }
+
+    // KisanAI Chatbot Handlers
+    function toggleAIChat() {
+      const win = document.getElementById('ai-chat-window');
+      win.classList.toggle('hidden');
+      if (!win.classList.contains('hidden')) {
+        document.getElementById('chat-input').focus();
+        lucide.createIcons();
+      }
+    }
+
+    function executeQuickPrompt(text) {
+      document.getElementById('chat-input').value = text;
+      handleChatSubmit(new Event('submit'));
+    }
+
+    function appendChatMessage(sender, text) {
+      const container = document.getElementById('chat-messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = sender === 'user' ? "flex gap-2.5 items-start justify-end" : "flex gap-2.5 items-start";
+      
+      const avatar = sender === 'user' 
+        ? `<div class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">U</div>`
+        : `<div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>`;
+
+      const bubbleClass = sender === 'user'
+        ? "bg-emerald-600 text-white p-3 rounded-2xl text-xs shadow-sm max-w-[85%]"
+        : "bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed max-w-[85%]";
+
+      msgDiv.innerHTML = sender === 'user' 
+        ? `<div class="${bubbleClass}">${text}</div>${avatar}`
+        : `${avatar}<div class="${bubbleClass}">${text}</div>`;
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+      lucide.createIcons();
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const query = input.value.trim();
+      if (!query) return;
+
+      appendChatMessage('user', query);
+      input.value = '';
+
+      setTimeout(() => { processAIAutonomousAction(query); }, 400);
+    }
+
+    function processAIAutonomousAction(query) {
+      const q = query.toLowerCase();
+
+      if (q.includes('approve') || q.includes('audit all') || q.includes('pass all')) {
+        setRole('admin');
+        auditAllPassed();
+        appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers. All 4,850 kg yield is cleared for logistics dispatch!`);
+      } else if (q.includes('invoice') || q.includes('pdf') || q.includes('gst') || q.includes('bill')) {
+        downloadGSTInvoicePDF();
+        appendChatMessage('ai', `📄 <b>Action Executed:</b> Generated and downloaded <b>KisanRoute_GST_Invoice_INV-2026-FBD-8821.pdf</b>.`);
+      } else if (q.includes('track') || q.includes('truck') || q.includes('map')) {
+        setRole('buyer');
+        appendChatMessage('ai', `🚚 <b>Action Executed:</b> Switched to Buyer View. Truck <b>HR-38-AF-4829</b> (Vikram Singh) ETA is <b>05:30 PM</b>.`);
+      } else if (q.includes('rameshwar') || q.includes('farmer 1') || q.includes('f1')) {
+        setRole('member_farmer');
+        document.getElementById('farmer-selector').value = 'F1';
+        switchFarmerProfile();
+        const f1 = clusterFarmers[0];
+        appendChatMessage('ai', `🌱 <b>Farmer Summary:</b> Rameshwar Sharma (Dhauj) &bull; Crop: Desi Tomato (${f1.qty} kg) &bull; Payout: <b>₹15,600</b>.`);
+      } else if (q.includes('4829') || q.includes('verify otp')) {
+        setRole('driver');
+        document.getElementById('driver-input-otp').value = '4829';
+        driverVerifyOTP();
+        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified! ₹15,600 payout released.`);
+      } else {
+        appendChatMessage('ai', `🤖 <b>KisanAI Overview:</b> 10 Farmers active in Faridabad Hub &bull; 4,850 kg yield pooled &bull; 15 Geofenced Pincodes.`);
+      }
+    }
+  </script>
+</body>
+</html>

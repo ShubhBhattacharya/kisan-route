@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KisanRoute Enterprise - Smart Logistics & 10-Farmer Audit Hub</title>
   
-  <!-- Custom Green Agri Sprout Logo (Favicon) -->
+  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
 
   <!-- Tailwind CSS & Lucide Icons -->
@@ -21,6 +21,9 @@
 
   <!-- QRCode.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Canvas Confetti for Celebration Animations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <!-- Google Universal Translation Engine -->
   <script type="text/javascript">
@@ -40,22 +43,82 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; top: 0px !important; }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
-    #tracking-map, #driver-map { height: 360px !important; min-height: 360px !important; width: 100% !important; border-radius: 1rem; z-index: 10; }
+    #tracking-map, #driver-map { height: 360px !important; min-height: 360px !important; width: 100% !important; border-radius: 1.25rem; z-index: 10; }
     .badge-done { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
     .badge-pending { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
-    .status-step-done { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
-    .status-step-current { border-color: #f59e0b; background-color: #fffbeb; color: #92400e; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
     #chat-messages::-webkit-scrollbar { width: 4px; }
     #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
     
+    /* Google Translate Hidden Styles */
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     body { top: 0px !important; }
     #google_translate_element { display: none; }
-    .goog-tooltip { display: none !important; }
-    .goog-tooltip:hover { display: none !important; }
+    .goog-tooltip, .goog-tooltip:hover { display: none !important; }
     .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+
+    /* ============================================================ */
+    /* UI ANIMATION & INTERACTIVE MICRO-EFFECTS                     */
+    /* ============================================================ */
+    
+    /* 1. Global Button Bounce & Smooth Shadows */
+    button {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+    button:hover {
+      transform: translateY(-2.5px);
+      box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.25);
+    }
+    button:active {
+      transform: scale(0.95) translateY(0) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* 2. Water Ripple Click Animation */
+    .ripple-wave {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: rippleEffect 0.55s linear;
+      background-color: rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+    }
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* 3. Cards Smooth Hover Floating Lift */
+    .hover-lift-card {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .hover-lift-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 30px -10px rgba(15, 23, 42, 0.12);
+    }
+
+    /* 4. Form Inputs Focus Glow */
+    input, select, textarea {
+      transition: all 0.2s ease !important;
+    }
+    input:focus, select:focus, textarea:focus {
+      transform: scale(1.006);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+    }
+
+    /* 5. Shimmer Pulse on Live Badges */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.03); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
@@ -64,13 +127,13 @@
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. ROLE-BASED AUTHENTICATION LOGIN PORTAL                -->
+  <!-- 0. ROLE-BASED AUTHENTICATION LOGIN PORTAL                 -->
   <!-- ========================================================= -->
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto hover-lift-card">
       
       <div class="text-center space-y-2">
-        <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
+        <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1 animate-pulse-glow">
           <i data-lucide="shield-check" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kisan<span class="text-emerald-600">Route</span> Auth Portal</h2>
@@ -81,12 +144,12 @@
       <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Username / Mobile ID</label>
-          <input type="text" id="login-username" placeholder="e.g. admin, farmer1, driver, vendor" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <input type="text" id="login-username" placeholder="e.g. admin, farmer1, driver, vendor" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" />
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Password / Security PIN</label>
-          <input type="password" id="login-password" placeholder="Enter password (default: 1234)" value="1234" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <input type="password" id="login-password" placeholder="Enter password (default: 1234)" value="1234" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" />
         </div>
 
         <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
@@ -122,9 +185,9 @@
     </div>
   </div>
 
-  <!-- 1. LIVE APMC MANDI LIVE TICKER (MICRO-FEATURE) -->
+  <!-- 1. LIVE APMC MANDI TICKER -->
   <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
-    <span class="bg-emerald-600 text-slate-950 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0">Live Mandi Rates</span>
+    <span class="bg-emerald-600 text-slate-950 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Rates</span>
     <div class="w-full overflow-hidden">
       <div class="animate-marquee space-x-6">
         <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Cluster: ₹24/kg (+100%)</b></span>
@@ -136,12 +199,12 @@
     </div>
   </div>
 
-  <!-- TOP HEADER WITH LOGGED-IN IDENTITY, OFFLINE BADGE & LOGOUT -->
+  <!-- TOP HEADER -->
   <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
       <div class="flex items-center gap-3">
-        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 p-2.5 rounded-2xl shadow-md font-black">
+        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 p-2.5 rounded-2xl shadow-md font-black transform hover:rotate-6 transition">
           <i data-lucide="sprout" class="w-6 h-6"></i>
         </div>
         <div>
@@ -153,20 +216,20 @@
         </div>
       </div>
 
-      <!-- Live Network Sync Status (Offline Caching Engine) -->
+      <!-- Live Network Sync Status -->
       <div class="flex items-center gap-2">
         <span id="network-status-badge" class="px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Synced (Online)
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced (Online)
         </span>
       </div>
 
-      <!-- Language Selector -->
+      <!-- Language Selector (22+ Languages) -->
       <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
         <div class="flex items-center gap-1.5 pl-2 text-emerald-400 font-bold text-xs">
           <i data-lucide="languages" class="w-4 h-4"></i>
           <span class="hidden sm:inline">भाषा / Lang:</span>
         </div>
-        <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-slate-900 text-white font-bold text-xs p-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-slate-900 text-white font-bold text-xs p-1.5 rounded-lg border border-slate-700 focus:outline-none">
           <option value="en">English</option>
           <option value="hi">हिंदी (Hindi)</option>
           <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
@@ -204,14 +267,12 @@
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
     <!-- ======================================================= -->
-    <!-- 1. CUSTOMER / B2B BUYER (AMAZON / FLIPKART TRACKING)    -->
+    <!-- 1. CUSTOMER / B2B BUYER WORKSPACE                       -->
     <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       
-      <!-- Live Order Tracking Hero Card -->
-      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/60 space-y-6">
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/60 space-y-6 hover-lift-card">
         
-        <!-- Order Header & ETA -->
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-4 border-b border-white/10">
           <div>
             <div class="flex items-center gap-2">
@@ -233,11 +294,11 @@
           </div>
         </div>
 
-        <!-- 5-Step Visual Tracking Stepper -->
+        <!-- 5-Step Stepper -->
         <div class="space-y-3">
           <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Order Delivery Timeline</p>
           <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
-            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1 hover-lift-card">
               <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
                 <span>1. Placed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
@@ -245,7 +306,7 @@
               <p class="text-[10px] text-slate-300">₹16,380 safe</p>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1 hover-lift-card">
               <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
                 <span>2. AI Quality</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
@@ -253,7 +314,7 @@
               <p class="text-[10px] text-slate-300">96% Fresh score</p>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1">
+            <div class="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 space-y-1 hover-lift-card">
               <div class="flex items-center justify-between text-xs font-bold text-emerald-300">
                 <span>3. Packed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
@@ -261,7 +322,7 @@
               <p class="text-[10px] text-slate-300">QR Barcoded</p>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-amber-500/20 border-2 border-amber-400 space-y-1 relative" id="step-transit-card">
+            <div class="p-3.5 rounded-2xl bg-amber-500/20 border-2 border-amber-400 space-y-1 relative hover-lift-card" id="step-transit-card">
               <div class="flex items-center justify-between text-xs font-bold text-amber-300">
                 <span>4. In-Transit</span> <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
               </div>
@@ -269,7 +330,7 @@
               <p class="text-[10px] text-amber-200" id="step-transit-sub">Near NIT-3 (14 km away)</p>
             </div>
 
-            <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-1 opacity-70" id="step-delivery-card">
+            <div class="p-3.5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-1 opacity-70 hover-lift-card" id="step-delivery-card">
               <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                 <span>5. Destination</span> <i data-lucide="shield-alert" class="w-4 h-4"></i>
               </div>
@@ -279,11 +340,10 @@
           </div>
         </div>
 
-        <!-- Driver Info, Secret Delivery OTP & Map -->
+        <!-- Driver Info, OTP & Map -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
           <div class="space-y-4">
-            
-            <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3">
+            <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3 hover-lift-card">
               <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30">
                 <i data-lucide="truck" class="w-6 h-6"></i>
               </div>
@@ -294,7 +354,7 @@
               </div>
             </div>
 
-            <div class="bg-gradient-to-tr from-slate-900 to-slate-800 border border-emerald-500/40 p-4 rounded-2xl flex items-center justify-between">
+            <div class="bg-gradient-to-tr from-slate-900 to-slate-800 border border-emerald-500/40 p-4 rounded-2xl flex items-center justify-between hover-lift-card">
               <div>
                 <p class="text-[10px] text-emerald-300 font-extrabold uppercase">Your Secret Delivery OTP</p>
                 <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
@@ -315,7 +375,7 @@
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2">
+          <div class="lg:col-span-2 bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2 hover-lift-card">
             <div class="flex justify-between items-center text-xs">
               <span class="font-bold text-white flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live GPS Fleet Tracker (15 Faridabad Pincodes)
@@ -326,48 +386,48 @@
           </div>
         </div>
 
-        <!-- Simulation Action Triggers -->
+        <!-- Simulation Triggers -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10 text-xs">
           <span class="text-slate-400 font-medium">Test Live Order Milestones:</span>
           <div class="flex flex-wrap gap-2">
             <button onclick="updateDeliveryStatus('dispatched')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg font-semibold transition">1. Dispatched</button>
-            <button onclick="updateDeliveryStatus('near')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-amber-300 rounded-lg font-semibold transition">2. Near Destination (2.5 km)</button>
-            <button onclick="updateDeliveryStatus('delivered')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg font-bold transition">3. Mark Delivered</button>
+            <button onclick="updateDeliveryStatus('near')" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-amber-300 rounded-lg font-semibold transition">2. Near Destination</button>
+            <button onclick="updateDeliveryStatus('delivered')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg font-bold transition">3. Mark Delivered 🎉</button>
           </div>
         </div>
 
       </div>
 
-      <!-- Marketplace Fresh Produce Catalog -->
-      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <!-- Marketplace Catalog -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 hover-lift-card">
         <h3 class="text-base font-bold text-slate-900">Direct Farm Produce Batches (Escrow Guaranteed)</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3 hover-lift-card">
             <div class="flex justify-between items-start">
               <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
               <span class="text-base font-black text-emerald-700">₹24/kg</span>
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Desi Fresh Tomato</h4>
             <p class="text-slate-500">Dhauj Farm &bull; 650 kg Batch</p>
-            <button onclick="alert('Order Placed! ₹15,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <button onclick="triggerConfettiSuccess('Order Placed! ₹15,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
           </div>
-          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3 hover-lift-card">
             <div class="flex justify-between items-start">
               <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
               <span class="text-base font-black text-emerald-700">₹18/kg</span>
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Table Potato (Sugar-Free)</h4>
             <p class="text-slate-500">Tigaon Farm &bull; 1,200 kg Batch</p>
-            <button onclick="alert('Order Placed! ₹21,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <button onclick="triggerConfettiSuccess('Order Placed! ₹21,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
           </div>
-          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3">
+          <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3 hover-lift-card">
             <div class="flex justify-between items-start">
               <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-bold">GRADE A</span>
               <span class="text-base font-black text-emerald-700">₹28/kg</span>
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Sharbati Premium Wheat</h4>
             <p class="text-slate-500">Ballabhgarh &bull; 1,800 kg Batch</p>
-            <button onclick="alert('Order Placed! ₹50,400 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <button onclick="triggerConfettiSuccess('Order Placed! ₹50,400 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
           </div>
         </div>
       </div>
@@ -375,12 +435,12 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 2. LOGISTICS DRIVER & SMART VEHICLE ALLOTMENT           -->
+    <!-- 2. LOGISTICS DRIVER WORKSPACE                           -->
     <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
           <div>
             <h3 class="font-bold text-slate-900 text-base">Smart Vehicle Allotment Simulator</h3>
             <p class="text-xs text-slate-500">Auto-allots vehicle based on batch weight across 15 Faridabad pincodes.</p>
@@ -396,7 +456,7 @@
             </div>
           </div>
 
-          <div id="allotment-result-card" class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 space-y-2 text-xs">
+          <div id="allotment-result-card" class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 space-y-2 text-xs hover-lift-card">
             <p class="text-emerald-800 font-bold uppercase tracking-wider text-[10px]">Allotted Transport Vehicle</p>
             <h4 id="vehicle-title" class="font-bold text-slate-900 text-base">Mini Truck (Tata Ace)</h4>
             <div class="space-y-1 text-slate-600 pt-1">
@@ -408,14 +468,14 @@
 
           <div class="pt-3 border-t border-slate-100 space-y-2">
             <label class="block text-xs font-bold text-slate-800">Buyer Delivery OTP Verification:</label>
-            <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50" />
+            <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none" />
             <button onclick="driverVerifyOTP()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition">
-              Verify OTP & Release Escrow to Farmers
+              Verify OTP & Release Escrow to Farmers 🚀
             </button>
           </div>
         </div>
 
-        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3">
+        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3 hover-lift-card">
           <div class="flex justify-between items-center">
             <div>
               <h4 class="font-bold text-slate-900 text-sm">Live Geofenced 15-Pincode Faridabad Route Map</h4>
@@ -430,36 +490,36 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 3. ADMIN AUDIT HUB: 10-FARMER GRANULAR STATUS MATRIX    -->
+    <!-- 3. ADMIN AUDIT HUB                                      -->
     <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
           <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster Farmers</p>
           <h3 class="text-2xl font-black text-slate-900 mt-1">10 Farmers</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
           <p class="text-xs font-bold text-slate-400 uppercase">Total Pooled Batch</p>
           <h3 class="text-2xl font-black text-emerald-700 mt-1">4,850 kg</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
           <p class="text-xs font-bold text-slate-400 uppercase">Quality Audit Passed</p>
           <h3 class="text-2xl font-black text-slate-900 mt-1" id="admin-passed-count">8 / 10 Farmers</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
           <p class="text-xs font-bold text-slate-400 uppercase">Escrow Vault</p>
           <h3 class="text-2xl font-black text-emerald-700 mt-1">₹1,16,400</h3>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4 p-6">
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4 p-6 hover-lift-card">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-4">
           <div>
             <h3 class="text-lg font-bold text-slate-900">10-Farmer Granular Process Audit Table</h3>
             <p class="text-xs text-slate-500">Admin oversight on individual purification, sorting, crating and payout clearances.</p>
           </div>
           <button onclick="auditAllPassed()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow-sm flex items-center gap-1.5">
-            <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers
+            <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers 🎉
           </button>
         </div>
 
@@ -477,28 +537,24 @@
                 <th class="p-3 text-center">Admin Audit Action</th>
               </tr>
             </thead>
-            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium">
-              <!-- Dynamically Populated by JS -->
-            </tbody>
+            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
           </table>
         </div>
       </div>
     </div>
 
     <!-- ======================================================= -->
-    <!-- 4. MEMBER FARMER DASHBOARD (WITH BAHI KHATA & VOICE)    -->
+    <!-- 4. MEMBER FARMER DASHBOARD                              -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
-      <!-- Top Action Bar with Local Voice Commander -->
-      <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4 hover-lift-card">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-500 uppercase">Verified Member Account:</span>
           <span id="farmer-display-id" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs">FARMER #01</span>
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
-          <!-- 1. Local Voice Assistant Mic Trigger -->
           <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
@@ -512,17 +568,15 @@
         </div>
       </div>
 
-      <!-- Live Voice Feedback Alert Banner -->
       <div id="voice-transcript-card" class="bg-amber-50 border border-amber-300 p-3 rounded-2xl text-xs text-amber-900 hidden flex items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
-          <p id="voice-transcript-text" class="font-medium">Listening... bolna shuru karein...</p>
+          <p id="voice-transcript-text" class="font-medium">Listening... Boliye...</p>
         </div>
         <span class="text-[10px] font-bold uppercase bg-amber-200 text-amber-800 px-2 py-0.5 rounded">Voice AI</span>
       </div>
 
-      <!-- Farmer Profile Banner & Income/Profit Card -->
-      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg hover-lift-card">
         <div>
           <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Workspace</span>
           <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
@@ -540,10 +594,8 @@
         </div>
       </div>
 
-      <!-- ===================================================== -->
-      <!-- 2. DIGITAL BAHI-KHATA (FARMER EXPENSE & PROFIT LEDGER) -->
-      <!-- ===================================================== -->
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+      <!-- DIGITAL BAHI-KHATA -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
           <div>
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -556,7 +608,6 @@
           </button>
         </div>
 
-        <!-- Add Expense Inline Form -->
         <div id="expense-form-box" class="p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div>
@@ -584,7 +635,6 @@
           </div>
         </div>
 
-        <!-- Ledger Table & Calculations -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="lg:col-span-2 overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
@@ -596,13 +646,11 @@
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700">
-                <!-- Populated dynamically -->
-              </tbody>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
             </table>
           </div>
 
-          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
+          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2 text-xs flex flex-col justify-center hover-lift-card">
             <div class="flex justify-between font-semibold text-slate-600">
               <span>Total Batch Income:</span>
               <span class="font-bold text-slate-900" id="ledger-gross-income">₹15,600</span>
@@ -622,10 +670,9 @@
         </div>
       </div>
 
-      <!-- 6 Utility Cards -->
+      <!-- 6 Micro Tools -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-        
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-emerald-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
             <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded">NPK 4:2:1</span>
@@ -636,7 +683,7 @@
           </button>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-blue-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Weather Spray Window</span>
             <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded">No Rain Next 48h</span>
@@ -647,7 +694,7 @@
           </button>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-purple-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="qr-code" class="w-4 h-4"></i> Crate QR Label</span>
             <span class="text-[10px] bg-purple-100 px-2 py-0.5 rounded">Traceable</span>
@@ -658,7 +705,7 @@
           </button>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-amber-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="badge-percent" class="w-4 h-4"></i> KCC Credit & Solar Subsidy</span>
             <span class="text-[10px] bg-amber-100 px-2 py-0.5 rounded">4% Interest</span>
@@ -669,7 +716,7 @@
           </button>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-emerald-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> Asli Seed & Khad Scanner</span>
             <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded">Govt Verified</span>
@@ -680,7 +727,7 @@
           </button>
         </div>
 
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-slate-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4"></i> Shared Machinery Hub</span>
             <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded">Faridabad FPO</span>
@@ -690,12 +737,11 @@
             Book Shared Machinery
           </button>
         </div>
-
       </div>
 
       <!-- Pending vs Completed Tasks Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
           <div class="flex justify-between items-center border-b border-slate-100 pb-3">
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
               <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
@@ -705,7 +751,7 @@
           <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
           <div class="flex justify-between items-center border-b border-slate-100 pb-3">
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
@@ -722,7 +768,7 @@
     <!-- 5. LEAD PROCESS OWNER WORKSPACE                         -->
     <!-- ======================================================= -->
     <div id="view-lead_farmer" class="role-workspace space-y-6 hidden">
-      <div class="bg-gradient-to-r from-emerald-900 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-wrap justify-between items-center gap-4">
+      <div class="bg-gradient-to-r from-emerald-900 to-teal-900 rounded-3xl p-6 text-white shadow-xl flex flex-wrap justify-between items-center gap-4 hover-lift-card">
         <div>
           <span class="text-xs font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">Lead Process Owner</span>
           <h2 class="text-2xl font-black mt-2">Sardar Gurpreet Singh (Cluster Head)</h2>
@@ -742,11 +788,9 @@
 
   </main>
 
-  <!-- ========================================================= -->
-  <!-- MODAL: QR CODE GENERATOR (MICRO-FEATURE)                  -->
-  <!-- ========================================================= -->
+  <!-- MODAL: QR CODE GENERATOR -->
   <div id="qr-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-100">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-100 hover-lift-card">
       <div class="flex justify-between items-center border-b border-slate-100 pb-2">
         <h4 class="font-bold text-slate-900 text-sm">Crate Batch QR Label</h4>
         <button onclick="closeQRModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
@@ -759,9 +803,7 @@
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- FLOATING AI COPILOT CHATBOT DRAWER                        -->
-  <!-- ========================================================= -->
+  <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
   <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
     
     <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-4 text-white flex justify-between items-center border-b border-slate-700">
@@ -784,7 +826,6 @@
         <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
         <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
           <p>Namaste! I am <b>KisanAI Copilot</b>. I have full real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and GST invoices.</p>
-          <p class="text-[11px] text-slate-500">Try asking or commanding me:</p>
         </div>
       </div>
     </div>
@@ -813,15 +854,13 @@
   </div>
 
   <!-- FLOATING AI TRIGGER BUTTON -->
-  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40">
+  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40 animate-pulse-glow">
     <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
     <span class="pr-1 text-slate-950 font-bold">Ask KisanAI</span>
     <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping"></span>
   </button>
 
-  <!-- ========================================================= -->
-  <!-- HIDDEN PRINTABLE GST TAX INVOICE TEMPLATE                 -->
-  <!-- ========================================================= -->
+  <!-- PRINTABLE GST TAX INVOICE -->
   <div class="hidden">
     <div id="invoice-pdf-template" class="p-8 bg-white text-slate-900 max-w-3xl mx-auto space-y-6 border border-slate-300" style="font-family: Arial, sans-serif; font-size: 13px;">
       <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 12px;">
@@ -878,7 +917,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC, MAPS, OFFLINE CACHING & BAHI KHATA -->
+  <!-- JAVASCRIPT LOGIC & ANIMATION ENGINE -->
   <script>
     let clusterFarmers = [
       { 
@@ -913,18 +952,50 @@
     let speechRecognition = null;
     let isRecordingVoice = false;
 
+    // CONFETTI CELEBRATION BLAST HELPER
+    function triggerConfettiSuccess(msg) {
+      confetti({
+        particleCount: 65,
+        spread: 70,
+        origin: { y: 0.65 },
+        colors: ['#10b981', '#059669', '#34d399', '#f59e0b', '#3b82f6']
+      });
+      if (msg) alert(msg);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
       renderAdminFarmerTable();
       initOfflineCachingEngine();
       initSpeechRecognitionModule();
+      attachGlobalRippleEffect();
     });
 
-    // =========================================================
-    // 1. OFFLINE CACHING & AUTO-SYNC ENGINE
-    // =========================================================
+    // RIPPLE EFFECT ON ALL BUTTONS
+    function attachGlobalRippleEffect() {
+      document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', function (e) {
+          const rect = this.getBoundingClientRect();
+          const circle = document.createElement('span');
+          const diameter = Math.max(rect.width, rect.height);
+          const radius = diameter / 2;
+
+          circle.style.width = circle.style.height = `${diameter}px`;
+          circle.style.left = `${e.clientX - rect.left - radius}px`;
+          circle.style.top = `${e.clientY - rect.top - radius}px`;
+          circle.classList.add('ripple-wave');
+
+          const oldRipple = this.querySelector('.ripple-wave');
+          if (oldRipple) oldRipple.remove();
+
+          this.appendChild(circle);
+          setTimeout(() => circle.remove(), 550);
+        });
+      });
+    }
+
+    // 1. Offline Caching Engine
     function initOfflineCachingEngine() {
-      // Load cached farmer records from localStorage if present
       const cached = localStorage.getItem('kisanroute_cluster_cache');
       if (cached) {
         try {
@@ -936,7 +1007,7 @@
       window.addEventListener('online', () => {
         const badge = document.getElementById('network-status-badge');
         badge.className = "px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Synced (Online)`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced (Online)`;
         saveClusterToCache();
       });
 
@@ -951,21 +1022,19 @@
       localStorage.setItem('kisanroute_cluster_cache', JSON.stringify(clusterFarmers));
     }
 
-    // =========================================================
-    // 2. LOCAL DIALECT VOICE ASSISTANT (SPEECH-TO-TEXT)
-    // =========================================================
+    // 2. Local Voice Module
     function initSpeechRecognitionModule() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRec) {
         speechRecognition = new SpeechRec();
         speechRecognition.continuous = false;
-        speechRecognition.lang = 'hi-IN'; // Default to Hindi / Indian Dialect
+        speechRecognition.lang = 'hi-IN';
         speechRecognition.interimResults = true;
 
         speechRecognition.onstart = () => {
           isRecordingVoice = true;
           document.getElementById('voice-transcript-card').classList.remove('hidden');
-          document.getElementById('voice-transcript-text').innerText = "Sun raha hoon... Kripya boliye (e.g. 'Tamatar ka bahi khata update karo' ya 'Task pura hua')...";
+          document.getElementById('voice-transcript-text').innerText = "Sun raha hoon... Boliye...";
           document.getElementById('voice-btn-text').innerText = "Listening...";
         };
 
@@ -992,7 +1061,7 @@
 
     function toggleSpeechRecording() {
       if (!speechRecognition) {
-        alert("Aapka browser Speech Recognition support nahi karta. Chrome browser use karein!");
+        alert("Chrome browser me Speech Recognition best chalta hai!");
         return;
       }
       if (isRecordingVoice) {
@@ -1005,11 +1074,11 @@
     function handleVoiceCommandIntent(transcript) {
       if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
         toggleAddExpenseForm();
-        speakVoiceFeedback("Bahi-khata kharcha form khol diya gaya hai.");
+        speakVoiceFeedback("Bahi-khata form open ho gaya.");
       } else if (transcript.includes('task') || transcript.includes('saaf') || transcript.includes('clean') || transcript.includes('pura')) {
         if (currentFarmerObject) {
           completeCurrentFarmerTask(currentFarmerObject.id, 'destoned');
-          speakVoiceFeedback("Destoning aur cleaning task mark done ho gaya.");
+          speakVoiceFeedback("Task complete mark ho gaya.");
         }
       } else if (transcript.includes('munafa') || transcript.includes('paisa') || transcript.includes('batao')) {
         speakFarmerTasks();
@@ -1022,9 +1091,7 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // =========================================================
-    // 3. AUTHENTICATION & ROLE-BASED ACCESS CONTROL
-    // =========================================================
+    // 3. Authentication
     function quickFillLogin(roleKey) {
       document.getElementById('login-username').value = roleKey;
       document.getElementById('login-password').value = "1234";
@@ -1036,13 +1103,12 @@
       const u = document.getElementById('login-username').value.trim().toLowerCase();
 
       if (!u) {
-        alert("Please enter a valid username!");
+        alert("Please enter a username!");
         return;
       }
 
       document.getElementById('auth-portal-screen').classList.add('hidden');
       currentLoggedInUser = u;
-
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
 
       if (u === 'admin') {
@@ -1062,12 +1128,10 @@
       } else if (u.startsWith('farmer')) {
         const farmerNum = u.replace('farmer', '');
         const targetFarmer = clusterFarmers.find(f => f.id === `F${farmerNum}`) || clusterFarmers[0];
-        
         currentFarmerObject = targetFarmer;
         document.getElementById('session-user-badge').innerText = `${targetFarmer.name} (${targetFarmer.crop})`;
         document.getElementById('farmer-display-id').innerText = `FARMER #${targetFarmer.id.replace('F', '')}`;
         document.getElementById('view-member_farmer').classList.remove('hidden');
-        
         renderIndividualFarmerData(targetFarmer);
         renderBahiKhataLedger(targetFarmer);
       } else {
@@ -1080,6 +1144,7 @@
       }
 
       lucide.createIcons();
+      attachGlobalRippleEffect();
     }
 
     function logoutUser() {
@@ -1091,9 +1156,7 @@
       document.getElementById('auth-portal-screen').classList.remove('hidden');
     }
 
-    // =========================================================
-    // 4. DIGITAL BAHI-KHATA (EXPENSE & PROFIT LEDGER ENGINE)
-    // =========================================================
+    // 4. Digital Bahi-Khata
     function toggleAddExpenseForm() {
       const box = document.getElementById('expense-form-box');
       box.classList.toggle('hidden');
@@ -1152,7 +1215,7 @@
 
       renderBahiKhataLedger(currentFarmerObject);
       saveClusterToCache();
-      alert(`Bahi-Khata: ₹${amt} expense successfully saved!`);
+      triggerConfettiSuccess(`Bahi-Khata: ₹${amt} expense successfully saved!`);
     }
 
     function deleteFarmerExpense(idx) {
@@ -1163,7 +1226,6 @@
       }
     }
 
-    // Render Individual Farmer Data
     function renderIndividualFarmerData(f) {
       document.getElementById('farmer-profile-name').innerText = f.name;
       document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
@@ -1187,7 +1249,7 @@
         if (f[t.key]) {
           completedCount++;
           completedList.innerHTML += `
-            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center">
+            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center hover-lift-card">
               <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-800">${t.desc}</p></div>
               <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
             </div>
@@ -1195,7 +1257,7 @@
         } else {
           pendingCount++;
           pendingList.innerHTML += `
-            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center">
+            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center hover-lift-card">
               <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
               <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-sm">MARK DONE</button>
             </div>
@@ -1205,6 +1267,7 @@
       document.getElementById('pending-tasks-count').innerText = `${pendingCount} Pending`;
       document.getElementById('completed-tasks-count').innerText = `${completedCount} Completed`;
       lucide.createIcons();
+      attachGlobalRippleEffect();
     }
 
     function completeCurrentFarmerTask(farmerId, taskKey) {
@@ -1215,10 +1278,11 @@
         renderIndividualFarmerData(f);
         renderAdminFarmerTable();
         saveClusterToCache();
+        triggerConfettiSuccess();
       }
     }
 
-    // REALTIME FULL WEBSITE TRANSLATION (ALL-INDIA 22+ LANGUAGES)
+    // Translation Handlers
     function translateWebsiteRealtime(langCode) {
       if (langCode === 'en') {
         const iframe = document.querySelector('iframe.goog-te-banner-frame');
@@ -1237,7 +1301,7 @@
       }
     }
 
-    // Leaflet Tracking Map (Buyer Screen)
+    // Maps
     function initTrackingMap() {
       if (trackingMap) {
         trackingMap.invalidateSize();
@@ -1247,9 +1311,9 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(trackingMap);
 
       const routePoints = [
-        [28.336, 77.161], // Dhauj
-        [28.375, 77.290], // Current Truck Location
-        [28.421, 77.305]  // Destination Sector 15
+        [28.336, 77.161],
+        [28.375, 77.290],
+        [28.421, 77.305]
       ];
 
       L.marker(routePoints[0]).addTo(trackingMap).bindPopup("<b>Farm Gate: Dhauj Hub</b><br>650kg Tomato Picked");
@@ -1260,7 +1324,6 @@
       trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
-    // Leaflet Driver Map
     function initDriverMap() {
       if (driverMap) {
         driverMap.invalidateSize();
@@ -1280,7 +1343,6 @@
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
-    // Vehicle Allocation Logic
     function calculateVehicleAllocation() {
       const weight = parseInt(document.getElementById("weight-slider").value);
       document.getElementById("weight-display").innerText = `${weight} kg`;
@@ -1308,7 +1370,6 @@
       document.getElementById("vehicle-trip-cost").innerText = `₹${rate * 32}`;
     }
 
-    // Status Updates for Tracking Stepper
     function updateDeliveryStatus(state) {
       const transitTitle = document.getElementById("step-transit-title");
       const transitSub = document.getElementById("step-transit-sub");
@@ -1318,22 +1379,19 @@
         transitTitle.innerText = "Dispatched from Farm";
         transitSub.innerText = "Vehicle left Dhauj Hub at 03:15 PM";
         etaText.innerText = "Today, 27-Aug by 05:30 PM";
-        alert("Status Updated: Order #OD-2026-FBD-8821 dispatched from Dhauj Farm Hub!");
       } else if (state === 'near') {
         transitTitle.innerText = "Arriving at Sector 15";
         transitSub.innerText = "Driver is 2.5 km away (Near Badkhal Flyover)";
         etaText.innerText = "Arriving in 15 Minutes!";
-        alert("Status Updated: Driver is now 2.5 km away from delivery destination!");
       } else if (state === 'delivered') {
         transitTitle.innerText = "Transit Completed";
         transitSub.innerText = "Vehicle arrived at Buyer Gate";
-        document.getElementById("step-delivery-card").className = "p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 space-y-1";
+        document.getElementById("step-delivery-card").className = "p-3.5 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 space-y-1 hover-lift-card";
         document.getElementById("step-delivery-title").innerText = "Delivered & Verified";
-        alert("Status Updated: OTP 4829 Verified! Escrow payment ₹15,600 released directly to Farmer Bank Account.");
+        triggerConfettiSuccess("Order Delivered & OTP Verified!");
       }
     }
 
-    // Admin Matrix
     function renderAdminFarmerTable() {
       const tbody = document.getElementById('admin-farmer-tbody');
       tbody.innerHTML = '';
@@ -1362,6 +1420,7 @@
         `;
       });
       document.getElementById('admin-passed-count').innerText = `${passedCount} / 10 Farmers`;
+      attachGlobalRippleEffect();
     }
 
     function toggleAuditStatus(farmerId) {
@@ -1370,7 +1429,7 @@
         farmer.destoned = true; farmer.moisture = true; farmer.ai_graded = true; farmer.crated = true; farmer.audit_pass = true;
         renderAdminFarmerTable();
         saveClusterToCache();
-        alert(`Admin passed quality audit for ${farmer.name}!`);
+        triggerConfettiSuccess(`Admin passed quality audit for ${farmer.name}!`);
       }
     }
 
@@ -1380,7 +1439,7 @@
       });
       renderAdminFarmerTable();
       saveClusterToCache();
-      alert("All 10 Farmers marked VERIFIED & APPROVED!");
+      triggerConfettiSuccess("All 10 Farmers marked VERIFIED & APPROVED!");
     }
 
     function speakFarmerTasks() {
@@ -1391,15 +1450,13 @@
           currentFarmerObject.expenses.forEach(x => totalExp += Number(x.amt));
         }
         const net = gross - totalExp;
-        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई पंद्रह हजार छह सौ रुपये है. खर्चे निकालने के बाद आपका शुद्ध मुनाफा ${net} रुपये है.`;
+        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई ₹${gross} है. खर्चे निकालने के बाद शुद्ध मुनाफा ₹${net} है.`;
         speakVoiceFeedback(text);
-      } else {
-        speakVoiceFeedback("नमस्ते किसान जी. आपका भुगतान एस्क्रो खाते में सुरक्षित है.");
       }
     }
 
     function shareOnWhatsApp() {
-      const text = encodeURIComponent("KisanRoute Alert: Order #OD-2026-FBD-8821 for 650kg Tomato is Dispatched via Mini Truck HR-38-AF-4829. Secret OTP: 4829.");
+      const text = encodeURIComponent("KisanRoute Alert: Order #OD-2026-FBD-8821 Tomato is Dispatched. Secret OTP: 4829.");
       window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 
@@ -1428,12 +1485,13 @@
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
       html2pdf().set(opt).from(element).save();
+      triggerConfettiSuccess("GST Tax Invoice PDF Downloaded!");
     }
 
     function driverVerifyOTP() {
       const val = document.getElementById('driver-input-otp').value.trim();
       if (val === "4829") {
-        alert("OTP 4829 Verified!\n\n100% Escrow funds released:\n₹15,600 transferred directly to Farmer UPI.");
+        triggerConfettiSuccess("OTP 4829 Verified! 100% Escrow funds released directly to Farmer UPI.");
         updateDeliveryStatus('delivered');
       } else {
         alert("Invalid OTP! Try: 4829");
@@ -1441,10 +1499,10 @@
     }
 
     function triggerAutoRefundDispute() {
-      alert("Dispute Raised: Transit decay recorded. Auto-Refund of ₹16,380 processed back to Buyer Wallet!");
+      alert("Dispute Raised: Auto-Refund of ₹16,380 processed back to Buyer Wallet!");
     }
 
-    // KisanAI Chatbot Handlers
+    // AI Chat Handlers
     function toggleAIChat() {
       const win = document.getElementById('ai-chat-window');
       win.classList.toggle('hidden');
@@ -1498,17 +1556,17 @@
 
       if (q.includes('approve') || q.includes('audit all')) {
         auditAllPassed();
-        appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers for logistics dispatch!`);
+        appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers!`);
       } else if (q.includes('invoice') || q.includes('pdf') || q.includes('bill')) {
         downloadGSTInvoicePDF();
         appendChatMessage('ai', `📄 <b>Action Executed:</b> Generated and downloaded GST Tax Invoice PDF.`);
       } else if (q.includes('track') || q.includes('truck')) {
-        appendChatMessage('ai', `🚚 <b>Logistics Tracking:</b> Active Truck <b>HR-38-AF-4829</b> (Vikram Singh) moving at 42 km/h. ETA 05:30 PM.`);
+        appendChatMessage('ai', `🚚 <b>Logistics:</b> Active Truck <b>HR-38-AF-4829</b> moving at 42 km/h. ETA 05:30 PM.`);
       } else if (q.includes('4829') || q.includes('verify otp')) {
         driverVerifyOTP();
-        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified! Payout released.`);
+        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified!`);
       } else {
-        appendChatMessage('ai', `🤖 <b>KisanAI:</b> Secure isolated session active for <b>${currentLoggedInUser || 'Guest'}</b>.`);
+        appendChatMessage('ai', `🤖 <b>KisanAI:</b> Secure session active for <b>${currentLoggedInUser || 'Guest'}</b>.`);
       }
     }
   </script>

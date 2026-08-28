@@ -6,7 +6,7 @@
   <title>KisanRoute Enterprise - Smart Logistics & 10-Farmer Audit Hub</title>
   
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232874f0'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
 
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -40,15 +40,18 @@
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- Google Inter / Plus Jakarta Sans Fonts -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
 
   <style>
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif; 
       top: 0px !important;
-      background-color: #f1f3f6;
-      color: #212121;
+      background-color: #0b1320;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.15) 0px, transparent 45%),
+        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 45%);
+      color: #e2e8f0;
     }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
     
@@ -56,16 +59,16 @@
       height: 380px !important; 
       min-height: 380px !important; 
       width: 100% !important; 
-      border-radius: 0.75rem; 
+      border-radius: 1rem; 
       z-index: 10;
-      border: 1px solid #e0e0e0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .badge-done { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-    .badge-pending { background-color: #fff8e1; color: #f57f17; border: 1px solid #ffecb3; }
+    .badge-done { background-color: rgba(5, 150, 105, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+    .badge-pending { background-color: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
     
     #chat-messages::-webkit-scrollbar { width: 4px; }
-    #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    #chat-messages::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 26s linear infinite; }
@@ -83,20 +86,21 @@
       pointer-events: none !important;
     }
 
-    /* Flipkart Card Aesthetics */
-    .fk-card {
-      background: #ffffff;
-      border-radius: 0.75rem;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      transition: all 0.25s ease;
+    /* Terminal Glass Aesthetic */
+    .terminal-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .fk-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      border-color: #dbeafe;
+    .terminal-card:hover {
+      border-color: rgba(5, 150, 105, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px -10px rgba(5, 150, 105, 0.15);
     }
 
-    /* Buttons */
     button {
       position: relative;
       overflow: hidden;
@@ -111,7 +115,7 @@
       border-radius: 50%;
       transform: scale(0);
       animation: rippleEffect 0.5s linear;
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.35);
       pointer-events: none;
     }
     @keyframes rippleEffect {
@@ -119,19 +123,19 @@
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: #2874f0 !important;
-      box-shadow: 0 0 0 2px rgba(40, 116, 240, 0.2) !important;
+      border-color: #059669 !important;
+      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.3) !important;
     }
 
-    #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 0.75rem; outline: none; cursor: grab; }
+    #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 1rem; outline: none; cursor: grab; }
     #virtual-farm-canvas:active { cursor: grabbing; }
 
     /* SPOTLIGHT ONBOARDING OVERLAY */
     #tour-spotlight-box {
       position: absolute;
-      border-radius: 0.75rem;
-      border: 3px solid #2874f0;
-      box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.75), 0 0 30px rgba(40, 116, 240, 0.85);
+      border-radius: 1rem;
+      border: 3px solid #059669;
+      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.85), 0 0 35px rgba(5, 150, 105, 0.9);
       pointer-events: none;
       transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
       z-index: 9990;
@@ -151,170 +155,148 @@
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. FLIPKART-STYLE SPLIT-SCREEN AUTH PORTAL MODAL          -->
+  <!-- 0. AGRO-TERMINAL ROLE AUTH PORTAL                         -->
   <!-- ========================================================= -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col md:flex-row my-auto border border-slate-100">
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="terminal-card rounded-2xl max-w-xl w-full p-6 sm:p-8 space-y-6 my-auto text-slate-100 border-slate-700/80">
       
-      <!-- Left Promotional Banner (Flipkart Blue) -->
-      <div class="bg-[#2874f0] text-white p-7 md:w-5/12 flex flex-col justify-between relative overflow-hidden">
-        <div class="space-y-3 z-10">
-          <div class="flex items-center gap-2">
-            <span class="bg-[#ffe500] text-[#2874f0] px-2 py-0.5 rounded text-[10px] font-black italic">Plus</span>
-            <span class="text-xs font-black uppercase tracking-wider text-blue-100">SIH 2026</span>
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            <i data-lucide="layers" class="w-6 h-6"></i>
           </div>
-          <h2 class="text-2xl font-black leading-tight">Login to KisanRoute</h2>
-          <p class="text-xs text-blue-100 font-medium leading-relaxed">Get access to your Farm Yield, Escrow Payouts, Orders & 360° Khet Tracker</p>
-        </div>
-        
-        <div class="py-6 flex justify-center z-10">
-          <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center border border-white/20">
-            <i data-lucide="sprout" class="w-10 h-10 text-[#ffe500]"></i>
+          <div>
+            <h2 class="text-xl font-black tracking-tight text-white flex items-center gap-2">
+              Kisan<span class="text-emerald-400">Route</span> <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded border border-emerald-500/30">TERMINAL</span>
+            </h2>
+            <p class="text-[11px] text-slate-400">Decentralized FPO Logistics & Escrow Gateway</p>
           </div>
         </div>
-
-        <p class="text-[10px] text-blue-200 z-10">100% Escrow Guaranteed &bull; Faridabad FPO</p>
-        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+        <span class="text-[10px] font-mono-code text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800">PORT: 10000</span>
       </div>
 
-      <!-- Right Login Form -->
-      <div class="p-7 md:w-7/12 flex flex-col justify-between space-y-5 bg-white text-slate-800">
-        <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs" autocomplete="off">
-          <div>
-            <label class="block font-bold text-slate-600 mb-1">Enter Email / Username / Mobile Number</label>
-            <input type="text" id="login-username" name="kisan_user_field" placeholder="e.g. admin, farmer1, driver, vendor" autocomplete="off" required class="w-full p-3 rounded-lg border border-slate-300 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:bg-white" />
-          </div>
+      <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs" autocomplete="off">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Select Access Identity / Username</label>
+          <input type="text" id="login-username" name="kisan_user_field" placeholder="e.g. admin, farmer1, driver, vendor" autocomplete="off" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900/90 font-bold text-white placeholder-slate-500 focus:outline-none" />
+        </div>
 
-          <div>
-            <label class="block font-bold text-slate-600 mb-1">Security PIN / Password</label>
-            <input 
-              type="password" 
-              id="login-password" 
-              name="kisan_pin_field" 
-              placeholder="Security PIN" 
-              value="Kisan@9981#Secure" 
-              autocomplete="new-password"
-              data-lpignore="true"
-              data-form-type="other"
-              required 
-              class="w-full p-3 rounded-lg border border-slate-300 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:bg-white" 
-            />
-          </div>
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Security PIN / Access Token</label>
+          <input 
+            type="password" 
+            id="login-password" 
+            name="kisan_pin_field" 
+            placeholder="Security PIN" 
+            value="Kisan@9981#Secure" 
+            autocomplete="new-password"
+            data-lpignore="true"
+            data-form-type="other"
+            required 
+            class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900/90 font-bold text-white placeholder-slate-500 focus:outline-none" 
+          />
+        </div>
 
-          <p class="text-[10px] text-slate-400">By continuing, you agree to KisanRoute's <a href="#" class="text-[#2874f0] font-bold">Terms of Use</a> and <a href="#" class="text-[#2874f0] font-bold">Escrow Policy</a>.</p>
+        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Initialize Terminal Session
+        </button>
+      </form>
 
-          <button type="submit" class="w-full py-3 bg-[#fb641b] hover:bg-[#e85813] text-white font-black text-xs rounded-lg shadow-md transition uppercase tracking-wider">
-            Request OTP / Login
+      <!-- 1-Click Fast Access Chips -->
+      <div class="pt-4 border-t border-slate-800 space-y-2.5 text-xs">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Fast 1-Click Role Simulation:</p>
+        <div class="grid grid-cols-3 gap-2 text-[11px]">
+          <button onclick="quickFillLogin('admin')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            🛡️ Admin Hub
           </button>
-        </form>
-
-        <!-- 1-Click Fast Switch Chips -->
-        <div class="pt-3 border-t border-slate-100 space-y-2 text-xs">
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Fast 1-Click Testing Access:</p>
-          <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-            <button onclick="quickFillLogin('admin')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              🛡️ Admin
-            </button>
-            <button onclick="quickFillLogin('farmer1')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              🌱 Farmer 1
-            </button>
-            <button onclick="quickFillLogin('farmer2')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              🥔 Farmer 2
-            </button>
-            <button onclick="quickFillLogin('driver')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              🚚 Driver
-            </button>
-            <button onclick="quickFillLogin('vendor')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              🛒 Buyer
-            </button>
-            <button onclick="quickFillLogin('lead')" class="p-2 rounded-lg border border-slate-200 hover:border-[#2874f0] hover:bg-blue-50 font-bold text-slate-700 transition text-center">
-              👑 FPO Head
-            </button>
-          </div>
+          <button onclick="quickFillLogin('farmer1')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            🌱 Farmer 1
+          </button>
+          <button onclick="quickFillLogin('farmer2')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            🥔 Farmer 2
+          </button>
+          <button onclick="quickFillLogin('driver')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            🚚 Logistics
+          </button>
+          <button onclick="quickFillLogin('vendor')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            🛒 B2B Buyer
+          </button>
+          <button onclick="quickFillLogin('lead')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
+            👑 FPO Lead
+          </button>
         </div>
-
       </div>
 
     </div>
   </div>
 
-  <!-- 1. LIVE APMC MANDI TICKER (AMAZON / FLIPKART BANNER STYLE) -->
-  <div class="bg-[#172337] text-[#ffe500] text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-slate-700 flex items-center gap-3">
-    <span class="bg-[#2874f0] text-white px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0">Live APMC Feed</span>
+  <!-- 1. LIVE APMC MANDI TICKER (TERMINAL BANNER) -->
+  <div class="bg-slate-950/90 text-emerald-400 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-slate-800 flex items-center gap-3">
+    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0">Live Mandi Spread</span>
     <div class="w-full overflow-hidden">
-      <div class="animate-marquee space-x-8 text-slate-200">
-        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-[#ffe500]">KisanRoute Direct Rate: ₹24/kg (+100%)</b></span>
-        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-[#ffe500]">KisanRoute: ₹18/kg</b></span>
-        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-[#ffe500]">KisanRoute: ₹28/kg</b></span>
-        <span>🧅 Onion: Mandi ₹16/kg &bull; <b class="text-[#ffe500]">KisanRoute: ₹22/kg</b></span>
-        <span>🌦️ Faridabad Agro-Weather: 28°C (Humidity: 62%) &bull; Clear Harvesting Day</span>
+      <div class="animate-marquee space-x-8 text-slate-300">
+        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-emerald-400">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
+        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-emerald-400">KisanRoute: ₹18/kg</b></span>
+        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-emerald-400">KisanRoute: ₹28/kg</b></span>
+        <span>🧅 Onion: Mandi ₹16/kg &bull; <b class="text-emerald-400">KisanRoute: ₹22/kg</b></span>
+        <span>🌦️ Faridabad Agro-Weather: 28°C (Humidity: 62%) &bull; Clear Field Conditions</span>
       </div>
     </div>
   </div>
 
-  <!-- TOP MAIN FLIPKART / AMAZON NAVBAR -->
-  <header class="bg-[#2874f0] text-white sticky top-0 z-40 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+  <!-- TOP APP BAR -->
+  <header class="bg-slate-900/90 backdrop-blur-md text-white border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-2">
-        <a href="#" class="flex flex-col leading-none">
-          <span class="text-xl font-black italic tracking-tight text-white flex items-center gap-1">
-            Kisan<span class="text-[#ffe500]">Route</span>
-          </span>
-          <span class="text-[9px] italic text-blue-100 font-bold flex items-center gap-0.5">
-            Explore <span class="text-[#ffe500] font-black">Plus</span>
-            <i data-lucide="plus" class="w-2.5 h-2.5 text-[#ffe500]"></i>
-          </span>
-        </a>
+      <div class="flex items-center gap-3">
+        <div class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 p-2 rounded-xl">
+          <i data-lucide="sprout" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-black tracking-tight text-white">Kisan<span class="text-emerald-400">Route</span></span>
+            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">SIH 2026</span>
+          </div>
+          <p class="text-[10px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Pincodes</p>
+        </div>
       </div>
 
-      <!-- Search Bar (Amazon / Flipkart Style) -->
-      <div class="flex-1 max-w-xl hidden md:flex items-center relative">
-        <input type="text" placeholder="Search for fresh farm produce, farmers, clusters, vehicles or schemes..." class="w-full py-2 pl-4 pr-10 rounded-sm text-xs bg-white text-slate-800 placeholder-slate-400 shadow-inner focus:outline-none" />
-        <button class="absolute right-0 top-0 bottom-0 px-3 bg-white text-[#2874f0] rounded-r-sm hover:text-blue-800">
-          <i data-lucide="search" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <!-- Top Actions & Navigation -->
-      <div class="flex items-center gap-3 text-xs">
+      <!-- Action Tools -->
+      <div class="flex items-center gap-2.5 text-xs">
         
-        <!-- Platform Guide -->
-        <button id="guide-tour-trigger-btn" onclick="startAppTour(true)" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded font-bold flex items-center gap-1.5 transition">
-          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-[#ffe500]"></i> Tour Guide
+        <button id="guide-tour-trigger-btn" onclick="startAppTour(true)" class="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 rounded-lg font-bold flex items-center gap-1.5 transition">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-400"></i> Walkthrough Guide
         </button>
 
-        <!-- 360 Khet -->
-        <button id="nav-360-farm-btn" onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1.5 bg-[#ffe500] hover:bg-yellow-400 text-slate-900 rounded font-black flex items-center gap-1.5 transition shadow-sm">
-          <i data-lucide="scan-eye" class="w-3.5 h-3.5"></i> 360° Khet
+        <button id="nav-360-farm-btn" onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 rounded-lg font-bold flex items-center gap-1.5 transition">
+          <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-400"></i> 360° Virtual Khet
         </button>
 
         <!-- 22+ Languages Selector -->
-        <div class="flex items-center gap-1 bg-white/10 px-2 py-1 rounded border border-white/20">
-          <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-200"></i>
+        <div class="flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-400"></i>
           <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer">
-            <option value="en" class="text-slate-800">EN</option>
-            <option value="hi" class="text-slate-800">हिंदी (HI)</option>
-            <option value="pa" class="text-slate-800">ਪੰਜਾਬੀ (PA)</option>
-            <option value="bn" class="text-slate-800">বাংলা (BN)</option>
-            <option value="te" class="text-slate-800">తెలుగు (TE)</option>
-            <option value="ta" class="text-slate-800">தமிழ் (TA)</option>
-            <option value="mr" class="text-slate-800">मराठी (MR)</option>
-            <option value="gu" class="text-slate-800">ગુજરાતી (GU)</option>
-            <option value="kn" class="text-slate-800">ಕನ್ನಡ (KN)</option>
-            <option value="ml" class="text-slate-800">മലയാളം (ML)</option>
-            <option value="or" class="text-slate-800">ଓଡ଼ିଆ (OR)</option>
-            <option value="as" class="text-slate-800">অসমীয়া (AS)</option>
-            <option value="ur" class="text-slate-800">اردو (UR)</option>
-            <option value="bho" class="text-slate-800">भोजपुरी (BHO)</option>
+            <option value="en" class="bg-slate-900">EN</option>
+            <option value="hi" class="bg-slate-900">हिंदी (HI)</option>
+            <option value="pa" class="bg-slate-900">ਪੰਜਾਬੀ (PA)</option>
+            <option value="bn" class="bg-slate-900">বাংলা (BN)</option>
+            <option value="te" class="bg-slate-900">తెలుగు (TE)</option>
+            <option value="ta" class="bg-slate-900">தமிழ் (TA)</option>
+            <option value="mr" class="bg-slate-900">मराठी (MR)</option>
+            <option value="gu" class="bg-slate-900">ગુજરાતી (GU)</option>
+            <option value="kn" class="bg-slate-900">ಕನ್ನಡ (KN)</option>
+            <option value="ml" class="bg-slate-900">മലയാളം (ML)</option>
+            <option value="or" class="bg-slate-900">ଓଡ଼ିଆ (OR)</option>
+            <option value="as" class="bg-slate-900">অসমীয়া (AS)</option>
+            <option value="ur" class="bg-slate-900">اردو (UR)</option>
+            <option value="bho" class="bg-slate-900">भोजपुरी (BHO)</option>
           </select>
         </div>
 
-        <!-- Session Badge & Logout -->
-        <div class="flex items-center gap-2 bg-white text-[#2874f0] px-3 py-1.5 rounded font-bold shadow-sm">
-          <span id="session-user-badge" class="font-extrabold max-w-[120px] truncate">Login</span>
-          <button onclick="logoutUser()" title="Logout" class="text-rose-500 hover:text-rose-700 ml-1">
+        <!-- Session Status -->
+        <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-xs">
+          <span id="session-user-badge" class="font-bold text-emerald-400 max-w-[120px] truncate">Guest</span>
+          <button onclick="logoutUser()" title="Logout" class="text-rose-400 hover:text-rose-300">
             <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
           </button>
         </div>
@@ -324,22 +306,6 @@
     </div>
   </header>
 
-  <!-- FLIPKART CATEGORY / SUB-NAV RIBBON -->
-  <div class="bg-white border-b border-slate-200 py-2.5 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between overflow-x-auto gap-6 text-xs text-slate-700 font-bold whitespace-nowrap">
-      <div class="flex items-center gap-1.5 text-[#2874f0]">
-        <i data-lucide="map-pin" class="w-4 h-4 text-rose-500"></i>
-        <span>Faridabad Agro FPO (Pincode: 121001-121015)</span>
-      </div>
-      <div class="flex items-center gap-6">
-        <span class="hover:text-[#2874f0] cursor-pointer flex items-center gap-1"><i data-lucide="sprout" class="w-3.5 h-3.5 text-emerald-600"></i> Fresh Vegetables</span>
-        <span class="hover:text-[#2874f0] cursor-pointer flex items-center gap-1"><i data-lucide="wheat" class="w-3.5 h-3.5 text-amber-600"></i> Grains & Wheat</span>
-        <span class="hover:text-[#2874f0] cursor-pointer flex items-center gap-1"><i data-lucide="truck" class="w-3.5 h-3.5 text-blue-600"></i> Cold Fleet Logistics</span>
-        <span class="hover:text-[#2874f0] cursor-pointer flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> Escrow Protected</span>
-      </div>
-    </div>
-  </div>
-
   <!-- MAIN WORKSPACE -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
@@ -348,206 +314,206 @@
     <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       
-      <!-- Order Live Tracking Stepper Card (Amazon Order Tracking Style) -->
-      <div class="fk-card p-6 space-y-6">
+      <!-- Order Live Tracking Stepper Card -->
+      <div class="terminal-card rounded-2xl p-6 space-y-6">
         
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-100">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-800">
           <div>
             <div class="flex items-center gap-2">
-              <span id="tour-buyer-status" class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span> Live Status: DISPATCHED
+              <span id="tour-buyer-status" class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Transit Status: DISPATCHED
               </span>
-              <span class="text-xs text-slate-500 font-mono-code font-bold">Order #OD-2026-FBD-8821</span>
+              <span class="text-xs text-slate-400 font-mono-code">Order #OD-2026-FBD-8821</span>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black mt-2 text-slate-900">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Dispatched from <span class="text-[#2874f0] font-bold">Dhauj Farm Hub (Pincode: 121007)</span> &bull; Sold to: <span class="text-slate-800 font-bold">BigBasket Wholesale</span></p>
+            <h2 class="text-xl sm:text-2xl font-black mt-2 text-white">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Origin: <span class="text-emerald-400 font-bold">Dhauj Farm Hub (121007)</span> &bull; Consignee: <span class="text-slate-200 font-bold">BigBasket Wholesale</span></p>
           </div>
 
-          <div class="bg-blue-50/80 p-4 rounded-xl border border-blue-100 text-left sm:text-right space-y-1">
-            <span class="text-[10px] font-bold text-[#2874f0] uppercase tracking-wider block">Estimated Delivery</span>
-            <p class="text-lg font-black text-slate-900 font-mono-code" id="buyer-delivery-eta">Today by 05:30 PM</p>
-            <p class="text-xs text-emerald-700 font-bold flex sm:justify-end items-center gap-1">
-              <i data-lucide="clock" class="w-3.5 h-3.5"></i> In Transit (~1h 45m away)
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-left sm:text-right space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimated Delivery</span>
+            <p class="text-lg font-black text-emerald-400 font-mono-code" id="buyer-delivery-eta">Today by 05:30 PM</p>
+            <p class="text-xs text-slate-400 flex sm:justify-end items-center gap-1">
+              <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-400"></i> In Transit (~1h 45m away)
             </p>
           </div>
         </div>
 
         <!-- 5-Step Stepper -->
         <div class="space-y-2" id="tour-buyer-timeline">
-          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Delivery Milestones</p>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Escrow & Delivery Milestones</p>
           <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
-            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
-              <div class="flex items-center justify-between text-xs font-black text-emerald-800">
-                <span>1. Placed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-400">
+                <span>1. Placed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
-              <p class="font-bold text-slate-800">Escrow Locked</p>
-              <p class="text-[10px] text-slate-500 font-mono-code">₹16,380 safe</p>
+              <p class="font-bold text-white">Escrow Locked</p>
+              <p class="text-[10px] text-slate-400 font-mono-code">₹16,380 safe</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
-              <div class="flex items-center justify-between text-xs font-black text-emerald-800">
-                <span>2. AI Quality</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-400">
+                <span>2. AI Quality</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
-              <p class="font-bold text-slate-800">Grade A Certified</p>
-              <p class="text-[10px] text-slate-500">96% Fresh score</p>
+              <p class="font-bold text-white">Grade A Certified</p>
+              <p class="text-[10px] text-slate-400">96% Fresh score</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1">
-              <div class="flex items-center justify-between text-xs font-black text-emerald-800">
-                <span>3. Packed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+            <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-400">
+                <span>3. Packed</span> <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
               </div>
-              <p class="font-bold text-slate-800">26 Crates Sealed</p>
-              <p class="text-[10px] text-slate-500">QR Barcoded</p>
+              <p class="font-bold text-white">26 Crates Sealed</p>
+              <p class="text-[10px] text-slate-400">QR Barcoded</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-400 space-y-1 relative" id="step-transit-card">
-              <div class="flex items-center justify-between text-xs font-black text-amber-800">
-                <span>4. In-Transit</span> <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <div class="p-3.5 rounded-xl bg-amber-500/10 border-2 border-amber-500/50 space-y-1 relative" id="step-transit-card">
+              <div class="flex items-center justify-between text-xs font-bold text-amber-400">
+                <span>4. In-Transit</span> <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
               </div>
-              <p class="font-bold text-slate-900" id="step-transit-title">Truck on Highway</p>
-              <p class="text-[10px] text-amber-700" id="step-transit-sub">Near NIT-3 (14 km away)</p>
+              <p class="font-bold text-white" id="step-transit-title">Truck on Highway</p>
+              <p class="text-[10px] text-amber-300" id="step-transit-sub">Near NIT-3 (14 km away)</p>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1 opacity-70" id="step-delivery-card">
+            <div class="p-3.5 rounded-xl bg-slate-900/40 border border-slate-800 space-y-1 opacity-60" id="step-delivery-card">
               <div class="flex items-center justify-between text-xs font-bold text-slate-400">
                 <span>5. Destination</span> <i data-lucide="shield-alert" class="w-4 h-4"></i>
               </div>
-              <p class="font-bold text-slate-600" id="step-delivery-title">OTP Verification</p>
-              <p class="text-[10px] text-slate-400">Share OTP at gate</p>
+              <p class="font-bold text-slate-300" id="step-delivery-title">OTP Verification</p>
+              <p class="text-[10px] text-slate-500">Share OTP at gate</p>
             </div>
           </div>
         </div>
 
         <!-- Driver Info, OTP, 360 Tour & Map -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
-          <div class="space-y-3.5">
-            <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-center gap-3">
-              <div class="p-2.5 bg-[#2874f0]/10 text-[#2874f0] rounded-lg">
+          <div class="space-y-3">
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl flex items-center gap-3">
+              <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-lg">
                 <i data-lucide="truck" class="w-5 h-5"></i>
               </div>
               <div>
                 <p class="text-[10px] text-slate-400 uppercase font-bold">Assigned Logistics</p>
-                <p class="text-xs font-black text-slate-800">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
-                <p class="text-[11px] text-[#2874f0] font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
+                <p class="text-xs font-black text-white">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
+                <p class="text-[11px] text-emerald-400 font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
               </div>
             </div>
 
-            <div id="tour-buyer-otp" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-xl flex items-center justify-between">
+            <div id="tour-buyer-otp" class="bg-slate-900/90 border border-emerald-500/30 p-4 rounded-xl flex items-center justify-between">
               <div>
-                <p class="text-[10px] text-[#2874f0] font-extrabold uppercase tracking-wider">Secret Delivery OTP</p>
-                <p class="text-3xl font-black font-mono-code tracking-widest text-slate-900 mt-0.5">4829</p>
-                <p class="text-[10px] text-slate-500">Share with driver upon arrival</p>
+                <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Secret Gate OTP</p>
+                <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
+                <p class="text-[10px] text-slate-400">Share with driver upon arrival</p>
               </div>
-              <button id="tour-buyer-pdf" onclick="downloadGSTInvoicePDF()" class="px-3.5 py-2.5 bg-[#2874f0] hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition shadow flex items-center gap-1.5">
+              <button id="tour-buyer-pdf" onclick="downloadGSTInvoicePDF()" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-lg transition flex items-center gap-1.5">
                 <i data-lucide="download" class="w-4 h-4"></i> PDF Bill
               </button>
             </div>
 
-            <button id="tour-buyer-360" onclick="open360FarmModal('Dhauj Tomato Farm - Rameshwar Sharma')" class="w-full py-3 bg-[#ffe500] hover:bg-yellow-400 text-slate-950 rounded-lg text-xs font-black transition flex items-center justify-center gap-2 shadow-sm">
+            <button id="tour-buyer-360" onclick="open360FarmModal('Dhauj Tomato Farm - Rameshwar Sharma')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2">
               <i data-lucide="orbit" class="w-4 h-4"></i> 360° Live Farm Inspection (Virtual)
             </button>
 
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="shareOnWhatsApp()" class="py-2.5 bg-[#25D366] hover:bg-green-600 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <button onclick="shareOnWhatsApp()" class="py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
                 <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
               </button>
-              <button onclick="triggerAutoRefundDispute()" class="py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+              <button onclick="triggerAutoRefundDispute()" class="py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
                 <i data-lucide="alert-triangle" class="w-4 h-4"></i> Dispute
               </button>
             </div>
           </div>
 
-          <div id="tour-buyer-map" class="lg:col-span-2 bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+          <div id="tour-buyer-map" class="lg:col-span-2 bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
             <div class="flex justify-between items-center text-xs">
-              <span class="font-bold text-slate-800 flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live Fleet Tracker (15 Faridabad Pincodes)
+              <span class="font-bold text-slate-200 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Fleet Radar (15 Faridabad Pincodes)
               </span>
-              <span class="text-[#2874f0] font-mono-code font-bold">Speed: 42 km/h &bull; Distance: 7.2 km</span>
+              <span class="text-emerald-400 font-mono-code font-bold">Speed: 42 km/h &bull; Distance: 7.2 km</span>
             </div>
             <div id="tracking-map"></div>
           </div>
         </div>
 
         <!-- Simulation Milestone Triggers -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 text-xs">
-          <span class="text-slate-500 font-medium">Test Live Order Milestones:</span>
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-800 text-xs">
+          <span class="text-slate-400 font-medium">Test Live Order Milestones:</span>
           <div class="flex flex-wrap gap-2">
-            <button onclick="updateDeliveryStatus('dispatched')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold transition">1. Dispatched</button>
-            <button onclick="updateDeliveryStatus('near')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg font-semibold transition border border-amber-200">2. Near Destination</button>
-            <button onclick="updateDeliveryStatus('delivered')" class="px-3 py-1.5 bg-[#fb641b] hover:bg-[#e85813] text-white rounded-lg font-black transition shadow">3. Mark Delivered 🎉</button>
+            <button onclick="updateDeliveryStatus('dispatched')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold transition">1. Dispatched</button>
+            <button onclick="updateDeliveryStatus('near')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-lg font-semibold transition">2. Near Destination</button>
+            <button onclick="updateDeliveryStatus('delivered')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-lg font-black transition">3. Mark Delivered 🎉</button>
           </div>
         </div>
 
       </div>
 
-      <!-- Marketplace Catalog (Flipkart E-Commerce Grid) -->
-      <div class="fk-card p-6 space-y-4">
-        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+      <!-- Commodity Batch Trading Bins -->
+      <div class="terminal-card rounded-2xl p-6 space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
           <div>
-            <h3 class="text-base font-black text-slate-900">Direct Farm Produce Batches (Escrow Guaranteed)</h3>
-            <p class="text-xs text-slate-500">Fresh harvested produce direct from Faridabad verified cluster farmers</p>
+            <h3 class="text-base font-black text-white">Direct Farmgate Produce Lots (Escrow Guaranteed)</h3>
+            <p class="text-xs text-slate-400">Aggregated batches verified by Faridabad FPO supervisors</p>
           </div>
-          <span class="text-xs font-bold text-[#2874f0] bg-blue-50 px-3 py-1 rounded-full border border-blue-100">Zero Middlemen</span>
+          <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">Fair Price Arbitrage</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-          <div class="fk-card p-4 space-y-3">
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
             <div class="flex justify-between items-start">
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black">GRADE A CERTIFIED</span>
+              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-black">GRADE A</span>
               <div class="text-right">
-                <span class="text-xs line-through text-slate-400">Mandi: ₹12</span>
-                <span class="text-base font-black text-[#2874f0] font-mono-code ml-1">₹24/kg</span>
+                <span class="text-xs line-through text-slate-500">APMC: ₹12</span>
+                <span class="text-base font-black text-emerald-400 font-mono-code ml-1">₹24/kg</span>
               </div>
             </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Desi Fresh Hybrid Tomato</h4>
-              <p class="text-slate-500 text-[11px]">Dhauj Farm &bull; 650 kg Batch Available</p>
+              <h4 class="font-bold text-white text-sm">Desi Fresh Hybrid Tomato</h4>
+              <p class="text-slate-400 text-[11px]">Dhauj Cluster &bull; 650 kg Batch Available</p>
             </div>
             <div class="flex gap-2 pt-1">
-              <button onclick="open360FarmModal('Dhauj Tomato Lot (Rameshwar)')" class="w-1/2 py-2 bg-slate-100 hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
+              <button onclick="open360FarmModal('Dhauj Tomato Lot (Rameshwar)')" class="w-1/2 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
               </button>
-              <button onclick="triggerConfettiSuccess('Order Placed! ₹15,600 locked in Escrow.')" class="w-1/2 py-2 bg-[#fb641b] hover:bg-[#e85813] text-white rounded font-black transition">Buy Lot</button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹15,600 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded transition">Buy Lot</button>
             </div>
           </div>
 
-          <div class="fk-card p-4 space-y-3">
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
             <div class="flex justify-between items-start">
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black">GRADE A CERTIFIED</span>
+              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-black">GRADE A</span>
               <div class="text-right">
-                <span class="text-xs line-through text-slate-400">Mandi: ₹11</span>
-                <span class="text-base font-black text-[#2874f0] font-mono-code ml-1">₹18/kg</span>
+                <span class="text-xs line-through text-slate-500">APMC: ₹11</span>
+                <span class="text-base font-black text-emerald-400 font-mono-code ml-1">₹18/kg</span>
               </div>
             </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Table Potato (Sugar-Free)</h4>
-              <p class="text-slate-500 text-[11px]">Tigaon Farm &bull; 1,200 kg Batch Available</p>
+              <h4 class="font-bold text-white text-sm">Table Potato (Sugar-Free)</h4>
+              <p class="text-slate-400 text-[11px]">Tigaon Cluster &bull; 1,200 kg Batch Available</p>
             </div>
             <div class="flex gap-2 pt-1">
-              <button onclick="open360FarmModal('Tigaon Potato Lot (Harpreet Singh)')" class="w-1/2 py-2 bg-slate-100 hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
+              <button onclick="open360FarmModal('Tigaon Potato Lot (Harpreet Singh)')" class="w-1/2 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
               </button>
-              <button onclick="triggerConfettiSuccess('Order Placed! ₹21,600 locked in Escrow.')" class="w-1/2 py-2 bg-[#fb641b] hover:bg-[#e85813] text-white rounded font-black transition">Buy Lot</button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹21,600 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded transition">Buy Lot</button>
             </div>
           </div>
 
-          <div class="fk-card p-4 space-y-3">
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 space-y-3">
             <div class="flex justify-between items-start">
-              <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black">GRADE A CERTIFIED</span>
+              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded text-[10px] font-black">GRADE A</span>
               <div class="text-right">
-                <span class="text-xs line-through text-slate-400">Mandi: ₹22</span>
-                <span class="text-base font-black text-[#2874f0] font-mono-code ml-1">₹28/kg</span>
+                <span class="text-xs line-through text-slate-500">APMC: ₹22</span>
+                <span class="text-base font-black text-emerald-400 font-mono-code ml-1">₹28/kg</span>
               </div>
             </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Sharbati Premium Wheat</h4>
-              <p class="text-slate-500 text-[11px]">Ballabhgarh &bull; 1,800 kg Batch Available</p>
+              <h4 class="font-bold text-white text-sm">Sharbati Premium Wheat</h4>
+              <p class="text-slate-400 text-[11px]">Ballabhgarh Cluster &bull; 1,800 kg Batch Available</p>
             </div>
             <div class="flex gap-2 pt-1">
-              <button onclick="open360FarmModal('Ballabhgarh Wheat Field (Satish Gurjar)')" class="w-1/2 py-2 bg-slate-100 hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
+              <button onclick="open360FarmModal('Ballabhgarh Wheat Field (Satish Gurjar)')" class="w-1/2 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded font-bold transition flex items-center justify-center gap-1 text-[11px]">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
               </button>
-              <button onclick="triggerConfettiSuccess('Order Placed! ₹50,400 locked in Escrow.')" class="w-1/2 py-2 bg-[#fb641b] hover:bg-[#e85813] text-white rounded font-black transition">Buy Lot</button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹50,400 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded transition">Buy Lot</button>
             </div>
           </div>
         </div>
@@ -561,72 +527,72 @@
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="fk-card p-6 space-y-5">
+        <div class="terminal-card rounded-2xl p-6 space-y-5">
           <div>
-            <h3 class="font-black text-slate-900 text-base">Driver Navigation & Trip Controller</h3>
-            <p class="text-xs text-slate-500">Auto-allot vehicle, enter OTP to start active GPS route, and end ride.</p>
+            <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
+            <p class="text-xs text-slate-400">Allot vehicle, enter OTP to start route, and release farmer escrow.</p>
           </div>
 
-          <div id="tour-driver-slider" class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-            <label class="block text-xs font-bold text-slate-700">Batch Weight Simulator (kg):</label>
-            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-[#2874f0] cursor-pointer" />
-            <div class="flex justify-between text-xs text-slate-500 font-semibold">
+          <div id="tour-driver-slider" class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2">
+            <label class="block text-xs font-bold text-slate-300">Payload Weight Allocation (kg):</label>
+            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-emerald-500 cursor-pointer" />
+            <div class="flex justify-between text-xs text-slate-400 font-semibold">
               <span>10 kg (Bike)</span>
-              <span id="weight-display" class="text-[#2874f0] font-black text-sm bg-blue-100 px-2.5 py-0.5 rounded font-mono-code">650 kg</span>
+              <span id="weight-display" class="text-emerald-400 font-black text-sm bg-emerald-500/10 px-2.5 py-0.5 rounded font-mono-code border border-emerald-500/30">650 kg</span>
               <span>3,000 kg (Truck)</span>
             </div>
           </div>
 
-          <div id="tour-driver-vehicle" class="p-4.5 rounded-xl border border-blue-200 bg-blue-50/60 space-y-1.5 text-xs">
-            <p class="text-[#2874f0] font-black uppercase tracking-wider text-[10px]">Allotted Transport Vehicle</p>
-            <h4 id="vehicle-title" class="font-black text-slate-900 text-base">Mini Truck (Tata Ace)</h4>
-            <div class="space-y-1 text-slate-600 pt-1 font-medium">
-              <p>Max Capacity: <span class="font-bold text-slate-900 font-mono-code" id="vehicle-cap">1,000 kg</span></p>
-              <p>Trip Fare: <span class="font-black text-[#2874f0] font-mono-code" id="vehicle-trip-cost">₹1,120</span></p>
-              <p>Trip Status: <b class="text-emerald-700" id="driver-trip-status">IDLE (Awaiting OTP)</b></p>
+          <div id="tour-driver-vehicle" class="p-4 rounded-xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
+            <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Optimized Transport Carrier</p>
+            <h4 id="vehicle-title" class="font-black text-white text-base">Mini Truck (Tata Ace)</h4>
+            <div class="space-y-1 text-slate-400 pt-1 font-medium">
+              <p>Capacity: <span class="font-bold text-slate-200 font-mono-code" id="vehicle-cap">1,000 kg</span></p>
+              <p>Trip Fare: <span class="font-black text-emerald-400 font-mono-code" id="vehicle-trip-cost">₹1,120</span></p>
+              <p>Status: <b class="text-emerald-400" id="driver-trip-status">STANDBY (Awaiting OTP)</b></p>
             </div>
           </div>
 
-          <div id="tour-driver-start" class="pt-2 border-t border-slate-100 space-y-2.5">
-            <label class="block text-xs font-bold text-slate-800">Enter Buyer OTP to Start Ride:</label>
-            <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-xl font-mono-code font-bold p-3 rounded-lg border border-slate-300 bg-slate-50 text-slate-900 focus:outline-none focus:bg-white" />
+          <div id="tour-driver-start" class="pt-2 border-t border-slate-800 space-y-2.5">
+            <label class="block text-xs font-bold text-slate-300">Enter Buyer Delivery OTP:</label>
+            <input type="text" id="driver-input-otp" placeholder="Enter OTP (Try: 4829)" class="w-full text-center text-xl font-mono-code font-bold p-3 rounded-lg border border-slate-700 bg-slate-900 text-white focus:outline-none" />
             
-            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-[#2874f0] hover:bg-blue-700 text-white font-black text-xs py-3 rounded-lg shadow transition flex items-center justify-center gap-2 uppercase tracking-wider">
-              <i data-lucide="play" class="w-4 h-4"></i> Start Live GPS Navigation
+            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs py-3 rounded-lg shadow transition flex items-center justify-center gap-2 uppercase tracking-wider">
+              <i data-lucide="play" class="w-4 h-4"></i> Start Active Navigation
             </button>
 
-            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-[#fb641b] hover:bg-[#e85813] text-white font-black text-xs py-3 rounded-lg shadow transition hidden flex items-center justify-center gap-2 uppercase tracking-wider">
+            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black text-xs py-3 rounded-lg shadow transition hidden flex items-center justify-center gap-2 uppercase tracking-wider">
               <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow 🏁
             </button>
           </div>
         </div>
 
-        <div id="tour-driver-map" class="lg:col-span-2 fk-card p-5 flex flex-col space-y-3 relative">
+        <div id="tour-driver-map" class="lg:col-span-2 terminal-card rounded-2xl p-5 flex flex-col space-y-3 relative">
           <div class="flex justify-between items-center">
             <div>
-              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Navigation
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span> Live Geofenced 15-Pincode Routing
               </h4>
-              <p class="text-xs text-slate-500" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+              <p class="text-xs text-slate-400" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
             </div>
-            <span class="text-xs font-bold text-[#2874f0] bg-blue-50 px-3 py-1 rounded font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
+            <span class="text-xs font-bold text-emerald-400 bg-slate-900 px-3 py-1 rounded border border-slate-700 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
           </div>
           
           <div id="driver-map"></div>
 
-          <div id="driver-nav-hud" class="absolute bottom-8 left-8 right-8 bg-[#172337]/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-600 text-white text-xs flex justify-between items-center hidden z-20 shadow-xl">
+          <div id="driver-nav-hud" class="absolute bottom-8 left-8 right-8 bg-slate-950/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-700 text-white text-xs flex justify-between items-center hidden z-20 shadow-xl">
             <div class="flex items-center gap-3">
-              <div class="p-2 bg-[#ffe500] text-slate-950 rounded font-black">
+              <div class="p-2 bg-emerald-500 text-slate-950 rounded font-black">
                 <i data-lucide="navigation" class="w-4 h-4 animate-spin"></i>
               </div>
               <div>
-                <p class="text-[10px] text-[#ffe500] font-black uppercase">Live Turn-by-Turn HUD</p>
+                <p class="text-[10px] text-emerald-400 font-black uppercase">Live Routing HUD</p>
                 <p class="font-bold text-white text-xs" id="hud-next-turn">Turn right towards Mathura Road (NH-19)</p>
               </div>
             </div>
             <div class="text-right">
               <p class="text-[10px] text-slate-400">Remaining Distance</p>
-              <p class="text-sm font-black text-[#ffe500] font-mono-code" id="hud-distance-left">14.2 km (28 min)</p>
+              <p class="text-sm font-black text-emerald-400 font-mono-code" id="hud-distance-left">14.2 km (28 min)</p>
             </div>
           </div>
 
@@ -640,38 +606,38 @@
     <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="fk-card p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Farmers</p>
-          <h3 class="text-2xl font-black text-slate-900 mt-1 font-mono-code">10 Farmers</h3>
+        <div class="terminal-card rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster</p>
+          <h3 class="text-2xl font-black text-white mt-1 font-mono-code">10 Farmers</h3>
         </div>
-        <div id="tour-admin-weight" class="fk-card p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Pooled Batch</p>
-          <h3 class="text-2xl font-black text-[#2874f0] mt-1 font-mono-code">4,850 kg</h3>
+        <div id="tour-admin-weight" class="terminal-card rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Total Yield Pooled</p>
+          <h3 class="text-2xl font-black text-emerald-400 mt-1 font-mono-code">4,850 kg</h3>
         </div>
-        <div class="fk-card p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Quality Audit</p>
-          <h3 class="text-2xl font-black text-emerald-700 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
+        <div class="terminal-card rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Quality Clearance</p>
+          <h3 class="text-2xl font-black text-cyan-400 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
         </div>
-        <div id="tour-admin-escrow" class="fk-card p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Escrow Vault</p>
-          <h3 class="text-2xl font-black text-[#fb641b] mt-1 font-mono-code">₹1,16,400</h3>
+        <div id="tour-admin-escrow" class="terminal-card rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Escrow In Vault</p>
+          <h3 class="text-2xl font-black text-amber-400 mt-1 font-mono-code">₹1,16,400</h3>
         </div>
       </div>
 
-      <div id="tour-admin-table" class="fk-card overflow-hidden space-y-4 p-6">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
+      <div id="tour-admin-table" class="terminal-card rounded-2xl overflow-hidden space-y-4 p-6">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
           <div>
-            <h3 class="text-base font-black text-slate-900">10-Farmer Granular Process Audit Table</h3>
-            <p class="text-xs text-slate-500">Admin oversight on individual purification, sorting, crating and payout clearances.</p>
+            <h3 class="text-base font-black text-white">10-Farmer Granular Process Audit Matrix</h3>
+            <p class="text-xs text-slate-400">Quality verification for destoning, moisture control, AI grading, and crate packaging.</p>
           </div>
-          <button id="tour-admin-approve" onclick="auditAllPassed()" class="px-4 py-2 bg-[#2874f0] hover:bg-blue-700 text-white font-bold text-xs rounded transition shadow flex items-center gap-2">
+          <button id="tour-admin-approve" onclick="auditAllPassed()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition shadow flex items-center gap-2">
             <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers 🎉
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
-            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+            <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
               <tr>
                 <th class="p-3">Farmer & Location</th>
                 <th class="p-3">Crop / Yield</th>
@@ -683,7 +649,7 @@
                 <th class="p-3 text-center">Admin Action</th>
               </tr>
             </thead>
-            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-800/60 text-slate-300 font-medium"></tbody>
           </table>
         </div>
       </div>
@@ -695,76 +661,76 @@
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
       <!-- Top Action Strip -->
-      <div class="fk-card p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="terminal-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-500 uppercase">Verified Account:</span>
-          <span id="farmer-display-id" class="px-3 py-1 bg-blue-100 text-[#2874f0] font-black rounded text-xs font-mono-code">FARMER #01</span>
+          <span class="text-xs font-bold text-slate-400 uppercase">Verified Account:</span>
+          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded text-xs font-mono-code">FARMER #01</span>
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
-          <button id="tour-farmer-360" onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-[#ffe500] hover:bg-yellow-400 text-slate-950 font-black text-xs rounded transition flex items-center gap-1.5 shadow-sm">
+          <button id="tour-farmer-360" onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-lg transition flex items-center gap-1.5">
             <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
           </button>
           
-          <button id="tour-farmer-voice" onclick="toggleSpeechRecording()" class="px-3.5 py-1.5 bg-[#fb641b] hover:bg-[#e85813] text-white font-black text-xs rounded transition flex items-center gap-1.5 shadow-sm">
+          <button id="tour-farmer-voice" onclick="toggleSpeechRecording()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 font-bold text-xs rounded-lg transition flex items-center gap-1.5">
             <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
           
-          <button id="tour-farmer-audio" onclick="speakFarmerTasks()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded transition flex items-center gap-1.5 border border-slate-300">
-            <i data-lucide="volume-2" class="w-4 h-4 text-[#2874f0]"></i> Bol Kar Suniye
+          <button id="tour-farmer-audio" onclick="speakFarmerTasks()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg transition flex items-center gap-1.5 border border-slate-700">
+            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Bol Kar Suniye
           </button>
-          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded" id="farmer-pincode-badge">
+          <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg" id="farmer-pincode-badge">
             Pincode: 121007 (Dhauj)
           </span>
         </div>
       </div>
 
-      <div id="voice-transcript-card" class="bg-amber-50 border border-amber-300 p-3.5 rounded-xl text-xs text-amber-900 hidden flex items-center justify-between gap-3 shadow-sm">
+      <div id="voice-transcript-card" class="bg-amber-950/40 border border-amber-500/30 p-3.5 rounded-xl text-xs text-amber-200 hidden flex items-center justify-between gap-3 shadow-sm">
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0"></span>
           <p id="voice-transcript-text" class="font-medium">Listening... Boliye...</p>
         </div>
-        <span class="text-[10px] font-black uppercase bg-amber-200 text-amber-900 px-2 py-0.5 rounded">Voice AI</span>
+        <span class="text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">Voice AI</span>
       </div>
 
       <!-- Farmer Profile & Payout Hero -->
-      <div id="tour-farmer-profile" class="bg-gradient-to-r from-[#2874f0] to-[#1e5bc6] text-white p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4 shadow-lg">
+      <div id="tour-farmer-profile" class="terminal-card border-emerald-500/40 text-white p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4">
         <div>
-          <span class="text-[10px] uppercase font-black tracking-widest bg-white/20 px-2.5 py-1 rounded border border-white/20">Private Farmer Dashboard</span>
-          <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
-          <p class="text-xs text-blue-100 mt-0.5">Allocated Produce: Desi Fresh Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
+          <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded border border-emerald-500/30">Member Producer Terminal</span>
+          <h2 class="text-2xl font-black mt-2 text-white" id="farmer-profile-name">Rameshwar Sharma</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Allocated Batch: Desi Fresh Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
         </div>
         <div class="flex gap-3 text-center">
-          <div class="bg-white/10 p-3 rounded-xl border border-white/20">
-            <p class="text-[10px] text-blue-100 font-bold uppercase">Expected Direct UPI</p>
-            <p class="text-2xl font-black text-[#ffe500] font-mono-code" id="farmer-expected-payout">₹15,600</p>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Expected Direct UPI</p>
+            <p class="text-2xl font-black text-emerald-400 font-mono-code" id="farmer-expected-payout">₹15,600</p>
           </div>
-          <div class="bg-white/10 p-3 rounded-xl border border-white/20">
-            <p class="text-[10px] text-blue-100 font-bold uppercase">Net Fasal Munafa</p>
-            <p class="text-2xl font-black text-white font-mono-code" id="farmer-net-profit-badge">₹10,850</p>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Net Farm Margin</p>
+            <p class="text-2xl font-black text-cyan-400 font-mono-code" id="farmer-net-profit-badge">₹10,850</p>
           </div>
         </div>
       </div>
 
       <!-- DIGITAL BAHI-KHATA -->
-      <div id="tour-farmer-bahi" class="fk-card p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+      <div id="tour-farmer-bahi" class="terminal-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
           <div>
-            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
-              <i data-lucide="calculator" class="w-4 h-4 text-[#2874f0]"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            <h3 class="font-black text-white text-base flex items-center gap-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
             </h3>
-            <p class="text-xs text-slate-500">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+            <p class="text-xs text-slate-400">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
           </div>
-          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-[#2874f0] hover:bg-blue-700 text-white font-bold text-xs rounded transition flex items-center gap-1.5 self-start shadow-sm">
+          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition flex items-center gap-1.5 self-start">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
           </button>
         </div>
 
-        <div id="expense-form-box" class="p-4 bg-slate-50 rounded-xl border border-slate-200 hidden space-y-3">
+        <div id="expense-form-box" class="p-4 bg-slate-900/90 rounded-xl border border-slate-800 hidden space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Kharcha Category</label>
-              <select id="exp-category" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-bold">
+              <label class="block font-bold text-slate-300 mb-1">Kharcha Category</label>
+              <select id="exp-category" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-950 text-white font-bold">
                 <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
                 <option value="Beej (Seeds)">Beej & Plant Seeds</option>
                 <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
@@ -773,24 +739,24 @@
               </select>
             </div>
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Description</label>
-              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-medium" />
+              <label class="block font-bold text-slate-300 mb-1">Description</label>
+              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-950 text-white font-medium" />
             </div>
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Amount (₹)</label>
-              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-lg border border-slate-300 bg-white font-bold" />
+              <label class="block font-bold text-slate-300 mb-1">Amount (₹)</label>
+              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-lg border border-slate-700 bg-slate-950 text-white font-bold" />
             </div>
           </div>
           <div class="flex justify-end gap-2 text-xs">
-            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-500 font-bold">Cancel</button>
-            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-[#2874f0] text-white rounded font-bold shadow">Save in Bahi-Khata</button>
+            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-400 font-bold">Cancel</button>
+            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-slate-950 rounded font-bold">Save in Bahi-Khata</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="lg:col-span-2 overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+              <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th class="p-2.5">Category</th>
                   <th class="p-2.5">Description</th>
@@ -798,25 +764,25 @@
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-800/60 font-medium text-slate-300"></tbody>
             </table>
           </div>
 
-          <div class="p-4 bg-blue-50/80 border border-blue-200 rounded-xl space-y-2 text-xs flex flex-col justify-center">
-            <div class="flex justify-between font-semibold text-slate-600">
+          <div class="p-4 bg-slate-900/90 border border-slate-800 rounded-xl space-y-2 text-xs flex flex-col justify-center">
+            <div class="flex justify-between font-semibold text-slate-400">
               <span>Total Batch Income:</span>
-              <span class="font-bold text-slate-900 font-mono-code" id="ledger-gross-income">₹15,600</span>
+              <span class="font-bold text-white font-mono-code" id="ledger-gross-income">₹15,600</span>
             </div>
-            <div class="flex justify-between font-semibold text-rose-600">
+            <div class="flex justify-between font-semibold text-rose-400">
               <span>Total Farm Expenses:</span>
               <span class="font-bold font-mono-code" id="ledger-total-expenses">-₹4,750</span>
             </div>
-            <div class="pt-2 border-t border-blue-200 flex justify-between items-center">
+            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
               <div>
-                <p class="font-black text-slate-900 text-sm">Net Fasal Munafa:</p>
-                <p class="text-[10px] text-[#2874f0] font-bold">(In Pocket Profit)</p>
+                <p class="font-black text-white text-sm">Net Fasal Munafa:</p>
+                <p class="text-[10px] text-emerald-400 font-bold">(In Pocket Profit)</p>
               </div>
-              <span class="text-xl font-black text-emerald-700 font-mono-code" id="ledger-net-profit">₹10,850</span>
+              <span class="text-xl font-black text-emerald-400 font-mono-code" id="ledger-net-profit">₹10,850</span>
             </div>
           </div>
         </div>
@@ -824,68 +790,68 @@
 
       <!-- 6 Micro Tools -->
       <div id="tour-farmer-tools" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-emerald-800 font-bold">
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-emerald-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
-            <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded font-black">NPK 4:2:1</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-black">NPK 4:2:1</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Recommended for 1 Acre: <b>45kg Urea + 50kg DAP + 20kg MOP</b></p>
-          <button onclick="alert('Fertilizer Dosage: 45kg Urea, 50kg DAP applied at flowering stage.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Recommended for 1 Acre: <b>45kg Urea + 50kg DAP + 20kg MOP</b></p>
+          <button onclick="alert('Fertilizer Dosage: 45kg Urea, 50kg DAP applied at flowering stage.')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded text-[10px] transition border border-slate-700">
             Calculate Custom Dose
           </button>
         </div>
 
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-[#2874f0] font-bold">
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-cyan-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Weather Spray Window</span>
-            <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded font-black">No Rain Next 48h</span>
+            <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-black">No Rain Next 48h</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Best Pesticide Window: <b>Today 04:00 PM - 06:30 PM</b> (Wind: 4 km/h)</p>
-          <button onclick="alert('Weather Alert: Clear skies in Faridabad till Saturday. Ideal for harvesting & drying.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Best Pesticide Window: <b>Today 04:00 PM - 06:30 PM</b> (Wind: 4 km/h)</p>
+          <button onclick="alert('Weather Alert: Clear skies in Faridabad till Saturday. Ideal for harvesting & drying.')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded text-[10px] transition border border-slate-700">
             View 7-Day Advisory
           </button>
         </div>
 
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-purple-800 font-bold">
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-purple-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="qr-code" class="w-4 h-4"></i> Crate QR Label</span>
-            <span class="text-[10px] bg-purple-100 px-2 py-0.5 rounded font-black">Traceable</span>
+            <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded font-black">Traceable</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Generate batch QR code sticker for buyer farmgate traceability.</p>
-          <button onclick="showQRCodeModal()" class="w-full py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Generate batch QR code sticker for buyer farmgate traceability.</p>
+          <button onclick="showQRCodeModal()" class="w-full py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded text-[10px] transition">
             Generate Crate QR Label
           </button>
         </div>
 
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-amber-800 font-bold">
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-amber-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="badge-percent" class="w-4 h-4"></i> KCC Credit & Solar Subsidy</span>
-            <span class="text-[10px] bg-amber-100 px-2 py-0.5 rounded font-black">4% Interest</span>
+            <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded font-black">4% Interest</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Eligible KCC Limit: <b>₹1,60,000</b> | PM-KUSUM Solar: <b>60% Subsidy</b></p>
-          <button onclick="alert('KCC Pre-Approved Limit: ₹1,60,000 at 4% subvention interest. Bank branch: Ballabhgarh PNB.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Eligible KCC Limit: <b>₹1,60,000</b> | PM-KUSUM Solar: <b>60% Subsidy</b></p>
+          <button onclick="alert('KCC Pre-Approved Limit: ₹1,60,000 at 4% subvention interest. Bank branch: Ballabhgarh PNB.')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded text-[10px] transition border border-slate-700">
             Check KCC Pre-Approval
           </button>
         </div>
 
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-emerald-800 font-bold">
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-emerald-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> Asli Seed & Khad Scanner</span>
-            <span class="text-[10px] bg-emerald-100 px-2 py-0.5 rounded font-black">Govt Verified</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-black">Govt Verified</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Scan fertilizer QR/Barcode to verify IFFCO / KRIBHCO genuine bag.</p>
-          <button onclick="alert('Bag Verified: IFFCO Neem Coated Urea (Batch #9921-HR) Genuine Certified!')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Scan fertilizer QR/Barcode to verify IFFCO / KRIBHCO genuine bag.</p>
+          <button onclick="alert('Bag Verified: IFFCO Neem Coated Urea (Batch #9921-HR) Genuine Certified!')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded text-[10px] transition border border-slate-700">
             Verify Fertilizer Bag
           </button>
         </div>
 
-        <div class="fk-card p-4 space-y-2">
-          <div class="flex justify-between items-center text-slate-800 font-bold">
-            <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4 text-[#fb641b]"></i> Shared Machinery Hub</span>
-            <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-black">Faridabad FPO</span>
+        <div class="terminal-card rounded-xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-slate-300 font-bold">
+            <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4 text-emerald-400"></i> Shared Machinery Hub</span>
+            <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-black border border-slate-700">Faridabad FPO</span>
           </div>
-          <p class="text-slate-600 text-[11px]">Mahindra 575 DI Tractor: <b>₹450/hr</b> (Rotavator attached)</p>
-          <button onclick="alert('Tractor Booked for your Farm for Tomorrow 07:00 AM.')" class="w-full py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded text-[10px] transition">
+          <p class="text-slate-400 text-[11px]">Mahindra 575 DI Tractor: <b>₹450/hr</b> (Rotavator attached)</p>
+          <button onclick="alert('Tractor Booked for your Farm for Tomorrow 07:00 AM.')" class="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded text-[10px] transition border border-slate-700">
             Book Shared Machinery
           </button>
         </div>
@@ -893,22 +859,22 @@
 
       <!-- Pending vs Completed Tasks Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="fk-card p-5 space-y-3">
-          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
+        <div class="terminal-card rounded-xl p-5 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Pending Harvest & Prep Tasks
             </h3>
-            <span class="text-[10px] font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
+            <span class="text-[10px] font-black text-amber-300 bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
           </div>
           <div id="pending-tasks-list" class="space-y-2.5 text-xs"></div>
         </div>
 
-        <div class="fk-card p-5 space-y-3">
-          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
+        <div class="terminal-card rounded-xl p-5 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-bold text-white text-sm flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Completed & Verified Tasks
             </h3>
-            <span class="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
+            <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
           </div>
           <div id="completed-tasks-list" class="space-y-2.5 text-xs"></div>
         </div>
@@ -920,18 +886,18 @@
     <!-- 5. LEAD PROCESS OWNER WORKSPACE                         -->
     <!-- ======================================================= -->
     <div id="view-lead_farmer" class="role-workspace space-y-6 hidden">
-      <div class="bg-gradient-to-r from-[#2874f0] to-[#1e5bc6] rounded-2xl p-6 text-white shadow-lg flex flex-wrap justify-between items-center gap-4">
+      <div class="terminal-card rounded-2xl p-6 text-white flex flex-wrap justify-between items-center gap-4 border-emerald-500/40">
         <div>
-          <span class="text-xs font-black uppercase tracking-wider bg-white/20 px-3 py-1 rounded border border-white/20">Lead Process Owner</span>
+          <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded border border-emerald-500/30">Lead Process Supervisor</span>
           <h2 class="text-2xl font-black mt-2">Sardar Gurpreet Singh (Cluster Head)</h2>
-          <p class="text-xs text-blue-100 mt-0.5">Supervising 10 Member Farmers &bull; Faridabad Cluster Hub #04</p>
+          <p class="text-xs text-slate-400 mt-0.5">Supervising 10 Member Farmers &bull; Faridabad Cluster Hub #04</p>
         </div>
         <div class="flex gap-3">
-          <div class="bg-white/10 p-3 rounded-xl border border-white/20 text-center">
-            <p class="text-[10px] text-blue-100 font-bold uppercase">Pooled Weight</p>
-            <p class="text-xl font-black font-mono-code text-white">4,850 kg</p>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-center">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Pooled Weight</p>
+            <p class="text-xl font-black font-mono-code text-emerald-400">4,850 kg</p>
           </div>
-          <button onclick="downloadGSTInvoicePDF()" class="px-4 py-2 bg-[#ffe500] hover:bg-yellow-400 text-slate-950 font-black text-xs rounded transition flex items-center gap-1.5 shadow">
+          <button onclick="downloadGSTInvoicePDF()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-lg transition flex items-center gap-1.5 shadow">
             <i data-lucide="download" class="w-4 h-4"></i> Download Tax Invoice (PDF)
           </button>
         </div>
@@ -945,33 +911,33 @@
   <!-- ========================================================= -->
   <div id="tour-spotlight-box" class="hidden"></div>
   
-  <div id="tour-floating-card" class="bg-white rounded-2xl p-5 shadow-2xl border-2 border-[#2874f0] space-y-3 text-slate-800 hidden">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+  <div id="tour-floating-card" class="bg-slate-900/95 backdrop-blur-md rounded-2xl p-5 shadow-2xl border-2 border-emerald-500 space-y-3 text-slate-200 hidden">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
       <div class="flex items-center gap-2">
-        <span id="tour-step-badge" class="px-2 py-0.5 bg-blue-100 text-[#2874f0] text-[10px] font-black rounded uppercase">Step 1</span>
-        <h4 id="tour-step-title" class="font-black text-xs text-slate-900">Feature Guide</h4>
+        <span id="tour-step-badge" class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold rounded uppercase">Step 1</span>
+        <h4 id="tour-step-title" class="font-bold text-xs text-white">Feature Guide</h4>
       </div>
-      <button onclick="endAppTour()" class="text-slate-400 hover:text-slate-600 text-xs font-bold p-1">
+      <button onclick="endAppTour()" class="text-slate-400 hover:text-slate-200 text-xs font-bold p-1">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
     <div class="space-y-1 text-xs">
-      <p id="tour-step-desc" class="text-slate-600 font-medium leading-relaxed">
+      <p id="tour-step-desc" class="text-slate-300 font-medium leading-relaxed">
         Description of current button action.
       </p>
     </div>
 
-    <div class="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
-      <button id="tour-btn-prev" onclick="prevTourStep()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded transition flex items-center gap-1 hidden">
+    <div class="flex items-center justify-between pt-2.5 border-t border-slate-800 text-xs">
+      <button id="tour-btn-prev" onclick="prevTourStep()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded transition flex items-center gap-1 hidden">
         <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Back
       </button>
 
-      <button onclick="endAppTour()" class="px-2 py-1.5 text-slate-400 hover:text-slate-600 font-bold transition text-[11px]">
+      <button onclick="endAppTour()" class="px-2 py-1.5 text-slate-400 hover:text-slate-200 font-bold transition text-[11px]">
         Skip (छोड़ें)
       </button>
 
-      <button id="tour-btn-next" onclick="nextTourStep()" class="px-4 py-1.5 bg-[#2874f0] hover:bg-blue-700 text-white font-black rounded shadow transition flex items-center gap-1 ml-auto">
+      <button id="tour-btn-next" onclick="nextTourStep()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded transition flex items-center gap-1 ml-auto">
         <span>Next (आगे)</span> <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
       </button>
     </div>
@@ -980,24 +946,24 @@
   <!-- ========================================================= -->
   <!-- MODAL: 360° VIRTUAL KHET & DRONE INSPECTION ARENA (3D)    -->
   <!-- ========================================================= -->
-  <div id="modal-360-farm" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6">
+  <div id="modal-360-farm" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-5xl w-full h-[86vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
       
       <div class="p-3.5 bg-slate-950 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-[#ffe500] text-slate-950 flex items-center justify-center font-black">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
             <i data-lucide="orbit" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-black text-sm text-white" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
-            <p class="text-[10px] text-blue-200 font-medium">WebGL 3D Interactive Farmgate & AI Drone Telemetry</p>
+            <h3 class="font-bold text-sm text-white" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
+            <p class="text-[10px] text-slate-400 font-medium">WebGL 3D Interactive Farmgate & AI Drone Telemetry</p>
           </div>
         </div>
 
         <div class="flex items-center gap-2 text-xs">
-          <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-[#2874f0] rounded font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
-          <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-[#2874f0] rounded font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
-          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-[#2874f0] rounded font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
+          <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
+          <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
+          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded transition ml-2">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
@@ -1008,8 +974,8 @@
         <div id="virtual-farm-container" class="w-full h-full"></div>
 
         <div class="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-700 text-[11px] space-y-1 z-10 pointer-events-none">
-          <div class="flex items-center gap-1.5 font-bold text-[#ffe500]">
-            <span class="w-2 h-2 rounded-full bg-[#ffe500] animate-ping"></span> Live Khet Telemetry
+          <div class="flex items-center gap-1.5 font-bold text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Khet Telemetry
           </div>
           <p class="text-slate-300">Soil Moisture: <b class="text-white font-mono-code">11.4% (Optimal)</b></p>
           <p class="text-slate-300">Crop Health Index: <b class="text-emerald-400 font-mono-code">96.8% (Grade A)</b></p>
@@ -1021,72 +987,72 @@
   </div>
 
   <!-- MODAL: QR CODE GENERATOR -->
-  <div id="qr-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-100">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-        <h4 class="font-bold text-slate-900 text-sm">Crate Batch QR Label</h4>
-        <button onclick="closeQRModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+  <div id="qr-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h4 class="font-bold text-white text-sm">Crate Batch QR Label</h4>
+        <button onclick="closeQRModal()" class="text-slate-400 hover:text-slate-200 text-lg font-bold">&times;</button>
       </div>
-      <div id="qrcode" class="flex justify-center p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
-      <p class="text-[11px] text-[#2874f0] font-mono-code font-bold">BATCH #FBD-8821 &bull; 650kg Tomato (Grade A)</p>
-      <button onclick="alert('Print command sent to portable bluetooth thermal printer!')" class="w-full py-2 bg-[#2874f0] hover:bg-blue-700 text-white font-bold text-xs rounded transition shadow">
+      <div id="qrcode" class="flex justify-center p-3 bg-white rounded-xl"></div>
+      <p class="text-[11px] text-emerald-400 font-mono-code font-bold">BATCH #FBD-8821 &bull; 650kg Tomato (Grade A)</p>
+      <button onclick="alert('Print command sent to portable bluetooth thermal printer!')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded transition">
         Print Thermal QR Sticker
       </button>
     </div>
   </div>
 
   <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
-  <div id="ai-chat-window" class="fixed bottom-20 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 520px;">
+  <div id="ai-chat-window" class="fixed bottom-20 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 520px;">
     
-    <div class="bg-[#2874f0] p-3.5 text-white flex justify-between items-center">
+    <div class="bg-slate-950 p-3.5 text-white flex justify-between items-center border-b border-slate-800">
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-[#ffe500] text-slate-950 flex items-center justify-center font-black">
+        <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
           <i data-lucide="bot" class="w-4 h-4"></i>
         </div>
         <div>
-          <h4 class="font-bold text-xs leading-none">KisanAI Copilot</h4>
-          <span class="text-[9px] text-blue-100">Autonomous Agri Action Engine</span>
+          <h4 class="font-bold text-xs leading-none text-white">KisanAI Copilot</h4>
+          <span class="text-[9px] text-slate-400">Autonomous Agro Action Engine</span>
         </div>
       </div>
-      <button onclick="toggleAIChat()" class="text-blue-100 hover:text-white p-1">
+      <button onclick="toggleAIChat()" class="text-slate-400 hover:text-white p-1">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
-    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/80 text-xs">
       <div class="flex gap-2.5 items-start">
-        <div class="w-6 h-6 rounded-full bg-[#2874f0] text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
-        <div class="bg-white p-3 rounded-xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-1.5 max-w-[85%]">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-200 shadow-sm leading-relaxed space-y-1.5 max-w-[85%]">
           <p>Namaste! I am <b>KisanAI Copilot</b>. I have real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and 360° virtual khet feeds.</p>
         </div>
       </div>
     </div>
 
-    <div class="p-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
-      <button onclick="open360FarmModal('KisanAI 360 Field Arena')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold whitespace-nowrap transition">
+    <div class="p-2 bg-slate-900 border-t border-slate-800 flex gap-1.5 overflow-x-auto text-[11px]">
+      <button onclick="open360FarmModal('KisanAI 360 Field Arena')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded font-bold whitespace-nowrap transition">
         🌐 360° Khet
       </button>
-      <button onclick="startAppTour(true)" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold whitespace-nowrap transition">
+      <button onclick="startAppTour(true)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded font-bold whitespace-nowrap transition">
         📖 Tour Guide
       </button>
-      <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-white hover:bg-blue-50 text-[#2874f0] border border-slate-200 rounded font-bold whitespace-nowrap transition">
+      <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded font-bold whitespace-nowrap transition">
         ⚡ Approve All
       </button>
     </div>
 
-    <form onsubmit="handleChatSubmit(event)" class="p-2.5 bg-white border-t border-slate-200 flex items-center gap-2">
-      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2 bg-slate-50 text-slate-800 rounded border border-slate-200 focus:outline-none font-medium" />
-      <button type="submit" class="p-2 bg-[#2874f0] hover:bg-blue-700 text-white rounded transition">
+    <form onsubmit="handleChatSubmit(event)" class="p-2.5 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
+      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2 bg-slate-900 text-white rounded border border-slate-700 focus:outline-none font-medium" />
+      <button type="submit" class="p-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded transition">
         <i data-lucide="send" class="w-4 h-4"></i>
       </button>
     </form>
   </div>
 
   <!-- FLOATING AI TRIGGER BUTTON -->
-  <button id="tour-step-ai" onclick="toggleAIChat()" class="fixed bottom-5 right-5 z-40 bg-[#fb641b] hover:bg-[#e85813] text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs transition transform hover:scale-105 border-2 border-white/20">
+  <button id="tour-step-ai" onclick="toggleAIChat()" class="fixed bottom-5 right-5 z-40 bg-emerald-600 hover:bg-emerald-500 text-slate-950 px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs transition transform hover:scale-105 border border-emerald-400/40">
     <i data-lucide="sparkles" class="w-4 h-4"></i>
     <span>Ask KisanAI</span>
-    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+    <span class="w-2 h-2 rounded-full bg-slate-950 animate-ping"></span>
   </button>
 
   <!-- PRINTABLE GST TAX INVOICE -->
@@ -1094,7 +1060,7 @@
     <div id="invoice-pdf-template" class="p-8 bg-white text-slate-900 max-w-3xl mx-auto space-y-6 border border-slate-300" style="font-family: Arial, sans-serif; font-size: 13px;">
       <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 12px;">
         <div>
-          <h1 style="font-size: 20px; font-weight: 800; color: #2874f0; margin: 0;">FARIDABAD AGRO PRODUCER CO. LTD. (FPO)</h1>
+          <h1 style="font-size: 20px; font-weight: 800; color: #059669; margin: 0;">FARIDABAD AGRO PRODUCER CO. LTD. (FPO)</h1>
           <p style="margin: 2px 0; color: #64748b; font-size: 11px;">Dhauj Cluster Hub #04, Faridabad, Haryana - 121007</p>
           <p style="margin: 2px 0; font-weight: bold;">GSTIN: 06AAAAA0000A1Z5 &bull; PAN: AAAAF0000A</p>
         </div>
@@ -1137,7 +1103,7 @@
             <tr><td>Taxable:</td><td style="text-align: right; font-weight: bold;">₹15,600.00</td></tr>
             <tr><td>CGST (2.5%):</td><td style="text-align: right;">₹390.00</td></tr>
             <tr><td>SGST (2.5%):</td><td style="text-align: right;">₹390.00</td></tr>
-            <tr style="border-top: 2px solid #0f172a; font-size: 14px; font-weight: 800; color: #2874f0;">
+            <tr style="border-top: 2px solid #0f172a; font-size: 14px; font-weight: 800; color: #059669;">
               <td>Total Payable:</td><td style="text-align: right;">₹16,380.00</td>
             </tr>
           </table>
@@ -1324,7 +1290,7 @@
         particleCount: 65,
         spread: 70,
         origin: { y: 0.65 },
-        colors: ['#2874f0', '#fb641b', '#ffe500', '#10b981', '#06b6d4']
+        colors: ['#059669', '#34d399', '#f59e0b', '#06b6d4']
       });
       if (msg) alert(msg);
     }
@@ -1368,7 +1334,7 @@
       driverMap = L.map('driver-map').setView([28.3360, 77.1610], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
 
-      driverRoutePolyline = L.polyline(driverWaypoints, { color: '#2874f0', weight: 5, opacity: 0.9 }).addTo(driverMap);
+      driverRoutePolyline = L.polyline(driverWaypoints, { color: '#059669', weight: 5, opacity: 0.9 }).addTo(driverMap);
       driverMap.fitBounds(driverRoutePolyline.getBounds(), { padding: [30, 30] });
 
       L.marker(driverWaypoints[0]).addTo(driverMap).bindPopup("<b>Farm Gate: Dhauj</b><br>650kg Tomato Loaded");
@@ -1377,7 +1343,7 @@
       driverMarker = L.marker(driverWaypoints[0], {
         icon: L.divIcon({
           className: 'custom-driver-icon',
-          html: '<div style="background:#2874f0; border:2px solid white; color:white; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">🚚</div>',
+          html: '<div style="background:#059669; border:2px solid white; color:white; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 2px 8px rgba(0,0,0,0.4);">🚚</div>',
           iconSize: [36, 36],
           iconAnchor: [18, 18]
         })
@@ -1392,11 +1358,11 @@
       }
 
       document.getElementById('driver-trip-status').innerText = "LIVE ON-ROAD (Moving to Sec 15)";
-      document.getElementById('driver-trip-status').className = "text-[#2874f0] font-black animate-pulse";
+      document.getElementById('driver-trip-status').className = "text-emerald-400 font-black animate-pulse";
       document.getElementById('btn-start-ride').classList.add('hidden');
       document.getElementById('btn-end-ride').classList.remove('hidden');
       document.getElementById('driver-nav-hud').classList.remove('hidden');
-      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping";
       document.getElementById('driver-speed-badge').innerText = "Speed: 44 km/h";
 
       triggerConfettiSuccess("OTP 4829 Verified! Live GPS Navigation Activated.");
@@ -1433,13 +1399,13 @@
     function driverEndRide() {
       clearInterval(driverNavInterval);
       document.getElementById('driver-trip-status').innerText = "COMPLETED (Escrow Released)";
-      document.getElementById('driver-trip-status').className = "text-emerald-700 font-bold";
+      document.getElementById('driver-trip-status').className = "text-emerald-400 font-bold";
       document.getElementById('btn-end-ride').classList.add('hidden');
       document.getElementById('btn-start-ride').classList.remove('hidden');
       document.getElementById('btn-start-ride').innerText = "Ride Completed & Payout Released";
       document.getElementById('driver-nav-hud').classList.add('hidden');
       document.getElementById('driver-speed-badge').innerText = "Speed: 0 km/h (Parked)";
-      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-slate-400";
+      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-slate-500";
 
       updateDeliveryStatus('delivered');
       triggerConfettiSuccess("Ride Completed! ₹15,600 transferred directly to Farmer UPI account.");
@@ -1469,7 +1435,7 @@
       const height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a);
+      scene.background = new THREE.Color(0x020617);
 
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
       camera.position.set(0, 15, 28);
@@ -1491,14 +1457,14 @@
       scene.add(farmGroup);
 
       const groundGeo = new THREE.PlaneGeometry(60, 60, 20, 20);
-      const groundMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85 });
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.85 });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
       farmGroup.add(ground);
 
       for (let i = -18; i <= 18; i += 4) {
         const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
-        const rowMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
+        const rowMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
         const row = new THREE.Mesh(rowGeo, rowMat);
         row.position.set(0, 0.2, i);
         farmGroup.add(row);
@@ -1686,7 +1652,7 @@
 
       if (u === 'admin') {
         currentRoleType = 'admin';
-        document.getElementById('session-user-badge').innerText = "Admin Matrix";
+        document.getElementById('session-user-badge').innerText = "Admin Hub";
         document.getElementById('view-admin').classList.remove('hidden');
       } else if (u === 'driver' || u === 'driver1') {
         currentRoleType = 'driver';
@@ -1732,7 +1698,7 @@
     function logoutUser() {
       currentLoggedInUser = null;
       currentFarmerObject = null;
-      document.getElementById('session-user-badge').innerText = "Login";
+      document.getElementById('session-user-badge').innerText = "Guest";
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
       document.getElementById('login-username').value = "";
       document.getElementById('auth-portal-screen').classList.remove('hidden');
@@ -1754,19 +1720,19 @@
       farmer.expenses.forEach((item, index) => {
         totalExp += Number(item.amt);
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-2.5 font-bold text-slate-800">${item.cat}</td>
-            <td class="p-2.5 text-slate-600">${item.desc}</td>
-            <td class="p-2.5 text-right font-bold text-rose-600 font-mono-code">₹${Number(item.amt).toLocaleString()}</td>
+          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
+            <td class="p-2.5 font-bold text-slate-200">${item.cat}</td>
+            <td class="p-2.5 text-slate-400">${item.desc}</td>
+            <td class="p-2.5 text-right font-black text-rose-400 font-mono-code">₹${Number(item.amt).toLocaleString()}</td>
             <td class="p-2.5 text-center">
-              <button onclick="deleteFarmerExpense(${index})" class="text-rose-500 hover:text-rose-700 p-1 font-bold text-xs">&times;</button>
+              <button onclick="deleteFarmerExpense(${index})" class="text-rose-400 hover:text-rose-300 p-1 font-bold text-xs">&times;</button>
             </td>
           </tr>
         `;
       });
 
       if (farmer.expenses.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Koi kharcha darj nahi hai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-500">Koi kharcha darj nahi hai.</td></tr>`;
       }
 
       const gross = farmer.qty * farmer.rate;
@@ -1811,7 +1777,7 @@
 
     function renderIndividualFarmerData(f) {
       document.getElementById('farmer-profile-name').innerText = f.name;
-      document.getElementById('farmer-profile-sub').innerText = `Allocated Produce: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
+      document.getElementById('farmer-profile-sub').innerText = `Allocated Batch: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
       document.getElementById('farmer-pincode-badge').innerText = `Pincode: ${f.pincode} (${f.village})`;
       document.getElementById('farmer-expected-payout').innerText = `₹${(f.qty * f.rate).toLocaleString()}`;
 
@@ -1832,17 +1798,17 @@
         if (f[t.key]) {
           completedCount++;
           completedList.innerHTML += `
-            <div class="p-2.5 bg-emerald-50 rounded-lg border border-emerald-200 flex justify-between items-center">
-              <div><p class="font-bold text-slate-800">${t.name}</p><p class="text-[10px] text-emerald-700">${t.desc}</p></div>
-              <span class="text-[10px] font-black text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
+            <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800 flex justify-between items-center">
+              <div><p class="font-bold text-slate-200">${t.name}</p><p class="text-[10px] text-emerald-400">${t.desc}</p></div>
+              <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded">DONE</span>
             </div>
           `;
         } else {
           pendingCount++;
           pendingList.innerHTML += `
-            <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200 flex justify-between items-center">
-              <div><p class="font-bold text-slate-800">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
-              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3 py-1 bg-[#fb641b] hover:bg-[#e85813] text-white font-bold text-[10px] rounded shadow-sm">MARK DONE</button>
+            <div class="p-2.5 bg-slate-900/80 rounded-lg border border-slate-800 flex justify-between items-center">
+              <div><p class="font-bold text-slate-200">${t.name}</p><p class="text-[10px] text-amber-300">${t.desc}</p></div>
+              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[10px] rounded">MARK DONE</button>
             </div>
           `;
         }
@@ -1903,7 +1869,7 @@
       L.marker(routePoints[1]).addTo(trackingMap).bindPopup("<b>🚚 Truck HR-38-AF-4829</b><br>Moving: 42 km/h (ETA: 1h 45m)").openPopup();
       L.marker(routePoints[2]).addTo(trackingMap).bindPopup("<b>Destination: Sector 15 APMC Hub</b>");
 
-      const poly = L.polyline(routePoints, { color: '#2874f0', weight: 4, dashArray: '6, 8' }).addTo(trackingMap);
+      const poly = L.polyline(routePoints, { color: '#059669', weight: 4, dashArray: '6, 8' }).addTo(trackingMap);
       trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
@@ -1950,7 +1916,7 @@
       } else if (state === 'delivered') {
         transitTitle.innerText = "Transit Completed";
         transitSub.innerText = "Vehicle arrived at Buyer Gate";
-        document.getElementById("step-delivery-card").className = "p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-500 space-y-1";
+        document.getElementById("step-delivery-card").className = "p-3.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 space-y-1";
         document.getElementById("step-delivery-title").innerText = "Delivered & Verified";
         triggerConfettiSuccess("Order Delivered & OTP Verified!");
       }
@@ -1966,18 +1932,18 @@
         const totalAmt = f.qty * f.rate;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-3 font-bold text-slate-900">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
-            <td class="p-3"><span class="font-bold text-[#2874f0]">${f.crop}</span><br><span class="text-[10px] text-slate-500 font-mono-code font-bold">${f.qty} kg</span></td>
+          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
+            <td class="p-3 font-bold text-white">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
+            <td class="p-3"><span class="font-bold text-emerald-400">${f.crop}</span><br><span class="text-[10px] text-slate-400 font-mono-code font-bold">${f.qty} kg</span></td>
             <td class="p-3 text-center">${f.destoned ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">CLEANED</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">PENDING</span>'}</td>
             <td class="p-3 text-center">${f.moisture ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done font-mono-code">11.4% OK</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending font-mono-code">&gt;14% HIGH</span>'}</td>
             <td class="p-3 text-center">${f.ai_graded ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">GRADE A</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">PENDING</span>'}</td>
             <td class="p-3 text-center">${f.crated ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">SEALED</span>' : '<span class="px-2 py-0.5 rounded text-[10px] font-bold badge-pending">UNPACKED</span>'}</td>
-            <td class="p-3 font-bold text-slate-900 font-mono-code">₹${totalAmt.toLocaleString()}</td>
+            <td class="p-3 font-bold text-white font-mono-code">₹${totalAmt.toLocaleString()}</td>
             <td class="p-3 text-center">
               ${f.audit_pass 
-                ? '<span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded">VERIFIED</span>' 
-                : `<button onclick="toggleAuditStatus('${f.id}')" class="px-2.5 py-1 bg-[#2874f0] hover:bg-blue-700 text-white text-[10px] font-bold rounded transition shadow-sm">AUDIT & PASS</button>`
+                ? '<span class="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded">VERIFIED</span>' 
+                : `<button onclick="toggleAuditStatus('${f.id}')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-[10px] font-bold rounded transition">AUDIT & PASS</button>`
               }
             </td>
           </tr>
@@ -2077,12 +2043,12 @@
       msgDiv.className = sender === 'user' ? "flex gap-2.5 items-start justify-end" : "flex gap-2.5 items-start";
       
       const avatar = sender === 'user' 
-        ? `<div class="w-6 h-6 rounded-full bg-[#172337] text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">U</div>`
-        : `<div class="w-6 h-6 rounded-full bg-[#2874f0] text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>`;
+        ? `<div class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">U</div>`
+        : `<div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>`;
 
       const bubbleClass = sender === 'user' 
-        ? "bg-[#2874f0] text-white p-3 rounded-xl text-xs shadow-sm max-w-[85%]" 
-        : "bg-white p-3 rounded-xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed max-w-[85%]";
+        ? "bg-emerald-600 text-slate-950 font-bold p-3 rounded-xl text-xs shadow-sm max-w-[85%]" 
+        : "bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-200 shadow-sm leading-relaxed max-w-[85%]";
 
       msgDiv.innerHTML = sender === 'user' 
         ? `<div class="${bubbleClass}">${text}</div>${avatar}` 

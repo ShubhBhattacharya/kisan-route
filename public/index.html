@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <!-- Three.js Library for 360° Virtual Farm 3D Render -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <!-- html2pdf.js for Real PDF Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -51,18 +54,19 @@
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
     
-    /* Google Translate Hidden Styles */
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     body { top: 0px !important; }
     #google_translate_element { display: none; }
     .goog-tooltip, .goog-tooltip:hover { display: none !important; }
     .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
 
-    /* ============================================================ */
-    /* UI ANIMATION & INTERACTIVE MICRO-EFFECTS                     */
-    /* ============================================================ */
-    
-    /* 1. Global Button Bounce & Smooth Shadows */
+    #toast-container, .toast-container, .toast-notification, .live-feed-popup, .notification-toast {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
     button {
       position: relative;
       overflow: hidden;
@@ -77,7 +81,6 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
     }
 
-    /* 2. Water Ripple Click Animation */
     .ripple-wave {
       position: absolute;
       border-radius: 50%;
@@ -87,13 +90,9 @@
       pointer-events: none;
     }
     @keyframes rippleEffect {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
+      to { transform: scale(4); opacity: 0; }
     }
 
-    /* 3. Cards Smooth Hover Floating Lift */
     .hover-lift-card {
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
@@ -102,7 +101,6 @@
       box-shadow: 0 16px 30px -10px rgba(15, 23, 42, 0.12);
     }
 
-    /* 4. Form Inputs Focus Glow */
     input, select, textarea {
       transition: all 0.2s ease !important;
     }
@@ -111,19 +109,18 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
     }
 
-    /* 5. Shimmer Pulse on Live Badges */
     @keyframes pulseGlow {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.85; transform: scale(1.03); }
     }
-    .animate-pulse-glow {
-      animation: pulseGlow 2.5s infinite ease-in-out;
-    }
+    .animate-pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
+    
+    #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 1.5rem; outline: none; cursor: grab; }
+    #virtual-farm-canvas:active { cursor: grabbing; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
 
-  <!-- Hidden Google Translate Anchor -->
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
@@ -140,16 +137,26 @@
         <p class="text-xs text-slate-500">Secure Individual Role-Isolated Terminal &bull; SIH 2026</p>
       </div>
 
-      <!-- Login Form -->
-      <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs">
+      <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs" autocomplete="off">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Username / Mobile ID</label>
-          <input type="text" id="login-username" placeholder="e.g. admin, farmer1, driver, vendor" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" />
+          <input type="text" id="login-username" name="kisan_user_field" placeholder="e.g. admin, farmer1, driver, vendor" autocomplete="off" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" />
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Password / Security PIN</label>
-          <input type="password" id="login-password" placeholder="Enter password (default: 1234)" value="1234" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" />
+          <label class="block font-bold text-slate-700 mb-1">Security PIN</label>
+          <input 
+            type="password" 
+            id="login-password" 
+            name="kisan_pin_field" 
+            placeholder="Security PIN" 
+            value="Kisan@9981#Secure" 
+            autocomplete="new-password"
+            data-lpignore="true"
+            data-form-type="other"
+            required 
+            class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 focus:outline-none" 
+          />
         </div>
 
         <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
@@ -157,7 +164,6 @@
         </button>
       </form>
 
-      <!-- 1-Click Quick Testing Access Chips -->
       <div class="pt-4 border-t border-slate-100 space-y-3 text-xs">
         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center">Quick 1-Click Test Access:</p>
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -216,10 +222,13 @@
         </div>
       </div>
 
-      <!-- Live Network Sync Status -->
+      <!-- Live Network Sync Status & 360 View Launcher -->
       <div class="flex items-center gap-2">
+        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-400/40 text-emerald-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
+          <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-400"></i> 360° Virtual Farm Arena
+        </button>
         <span id="network-status-badge" class="px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced (Online)
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced
         </span>
       </div>
 
@@ -340,7 +349,7 @@
           </div>
         </div>
 
-        <!-- Driver Info, OTP & Map -->
+        <!-- Driver Info, OTP, 360 Tour & Map -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
           <div class="space-y-4">
             <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3 hover-lift-card">
@@ -364,6 +373,11 @@
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> PDF Bill
               </button>
             </div>
+
+            <!-- 360 Virtual Inspection Button on Buyer View -->
+            <button onclick="open360FarmModal('Dhauj Tomato Farm - Rameshwar Sharma')" class="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-lg">
+              <i data-lucide="orbit" class="w-4 h-4"></i> 360° Live Farm & Produce Inspection (Virtual)
+            </button>
 
             <div class="grid grid-cols-2 gap-2">
               <button onclick="shareOnWhatsApp()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
@@ -409,7 +423,12 @@
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Desi Fresh Tomato</h4>
             <p class="text-slate-500">Dhauj Farm &bull; 650 kg Batch</p>
-            <button onclick="triggerConfettiSuccess('Order Placed! ₹15,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <div class="flex gap-2">
+              <button onclick="open360FarmModal('Dhauj Tomato Lot (Rameshwar)')" class="w-1/2 py-2 bg-slate-100 hover:bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl font-bold transition flex items-center justify-center gap-1 text-[11px]">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
+              </button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹15,600 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            </div>
           </div>
           <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3 hover-lift-card">
             <div class="flex justify-between items-start">
@@ -418,7 +437,12 @@
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Table Potato (Sugar-Free)</h4>
             <p class="text-slate-500">Tigaon Farm &bull; 1,200 kg Batch</p>
-            <button onclick="triggerConfettiSuccess('Order Placed! ₹21,600 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <div class="flex gap-2">
+              <button onclick="open360FarmModal('Tigaon Potato Lot (Harpreet Singh)')" class="w-1/2 py-2 bg-slate-100 hover:bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl font-bold transition flex items-center justify-center gap-1 text-[11px]">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
+              </button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹21,600 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            </div>
           </div>
           <div class="p-4 rounded-2xl border border-slate-200 hover:border-emerald-500 transition space-y-3 hover-lift-card">
             <div class="flex justify-between items-start">
@@ -427,7 +451,12 @@
             </div>
             <h4 class="font-bold text-slate-900 text-sm">Sharbati Premium Wheat</h4>
             <p class="text-slate-500">Ballabhgarh &bull; 1,800 kg Batch</p>
-            <button onclick="triggerConfettiSuccess('Order Placed! ₹50,400 locked in Escrow.')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            <div class="flex gap-2">
+              <button onclick="open360FarmModal('Ballabhgarh Wheat Field (Satish Gurjar)')" class="w-1/2 py-2 bg-slate-100 hover:bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl font-bold transition flex items-center justify-center gap-1 text-[11px]">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> 360° Khet
+              </button>
+              <button onclick="triggerConfettiSuccess('Order Placed! ₹50,400 locked in Escrow.')" class="w-1/2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition">Buy Lot</button>
+            </div>
           </div>
         </div>
       </div>
@@ -555,6 +584,10 @@
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
+          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+            <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
+          </button>
+          
           <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
@@ -788,6 +821,53 @@
 
   </main>
 
+  <!-- ========================================================= -->
+  <!-- MODAL: 360° VIRTUAL KHET & DRONE INSPECTION ARENA (3D)    -->
+  <!-- ========================================================= -->
+  <div id="modal-360-farm" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
+      
+      <!-- Top Control Header -->
+      <div class="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
+            <i data-lucide="orbit" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-sm text-white" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
+            <p class="text-[10px] text-emerald-400">WebGL 3D Interactive Farmgate & AI Drone Feed</p>
+          </div>
+        </div>
+
+        <!-- Camera Angle Presets -->
+        <div class="flex items-center gap-1.5 text-xs">
+          <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
+          <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
+          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
+          <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D WebGL Canvas Container -->
+      <div class="flex-1 w-full h-full relative bg-slate-950">
+        <div id="virtual-farm-container" class="w-full h-full"></div>
+
+        <!-- On-Screen Telemetry HUD -->
+        <div class="absolute bottom-4 left-4 bg-slate-900/85 backdrop-blur-md p-3.5 rounded-2xl border border-emerald-500/30 text-[11px] space-y-1 z-10 pointer-events-none">
+          <div class="flex items-center gap-2 font-bold text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Khet Telemetry
+          </div>
+          <p class="text-slate-300">Soil Moisture: <b class="text-white">11.4% (Optimal)</b></p>
+          <p class="text-slate-300">Crop Health Index: <b class="text-emerald-400">96.8% (Grade A)</b></p>
+          <p class="text-[9px] text-slate-400 mt-1">💡 Drag with Mouse/Touch to rotate 360° around the farm</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- MODAL: QR CODE GENERATOR -->
   <div id="qr-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center space-y-4 shadow-2xl border border-slate-100 hover-lift-card">
@@ -825,23 +905,20 @@
       <div class="flex gap-2.5 items-start">
         <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
         <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
-          <p>Namaste! I am <b>KisanAI Copilot</b>. I have full real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and GST invoices.</p>
+          <p>Namaste! I am <b>KisanAI Copilot</b>. I have full real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and 360° virtual khet feeds.</p>
         </div>
       </div>
     </div>
 
     <div class="p-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
+      <button onclick="open360FarmModal('KisanAI 360 Field Arena')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        🌐 Open 360° Khet
+      </button>
       <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         ⚡ Approve All Farmers
       </button>
       <button onclick="executeQuickPrompt('Download GST Invoice PDF')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         📄 Download GST Bill
-      </button>
-      <button onclick="executeQuickPrompt('Show live truck tracking map')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
-        🚚 Show Live Tracking
-      </button>
-      <button onclick="executeQuickPrompt('Check Farmer 1 status')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
-        🌱 Check Rameshwar Status
       </button>
     </div>
 
@@ -917,7 +994,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC & ANIMATION ENGINE -->
+  <!-- JAVASCRIPT LOGIC, 360 THREE.JS ENGINE & ANIMATIONS -->
   <script>
     let clusterFarmers = [
       { 
@@ -952,7 +1029,7 @@
     let speechRecognition = null;
     let isRecordingVoice = false;
 
-    // CONFETTI CELEBRATION BLAST HELPER
+    // Confetti Helper
     function triggerConfettiSuccess(msg) {
       confetti({
         particleCount: 65,
@@ -971,7 +1048,7 @@
       attachGlobalRippleEffect();
     });
 
-    // RIPPLE EFFECT ON ALL BUTTONS
+    // Ripple
     function attachGlobalRippleEffect() {
       document.querySelectorAll('button').forEach(button => {
         button.addEventListener('click', function (e) {
@@ -994,7 +1071,161 @@
       });
     }
 
-    // 1. Offline Caching Engine
+    // =========================================================
+    // 3D VIRTUAL KHET 360° WEBGL ENGINE (THREE.JS)
+    // =========================================================
+    let scene, camera, renderer, farmGroup;
+    let isDragging3D = false;
+    let previousMousePosition = { x: 0, y: 0 };
+
+    function open360FarmModal(title) {
+      document.getElementById('modal-360-farm').classList.remove('hidden');
+      if (title) document.getElementById('farm-360-title').innerText = title;
+      lucide.createIcons();
+      setTimeout(init360FarmThreeScene, 100);
+    }
+
+    function close360FarmModal() {
+      document.getElementById('modal-360-farm').classList.add('hidden');
+    }
+
+    function init360FarmThreeScene() {
+      const container = document.getElementById('virtual-farm-container');
+      container.innerHTML = '';
+
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0f172a); // Deep modern dark sky
+
+      camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
+      camera.position.set(0, 15, 28);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.domElement.id = "virtual-farm-canvas";
+      container.appendChild(renderer.domElement);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
+
+      const sunLight = new THREE.DirectionalLight(0xfef08a, 1.2);
+      sunLight.position.set(20, 40, 20);
+      scene.add(sunLight);
+
+      farmGroup = new THREE.Group();
+      scene.add(farmGroup);
+
+      // 1. Lush Green Soil Ground
+      const groundGeo = new THREE.PlaneGeometry(60, 60, 20, 20);
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x166534, roughness: 0.8 });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      farmGroup.add(ground);
+
+      // 2. Crop Furrows / Rows
+      for (let i = -18; i <= 18; i += 4) {
+        const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
+        const rowMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
+        const row = new THREE.Mesh(rowGeo, rowMat);
+        row.position.set(0, 0.2, i);
+        farmGroup.add(row);
+
+        // Tomato / Crop Plants on Rows
+        for (let j = -18; j <= 18; j += 3) {
+          const plantGeo = new THREE.DodecahedronGeometry(0.7);
+          const plantMat = new THREE.MeshStandardMaterial({ color: 0x22c55e });
+          const plant = new THREE.Mesh(plantGeo, plantMat);
+          plant.position.set(j, 0.9, i);
+          farmGroup.add(plant);
+
+          // Ripe Red Tomato Fruit Dot
+          const fruitGeo = new THREE.SphereGeometry(0.25, 8, 8);
+          const fruitMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
+          const fruit = new THREE.Mesh(fruitGeo, fruitMat);
+          fruit.position.set(j + 0.3, 1.1, i + 0.3);
+          farmGroup.add(fruit);
+        }
+      }
+
+      // 3. Farm Warehouse Hub Shed
+      const shedGeo = new THREE.BoxGeometry(10, 5, 8);
+      const shedMat = new THREE.MeshStandardMaterial({ color: 0x0f766e });
+      const shed = new THREE.Mesh(shedGeo, shedMat);
+      shed.position.set(-22, 2.5, -20);
+      farmGroup.add(shed);
+
+      // 4. Stored Harvest Crates
+      for (let c = 0; c < 6; c++) {
+        const crateGeo = new THREE.BoxGeometry(1.2, 0.8, 1.2);
+        const crateMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
+        const crate = new THREE.Mesh(crateGeo, crateMat);
+        crate.position.set(-14 + (c % 3) * 1.5, 0.4, -18 + Math.floor(c / 3) * 1.5);
+        farmGroup.add(crate);
+      }
+
+      // 5. Orbit & Mouse Drag Controllers
+      const canvas = renderer.domElement;
+      canvas.addEventListener('mousedown', (e) => {
+        isDragging3D = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+
+      canvas.addEventListener('mousemove', (e) => {
+        if (!isDragging3D) return;
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+
+        farmGroup.rotation.y += deltaX * 0.008;
+        camera.position.y = Math.max(5, Math.min(35, camera.position.y - deltaY * 0.08));
+        camera.lookAt(0, 0, 0);
+
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('mouseup', () => isDragging3D = false);
+
+      // Touch Controls for Mobile
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging3D = true;
+          previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      });
+      canvas.addEventListener('touchmove', (e) => {
+        if (!isDragging3D || e.touches.length !== 1) return;
+        const deltaX = e.touches[0].clientX - previousMousePosition.x;
+        farmGroup.rotation.y += deltaX * 0.008;
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      });
+      canvas.addEventListener('touchend', () => isDragging3D = false);
+
+      function animate() {
+        if (!document.getElementById('modal-360-farm').classList.contains('hidden')) {
+          requestAnimationFrame(animate);
+          if (!isDragging3D) farmGroup.rotation.y += 0.002; // Smooth auto-orbit
+          renderer.render(scene, camera);
+        }
+      }
+      animate();
+    }
+
+    function setCameraView(mode) {
+      if (!camera) return;
+      if (mode === 'orbit') {
+        camera.position.set(0, 16, 28);
+      } else if (mode === 'drone') {
+        camera.position.set(0, 38, 5);
+      } else if (mode === 'crop') {
+        camera.position.set(8, 3.5, 8);
+      }
+      camera.lookAt(0, 0, 0);
+    }
+
+    // 1. Offline Caching
     function initOfflineCachingEngine() {
       const cached = localStorage.getItem('kisanroute_cluster_cache');
       if (cached) {
@@ -1007,14 +1238,14 @@
       window.addEventListener('online', () => {
         const badge = document.getElementById('network-status-badge');
         badge.className = "px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced (Online)`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced`;
         saveClusterToCache();
       });
 
       window.addEventListener('offline', () => {
         const badge = document.getElementById('network-status-badge');
         badge.className = "px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Khet Offline Mode (Cached)`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Khet Offline Mode`;
       });
     }
 
@@ -1022,7 +1253,7 @@
       localStorage.setItem('kisanroute_cluster_cache', JSON.stringify(clusterFarmers));
     }
 
-    // 2. Local Voice Module
+    // 2. Voice Module
     function initSpeechRecognitionModule() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRec) {
@@ -1072,7 +1303,10 @@
     }
 
     function handleVoiceCommandIntent(transcript) {
-      if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
+      if (transcript.includes('360') || transcript.includes('khet') || transcript.includes('view') || transcript.includes('drone')) {
+        open360FarmModal('Voice Activated: 360° Khet View');
+        speakVoiceFeedback("360 degree virtual khet khol diya gaya hai.");
+      } else if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
         toggleAddExpenseForm();
         speakVoiceFeedback("Bahi-khata form open ho gaya.");
       } else if (transcript.includes('task') || transcript.includes('saaf') || transcript.includes('clean') || transcript.includes('pura')) {
@@ -1091,10 +1325,10 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // 3. Authentication
+    // 3. Auth
     function quickFillLogin(roleKey) {
       document.getElementById('login-username').value = roleKey;
-      document.getElementById('login-password').value = "1234";
+      document.getElementById('login-password').value = "Kisan@9981#Secure";
       handleUserLogin(new Event('submit'));
     }
 
@@ -1156,7 +1390,7 @@
       document.getElementById('auth-portal-screen').classList.remove('hidden');
     }
 
-    // 4. Digital Bahi-Khata
+    // 4. Bahi-Khata
     function toggleAddExpenseForm() {
       const box = document.getElementById('expense-form-box');
       box.classList.toggle('hidden');
@@ -1183,7 +1417,7 @@
       });
 
       if (farmer.expenses.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Koi kharcha darj nahi hai. 'Kharcha Jodein' par click karein.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Koi kharcha darj nahi hai.</td></tr>`;
       }
 
       const gross = farmer.qty * farmer.rate;
@@ -1282,7 +1516,7 @@
       }
     }
 
-    // Translation Handlers
+    // Translation
     function translateWebsiteRealtime(langCode) {
       if (langCode === 'en') {
         const iframe = document.querySelector('iframe.goog-te-banner-frame');
@@ -1502,7 +1736,7 @@
       alert("Dispute Raised: Auto-Refund of ₹16,380 processed back to Buyer Wallet!");
     }
 
-    // AI Chat Handlers
+    // AI Chat
     function toggleAIChat() {
       const win = document.getElementById('ai-chat-window');
       win.classList.toggle('hidden');
@@ -1554,7 +1788,10 @@
     function processAIAutonomousAction(query) {
       const q = query.toLowerCase();
 
-      if (q.includes('approve') || q.includes('audit all')) {
+      if (q.includes('360') || q.includes('khet') || q.includes('virtual') || q.includes('drone')) {
+        open360FarmModal('KisanAI 360 Field Arena');
+        appendChatMessage('ai', `🌐 <b>Action Executed:</b> Launched 360° Virtual Farm 3D Arena!`);
+      } else if (q.includes('approve') || q.includes('audit all')) {
         auditAllPassed();
         appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers!`);
       } else if (q.includes('invoice') || q.includes('pdf') || q.includes('bill')) {

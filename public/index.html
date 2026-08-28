@@ -117,6 +117,14 @@
     
     #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 1.5rem; outline: none; cursor: grab; }
     #virtual-farm-canvas:active { cursor: grabbing; }
+
+    /* SPOTLIGHT HIGHLIGHTER FOR TOUR */
+    .tour-spotlight-active {
+      position: relative !important;
+      z-index: 55 !important;
+      box-shadow: 0 0 0 6px #10b981, 0 0 35px rgba(16, 185, 129, 0.6) !important;
+      animation: pulseGlow 2s infinite ease-in-out !important;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
@@ -224,11 +232,11 @@
 
       <!-- Feature Guide, 360 View, Online Status -->
       <div class="flex items-center gap-2">
-        <button onclick="openPlatformGuideModal()" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
+        <button id="guide-tour-trigger-btn" onclick="startAppTour(true)" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
           <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-400"></i> Platform Guide & Buttons
         </button>
 
-        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-400/40 text-emerald-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
+        <button id="nav-360-farm-btn" onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-400/40 text-emerald-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
           <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-400"></i> 360° Virtual Farm
         </button>
         
@@ -468,7 +476,7 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 2. LOGISTICS DRIVER WORKSPACE (WITH LIVE GPS NAVIGATION) -->
+    <!-- 2. LOGISTICS DRIVER WORKSPACE                           -->
     <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -499,7 +507,6 @@
             </div>
           </div>
 
-          <!-- Active Trip Action Panel -->
           <div class="pt-3 border-t border-slate-100 space-y-2.5">
             <label class="block text-xs font-bold text-slate-800">1. Enter Buyer OTP to Start Ride:</label>
             <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none" />
@@ -508,7 +515,6 @@
               <i data-lucide="play" class="w-4 h-4"></i> Start Live GPS Navigation
             </button>
 
-            <!-- End Ride Button (Appears after start) -->
             <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition hidden flex items-center justify-center gap-2">
               <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow Funds 🏁
             </button>
@@ -528,7 +534,6 @@
           
           <div id="driver-map"></div>
 
-          <!-- In-Ride Navigation HUD -->
           <div id="driver-nav-hud" class="absolute bottom-8 left-8 right-8 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-emerald-500/30 text-white text-xs flex justify-between items-center hidden z-20">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-emerald-500 text-slate-950 rounded-xl font-black">
@@ -609,6 +614,7 @@
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
+      <!-- Top Action Bar with Highlight Targets for Onboarding Tour -->
       <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4 hover-lift-card">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-500 uppercase">Verified Member Account:</span>
@@ -616,15 +622,15 @@
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+          <button id="tour-step-360" onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
           </button>
           
-          <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+          <button id="tour-step-voice" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
           
-          <button onclick="speakFarmerTasks()" class="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
+          <button id="tour-step-audio" onclick="speakFarmerTasks()" class="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
             <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye
           </button>
           <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl" id="farmer-pincode-badge">
@@ -641,7 +647,7 @@
         <span class="text-[10px] font-bold uppercase bg-amber-200 text-amber-800 px-2 py-0.5 rounded">Voice AI</span>
       </div>
 
-      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg hover-lift-card">
+      <div id="tour-step-profile" class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg hover-lift-card">
         <div>
           <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Workspace</span>
           <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
@@ -659,8 +665,8 @@
         </div>
       </div>
 
-      <!-- DIGITAL BAHI-KHATA -->
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
+      <!-- DIGITAL BAHI-KHATA (Tour Step Target) -->
+      <div id="tour-step-bahi" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
           <div>
             <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
@@ -735,8 +741,8 @@
         </div>
       </div>
 
-      <!-- 6 Micro Tools -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+      <!-- 6 Micro Tools (Tour Step Target) -->
+      <div id="tour-step-tools" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2 hover-lift-card">
           <div class="flex justify-between items-center text-emerald-700 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
@@ -854,89 +860,47 @@
   </main>
 
   <!-- ========================================================= -->
-  <!-- MODAL: PLATFORM COMPLETE FEATURE & BUTTON GUIDE           -->
+  <!-- 6. INTERACTIVE STEP-BY-STEP ONBOARDING WALKTHROUGH POPUP   -->
   <!-- ========================================================= -->
-  <div id="modal-platform-guide" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto text-slate-800">
+  <div id="tour-overlay" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-200 space-y-5 text-slate-800 relative animate-pulse-glow">
       
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="p-2 bg-emerald-100 text-emerald-800 rounded-xl font-bold">
-            <i data-lucide="book-open" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h3 class="font-black text-lg text-slate-900">KisanRoute Platform & Button Guide</h3>
-            <p class="text-xs text-slate-500">Konse button se kya hota hai aur feature kaise kaam karta hai</p>
-          </div>
+      <!-- Progress Bar & Step Tracker -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span id="tour-step-badge" class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-black rounded-full uppercase">Step 1 of 6</span>
+          <h4 id="tour-step-title" class="font-black text-sm text-slate-900">Welcome to KisanRoute!</h4>
         </div>
-        <button onclick="closePlatformGuideModal()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button onclick="endAppTour()" class="text-slate-400 hover:text-slate-700 text-xs font-bold flex items-center gap-1">
+          <i data-lucide="x" class="w-4 h-4"></i> Skip Guide
         </button>
       </div>
 
-      <div class="space-y-4 max-h-[62vh] overflow-y-auto pr-2 text-xs leading-relaxed">
-        
-        <!-- 1. Roles & Login -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-          <h4 class="font-black text-sm text-emerald-800 flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-4 h-4"></i> 1. Role-Isolated Authentication (Login Portal)
-          </h4>
-          <p><b>Quick Chips (1-Click Login):</b> Admin, Farmer 1 to 10, Driver, ya Buyer/Vendor par click karke direct unke isolated dashboard me jayein. Ek role doosre ka private dashboard nahi dekh sakta.</p>
+      <!-- Step Description Body -->
+      <div class="space-y-2 text-xs leading-relaxed">
+        <div id="tour-icon-box" class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-black mb-2">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
         </div>
-
-        <!-- 2. Buyer Screen -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-          <h4 class="font-black text-sm text-blue-800 flex items-center gap-1.5">
-            <i data-lucide="shopping-cart" class="w-4 h-4"></i> 2. Buyer & Live Order Tracking
-          </h4>
-          <ul class="list-disc pl-5 space-y-1 text-slate-600">
-            <li><b>PDF Bill Button:</b> 5% GST official B2B Tax Invoice (Faridabad Agro FPO) PDF download karta hai.</li>
-            <li><b>Send WhatsApp:</b> Order details aur secret 4-digit OTP seedha WhatsApp message par share karta hai.</li>
-            <li><b>Dispute / Auto-Refund:</b> Agar transit me fasal kharab ho, toh click karte hi Escrow se instant refund wallet me transfer ho jata hai.</li>
-            <li><b>360° Live Farm Inspection:</b> Khet ki 3D virtual simulation khol kar khet aur fasal ko inspect karata hai.</li>
-          </ul>
-        </div>
-
-        <!-- 3. Driver & Navigation -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-          <h4 class="font-black text-sm text-amber-800 flex items-center gap-1.5">
-            <i data-lucide="truck" class="w-4 h-4"></i> 3. Driver Smart Allotment & GPS Navigation
-          </h4>
-          <ul class="list-disc pl-5 space-y-1 text-slate-600">
-            <li><b>Weight Slider:</b> 10kg se 3,000kg slide karke dekhein ki system kaise Bike, E-Rickshaw, Mini Truck ya Heavy Truck allot karta hai.</li>
-            <li><b>Start Live GPS Navigation (OTP: 4829):</b> Buyer OTP dalne par map par live delivery navigation active ho jata hai aur truck waypoint-by-waypoint aage badhta hai.</li>
-            <li><b>End Ride & Release Escrow:</b> Destination par ride end hote hi escrow funds kisaan ke bank UPI khate me transfer ho jate hain.</li>
-          </ul>
-        </div>
-
-        <!-- 4. Farmer Bahi-Khata & Voice -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-          <h4 class="font-black text-sm text-purple-800 flex items-center gap-1.5">
-            <i data-lucide="mic" class="w-4 h-4"></i> 4. Farmer Voice & Digital Bahi-Khata
-          </h4>
-          <ul class="list-disc pl-5 space-y-1 text-slate-600">
-            <li><b>बोलकर काम करें (Mic Button):</b> Haryanvi/Hindi me bole (jaise *"Bahi khata update karo"* ya *"Task pura hua"*) aur AI bina type kiye task execute karega.</li>
-            <li><b>Bol Kar Suniye (Audio Payout):</b> Kisaan ko soundbox style bol kar batata hai ki kitni kamai hui aur kharche nikal kar net munafa kitna hai.</li>
-            <li><b>Kharcha Jodein (+ Expense):</b> Khad, beej, diesel, labor ka kharcha add karke exact pocket profit calculate karta hai.</li>
-          </ul>
-        </div>
-
-        <!-- 5. Admin & AI Copilot -->
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-          <h4 class="font-black text-sm text-slate-800 flex items-center gap-1.5">
-            <i data-lucide="bot" class="w-4 h-4"></i> 5. Admin Audit Hub & KisanAI Copilot
-          </h4>
-          <ul class="list-disc pl-5 space-y-1 text-slate-600">
-            <li><b>Auto-Approve All Ready Farmers:</b> 10 ke 10 farmers ki cleaning, sorting, crating audit ko 1-click me pass karta hai.</li>
-            <li><b>Ask KisanAI (Floating Button):</b> Chatbot se kuch bhi bole (e.g. *"Approve all farmers"*, *"Download GST bill"*, ya *"Track truck"*) aur AI autonomous action le leta hai.</li>
-          </ul>
-        </div>
-
+        <p id="tour-step-desc" class="text-slate-600 font-medium">
+          Yeh app khas kisaano aur FPOs ke liye banaya gaya hai. Aaiye dekhte hain kaunsa button kya kaam karta hai!
+        </p>
       </div>
 
-      <button onclick="closePlatformGuideModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
-        Understood & Close Guide
-      </button>
+      <!-- Next, Prev, Skip Controls -->
+      <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+        <button id="tour-btn-prev" onclick="prevTourStep()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1 hidden">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+        </button>
+
+        <button onclick="endAppTour()" class="px-3 py-2 text-slate-400 hover:text-slate-600 font-bold transition">
+          Skip (Band Karein)
+        </button>
+
+        <button id="tour-btn-next" onclick="nextTourStep()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-lg transition flex items-center gap-1.5 ml-auto">
+          <span>Aage Badhein (Next)</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -1029,7 +993,7 @@
       <button onclick="open360FarmModal('KisanAI 360 Field Arena')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         🌐 Open 360° Khet
       </button>
-      <button onclick="openPlatformGuideModal()" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+      <button onclick="startAppTour(true)" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         📖 Platform Guide
       </button>
       <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
@@ -1046,7 +1010,7 @@
   </div>
 
   <!-- FLOATING AI TRIGGER BUTTON -->
-  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40 animate-pulse-glow">
+  <button id="tour-step-ai" onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-40 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40 animate-pulse-glow">
     <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
     <span class="pr-1 text-slate-950 font-bold">Ask KisanAI</span>
     <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping"></span>
@@ -1109,7 +1073,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC, DRIVER GPS SIMULATOR & 360 ENGINE -->
+  <!-- JAVASCRIPT LOGIC, ONBOARDING WALKTHROUGH & 360 ENGINE -->
   <script>
     let clusterFarmers = [
       { 
@@ -1145,14 +1109,113 @@
     let speechRecognition = null;
     let isRecordingVoice = false;
 
-    // Faridabad Real Route Coordinates for Driver Live Trip
+    // =========================================================
+    // 0. STEP-BY-STEP APP ONBOARDING TOUR DATA
+    // =========================================================
+    let currentTourStep = 0;
+    const tourSteps = [
+      {
+        targetId: 'tour-step-profile',
+        title: '1. Fasal & Payout Overview',
+        desc: 'Yahan aapko aapki fasal ki kul matra (kg), expected seedha UPI payout aur kharche nikaal kar Net Pocket Munafa dikhta hai.',
+        icon: 'wallet'
+      },
+      {
+        targetId: 'tour-step-voice',
+        title: '2. बोलकर काम करें (Voice Mic)',
+        desc: 'Bina type kiye Hindi ya local bhasha me bolein—jaise "Bahi-khata kharcha jodo" ya "Cleaning task pura hua", AI turant save karega.',
+        icon: 'mic'
+      },
+      {
+        targetId: 'tour-step-audio',
+        title: '3. Bol Kar Suniye (Audio Alert)',
+        desc: 'Soundbox style bolkar suniye ki aapki fasal ka kitna paisa bank khate me safe hai aur shuddh munafa kitna hua.',
+        icon: 'volume-2'
+      },
+      {
+        targetId: 'tour-step-360',
+        title: '4. 360° Virtual Khet View',
+        desc: 'Is button se aap apne poore khet aur fasal ko 360 degree 3D WebGL me ghumakar virtual inspect kar sakte hain.',
+        icon: 'orbit'
+      },
+      {
+        targetId: 'tour-step-bahi',
+        title: '5. डिजिटल बही-खाता (Expense Ledger)',
+        desc: 'Khad, beej, diesel aur majdoori ke kharche jod kar fasal ka sachha munafa (Net Profit) calculate karein.',
+        icon: 'calculator'
+      },
+      {
+        targetId: 'tour-step-tools',
+        title: '6. KCC, Mausam & Seed Scanner',
+        desc: 'Yahan se fertilizer dose calculate karein, 48-ghante ki mausam dawai advisory dekhein aur genuine khad bag verify karein.',
+        icon: 'wrench'
+      }
+    ];
+
+    function startAppTour(force = false) {
+      currentTourStep = 0;
+      document.getElementById('tour-overlay').classList.remove('hidden');
+      renderTourStep();
+    }
+
+    function renderTourStep() {
+      // Remove previous spotlight highlights
+      document.querySelectorAll('.tour-spotlight-active').forEach(el => el.classList.remove('tour-spotlight-active'));
+
+      const step = tourSteps[currentTourStep];
+      document.getElementById('tour-step-badge').innerText = `Step ${currentTourStep + 1} of ${tourSteps.length}`;
+      document.getElementById('tour-step-title').innerText = step.title;
+      document.getElementById('tour-step-desc').innerText = step.desc;
+
+      // Update Icon
+      const iconBox = document.getElementById('tour-icon-box');
+      iconBox.innerHTML = `<i data-lucide="${step.icon}" class="w-6 h-6"></i>`;
+
+      // Highlight target element if present on screen
+      const targetEl = document.getElementById(step.targetId);
+      if (targetEl) {
+        targetEl.classList.add('tour-spotlight-active');
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Prev & Next Buttons
+      document.getElementById('tour-btn-prev').classList.toggle('hidden', currentTourStep === 0);
+      document.getElementById('tour-btn-next').innerHTML = (currentTourStep === tourSteps.length - 1)
+        ? `<span>Complete & Start Work 🎉</span>`
+        : `<span>Aage Badhein (Next)</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>`;
+
+      lucide.createIcons();
+    }
+
+    function nextTourStep() {
+      if (currentTourStep < tourSteps.length - 1) {
+        currentTourStep++;
+        renderTourStep();
+      } else {
+        endAppTour();
+        triggerConfettiSuccess("Badhai ho! Aapne KisanRoute guide poora dekh liya.");
+      }
+    }
+
+    function prevTourStep() {
+      if (currentTourStep > 0) {
+        currentTourStep--;
+        renderTourStep();
+      }
+    }
+
+    function endAppTour() {
+      document.getElementById('tour-overlay').classList.add('hidden');
+      document.querySelectorAll('.tour-spotlight-active').forEach(el => el.classList.remove('tour-spotlight-active'));
+    }
+
     const driverWaypoints = [
-      [28.3360, 77.1610], // Dhauj Farm Pickup (121007)
-      [28.3490, 77.2100], // Sohna-Faridabad Road
-      [28.3410, 77.3200], // Ballabhgarh Mandi Crossing (121002)
-      [28.3750, 77.2900], // NIT Faridabad (121001)
-      [28.4080, 77.3170], // Badkhal Flyover (121003)
-      [28.4210, 77.3050]  // Sector 15 APMC Delivery Hub (121005)
+      [28.3360, 77.1610],
+      [28.3490, 77.2100],
+      [28.3410, 77.3200],
+      [28.3750, 77.2900],
+      [28.4080, 77.3170],
+      [28.4210, 77.3050]
     ];
 
     function triggerConfettiSuccess(msg) {
@@ -1195,9 +1258,7 @@
       });
     }
 
-    // =========================================================
-    // 1. DRIVER LIVE GPS NAVIGATION & TRIP CONTROLLER
-    // =========================================================
+    // Driver Live GPS Navigation
     function initDriverMap() {
       if (driverMap) {
         driverMap.invalidateSize();
@@ -1229,7 +1290,6 @@
         return;
       }
 
-      // Update UI Status
       document.getElementById('driver-trip-status').innerText = "LIVE ON-ROAD (Moving to Sec 15)";
       document.getElementById('driver-trip-status').className = "text-emerald-500 font-bold animate-pulse";
       document.getElementById('btn-start-ride').classList.add('hidden');
@@ -1241,7 +1301,6 @@
       triggerConfettiSuccess("OTP 4829 Verified! Live GPS Navigation Activated.");
       updateDeliveryStatus('dispatched');
 
-      // Start Continuous Live Moving Truck Simulation
       let waypointIndex = 0;
       clearInterval(driverNavInterval);
       driverNavInterval = setInterval(() => {
@@ -1285,21 +1344,7 @@
       triggerConfettiSuccess("Ride Completed! ₹15,600 transferred directly to Farmer UPI account.");
     }
 
-    // =========================================================
-    // 2. PLATFORM FEATURE & BUTTON GUIDE MODAL
-    // =========================================================
-    function openPlatformGuideModal() {
-      document.getElementById('modal-platform-guide').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function closePlatformGuideModal() {
-      document.getElementById('modal-platform-guide').classList.add('hidden');
-    }
-
-    // =========================================================
-    // 3. 3D VIRTUAL KHET 360° WEBGL ENGINE (THREE.JS)
-    // =========================================================
+    // 3D Virtual Khet Engine
     let scene, camera, renderer, farmGroup;
     let isDragging3D = false;
     let previousMousePosition = { x: 0, y: 0 };
@@ -1428,7 +1473,7 @@
       camera.lookAt(0, 0, 0);
     }
 
-    // 4. Offline Engine
+    // Offline Engine
     function initOfflineCachingEngine() {
       const cached = localStorage.getItem('kisanroute_cluster_cache');
       if (cached) {
@@ -1456,7 +1501,7 @@
       localStorage.setItem('kisanroute_cluster_cache', JSON.stringify(clusterFarmers));
     }
 
-    // 5. Voice Module
+    // Voice Module
     function initSpeechRecognitionModule() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRec) {
@@ -1506,12 +1551,12 @@
     }
 
     function handleVoiceCommandIntent(transcript) {
-      if (transcript.includes('360') || transcript.includes('khet') || transcript.includes('view') || transcript.includes('drone')) {
+      if (transcript.includes('guide') || transcript.includes('help') || transcript.includes('button')) {
+        startAppTour(true);
+        speakVoiceFeedback("Guide tour shuru kiya ja raha hai.");
+      } else if (transcript.includes('360') || transcript.includes('khet') || transcript.includes('view')) {
         open360FarmModal('Voice Activated: 360° Khet View');
         speakVoiceFeedback("360 degree virtual khet khol diya gaya hai.");
-      } else if (transcript.includes('guide') || transcript.includes('help') || transcript.includes('button')) {
-        openPlatformGuideModal();
-        speakVoiceFeedback("Platform feature guide open ho gaya.");
       } else if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
         toggleAddExpenseForm();
         speakVoiceFeedback("Bahi-khata form open ho gaya.");
@@ -1531,7 +1576,7 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // 6. Auth
+    // Auth & Auto-Launch Guide on Farmer Login
     function quickFillLogin(roleKey) {
       document.getElementById('login-username').value = roleKey;
       document.getElementById('login-password').value = "Kisan@9981#Secure";
@@ -1574,6 +1619,9 @@
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(targetFarmer);
         renderBahiKhataLedger(targetFarmer);
+
+        // AUTO-TRIGGER INTERACTIVE TOUR ON FARMER LOGIN
+        setTimeout(() => { startAppTour(); }, 600);
       } else {
         currentFarmerObject = clusterFarmers[0];
         document.getElementById('session-user-badge').innerText = `Farmer: ${u}`;
@@ -1581,6 +1629,7 @@
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(clusterFarmers[0]);
         renderBahiKhataLedger(clusterFarmers[0]);
+        setTimeout(() => { startAppTour(); }, 600);
       }
 
       lucide.createIcons();
@@ -1596,7 +1645,7 @@
       document.getElementById('auth-portal-screen').classList.remove('hidden');
     }
 
-    // 7. Bahi-Khata
+    // Bahi-Khata
     function toggleAddExpenseForm() {
       const box = document.getElementById('expense-form-box');
       box.classList.toggle('hidden');
@@ -1969,8 +2018,8 @@
         open360FarmModal('KisanAI 360 Field Arena');
         appendChatMessage('ai', `🌐 <b>Action Executed:</b> Launched 360° Virtual Farm 3D Arena!`);
       } else if (q.includes('guide') || q.includes('help') || q.includes('button')) {
-        openPlatformGuideModal();
-        appendChatMessage('ai', `📖 <b>Action Executed:</b> Opened Platform Feature & Button Guide.`);
+        startAppTour(true);
+        appendChatMessage('ai', `📖 <b>Action Executed:</b> Started interactive walkthrough tour.`);
       } else if (q.includes('approve') || q.includes('audit all')) {
         auditAllPassed();
         appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers!`);

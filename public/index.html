@@ -205,7 +205,7 @@
     </div>
   </div>
 
-  <!-- TOP HEADER -->
+  <!-- TOP HEADER WITH GUIDE BUTTON -->
   <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
@@ -222,21 +222,26 @@
         </div>
       </div>
 
-      <!-- Live Network Sync Status & 360 View Launcher -->
+      <!-- Feature Guide, 360 View, Online Status -->
       <div class="flex items-center gap-2">
-        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-400/40 text-emerald-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
-          <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-400"></i> 360° Virtual Farm Arena
+        <button onclick="openPlatformGuideModal()" class="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-amber-400"></i> Platform Guide & Buttons
         </button>
+
+        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-400/40 text-emerald-300 text-[11px] font-black rounded-full flex items-center gap-1.5 transition">
+          <i data-lucide="scan-eye" class="w-3.5 h-3.5 text-emerald-400"></i> 360° Virtual Farm
+        </button>
+        
         <span id="network-status-badge" class="px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Online
         </span>
       </div>
 
-      <!-- Language Selector (22+ Languages) -->
+      <!-- Language Selector -->
       <div class="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700">
         <div class="flex items-center gap-1.5 pl-2 text-emerald-400 font-bold text-xs">
           <i data-lucide="languages" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">भाषा / Lang:</span>
+          <span class="hidden sm:inline">भाषा:</span>
         </div>
         <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-slate-900 text-white font-bold text-xs p-1.5 rounded-lg border border-slate-700 focus:outline-none">
           <option value="en">English</option>
@@ -259,10 +264,10 @@
         </select>
       </div>
 
-      <!-- Logged-in Role Identity & Logout -->
+      <!-- Session Profile & Logout -->
       <div class="flex items-center gap-3 bg-slate-800 p-1.5 px-3 rounded-2xl border border-slate-700 text-xs">
         <div class="text-right">
-          <span class="text-[10px] text-slate-400 block font-semibold">Active User Session:</span>
+          <span class="text-[10px] text-slate-400 block font-semibold">Active Session:</span>
           <span id="session-user-badge" class="text-emerald-400 font-black">Not Logged In</span>
         </div>
         <button onclick="logoutUser()" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl font-bold transition flex items-center gap-1">
@@ -374,9 +379,8 @@
               </button>
             </div>
 
-            <!-- 360 Virtual Inspection Button on Buyer View -->
             <button onclick="open360FarmModal('Dhauj Tomato Farm - Rameshwar Sharma')" class="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-lg">
-              <i data-lucide="orbit" class="w-4 h-4"></i> 360° Live Farm & Produce Inspection (Virtual)
+              <i data-lucide="orbit" class="w-4 h-4"></i> 360° Live Farm Inspection (Virtual)
             </button>
 
             <div class="grid grid-cols-2 gap-2">
@@ -464,15 +468,15 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- 2. LOGISTICS DRIVER WORKSPACE                           -->
+    <!-- 2. LOGISTICS DRIVER WORKSPACE (WITH LIVE GPS NAVIGATION) -->
     <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
           <div>
-            <h3 class="font-bold text-slate-900 text-base">Smart Vehicle Allotment Simulator</h3>
-            <p class="text-xs text-slate-500">Auto-allots vehicle based on batch weight across 15 Faridabad pincodes.</p>
+            <h3 class="font-bold text-slate-900 text-base">Driver Navigation & Trip Controller</h3>
+            <p class="text-xs text-slate-500">Auto-allot vehicle, enter OTP to start active GPS route, and end ride.</p>
           </div>
 
           <div>
@@ -490,29 +494,57 @@
             <h4 id="vehicle-title" class="font-bold text-slate-900 text-base">Mini Truck (Tata Ace)</h4>
             <div class="space-y-1 text-slate-600 pt-1">
               <p>Max Capacity: <span class="font-semibold text-slate-800" id="vehicle-cap">1,000 kg</span></p>
-              <p>Calculated Trip Fare: <span class="font-bold text-emerald-800" id="vehicle-trip-cost">₹1,120</span></p>
-              <p>Diesel Saved via Grouping: <b class="text-emerald-700">18.4 Litres (₹1,650)</b></p>
+              <p>Trip Fare: <span class="font-bold text-emerald-800" id="vehicle-trip-cost">₹1,120</span></p>
+              <p>Trip Status: <b class="text-emerald-700" id="driver-trip-status">IDLE (Awaiting OTP)</b></p>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 space-y-2">
-            <label class="block text-xs font-bold text-slate-800">Buyer Delivery OTP Verification:</label>
+          <!-- Active Trip Action Panel -->
+          <div class="pt-3 border-t border-slate-100 space-y-2.5">
+            <label class="block text-xs font-bold text-slate-800">1. Enter Buyer OTP to Start Ride:</label>
             <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none" />
-            <button onclick="driverVerifyOTP()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition">
-              Verify OTP & Release Escrow to Farmers 🚀
+            
+            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+              <i data-lucide="play" class="w-4 h-4"></i> Start Live GPS Navigation
+            </button>
+
+            <!-- End Ride Button (Appears after start) -->
+            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition hidden flex items-center justify-center gap-2">
+              <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow Funds 🏁
             </button>
           </div>
         </div>
 
-        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3 hover-lift-card">
+        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3 hover-lift-card relative">
           <div class="flex justify-between items-center">
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Live Geofenced 15-Pincode Faridabad Route Map</h4>
-              <p class="text-xs text-slate-500">Waypoints: Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Navigation
+              </h4>
+              <p class="text-xs text-slate-500" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
             </div>
-            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">32 km VRPTW Optimized</span>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full" id="driver-speed-badge">Speed: 0 km/h</span>
           </div>
+          
           <div id="driver-map"></div>
+
+          <!-- In-Ride Navigation HUD -->
+          <div id="driver-nav-hud" class="absolute bottom-8 left-8 right-8 bg-slate-900/90 backdrop-blur-md p-3.5 rounded-2xl border border-emerald-500/30 text-white text-xs flex justify-between items-center hidden z-20">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-emerald-500 text-slate-950 rounded-xl font-black">
+                <i data-lucide="navigation" class="w-5 h-5 animate-spin"></i>
+              </div>
+              <div>
+                <p class="text-[10px] text-emerald-400 font-extrabold uppercase">Live Navigation Active</p>
+                <p class="font-bold text-white text-xs" id="hud-next-turn">Turn right towards Mathura Road (NH-19)</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] text-slate-400">Remaining Distance</p>
+              <p class="text-base font-black text-emerald-300 font-mono-code" id="hud-distance-left">14.2 km (28 min)</p>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -822,12 +854,98 @@
   </main>
 
   <!-- ========================================================= -->
+  <!-- MODAL: PLATFORM COMPLETE FEATURE & BUTTON GUIDE           -->
+  <!-- ========================================================= -->
+  <div id="modal-platform-guide" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 my-auto text-slate-800">
+      
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-emerald-100 text-emerald-800 rounded-xl font-bold">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-lg text-slate-900">KisanRoute Platform & Button Guide</h3>
+            <p class="text-xs text-slate-500">Konse button se kya hota hai aur feature kaise kaam karta hai</p>
+          </div>
+        </div>
+        <button onclick="closePlatformGuideModal()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 max-h-[62vh] overflow-y-auto pr-2 text-xs leading-relaxed">
+        
+        <!-- 1. Roles & Login -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-black text-sm text-emerald-800 flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4"></i> 1. Role-Isolated Authentication (Login Portal)
+          </h4>
+          <p><b>Quick Chips (1-Click Login):</b> Admin, Farmer 1 to 10, Driver, ya Buyer/Vendor par click karke direct unke isolated dashboard me jayein. Ek role doosre ka private dashboard nahi dekh sakta.</p>
+        </div>
+
+        <!-- 2. Buyer Screen -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-black text-sm text-blue-800 flex items-center gap-1.5">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> 2. Buyer & Live Order Tracking
+          </h4>
+          <ul class="list-disc pl-5 space-y-1 text-slate-600">
+            <li><b>PDF Bill Button:</b> 5% GST official B2B Tax Invoice (Faridabad Agro FPO) PDF download karta hai.</li>
+            <li><b>Send WhatsApp:</b> Order details aur secret 4-digit OTP seedha WhatsApp message par share karta hai.</li>
+            <li><b>Dispute / Auto-Refund:</b> Agar transit me fasal kharab ho, toh click karte hi Escrow se instant refund wallet me transfer ho jata hai.</li>
+            <li><b>360° Live Farm Inspection:</b> Khet ki 3D virtual simulation khol kar khet aur fasal ko inspect karata hai.</li>
+          </ul>
+        </div>
+
+        <!-- 3. Driver & Navigation -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-black text-sm text-amber-800 flex items-center gap-1.5">
+            <i data-lucide="truck" class="w-4 h-4"></i> 3. Driver Smart Allotment & GPS Navigation
+          </h4>
+          <ul class="list-disc pl-5 space-y-1 text-slate-600">
+            <li><b>Weight Slider:</b> 10kg se 3,000kg slide karke dekhein ki system kaise Bike, E-Rickshaw, Mini Truck ya Heavy Truck allot karta hai.</li>
+            <li><b>Start Live GPS Navigation (OTP: 4829):</b> Buyer OTP dalne par map par live delivery navigation active ho jata hai aur truck waypoint-by-waypoint aage badhta hai.</li>
+            <li><b>End Ride & Release Escrow:</b> Destination par ride end hote hi escrow funds kisaan ke bank UPI khate me transfer ho jate hain.</li>
+          </ul>
+        </div>
+
+        <!-- 4. Farmer Bahi-Khata & Voice -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-black text-sm text-purple-800 flex items-center gap-1.5">
+            <i data-lucide="mic" class="w-4 h-4"></i> 4. Farmer Voice & Digital Bahi-Khata
+          </h4>
+          <ul class="list-disc pl-5 space-y-1 text-slate-600">
+            <li><b>बोलकर काम करें (Mic Button):</b> Haryanvi/Hindi me bole (jaise *"Bahi khata update karo"* ya *"Task pura hua"*) aur AI bina type kiye task execute karega.</li>
+            <li><b>Bol Kar Suniye (Audio Payout):</b> Kisaan ko soundbox style bol kar batata hai ki kitni kamai hui aur kharche nikal kar net munafa kitna hai.</li>
+            <li><b>Kharcha Jodein (+ Expense):</b> Khad, beej, diesel, labor ka kharcha add karke exact pocket profit calculate karta hai.</li>
+          </ul>
+        </div>
+
+        <!-- 5. Admin & AI Copilot -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <h4 class="font-black text-sm text-slate-800 flex items-center gap-1.5">
+            <i data-lucide="bot" class="w-4 h-4"></i> 5. Admin Audit Hub & KisanAI Copilot
+          </h4>
+          <ul class="list-disc pl-5 space-y-1 text-slate-600">
+            <li><b>Auto-Approve All Ready Farmers:</b> 10 ke 10 farmers ki cleaning, sorting, crating audit ko 1-click me pass karta hai.</li>
+            <li><b>Ask KisanAI (Floating Button):</b> Chatbot se kuch bhi bole (e.g. *"Approve all farmers"*, *"Download GST bill"*, ya *"Track truck"*) aur AI autonomous action le leta hai.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <button onclick="closePlatformGuideModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition">
+        Understood & Close Guide
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
   <!-- MODAL: 360° VIRTUAL KHET & DRONE INSPECTION ARENA (3D)    -->
   <!-- ========================================================= -->
   <div id="modal-360-farm" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
       
-      <!-- Top Control Header -->
       <div class="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
@@ -839,7 +957,6 @@
           </div>
         </div>
 
-        <!-- Camera Angle Presets -->
         <div class="flex items-center gap-1.5 text-xs">
           <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
@@ -850,11 +967,9 @@
         </div>
       </div>
 
-      <!-- 3D WebGL Canvas Container -->
       <div class="flex-1 w-full h-full relative bg-slate-950">
         <div id="virtual-farm-container" class="w-full h-full"></div>
 
-        <!-- On-Screen Telemetry HUD -->
         <div class="absolute bottom-4 left-4 bg-slate-900/85 backdrop-blur-md p-3.5 rounded-2xl border border-emerald-500/30 text-[11px] space-y-1 z-10 pointer-events-none">
           <div class="flex items-center gap-2 font-bold text-emerald-400">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Khet Telemetry
@@ -914,11 +1029,11 @@
       <button onclick="open360FarmModal('KisanAI 360 Field Arena')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         🌐 Open 360° Khet
       </button>
+      <button onclick="openPlatformGuideModal()" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
+        📖 Platform Guide
+      </button>
       <button onclick="executeQuickPrompt('Approve all pending farmers audit')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
         ⚡ Approve All Farmers
-      </button>
-      <button onclick="executeQuickPrompt('Download GST Invoice PDF')" class="px-2.5 py-1 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 rounded-lg font-medium whitespace-nowrap transition">
-        📄 Download GST Bill
       </button>
     </div>
 
@@ -994,7 +1109,7 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC, 360 THREE.JS ENGINE & ANIMATIONS -->
+  <!-- JAVASCRIPT LOGIC, DRIVER GPS SIMULATOR & 360 ENGINE -->
   <script>
     let clusterFarmers = [
       { 
@@ -1026,10 +1141,20 @@
     let currentLoggedInUser = null;
     let currentFarmerObject = null;
     let trackingMap, driverMap;
+    let driverMarker, driverRoutePolyline, driverNavInterval;
     let speechRecognition = null;
     let isRecordingVoice = false;
 
-    // Confetti Helper
+    // Faridabad Real Route Coordinates for Driver Live Trip
+    const driverWaypoints = [
+      [28.3360, 77.1610], // Dhauj Farm Pickup (121007)
+      [28.3490, 77.2100], // Sohna-Faridabad Road
+      [28.3410, 77.3200], // Ballabhgarh Mandi Crossing (121002)
+      [28.3750, 77.2900], // NIT Faridabad (121001)
+      [28.4080, 77.3170], // Badkhal Flyover (121003)
+      [28.4210, 77.3050]  // Sector 15 APMC Delivery Hub (121005)
+    ];
+
     function triggerConfettiSuccess(msg) {
       confetti({
         particleCount: 65,
@@ -1048,7 +1173,6 @@
       attachGlobalRippleEffect();
     });
 
-    // Ripple
     function attachGlobalRippleEffect() {
       document.querySelectorAll('button').forEach(button => {
         button.addEventListener('click', function (e) {
@@ -1072,7 +1196,109 @@
     }
 
     // =========================================================
-    // 3D VIRTUAL KHET 360° WEBGL ENGINE (THREE.JS)
+    // 1. DRIVER LIVE GPS NAVIGATION & TRIP CONTROLLER
+    // =========================================================
+    function initDriverMap() {
+      if (driverMap) {
+        driverMap.invalidateSize();
+        return;
+      }
+      driverMap = L.map('driver-map').setView([28.3360, 77.1610], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
+
+      driverRoutePolyline = L.polyline(driverWaypoints, { color: '#10b981', weight: 5, opacity: 0.8 }).addTo(driverMap);
+      driverMap.fitBounds(driverRoutePolyline.getBounds(), { padding: [30, 30] });
+
+      L.marker(driverWaypoints[0]).addTo(driverMap).bindPopup("<b>Farm Gate: Dhauj</b><br>650kg Tomato Loaded");
+      L.marker(driverWaypoints[driverWaypoints.length - 1]).addTo(driverMap).bindPopup("<b>Destination: Sector 15 Hub</b>");
+
+      driverMarker = L.marker(driverWaypoints[0], {
+        icon: L.divIcon({
+          className: 'custom-driver-icon',
+          html: '<div style="background:#0f172a; border:2px solid #10b981; color:white; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow:0 0 10px rgba(16,185,129,0.8);">🚚</div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 17]
+        })
+      }).addTo(driverMap).bindPopup("<b>Truck HR-38-AF-4829</b><br>Driver: Vikram Singh");
+    }
+
+    function driverStartRide() {
+      const otp = document.getElementById('driver-input-otp').value.trim();
+      if (otp !== "4829") {
+        alert("Invalid OTP! Try entering Buyer Secret OTP: 4829");
+        return;
+      }
+
+      // Update UI Status
+      document.getElementById('driver-trip-status').innerText = "LIVE ON-ROAD (Moving to Sec 15)";
+      document.getElementById('driver-trip-status').className = "text-emerald-500 font-bold animate-pulse";
+      document.getElementById('btn-start-ride').classList.add('hidden');
+      document.getElementById('btn-end-ride').classList.remove('hidden');
+      document.getElementById('driver-nav-hud').classList.remove('hidden');
+      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+      document.getElementById('driver-speed-badge').innerText = "Speed: 44 km/h";
+
+      triggerConfettiSuccess("OTP 4829 Verified! Live GPS Navigation Activated.");
+      updateDeliveryStatus('dispatched');
+
+      // Start Continuous Live Moving Truck Simulation
+      let waypointIndex = 0;
+      clearInterval(driverNavInterval);
+      driverNavInterval = setInterval(() => {
+        waypointIndex = (waypointIndex + 1) % driverWaypoints.length;
+        const currentCoord = driverWaypoints[waypointIndex];
+        
+        driverMarker.setLatLng(currentCoord);
+        driverMap.panTo(currentCoord);
+
+        const turns = [
+          "Moving on Dhauj Farm Corridor (Speed 38 km/h)",
+          "Turn left towards Sohna-Faridabad Road",
+          "Crossing Ballabhgarh Mandi flyover",
+          "Approaching NIT-3 Highway Connector",
+          "Near Badkhal Flyover - 2.5 km away",
+          "Arrived at Sector 15 APMC Gate!"
+        ];
+        document.getElementById('hud-next-turn').innerText = turns[waypointIndex];
+        
+        const distLeft = (driverWaypoints.length - 1 - waypointIndex) * 2.8;
+        document.getElementById('hud-distance-left').innerText = distLeft > 0 ? `${distLeft.toFixed(1)} km (~${Math.round(distLeft * 2)} min)` : "0.0 km (Reached)";
+
+        if (waypointIndex === driverWaypoints.length - 2) {
+          updateDeliveryStatus('near');
+        }
+      }, 3500);
+    }
+
+    function driverEndRide() {
+      clearInterval(driverNavInterval);
+      document.getElementById('driver-trip-status').innerText = "COMPLETED (Escrow Released)";
+      document.getElementById('driver-trip-status').className = "text-emerald-700 font-bold";
+      document.getElementById('btn-end-ride').classList.add('hidden');
+      document.getElementById('btn-start-ride').classList.remove('hidden');
+      document.getElementById('btn-start-ride').innerText = "Ride Completed & Payout Released";
+      document.getElementById('driver-nav-hud').classList.add('hidden');
+      document.getElementById('driver-speed-badge').innerText = "Speed: 0 km/h (Parked)";
+      document.getElementById('driver-live-dot').className = "w-2.5 h-2.5 rounded-full bg-slate-400";
+
+      updateDeliveryStatus('delivered');
+      triggerConfettiSuccess("Ride Completed! ₹15,600 transferred directly to Farmer UPI account.");
+    }
+
+    // =========================================================
+    // 2. PLATFORM FEATURE & BUTTON GUIDE MODAL
+    // =========================================================
+    function openPlatformGuideModal() {
+      document.getElementById('modal-platform-guide').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closePlatformGuideModal() {
+      document.getElementById('modal-platform-guide').classList.add('hidden');
+    }
+
+    // =========================================================
+    // 3. 3D VIRTUAL KHET 360° WEBGL ENGINE (THREE.JS)
     // =========================================================
     let scene, camera, renderer, farmGroup;
     let isDragging3D = false;
@@ -1097,7 +1323,7 @@
       const height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a); // Deep modern dark sky
+      scene.background = new THREE.Color(0x0f172a);
 
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
       camera.position.set(0, 15, 28);
@@ -1108,7 +1334,6 @@
       renderer.domElement.id = "virtual-farm-canvas";
       container.appendChild(renderer.domElement);
 
-      // Lights
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
       scene.add(ambientLight);
 
@@ -1119,14 +1344,12 @@
       farmGroup = new THREE.Group();
       scene.add(farmGroup);
 
-      // 1. Lush Green Soil Ground
       const groundGeo = new THREE.PlaneGeometry(60, 60, 20, 20);
       const groundMat = new THREE.MeshStandardMaterial({ color: 0x166534, roughness: 0.8 });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
       farmGroup.add(ground);
 
-      // 2. Crop Furrows / Rows
       for (let i = -18; i <= 18; i += 4) {
         const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
         const rowMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
@@ -1134,7 +1357,6 @@
         row.position.set(0, 0.2, i);
         farmGroup.add(row);
 
-        // Tomato / Crop Plants on Rows
         for (let j = -18; j <= 18; j += 3) {
           const plantGeo = new THREE.DodecahedronGeometry(0.7);
           const plantMat = new THREE.MeshStandardMaterial({ color: 0x22c55e });
@@ -1142,7 +1364,6 @@
           plant.position.set(j, 0.9, i);
           farmGroup.add(plant);
 
-          // Ripe Red Tomato Fruit Dot
           const fruitGeo = new THREE.SphereGeometry(0.25, 8, 8);
           const fruitMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
           const fruit = new THREE.Mesh(fruitGeo, fruitMat);
@@ -1151,14 +1372,12 @@
         }
       }
 
-      // 3. Farm Warehouse Hub Shed
       const shedGeo = new THREE.BoxGeometry(10, 5, 8);
       const shedMat = new THREE.MeshStandardMaterial({ color: 0x0f766e });
       const shed = new THREE.Mesh(shedGeo, shedMat);
       shed.position.set(-22, 2.5, -20);
       farmGroup.add(shed);
 
-      // 4. Stored Harvest Crates
       for (let c = 0; c < 6; c++) {
         const crateGeo = new THREE.BoxGeometry(1.2, 0.8, 1.2);
         const crateMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
@@ -1167,7 +1386,6 @@
         farmGroup.add(crate);
       }
 
-      // 5. Orbit & Mouse Drag Controllers
       const canvas = renderer.domElement;
       canvas.addEventListener('mousedown', (e) => {
         isDragging3D = true;
@@ -1188,25 +1406,10 @@
 
       window.addEventListener('mouseup', () => isDragging3D = false);
 
-      // Touch Controls for Mobile
-      canvas.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-          isDragging3D = true;
-          previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        }
-      });
-      canvas.addEventListener('touchmove', (e) => {
-        if (!isDragging3D || e.touches.length !== 1) return;
-        const deltaX = e.touches[0].clientX - previousMousePosition.x;
-        farmGroup.rotation.y += deltaX * 0.008;
-        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      });
-      canvas.addEventListener('touchend', () => isDragging3D = false);
-
       function animate() {
         if (!document.getElementById('modal-360-farm').classList.contains('hidden')) {
           requestAnimationFrame(animate);
-          if (!isDragging3D) farmGroup.rotation.y += 0.002; // Smooth auto-orbit
+          if (!isDragging3D) farmGroup.rotation.y += 0.002;
           renderer.render(scene, camera);
         }
       }
@@ -1225,7 +1428,7 @@
       camera.lookAt(0, 0, 0);
     }
 
-    // 1. Offline Caching
+    // 4. Offline Engine
     function initOfflineCachingEngine() {
       const cached = localStorage.getItem('kisanroute_cluster_cache');
       if (cached) {
@@ -1238,14 +1441,14 @@
       window.addEventListener('online', () => {
         const badge = document.getElementById('network-status-badge');
         badge.className = "px-2.5 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Cloud Synced`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Online`;
         saveClusterToCache();
       });
 
       window.addEventListener('offline', () => {
         const badge = document.getElementById('network-status-badge');
         badge.className = "px-2.5 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-extrabold rounded-full flex items-center gap-1.5";
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Khet Offline Mode`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Offline Mode`;
       });
     }
 
@@ -1253,7 +1456,7 @@
       localStorage.setItem('kisanroute_cluster_cache', JSON.stringify(clusterFarmers));
     }
 
-    // 2. Voice Module
+    // 5. Voice Module
     function initSpeechRecognitionModule() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRec) {
@@ -1306,6 +1509,9 @@
       if (transcript.includes('360') || transcript.includes('khet') || transcript.includes('view') || transcript.includes('drone')) {
         open360FarmModal('Voice Activated: 360° Khet View');
         speakVoiceFeedback("360 degree virtual khet khol diya gaya hai.");
+      } else if (transcript.includes('guide') || transcript.includes('help') || transcript.includes('button')) {
+        openPlatformGuideModal();
+        speakVoiceFeedback("Platform feature guide open ho gaya.");
       } else if (transcript.includes('kharcha') || transcript.includes('bahi') || transcript.includes('khata')) {
         toggleAddExpenseForm();
         speakVoiceFeedback("Bahi-khata form open ho gaya.");
@@ -1325,7 +1531,7 @@
       window.speechSynthesis.speak(utter);
     }
 
-    // 3. Auth
+    // 6. Auth
     function quickFillLogin(roleKey) {
       document.getElementById('login-username').value = roleKey;
       document.getElementById('login-password').value = "Kisan@9981#Secure";
@@ -1390,7 +1596,7 @@
       document.getElementById('auth-portal-screen').classList.remove('hidden');
     }
 
-    // 4. Bahi-Khata
+    // 7. Bahi-Khata
     function toggleAddExpenseForm() {
       const box = document.getElementById('expense-form-box');
       box.classList.toggle('hidden');
@@ -1535,7 +1741,7 @@
       }
     }
 
-    // Maps
+    // Buyer Map
     function initTrackingMap() {
       if (trackingMap) {
         trackingMap.invalidateSize();
@@ -1556,25 +1762,6 @@
 
       const poly = L.polyline(routePoints, { color: '#10b981', weight: 4, dashArray: '6, 8' }).addTo(trackingMap);
       trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
-    }
-
-    function initDriverMap() {
-      if (driverMap) {
-        driverMap.invalidateSize();
-        return;
-      }
-      driverMap = L.map('driver-map').setView([28.38, 77.31], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
-
-      const points = [
-        [28.336, 77.161],
-        [28.341, 77.320],
-        [28.408, 77.317],
-        [28.421, 77.305]
-      ];
-      points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
-      const poly = L.polyline(points, { color: '#10b981', weight: 4 }).addTo(driverMap);
-      driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
     function calculateVehicleAllocation() {
@@ -1722,16 +1909,6 @@
       triggerConfettiSuccess("GST Tax Invoice PDF Downloaded!");
     }
 
-    function driverVerifyOTP() {
-      const val = document.getElementById('driver-input-otp').value.trim();
-      if (val === "4829") {
-        triggerConfettiSuccess("OTP 4829 Verified! 100% Escrow funds released directly to Farmer UPI.");
-        updateDeliveryStatus('delivered');
-      } else {
-        alert("Invalid OTP! Try: 4829");
-      }
-    }
-
     function triggerAutoRefundDispute() {
       alert("Dispute Raised: Auto-Refund of ₹16,380 processed back to Buyer Wallet!");
     }
@@ -1791,6 +1968,9 @@
       if (q.includes('360') || q.includes('khet') || q.includes('virtual') || q.includes('drone')) {
         open360FarmModal('KisanAI 360 Field Arena');
         appendChatMessage('ai', `🌐 <b>Action Executed:</b> Launched 360° Virtual Farm 3D Arena!`);
+      } else if (q.includes('guide') || q.includes('help') || q.includes('button')) {
+        openPlatformGuideModal();
+        appendChatMessage('ai', `📖 <b>Action Executed:</b> Opened Platform Feature & Button Guide.`);
       } else if (q.includes('approve') || q.includes('audit all')) {
         auditAllPassed();
         appendChatMessage('ai', `✅ <b>Action Executed:</b> Verified all 10 member farmers!`);
@@ -1799,9 +1979,6 @@
         appendChatMessage('ai', `📄 <b>Action Executed:</b> Generated and downloaded GST Tax Invoice PDF.`);
       } else if (q.includes('track') || q.includes('truck')) {
         appendChatMessage('ai', `🚚 <b>Logistics:</b> Active Truck <b>HR-38-AF-4829</b> moving at 42 km/h. ETA 05:30 PM.`);
-      } else if (q.includes('4829') || q.includes('verify otp')) {
-        driverVerifyOTP();
-        appendChatMessage('ai', `🔐 <b>Action Executed:</b> OTP 4829 verified!`);
       } else {
         appendChatMessage('ai', `🤖 <b>KisanAI:</b> Secure session active for <b>${currentLoggedInUser || 'Guest'}</b>.`);
       }

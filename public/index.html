@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KisanRoute Enterprise - Smart Logistics & 10-Farmer Audit Hub</title>
+  <title>KisanRoute Enterprise - Smart Logistics & Command Center</title>
   
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
 
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,16 +16,16 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Three.js Library for 360° Virtual Farm 3D Render -->
+  <!-- Three.js for 360° Virtual Farm Arena -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <!-- html2pdf.js for Real PDF Generation -->
+  <!-- html2pdf.js for GST Tax Invoice PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- QRCode.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <!-- Canvas Confetti for Celebration Animations -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <!-- Google Universal Translation Engine -->
@@ -40,18 +40,27 @@
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg-base: #070d18;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --emerald-accent: #10b981;
+      --cyan-accent: #06b6d4;
+      --amber-accent: #f59e0b;
+    }
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif; 
-      top: 0px !important;
-      background-color: #0b1320;
+      background-color: var(--bg-base);
       background-image: 
-        radial-gradient(at 0% 0%, rgba(5, 150, 105, 0.15) 0px, transparent 45%),
-        radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 45%);
-      color: #e2e8f0;
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 45%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.1) 0px, transparent 45%),
+        radial-gradient(at 50% 100%, rgba(15, 23, 42, 0.95) 0px, transparent 70%);
+      background-attachment: fixed;
+      color: #f1f5f9;
+      top: 0px !important;
     }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
     
@@ -61,17 +70,17 @@
       width: 100% !important; 
       border-radius: 1rem; 
       z-index: 10;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     
-    .badge-done { background-color: rgba(5, 150, 105, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
-    .badge-pending { background-color: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-done { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.35); }
+    .badge-pending { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
     
     #chat-messages::-webkit-scrollbar { width: 4px; }
     #chat-messages::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     
     @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 26s linear infinite; }
+    .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 28s linear infinite; }
     
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     body { top: 0px !important; }
@@ -86,19 +95,32 @@
       pointer-events: none !important;
     }
 
-    /* Terminal Glass Aesthetic */
-    .terminal-card {
+    /* Command Center Glass Surfaces */
+    .cmd-surface {
       background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .terminal-card:hover {
-      border-color: rgba(5, 150, 105, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 20px 40px -10px rgba(5, 150, 105, 0.15);
+    .cmd-surface:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 20px 45px -10px rgba(16, 185, 129, 0.15);
+    }
+
+    .pipeline-node {
+      position: relative;
+    }
+    .pipeline-node:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -1rem;
+      width: 1rem;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-50%);
     }
 
     button {
@@ -123,19 +145,19 @@
     }
 
     input:focus, select:focus, textarea:focus {
-      border-color: #059669 !important;
-      box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.3) !important;
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
     }
 
     #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 1rem; outline: none; cursor: grab; }
     #virtual-farm-canvas:active { cursor: grabbing; }
 
-    /* SPOTLIGHT ONBOARDING OVERLAY */
+    /* SPOTLIGHT ONBOARDING TOUR STYLES */
     #tour-spotlight-box {
       position: absolute;
       border-radius: 1rem;
-      border: 3px solid #059669;
-      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.85), 0 0 35px rgba(5, 150, 105, 0.9);
+      border: 3px solid #10b981;
+      box-shadow: 0 0 0 9999px rgba(3, 7, 18, 0.88), 0 0 40px rgba(16, 185, 129, 0.95);
       pointer-events: none;
       transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
       z-index: 9990;
@@ -144,45 +166,45 @@
     #tour-floating-card {
       position: absolute;
       z-index: 9999;
-      width: 350px;
+      width: 360px;
       max-width: 92vw;
       transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
   </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col relative">
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. AGRO-TERMINAL ROLE AUTH PORTAL                         -->
+  <!-- 0. SECURE ROLE ACCESS GATE                                -->
   <!-- ========================================================= -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="terminal-card rounded-2xl max-w-xl w-full p-6 sm:p-8 space-y-6 my-auto text-slate-100 border-slate-700/80">
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="cmd-surface rounded-2xl max-w-xl w-full p-6 sm:p-8 space-y-6 my-auto text-slate-100 border-slate-700/80">
       
       <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div class="flex items-center gap-3">
           <div class="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <i data-lucide="layers" class="w-6 h-6"></i>
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
           </div>
           <div>
             <h2 class="text-xl font-black tracking-tight text-white flex items-center gap-2">
-              Kisan<span class="text-emerald-400">Route</span> <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded border border-emerald-500/30">TERMINAL</span>
+              Kisan<span class="text-emerald-400">Route</span> <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded border border-emerald-500/30">COMMAND ACCESS</span>
             </h2>
-            <p class="text-[11px] text-slate-400">Decentralized FPO Logistics & Escrow Gateway</p>
+            <p class="text-[11px] text-slate-400">SIH 2026 Grand Finale Command Terminal &bull; Faridabad FPO</p>
           </div>
         </div>
-        <span class="text-[10px] font-mono-code text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-800">PORT: 10000</span>
+        <span class="text-[10px] font-mono-code text-slate-400 bg-slate-900 px-2 py-1 rounded border border-slate-800">NODE: 121007</span>
       </div>
 
       <form onsubmit="handleUserLogin(event)" class="space-y-4 text-xs" autocomplete="off">
         <div>
-          <label class="block font-bold text-slate-300 mb-1">Select Access Identity / Username</label>
+          <label class="block font-bold text-slate-300 mb-1">Username / Identifier</label>
           <input type="text" id="login-username" name="kisan_user_field" placeholder="e.g. admin, farmer1, driver, vendor" autocomplete="off" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900/90 font-bold text-white placeholder-slate-500 focus:outline-none" />
         </div>
 
         <div>
-          <label class="block font-bold text-slate-300 mb-1">Security PIN / Access Token</label>
+          <label class="block font-bold text-slate-300 mb-1">Security PIN</label>
           <input 
             type="password" 
             id="login-password" 
@@ -198,31 +220,30 @@
         </div>
 
         <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-          <i data-lucide="shield-check" class="w-4 h-4"></i> Initialize Terminal Session
+          <i data-lucide="lock" class="w-4 h-4"></i> Initialize Session
         </button>
       </form>
 
-      <!-- 1-Click Fast Access Chips -->
       <div class="pt-4 border-t border-slate-800 space-y-2.5 text-xs">
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Fast 1-Click Role Simulation:</p>
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Fast Role Switcher:</p>
         <div class="grid grid-cols-3 gap-2 text-[11px]">
           <button onclick="quickFillLogin('admin')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
             🛡️ Admin Hub
           </button>
           <button onclick="quickFillLogin('farmer1')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
-            🌱 Farmer 1
+            🌱 Farmer 1 (Ramesh)
           </button>
           <button onclick="quickFillLogin('farmer2')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
-            🥔 Farmer 2
+            🥔 Farmer 2 (Harpreet)
           </button>
           <button onclick="quickFillLogin('driver')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
-            🚚 Logistics
+            🚚 Fleet Driver
           </button>
           <button onclick="quickFillLogin('vendor')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
             🛒 B2B Buyer
           </button>
           <button onclick="quickFillLogin('lead')" class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-emerald-500 hover:bg-slate-800 font-bold text-slate-200 transition text-center">
-            👑 FPO Lead
+            👑 Lead FPO Head
           </button>
         </div>
       </div>
@@ -230,7 +251,7 @@
     </div>
   </div>
 
-  <!-- 1. LIVE APMC MANDI TICKER (TERMINAL BANNER) -->
+  <!-- 1. LIVE APMC MANDI SPREAD TICKER -->
   <div class="bg-slate-950/90 text-emerald-400 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-slate-800 flex items-center gap-3">
     <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0">Live Mandi Spread</span>
     <div class="w-full overflow-hidden">
@@ -255,9 +276,9 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="text-lg font-black tracking-tight text-white">Kisan<span class="text-emerald-400">Route</span></span>
-            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">SIH 2026</span>
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-extrabold">COMMAND CENTER</span>
           </div>
-          <p class="text-[10px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Pincodes</p>
+          <p class="text-[10px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Mandi Pincodes</p>
         </div>
       </div>
 
@@ -306,16 +327,78 @@
     </div>
   </header>
 
+  <!-- 30-SECOND VISUAL STORY PIPELINE (JUDGE WOW FACTOR) -->
+  <section class="max-w-7xl mx-auto px-4 pt-5 pb-1 w-full">
+    <div class="cmd-surface rounded-2xl p-4 overflow-x-auto">
+      <div class="flex items-center justify-between min-w-[760px] gap-2 text-xs">
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">1</div>
+          <div><p class="font-bold text-white text-[11px]">Farmer</p><p class="text-[9px] text-slate-400">Registration</p></div>
+        </div>
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">2</div>
+          <div><p class="font-bold text-white text-[11px]">Produce</p><p class="text-[9px] text-slate-400">Aggregation</p></div>
+        </div>
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">3</div>
+          <div><p class="font-bold text-white text-[11px]">Quality</p><p class="text-[9px] text-slate-400">AI Grading &lt;12%</p></div>
+        </div>
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">4</div>
+          <div><p class="font-bold text-white text-[11px]">GPS Radar</p><p class="text-[9px] text-slate-400">Live Vehicle Fleet</p></div>
+        </div>
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">5</div>
+          <div><p class="font-bold text-white text-[11px]">Mandi Gate</p><p class="text-[9px] text-slate-400">APMC Arbitrage</p></div>
+        </div>
+        <div class="flex items-center gap-2 pipeline-node pr-4">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">6</div>
+          <div><p class="font-bold text-white text-[11px]">Escrow Lock</p><p class="text-[9px] text-slate-400">Guaranteed Vault</p></div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center font-black">7</div>
+          <div><p class="font-bold text-emerald-400 text-[11px]">Farmer UPI</p><p class="text-[9px] text-slate-400">Instant Release</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXCEPTION-FIRST TRIAGE BAR -->
+  <section class="max-w-7xl mx-auto px-4 pt-3 pb-1 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      <div class="cmd-surface p-3.5 rounded-xl border-l-4 border-l-emerald-500 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <div><p class="font-bold text-white text-[11px]">Active Geofenced Fleet</p><p class="text-[10px] text-slate-400">Truck HR-38-AF-4829 on Highway Route</p></div>
+        </div>
+        <span class="text-[10px] font-mono-code font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">NOMINAL</span>
+      </div>
+      <div class="cmd-surface p-3.5 rounded-xl border-l-4 border-l-amber-500 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          <div><p class="font-bold text-white text-[11px]">Quality Clearance Pending</p><p class="text-[10px] text-slate-400">2 Farmers awaiting moisture dry test</p></div>
+        </div>
+        <span class="text-[10px] font-mono-code font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">ATTENTION</span>
+      </div>
+      <div class="cmd-surface p-3.5 rounded-xl border-l-4 border-l-cyan-500 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+          <div><p class="font-bold text-white text-[11px]">Escrow Liquidity Locked</p><p class="text-[10px] text-slate-400">₹1,16,400 ready for OTP disbursement</p></div>
+        </div>
+        <span class="text-[10px] font-mono-code font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">SECURED</span>
+      </div>
+    </div>
+  </section>
+
   <!-- MAIN WORKSPACE -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+  <main class="max-w-7xl mx-auto px-4 py-4 flex-1 w-full space-y-6">
 
     <!-- ======================================================= -->
     <!-- 1. CUSTOMER / B2B BUYER WORKSPACE                       -->
     <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       
-      <!-- Order Live Tracking Stepper Card -->
-      <div class="terminal-card rounded-2xl p-6 space-y-6">
+      <div class="cmd-surface rounded-2xl p-6 space-y-6">
         
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-800">
           <div>
@@ -446,11 +529,11 @@
 
       </div>
 
-      <!-- Commodity Batch Trading Bins -->
-      <div class="terminal-card rounded-2xl p-6 space-y-4">
+      <!-- Produce Passport & Trading Bins -->
+      <div class="cmd-surface rounded-2xl p-6 space-y-4">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
           <div>
-            <h3 class="text-base font-black text-white">Direct Farmgate Produce Lots (Escrow Guaranteed)</h3>
+            <h3 class="text-base font-black text-white">Direct Farmgate Produce Lots (Produce Passport)</h3>
             <p class="text-xs text-slate-400">Aggregated batches verified by Faridabad FPO supervisors</p>
           </div>
           <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full">Fair Price Arbitrage</span>
@@ -527,7 +610,7 @@
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="terminal-card rounded-2xl p-6 space-y-5">
+        <div class="cmd-surface rounded-2xl p-6 space-y-5">
           <div>
             <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
             <p class="text-xs text-slate-400">Allot vehicle, enter OTP to start route, and release farmer escrow.</p>
@@ -567,7 +650,7 @@
           </div>
         </div>
 
-        <div id="tour-driver-map" class="lg:col-span-2 terminal-card rounded-2xl p-5 flex flex-col space-y-3 relative">
+        <div id="tour-driver-map" class="lg:col-span-2 cmd-surface rounded-2xl p-5 flex flex-col space-y-3 relative">
           <div class="flex justify-between items-center">
             <div>
               <h4 class="font-bold text-white text-sm flex items-center gap-2">
@@ -606,25 +689,25 @@
     <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="terminal-card rounded-2xl p-5">
+        <div class="cmd-surface rounded-2xl p-5">
           <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster</p>
           <h3 class="text-2xl font-black text-white mt-1 font-mono-code">10 Farmers</h3>
         </div>
-        <div id="tour-admin-weight" class="terminal-card rounded-2xl p-5">
+        <div id="tour-admin-weight" class="cmd-surface rounded-2xl p-5">
           <p class="text-xs font-bold text-slate-400 uppercase">Total Yield Pooled</p>
           <h3 class="text-2xl font-black text-emerald-400 mt-1 font-mono-code">4,850 kg</h3>
         </div>
-        <div class="terminal-card rounded-2xl p-5">
+        <div class="cmd-surface rounded-2xl p-5">
           <p class="text-xs font-bold text-slate-400 uppercase">Quality Clearance</p>
           <h3 class="text-2xl font-black text-cyan-400 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
         </div>
-        <div id="tour-admin-escrow" class="terminal-card rounded-2xl p-5">
+        <div id="tour-admin-escrow" class="cmd-surface rounded-2xl p-5">
           <p class="text-xs font-bold text-slate-400 uppercase">Escrow In Vault</p>
           <h3 class="text-2xl font-black text-amber-400 mt-1 font-mono-code">₹1,16,400</h3>
         </div>
       </div>
 
-      <div id="tour-admin-table" class="terminal-card rounded-2xl overflow-hidden space-y-4 p-6">
+      <div id="tour-admin-table" class="cmd-surface rounded-2xl overflow-hidden space-y-4 p-6">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
           <div>
             <h3 class="text-base font-black text-white">10-Farmer Granular Process Audit Matrix</h3>
@@ -661,7 +744,7 @@
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
       <!-- Top Action Strip -->
-      <div class="terminal-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+      <div class="cmd-surface rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-400 uppercase">Verified Account:</span>
           <span id="farmer-display-id" class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded text-xs font-mono-code">FARMER #01</span>
@@ -694,7 +777,7 @@
       </div>
 
       <!-- Farmer Profile & Payout Hero -->
-      <div id="tour-farmer-profile" class="terminal-card border-emerald-500/40 text-white p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4">
+      <div id="tour-farmer-profile" class="cmd-surface border-emerald-500/40 text-white p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4">
         <div>
           <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded border border-emerald-500/30">Member Producer Terminal</span>
           <h2 class="text-2xl font-black mt-2 text-white" id="farmer-profile-name">Rameshwar Sharma</h2>
@@ -713,7 +796,7 @@
       </div>
 
       <!-- DIGITAL BAHI-KHATA -->
-      <div id="tour-farmer-bahi" class="terminal-card rounded-2xl p-6 space-y-4">
+      <div id="tour-farmer-bahi" class="cmd-surface rounded-2xl p-6 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
           <div>
             <h3 class="font-black text-white text-base flex items-center gap-2">
@@ -790,7 +873,7 @@
 
       <!-- 6 Micro Tools -->
       <div id="tour-farmer-tools" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-emerald-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="flask-conical" class="w-4 h-4"></i> Soil & Fertilizer Guide</span>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-black">NPK 4:2:1</span>
@@ -801,7 +884,7 @@
           </button>
         </div>
 
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-cyan-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="cloud-rain" class="w-4 h-4"></i> Weather Spray Window</span>
             <span class="text-[10px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded font-black">No Rain Next 48h</span>
@@ -812,7 +895,7 @@
           </button>
         </div>
 
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-purple-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="qr-code" class="w-4 h-4"></i> Crate QR Label</span>
             <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded font-black">Traceable</span>
@@ -823,7 +906,7 @@
           </button>
         </div>
 
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-amber-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="badge-percent" class="w-4 h-4"></i> KCC Credit & Solar Subsidy</span>
             <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded font-black">4% Interest</span>
@@ -834,7 +917,7 @@
           </button>
         </div>
 
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-emerald-400 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4"></i> Asli Seed & Khad Scanner</span>
             <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-black">Govt Verified</span>
@@ -845,7 +928,7 @@
           </button>
         </div>
 
-        <div class="terminal-card rounded-xl p-4 space-y-2">
+        <div class="cmd-surface rounded-xl p-4 space-y-2">
           <div class="flex justify-between items-center text-slate-300 font-bold">
             <span class="flex items-center gap-1.5"><i data-lucide="tractor" class="w-4 h-4 text-emerald-400"></i> Shared Machinery Hub</span>
             <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-black border border-slate-700">Faridabad FPO</span>
@@ -859,7 +942,7 @@
 
       <!-- Pending vs Completed Tasks Layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="terminal-card rounded-xl p-5 space-y-3">
+        <div class="cmd-surface rounded-xl p-5 space-y-3">
           <div class="flex justify-between items-center border-b border-slate-800 pb-3">
             <h3 class="font-bold text-white text-sm flex items-center gap-2">
               <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Pending Harvest & Prep Tasks
@@ -869,7 +952,7 @@
           <div id="pending-tasks-list" class="space-y-2.5 text-xs"></div>
         </div>
 
-        <div class="terminal-card rounded-xl p-5 space-y-3">
+        <div class="cmd-surface rounded-xl p-5 space-y-3">
           <div class="flex justify-between items-center border-b border-slate-800 pb-3">
             <h3 class="font-bold text-white text-sm flex items-center gap-2">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Completed & Verified Tasks
@@ -886,7 +969,7 @@
     <!-- 5. LEAD PROCESS OWNER WORKSPACE                         -->
     <!-- ======================================================= -->
     <div id="view-lead_farmer" class="role-workspace space-y-6 hidden">
-      <div class="terminal-card rounded-2xl p-6 text-white flex flex-wrap justify-between items-center gap-4 border-emerald-500/40">
+      <div class="cmd-surface rounded-2xl p-6 text-white flex flex-wrap justify-between items-center gap-4 border-emerald-500/40">
         <div>
           <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded border border-emerald-500/30">Lead Process Supervisor</span>
           <h2 class="text-2xl font-black mt-2">Sardar Gurpreet Singh (Cluster Head)</h2>
@@ -907,7 +990,7 @@
   </main>
 
   <!-- ========================================================= -->
-  <!-- 6. UNIVERSAL DYNAMIC SPOTLIGHT TOUR ENGINE (ALL ROLES)    -->
+  <!-- 6. UNIVERSAL DYNAMIC SPOTLIGHT TOUR ENGINE                -->
   <!-- ========================================================= -->
   <div id="tour-spotlight-box" class="hidden"></div>
   

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KisanRoute Enterprise &bull; Smart Agro-Logistics & Direct Consumer Mart</title>
   
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Cpath d='M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z' stroke='%2310b981' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%2310b981'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%2310b981'/%3E%3Cpath d='M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='white'/%3E%3C/svg%3E" />
 
   <!-- Core CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,22 +33,22 @@
 
   <style>
     :root {
-      --bg-canvas: #060a12;
-      --panel-surface: rgba(13, 22, 38, 0.78);
-      --panel-border: rgba(255, 255, 255, 0.08);
-      --emerald-neon: #10b981;
-      --cyan-neon: #06b6d4;
+      --bg-canvas: #f8fafc;
+      --panel-surface: rgba(255, 255, 255, 0.95);
+      --panel-border: rgba(226, 232, 240, 0.9);
+      --emerald-brand: #059669;
+      --emerald-light: #ecfdf5;
     }
     body { 
       font-family: 'Plus Jakarta Sans', sans-serif; 
       background-color: var(--bg-canvas);
       background-image: 
-        radial-gradient(circle at 5% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 40%),
-        radial-gradient(circle at 95% 0%, rgba(6, 182, 212, 0.10) 0px, transparent 40%),
-        radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.06) 0px, transparent 45%),
-        linear-gradient(180deg, #060a12 0%, #03060c 100%);
+        radial-gradient(circle at 5% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 35%),
+        radial-gradient(circle at 95% 0%, rgba(6, 182, 212, 0.06) 0px, transparent 35%),
+        radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.04) 0px, transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
       background-attachment: fixed;
-      color: #f1f5f9;
+      color: #0f172a;
       top: 0px !important;
     }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
@@ -59,12 +59,12 @@
       width: 100% !important; 
       border-radius: 1.25rem; 
       z-index: 10;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: #090f1d;
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
     }
     
-    .badge-done { background-color: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
-    .badge-pending { background-color: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+    .badge-done { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
     .goog-te-banner-frame.skiptranslate { display: none !important; }
     #google_translate_element { display: none; }
@@ -72,15 +72,15 @@
 
     .cmd-surface {
       background: var(--panel-surface);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
-      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .cmd-surface:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-      box-shadow: 0 24px 50px -12px rgba(16, 185, 129, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      border-color: rgba(5, 150, 105, 0.4);
+      box-shadow: 0 16px 36px -12px rgba(5, 150, 105, 0.12), 0 2px 6px 0 rgba(0, 0, 0, 0.04);
     }
 
     button {
@@ -98,24 +98,24 @@
     .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
   </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden text-slate-800">
 
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
   <!-- 0. LIVE INTERCONNECTED ORDER FLOW HUD STRIP               -->
   <!-- ========================================================= -->
-  <div class="bg-slate-950/90 border-b border-slate-800 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3">
+  <div class="bg-white/90 border-b border-slate-200/80 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3 shadow-sm">
     <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
+      <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black">
         <i data-lucide="git-merge" class="w-4 h-4"></i>
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-xs font-black text-white">Live Pipeline State Machine</span>
-          <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">STATUS: IDLE_NO_ORDER</span>
+          <span class="text-xs font-black text-slate-900">Live Pipeline State Machine</span>
+          <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-300">STATUS: IDLE_NO_ORDER</span>
         </div>
-        <p class="text-[10px] text-slate-400" id="order-lifecycle-sub">Real Isolated Handover: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
+        <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Real Isolated Handover: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
       </div>
     </div>
   </div>
@@ -123,20 +123,20 @@
   <!-- ========================================================= -->
   <!-- 1. LOGOUT CONFIRMATION MODAL                              -->
   <!-- ========================================================= -->
-  <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="cmd-surface rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-slate-700/80 space-y-5 text-center transform scale-95 transition-all">
-      <div class="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/30 flex items-center justify-center mx-auto shadow-lg shadow-rose-500/10">
+  <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 text-center transform scale-95 transition-all">
+      <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto shadow-sm">
         <i data-lucide="log-out" class="w-8 h-8"></i>
       </div>
       <div class="space-y-1.5">
-        <h3 class="text-xl font-black text-white">Do you really want to log out?</h3>
-        <p class="text-xs text-slate-400">Your session will be securely ended so the next party (Farmer / Driver) can log in.</p>
+        <h3 class="text-xl font-black text-slate-900">Do you really want to log out?</h3>
+        <p class="text-xs text-slate-500">Your session will be securely ended so the next party (Farmer / Driver) can log in.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
-        <button onclick="closeLogoutModal()" class="py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 transition">
+        <button onclick="closeLogoutModal()" class="py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-200 transition">
           Stay Logged In
         </button>
-        <button onclick="confirmAndExecuteLogout()" class="py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-lg transition flex items-center justify-center gap-1.5">
+        <button onclick="confirmAndExecuteLogout()" class="py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-md transition flex items-center justify-center gap-1.5">
           <i data-lucide="power" class="w-4 h-4"></i> Yes, Log Out
         </button>
       </div>
@@ -146,71 +146,71 @@
   <!-- ========================================================= -->
   <!-- 2. CUSTOMER CHECKOUT & ADDRESS / PAYMENT MODAL            -->
   <!-- ========================================================= -->
-  <div id="modal-consumer-checkout" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="cmd-surface rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border-emerald-500/40 text-slate-100 shadow-2xl my-auto">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+  <div id="modal-consumer-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold">
+          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold">
             <i data-lucide="truck" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-base font-black text-white">Delivery Address & Payment</h3>
-            <p class="text-[10px] text-slate-400">Order will be sent to Farmer Rameshwar Sharma (Dhauj)</p>
+            <h3 class="text-base font-black text-slate-900">Delivery Address & Payment</h3>
+            <p class="text-[10px] text-slate-500">Order will be sent to Farmer Rameshwar Sharma (Dhauj)</p>
           </div>
         </div>
-        <button onclick="closeConsumerCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+        <button onclick="closeConsumerCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
       <form onsubmit="handleExecuteOrderPlacement(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block font-bold text-slate-300 mb-1">Customer Full Name & Mobile</label>
+          <label class="block font-bold text-slate-700 mb-1">Customer Full Name & Mobile</label>
           <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="checkout-cust-name" value="Priya Sharma" required class="p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500 font-bold" />
-            <input type="tel" id="checkout-cust-phone" value="9911223344" required class="p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500 font-bold" />
+            <input type="text" id="checkout-cust-name" value="Priya Sharma" required class="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:border-emerald-500 font-bold" />
+            <input type="tel" id="checkout-cust-phone" value="9911223344" required class="p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:border-emerald-500 font-bold" />
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-300 mb-1">Complete Delivery Street Address</label>
-          <textarea id="checkout-cust-address" rows="2" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500">Flat 402, Green Valley Apts, Sector 15, Faridabad, Haryana</textarea>
+          <label class="block font-bold text-slate-700 mb-1">Complete Delivery Street Address</label>
+          <textarea id="checkout-cust-address" rows="2" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:border-emerald-500">Flat 402, Green Valley Apts, Sector 15, Faridabad, Haryana</textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-bold text-slate-300 mb-1">Pincode</label>
-            <input type="text" id="checkout-cust-pincode" value="121002" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold" />
+            <label class="block font-bold text-slate-700 mb-1">Pincode</label>
+            <input type="text" id="checkout-cust-pincode" value="121002" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold" />
           </div>
           <div>
-            <label class="block font-bold text-slate-300 mb-1">City</label>
-            <input type="text" id="checkout-cust-city" value="Faridabad" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold" />
+            <label class="block font-bold text-slate-700 mb-1">City</label>
+            <input type="text" id="checkout-cust-city" value="Faridabad" required class="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-bold" />
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-300 mb-1.5">Select Payment Method</label>
+          <label class="block font-bold text-slate-700 mb-1.5">Select Payment Method</label>
           <div class="grid grid-cols-2 gap-2">
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 font-bold">
-              <input type="radio" name="checkout_payment_mode" value="ONLINE_UPI" checked class="accent-emerald-500" onchange="toggleCheckoutPaymentDisplay('upi')" />
+            <label class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/50 font-bold">
+              <input type="radio" name="checkout_payment_mode" value="ONLINE_UPI" checked class="accent-emerald-600" onchange="toggleCheckoutPaymentDisplay('upi')" />
               <span>⚡ Online UPI (Escrow)</span>
             </label>
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 font-bold">
-              <input type="radio" name="checkout_payment_mode" value="COD" class="accent-emerald-500" onchange="toggleCheckoutPaymentDisplay('cod')" />
+            <label class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/50 font-bold">
+              <input type="radio" name="checkout_payment_mode" value="COD" class="accent-emerald-600" onchange="toggleCheckoutPaymentDisplay('cod')" />
               <span>💵 Cash On Delivery (COD)</span>
             </label>
           </div>
         </div>
 
-        <div id="checkout-upi-qr-box" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-2">
-          <p class="text-[10px] text-slate-400 uppercase font-bold">Scan to Lock ₹15,600 in Escrow Guarantee</p>
-          <div class="flex justify-center p-3 bg-white rounded-xl max-w-[140px] mx-auto">
+        <div id="checkout-upi-qr-box" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-2">
+          <p class="text-[10px] text-slate-600 uppercase font-bold">Scan to Lock ₹15,600 in Escrow Guarantee</p>
+          <div class="flex justify-center p-3 bg-white rounded-xl max-w-[140px] mx-auto border border-slate-200 shadow-sm">
             <div id="checkout-live-qrcode"></div>
           </div>
-          <p class="text-emerald-400 font-mono-code font-bold text-xs">UPI: kisanroute.escrow@icici</p>
+          <p class="text-emerald-700 font-mono-code font-bold text-xs">UPI: kisanroute.escrow@icici</p>
         </div>
 
-        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="check-circle" class="w-4 h-4"></i> Place Order & Lock Escrow 🚀
         </button>
       </form>
@@ -218,66 +218,114 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- 3. AUTH PORTAL & ROLE SWITCHER                            -->
+  <!-- 3. AMC PURCHASE & UPI PAYMENT MODAL                       -->
   <!-- ========================================================= -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="cmd-surface rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border-slate-700/80 space-y-6 my-auto text-slate-100">
+  <div id="modal-amc-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center font-bold">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-slate-900" id="amc-checkout-title">Pest, Wilt & Rot Cover</h3>
+            <p class="text-[10px] text-slate-500">Government / FPO Backed Crop Insurance Settlement</p>
+          </div>
+        </div>
+        <button onclick="closeAMCCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+        <div class="flex justify-between font-semibold text-slate-600">
+          <span>Billing Frequency:</span>
+          <span class="text-slate-900 font-bold uppercase" id="amc-checkout-freq">Yearly Plan</span>
+        </div>
+        <div class="flex justify-between font-semibold text-slate-600">
+          <span>Max Guaranteed Coverage:</span>
+          <span class="text-amber-600 font-bold font-mono-code text-sm" id="amc-checkout-cover">₹60,000 / Acre</span>
+        </div>
+        <div class="pt-2 border-t border-slate-200 flex justify-between font-black text-sm text-slate-900">
+          <span>Payable Premium:</span>
+          <span class="text-emerald-700 font-mono-code text-lg" id="amc-checkout-payable">₹4,999</span>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div class="flex justify-center p-3.5 bg-white rounded-2xl max-w-[170px] mx-auto border border-slate-200 shadow-sm">
+          <div id="amc-upi-qrcode"></div>
+        </div>
+        <p class="text-center font-mono-code text-[11px] text-emerald-700 font-bold">UPI ID: kisanroute.fpo@icici</p>
+      </div>
+
+      <button onclick="confirmAndActivateAMC()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Payment & Issue AMC Certificate 📜
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 4. AUTH PORTAL & ROLE SWITCHER                            -->
+  <!-- ========================================================= -->
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border border-slate-200 space-y-6 my-auto text-slate-800">
       
       <div class="text-center space-y-1.5">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-sm">
           <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none">
-            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16" cy="16" r="2" fill="#10b981"/>
+            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#059669" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="16" cy="16" r="2" fill="#059669"/>
           </svg>
         </div>
-        <h2 class="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-2">
-          Kisan<span class="text-emerald-400">Route</span> <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">NEXUS ACCESS</span>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-2">
+          Kisan<span class="text-emerald-600">Route</span> <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-0.5 rounded-full">NEXUS ACCESS</span>
         </h2>
-        <p class="text-xs text-slate-400 font-medium">Select a direct role icon or enter your phone number &bull; SIH 2026</p>
+        <p class="text-xs text-slate-500 font-medium">Select a direct role icon or enter your phone number &bull; SIH 2026</p>
       </div>
 
       <!-- FLIPKART STYLE TOP ROLE CATEGORY BAR -->
       <div class="space-y-2.5">
         <div class="flex items-center justify-between px-1">
           <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">1-Click Fast Role Sign-In</span>
-          <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">Instant Simulation</span>
+          <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full">Instant Simulation</span>
         </div>
         
         <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-1">
           <button onclick="quickFillAndSend('9911223344')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border-2 border-emerald-500/40 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 border border-emerald-200 group-hover:border-emerald-600 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
               🛍️
             </div>
-            <span class="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-500 font-mono-code">Order Item</span></span>
+            <span class="text-[11px] font-bold text-emerald-800 group-hover:text-emerald-600 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-600 font-mono-code">Order Item</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border border-slate-800 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-emerald-50 border border-slate-200 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
               🌱
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-500 font-mono-code">Ramesh</span></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-emerald-700 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-400 font-mono-code">Accept Req</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-cyan-500/20 border border-slate-800 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-cyan-50 border border-slate-200 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
               🚚
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-cyan-400 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-500 font-mono-code">Vikram</span></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-cyan-700 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-400 font-mono-code">Pickup/Drop</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-purple-500/20 border border-slate-800 group-hover:border-purple-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-purple-50 border border-slate-200 group-hover:border-purple-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
               🛒
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-purple-400 text-center leading-tight">B2B Buyer<br><span class="text-[9px] text-slate-500 font-mono-code">Wholesale</span></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-purple-700 text-center leading-tight">B2B Buyer<br><span class="text-[9px] text-slate-400 font-mono-code">Wholesale</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-rose-500/20 border border-slate-800 group-hover:border-rose-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-rose-50 border border-slate-200 group-hover:border-rose-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
               🛡️
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-rose-400 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-500 font-mono-code">Audit Hub</span></span>
+            <span class="text-[11px] font-bold text-slate-700 group-hover:text-rose-700 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-400 font-mono-code">Audit Hub</span></span>
           </button>
         </div>
       </div>
@@ -285,47 +333,47 @@
       <div id="auth-alert-box" class="hidden p-3.5 rounded-2xl text-xs font-semibold border"></div>
 
       <!-- STEP 1: Phone Form -->
-      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-3 border-t border-slate-800">
+      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-3 border-t border-slate-100">
         <div>
-          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Or Enter Your Mobile Number</label>
+          <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">Or Enter Your Mobile Number</label>
           <div class="relative flex items-center">
-            <span class="absolute left-3.5 text-slate-500 font-bold text-sm">+91</span>
+            <span class="absolute left-3.5 text-slate-400 font-bold text-sm">+91</span>
             <input 
               type="tel" 
               id="input-login-mobile" 
               maxlength="10" 
               placeholder="e.g. 9876543210" 
               required 
-              class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-700 bg-slate-900/90 font-bold text-white text-sm tracking-wider focus:outline-none focus:border-emerald-500" 
+              class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 text-sm tracking-wider focus:outline-none focus:border-emerald-500" 
             />
           </div>
         </div>
 
-        <button type="submit" id="btn-send-otp-submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" id="btn-send-otp-submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="send" class="w-4 h-4"></i> Request Live OTP
         </button>
       </form>
 
       <!-- STEP 2: OTP Form -->
-      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-800">
-        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-          <span class="text-slate-400">OTP sent to: <b class="text-white font-mono-code" id="display-otp-target-mobile"></b></span>
-          <button type="button" onclick="resetToMobileStep()" class="text-emerald-400 font-bold hover:underline text-[11px]">Change Number</button>
+      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-100">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+          <span class="text-slate-600">OTP sent to: <b class="text-slate-900 font-mono-code" id="display-otp-target-mobile"></b></span>
+          <button type="button" onclick="resetToMobileStep()" class="text-emerald-600 font-bold hover:underline text-[11px]">Change Number</button>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Enter 6-Digit SMS Verification Code</label>
+          <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">Enter 6-Digit SMS Verification Code</label>
           <input 
             type="text" 
             id="input-login-otp" 
             maxlength="6" 
             placeholder="&bull; &bull; &bull; &bull; &bull; &bull;" 
             required 
-            class="w-full py-3.5 text-center rounded-xl border border-slate-700 bg-slate-900/90 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-400 focus:outline-none focus:border-emerald-500" 
+            class="w-full py-3.5 text-center rounded-xl border border-slate-200 bg-slate-50 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-600 focus:outline-none focus:border-emerald-500" 
           />
         </div>
 
-        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP & Proceed
         </button>
       </form>
@@ -333,68 +381,64 @@
   </div>
 
   <!-- LIVE APMC MANDI SPREAD TICKER -->
-  <div class="bg-slate-950/90 text-emerald-400 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-slate-800 flex items-center gap-3">
-    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Spread</span>
+  <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
+    <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Spread</span>
     <div class="w-full overflow-hidden">
-      <div class="animate-marquee space-x-8 text-slate-300">
-        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-emerald-400">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
-        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-emerald-400">KisanRoute: ₹18/kg</b></span>
-        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-emerald-400">KisanRoute: ₹28/kg</b></span>
+      <div class="animate-marquee space-x-8 text-emerald-100">
+        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
+        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
+        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
         <span>🛡️ Farmer Crop AMC: Instant Claim disbursals active for Faridabad cluster</span>
       </div>
     </div>
   </div>
 
   <!-- TOP APP BAR -->
-  <header class="bg-slate-950/80 backdrop-blur-2xl text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black shadow-lg shadow-emerald-500/10">
-          <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
-            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16" cy="16" r="2" fill="#10b981"/>
-          </svg>
+        <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-black shadow-sm">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-xl font-black tracking-tight text-white">Kisan<span class="text-emerald-400">Route</span></span>
-            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-extrabold uppercase" id="top-role-badge">ENTERPRISE TERMINAL</span>
+            <span class="text-xl font-black tracking-tight text-slate-900">Kisan<span class="text-emerald-600">Route</span></span>
+            <span class="text-[9px] bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200 font-extrabold uppercase" id="top-role-badge">ENTERPRISE TERMINAL</span>
           </div>
-          <p class="text-[10px] text-slate-400 font-medium">Faridabad Agro FPO &bull; Direct Farm-to-Consumer Corridor</p>
+          <p class="text-[10px] text-slate-500 font-medium">Faridabad Agro FPO &bull; Direct Farm-to-Consumer Corridor</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2.5 text-xs">
         
         <!-- Cart Trigger for Consumer -->
-        <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-xl font-black flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
+        <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-sm">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
         </button>
 
-        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 rounded-xl font-bold flex items-center gap-1.5 transition">
-          <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-400"></i> 360° Virtual Khet
+        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3.5 py-1.5 bg-slate-100 hover:bg-emerald-50 border border-slate-200 text-slate-700 hover:text-emerald-700 rounded-xl font-bold flex items-center gap-1.5 transition">
+          <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-600"></i> 360° Virtual Khet
         </button>
 
         <!-- Profile & Logout Menu -->
         <div class="relative">
-          <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs transition">
-            <div class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-[10px]">
+          <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs transition text-slate-800">
+            <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">
               <i data-lucide="user" class="w-3 h-3"></i>
             </div>
-            <span id="session-user-badge" class="font-bold text-emerald-400 max-w-[130px] truncate">Not Logged In</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+            <span id="session-user-badge" class="font-bold text-slate-900 max-w-[130px] truncate">Not Logged In</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
           </button>
 
-          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-700 text-slate-200 p-2 space-y-1 hidden z-50">
-            <div class="p-2.5 border-b border-slate-800">
+          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 text-slate-800 p-2 space-y-1 hidden z-50">
+            <div class="p-2.5 border-b border-slate-100">
               <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Signed in as</p>
-              <p class="text-xs font-black text-white truncate" id="dropdown-user-name">Guest User</p>
-              <p class="text-[10px] text-emerald-400 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
+              <p class="text-xs font-black text-slate-900 truncate" id="dropdown-user-name">Guest User</p>
+              <p class="text-[10px] text-emerald-600 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
             </div>
 
-            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-bold transition">
+            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition">
               <i data-lucide="log-out" class="w-4 h-4"></i> Logout Account
             </button>
           </div>
@@ -416,130 +460,130 @@
       <!-- Top Action Strip -->
       <div class="cmd-surface rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Verified Producer:</span>
-          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded-lg text-xs font-mono-code">FARMER #01</span>
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Producer:</span>
+          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-200 font-black rounded-lg text-xs font-mono-code">FARMER #01</span>
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="scrollToAMCSection()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
-            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i> Crop Loss AMC Vault
+          <button onclick="scrollToAMCSection()" class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600"></i> Crop Loss AMC Vault
           </button>
-          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
-            <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
+          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+            <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-600"></i> 360° Khet View
           </button>
         </div>
       </div>
 
       <!-- INCOMING CONSUMER ORDER DECISION CARD (AUTO DETECTS FROM LOCALSTORAGE) -->
-      <div id="farmer-order-decision-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-amber-500/60 bg-amber-950/20 space-y-5 hidden">
+      <div id="farmer-order-decision-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-amber-400 bg-amber-50/70 space-y-5 hidden">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black animate-pulse">
+            <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 border border-amber-300 flex items-center justify-center font-black animate-pulse">
               <i data-lucide="bell-ring" class="w-5 h-5"></i>
             </div>
             <div>
               <span class="text-[10px] font-black uppercase bg-amber-500 text-slate-950 px-2 py-0.5 rounded">New Incoming Order</span>
-              <h3 class="text-lg font-black text-white mt-0.5" id="farmer-incoming-title">Desi Fresh Hybrid Tomato</h3>
+              <h3 class="text-lg font-black text-slate-900 mt-0.5" id="farmer-incoming-title">Desi Fresh Hybrid Tomato</h3>
             </div>
           </div>
-          <p class="text-xl font-black text-emerald-400 font-mono-code" id="farmer-incoming-payout">Locked Escrow: ₹15,600</p>
+          <p class="text-xl font-black text-emerald-700 font-mono-code" id="farmer-incoming-payout">Locked Escrow: ₹15,600</p>
         </div>
 
-        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 text-xs space-y-1">
-          <p class="text-slate-400">Customer Details: <b class="text-white" id="farmer-order-cust-info">Priya Sharma (+91 9911223344)</b></p>
-          <p class="text-slate-400">Delivery Address: <span class="text-slate-200" id="farmer-order-cust-addr">Flat 402, Green Valley Apts, Sector 15, Faridabad</span></p>
-          <p class="text-slate-400">Payment Status: <b class="text-emerald-400">ESCROW LOCKED &bull; 100% GUARANTEED</b></p>
+        <div class="p-4 bg-white rounded-2xl border border-amber-200 text-xs space-y-1">
+          <p class="text-slate-600">Customer Details: <b class="text-slate-900" id="farmer-order-cust-info">Priya Sharma (+91 9911223344)</b></p>
+          <p class="text-slate-600">Delivery Address: <span class="text-slate-800" id="farmer-order-cust-addr">Flat 402, Green Valley Apts, Sector 15, Faridabad</span></p>
+          <p class="text-slate-600">Payment Status: <b class="text-emerald-700">ESCROW LOCKED &bull; 100% GUARANTEED</b></p>
         </div>
 
         <div class="grid grid-cols-2 gap-3 pt-1 text-xs font-bold">
-          <button onclick="farmerRejectOrder()" class="py-3.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl transition flex items-center justify-center gap-1.5">
+          <button onclick="farmerRejectOrder()" class="py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl transition flex items-center justify-center gap-1.5">
             <i data-lucide="x-circle" class="w-4 h-4"></i> Reject Order (Refund Customer)
           </button>
-          <button onclick="farmerAcceptOrder()" class="py-3.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 uppercase tracking-wider">
+          <button onclick="farmerAcceptOrder()" class="py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md transition flex items-center justify-center gap-1.5 uppercase tracking-wider">
             <i data-lucide="check-circle" class="w-4 h-4"></i> Accept Order & Prepare
           </button>
         </div>
       </div>
 
       <!-- DISPATCH READY CARD -->
-      <div id="farmer-dispatch-card" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-emerald-500/40 hidden">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <div id="farmer-dispatch-card" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-emerald-300 bg-emerald-50/40 hidden">
+        <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
           <div>
-            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Produce Crated & Sealed</span>
-            <h3 class="text-xl font-black text-white">Ready for Driver Farmgate Pickup</h3>
+            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Produce Crated & Sealed</span>
+            <h3 class="text-xl font-black text-slate-900">Ready for Driver Farmgate Pickup</h3>
           </div>
-          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold rounded-lg font-mono-code">STATUS: PACKED</span>
+          <span class="px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold rounded-lg font-mono-code">STATUS: PACKED</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
-            <span class="text-slate-400 font-bold uppercase text-[10px]">Pickup Authentication Code</span>
-            <p class="text-xs text-slate-300">Share this code with Driver Vikram Singh upon truck arrival:</p>
-            <p class="text-2xl font-black font-mono-code text-cyan-400 tracking-widest pt-1">1122</p>
+          <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-slate-500 font-bold uppercase text-[10px]">Pickup Authentication Code</span>
+            <p class="text-xs text-slate-600">Share this code with Driver Vikram Singh upon truck arrival:</p>
+            <p class="text-2xl font-black font-mono-code text-cyan-600 tracking-widest pt-1">1122</p>
           </div>
-          <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
-            <span class="text-slate-400 font-bold uppercase text-[10px]">Direct UPI Payout</span>
-            <p class="text-xs text-slate-300">Released once driver verifies customer delivery OTP:</p>
-            <p class="text-2xl font-black font-mono-code text-emerald-400 pt-1" id="farmer-ready-payout">₹15,600</p>
+          <div class="p-4 bg-white rounded-2xl border border-slate-200 space-y-1">
+            <span class="text-slate-500 font-bold uppercase text-[10px]">Direct UPI Payout</span>
+            <p class="text-xs text-slate-600">Released once driver verifies customer delivery OTP:</p>
+            <p class="text-2xl font-black font-mono-code text-emerald-700 pt-1" id="farmer-ready-payout">₹15,600</p>
           </div>
         </div>
 
-        <button onclick="farmerMarkReadyForDriver()" id="btn-farmer-mark-ready" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition uppercase tracking-wider flex items-center justify-center gap-2">
+        <button onclick="farmerMarkReadyForDriver()" id="btn-farmer-mark-ready" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition uppercase tracking-wider flex items-center justify-center gap-2">
           <i data-lucide="truck" class="w-4 h-4"></i> Call Logistics Fleet for Farm-Gate Pickup
         </button>
       </div>
 
       <!-- Farmer Profile Hero -->
-      <div class="cmd-surface border-emerald-500/40 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4">
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-sm">
         <div>
-          <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded border border-emerald-500/30">Member Producer Terminal</span>
+          <span class="text-[10px] uppercase font-bold tracking-wider bg-white/20 text-white px-2.5 py-1 rounded">Member Producer Terminal</span>
           <h2 class="text-2xl font-black mt-2 text-white" id="farmer-profile-name">Rameshwar Sharma</h2>
-          <p class="text-xs text-slate-400 mt-0.5" id="farmer-profile-sub">Allocated Batch: Desi Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
+          <p class="text-xs text-emerald-100 mt-0.5" id="farmer-profile-sub">Allocated Batch: Desi Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
         </div>
         <div class="flex gap-3 text-center">
-          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Expected Direct UPI</p>
-            <p class="text-2xl font-black text-emerald-400 font-mono-code" id="farmer-expected-payout">₹15,600</p>
+          <div class="bg-white/10 p-3 rounded-xl border border-white/20">
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Expected Direct UPI</p>
+            <p class="text-2xl font-black text-emerald-300 font-mono-code" id="farmer-expected-payout">₹15,600</p>
           </div>
-          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Active AMC Cover</p>
-            <p class="text-2xl font-black text-amber-400 font-mono-code" id="farmer-amc-status">₹60,000</p>
+          <div class="bg-white/10 p-3 rounded-xl border border-white/20">
+            <p class="text-[10px] text-emerald-200 font-bold uppercase">Active AMC Cover</p>
+            <p class="text-2xl font-black text-amber-300 font-mono-code" id="farmer-amc-status">₹60,000</p>
           </div>
         </div>
       </div>
 
       <!-- ACTIVE AMC CERTIFICATE & VALIDITY CARD -->
-      <div id="farmer-amc-active-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-emerald-500/50 bg-emerald-950/20 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-3.5">
+      <div id="farmer-amc-active-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-emerald-300 bg-emerald-50/50 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-emerald-200 pb-3.5">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center font-black">
               <i data-lucide="award" class="w-5 h-5"></i>
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <span class="text-[10px] font-mono-code uppercase text-emerald-300 font-bold bg-emerald-500/20 px-2 py-0.5 rounded">FPO CERTIFIED</span>
-                <span class="text-[10px] text-slate-400 font-mono-code" id="amc-active-policy-no">POL-2026-FBD-7891</span>
+                <span class="text-[10px] font-mono-code uppercase text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded">FPO CERTIFIED</span>
+                <span class="text-[10px] text-slate-500 font-mono-code" id="amc-active-policy-no">POL-2026-FBD-7891</span>
               </div>
-              <h3 class="text-lg font-black text-white mt-0.5" id="amc-active-plan-title">Pest, Wilt & Rot Cover (Active)</h3>
+              <h3 class="text-lg font-black text-slate-900 mt-0.5" id="amc-active-plan-title">Pest, Wilt & Rot Cover (Active)</h3>
             </div>
           </div>
-          <span class="px-3 py-1 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black rounded-full font-mono-code flex items-center gap-1.5 self-start">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 100% PROTECTED
+          <span class="px-3 py-1 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-black rounded-full font-mono-code flex items-center gap-1.5 self-start">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span> 100% PROTECTED
           </span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Validity Period</p>
-            <p class="font-black text-white text-xs mt-0.5" id="amc-active-dates">29-Aug-2026 to 29-Aug-2027</p>
+          <div class="p-3.5 bg-white rounded-2xl border border-slate-200">
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Validity Period</p>
+            <p class="font-black text-slate-900 text-xs mt-0.5" id="amc-active-dates">29-Aug-2026 to 29-Aug-2027</p>
           </div>
-          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Max Insured Sum</p>
-            <p class="font-black text-amber-400 text-xs mt-0.5 font-mono-code" id="amc-active-sum-text">₹60,000 / Acre</p>
+          <div class="p-3.5 bg-white rounded-2xl border border-slate-200">
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Max Insured Sum</p>
+            <p class="font-black text-amber-700 text-xs mt-0.5 font-mono-code" id="amc-active-sum-text">₹60,000 / Acre</p>
           </div>
-          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
-            <p class="text-[10px] text-slate-400 font-bold uppercase">Audit Mechanism</p>
-            <p class="font-black text-cyan-400 text-xs mt-0.5">Sentinel-2 AI Satellite Feed</p>
+          <div class="p-3.5 bg-white rounded-2xl border border-slate-200">
+            <p class="text-[10px] text-slate-500 font-bold uppercase">Audit Mechanism</p>
+            <p class="font-black text-cyan-700 text-xs mt-0.5">Sentinel-2 AI Satellite Feed</p>
           </div>
         </div>
       </div>
@@ -547,106 +591,106 @@
       <!-- 4 HARVEST & QUALITY PREPARATION TASKS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="cmd-surface rounded-3xl p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-            <h3 class="font-black text-white text-sm flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Pending Harvest & Prep Tasks
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
             </h3>
-            <span class="text-[10px] font-black text-amber-300 bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
+            <span class="text-[10px] font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
           </div>
           <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
         </div>
 
         <div class="cmd-surface rounded-3xl p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-            <h3 class="font-black text-white text-sm flex items-center gap-2">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Completed & Verified Tasks
+          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
             </h3>
-            <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
+            <span class="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
           </div>
           <div id="completed-tasks-list" class="space-y-3 text-xs"></div>
         </div>
       </div>
 
       <!-- FARMER AMC CROP LOSS INSURANCE VAULT TIERS -->
-      <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-500/40">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
+      <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-300 bg-amber-50/30">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-amber-200 pb-4">
           <div>
-            <span class="text-[10px] font-mono-code font-bold uppercase text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded">Risk Mitigation Vault</span>
-            <h3 class="text-lg font-black text-white mt-1 flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> Fasal Rakshak AMC (Crop Maintenance & 100% Loss Protection)
+            <span class="text-[10px] font-mono-code font-bold uppercase text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded">Risk Mitigation Vault</span>
+            <h3 class="text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-amber-600"></i> Fasal Rakshak AMC (Crop Maintenance & 100% Loss Protection)
             </h3>
-            <p class="text-xs text-slate-400">Unseasonal rain, pests, frost, ya transport decay me loss ka 100% payout guarantee.</p>
+            <p class="text-xs text-slate-600">Unseasonal rain, pests, frost, ya transport decay me loss ka 100% payout guarantee.</p>
           </div>
           
-          <div class="flex items-center bg-slate-900 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold">
-            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Monthly</button>
-            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition">Yearly (Save 20%)</button>
+          <div class="flex items-center bg-white p-1.5 rounded-2xl border border-slate-200 text-xs font-bold shadow-sm">
+            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Monthly</button>
+            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition">Yearly (Save 20%)</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-          <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-4 flex flex-col justify-between">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4 flex flex-col justify-between shadow-sm">
             <div class="space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">CLIMATE SHIELD</span>
+                <span class="text-[10px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded">CLIMATE SHIELD</span>
                 <span class="text-[10px] text-slate-400">Tier 1</span>
               </div>
-              <h4 class="text-base font-black text-white">Weather & Frost Shield</h4>
-              <p class="text-slate-400 text-[11px]">Covers hail, unseasonal rain, high heatwave damage to crops.</p>
-              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
-                <p>✓ Max Cover: <b class="text-white">₹30,000 / Acre</b></p>
+              <h4 class="text-base font-black text-slate-900">Weather & Frost Shield</h4>
+              <p class="text-slate-500 text-[11px]">Covers hail, unseasonal rain, high heatwave damage to crops.</p>
+              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
+                <p>✓ Max Cover: <b class="text-slate-900">₹30,000 / Acre</b></p>
                 <p>✓ Satellite Rainfall Audit</p>
                 <p>✓ Claim Payout: <b>24 Hours</b></p>
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-1-price">₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Weather & Frost Shield', '₹30,000 / Acre', 2999)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-1-price">₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Weather & Frost Shield', '₹30,000 / Acre', 2999)" class="w-full py-2.5 bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 font-bold rounded-xl border border-slate-200 transition">
                 Activate Shield
               </button>
             </div>
           </div>
 
-          <div class="bg-slate-900/90 rounded-2xl p-5 border-2 border-emerald-500/50 space-y-4 flex flex-col justify-between relative">
-            <span class="absolute -top-2.5 right-4 bg-emerald-500 text-slate-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">MOST POPULAR</span>
+          <div class="bg-white rounded-2xl p-5 border-2 border-emerald-500 space-y-4 flex flex-col justify-between relative shadow-md">
+            <span class="absolute -top-2.5 right-4 bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full">MOST POPULAR</span>
             <div class="space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">PEST & DISEASE</span>
+                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">PEST & DISEASE</span>
                 <span class="text-[10px] text-slate-400">Tier 2</span>
               </div>
-              <h4 class="text-base font-black text-white">Pest, Wilt & Rot Cover</h4>
-              <p class="text-slate-400 text-[11px]">Covers fungal blight, locust attacks, viral wilts, and moisture transit decay.</p>
-              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
-                <p>✓ Max Cover: <b class="text-white">₹60,000 / Acre</b></p>
+              <h4 class="text-base font-black text-slate-900">Pest, Wilt & Rot Cover</h4>
+              <p class="text-slate-500 text-[11px]">Covers fungal blight, locust attacks, viral wilts, and moisture transit decay.</p>
+              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
+                <p>✓ Max Cover: <b class="text-slate-900">₹60,000 / Acre</b></p>
                 <p>✓ AI Drone Disease Scan + Agronomist</p>
                 <p>✓ Claim Payout: <b>12 Hours Direct UPI</b></p>
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-2-price">₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Pest, Wilt & Rot Cover', '₹60,000 / Acre', 4999)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition">
+              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-2-price">₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Pest, Wilt & Rot Cover', '₹60,000 / Acre', 4999)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md transition">
                 Activate Popular Cover
               </button>
             </div>
           </div>
 
-          <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-4 flex flex-col justify-between">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4 flex flex-col justify-between shadow-sm">
             <div class="space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">SOVEREIGN COMPLETE</span>
+                <span class="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">SOVEREIGN COMPLETE</span>
                 <span class="text-[10px] text-slate-400">Tier 3</span>
               </div>
-              <h4 class="text-base font-black text-white">Sovereign 100% Crop Shield</h4>
-              <p class="text-slate-400 text-[11px]">Full yield price loss + Mandi crash guarantee + Free crop advisory.</p>
-              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
-                <p>✓ Max Cover: <b class="text-white">₹1,20,000 / Field</b></p>
+              <h4 class="text-base font-black text-slate-900">Sovereign 100% Crop Shield</h4>
+              <p class="text-slate-500 text-[11px]">Full yield price loss + Mandi crash guarantee + Free crop advisory.</p>
+              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
+                <p>✓ Max Cover: <b class="text-slate-900">₹1,20,000 / Field</b></p>
                 <p>✓ Price Drop Loss Protection</p>
                 <p>✓ Zero Deductible Instant Transfer</p>
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-3-price">₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Sovereign 100% Crop Shield', '₹1,20,000 / Field', 8999)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-3-price">₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Sovereign 100% Crop Shield', '₹1,20,000 / Field', 8999)" class="w-full py-2.5 bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-700 font-bold rounded-xl border border-slate-200 transition">
                 Activate Shield
               </button>
             </div>
@@ -656,23 +700,23 @@
 
       <!-- DIGITAL BAHI-KHATA (LEDGER) -->
       <div class="cmd-surface rounded-3xl p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
           <div>
-            <h3 class="font-black text-white text-base flex items-center gap-2">
-              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-600"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
             </h3>
-            <p class="text-xs text-slate-400">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+            <p class="text-xs text-slate-500">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
           </div>
-          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition flex items-center gap-1.5 self-start">
+          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 self-start shadow-sm">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
           </button>
         </div>
 
-        <div id="expense-form-box" class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hidden space-y-3">
+        <div id="expense-form-box" class="p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div>
-              <label class="block font-bold text-slate-300 mb-1">Kharcha Category</label>
-              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold">
+              <label class="block font-bold text-slate-700 mb-1">Kharcha Category</label>
+              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold">
                 <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
                 <option value="Beej (Seeds)">Beej & Plant Seeds</option>
                 <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
@@ -681,24 +725,24 @@
               </select>
             </div>
             <div>
-              <label class="block font-bold text-slate-300 mb-1">Description</label>
-              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-medium" />
+              <label class="block font-bold text-slate-700 mb-1">Description</label>
+              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium" />
             </div>
             <div>
-              <label class="block font-bold text-slate-300 mb-1">Amount (₹)</label>
-              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold" />
+              <label class="block font-bold text-slate-700 mb-1">Amount (₹)</label>
+              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold" />
             </div>
           </div>
           <div class="flex justify-end gap-2 text-xs">
-            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-400 font-bold">Cancel</button>
-            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-slate-950 font-bold rounded-xl">Save in Bahi-Khata</button>
+            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-500 font-bold">Cancel</button>
+            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-white font-bold rounded-xl shadow-sm">Save in Bahi-Khata</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="lg:col-span-2 overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[10px]">
+              <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th class="p-2.5">Category</th>
                   <th class="p-2.5">Description</th>
@@ -706,25 +750,25 @@
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-800/60 font-medium text-slate-300"></tbody>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
             </table>
           </div>
 
-          <div class="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
-            <div class="flex justify-between font-semibold text-slate-400">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
+            <div class="flex justify-between font-semibold text-slate-600">
               <span>Total Batch Income:</span>
-              <span class="font-bold text-white font-mono-code" id="ledger-gross-income">₹15,600</span>
+              <span class="font-bold text-slate-900 font-mono-code" id="ledger-gross-income">₹15,600</span>
             </div>
-            <div class="flex justify-between font-semibold text-rose-400">
+            <div class="flex justify-between font-semibold text-rose-600">
               <span>Total Farm Expenses:</span>
               <span class="font-bold font-mono-code" id="ledger-total-expenses">-₹4,750</span>
             </div>
-            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
+            <div class="pt-2 border-t border-slate-200 flex justify-between items-center">
               <div>
-                <p class="font-black text-white text-sm">Net Fasal Munafa:</p>
-                <p class="text-[10px] text-emerald-400 font-bold">(In Pocket Profit)</p>
+                <p class="font-black text-slate-900 text-sm">Net Fasal Munafa:</p>
+                <p class="text-[10px] text-emerald-600 font-bold">(In Pocket Profit)</p>
               </div>
-              <span class="text-xl font-black text-emerald-400 font-mono-code" id="ledger-net-profit">₹10,850</span>
+              <span class="text-xl font-black text-emerald-700 font-mono-code" id="ledger-net-profit">₹10,850</span>
             </div>
           </div>
         </div>
@@ -737,55 +781,55 @@
     <div id="view-consumer" class="role-workspace space-y-6 hidden">
       
       <!-- Consumer Hero Banner -->
-      <div class="cmd-surface border-emerald-500/30 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+      <div class="cmd-surface border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
         <div class="space-y-3 z-10 max-w-xl">
-          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase tracking-wider rounded-full">
+          <span class="px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-black uppercase tracking-wider rounded-full">
             ⚡ 100% FARM-TO-FORK DIRECT &bull; 0 MIDDLEMEN
           </span>
-          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Fresh Organic Harvest <span class="text-emerald-400">Delivered in 2 Hours</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            Fresh Organic Harvest <span class="text-emerald-700">Delivered in 2 Hours</span>
           </h2>
-          <p class="text-xs text-slate-300">
+          <p class="text-xs text-slate-600">
             Pure Desi vegetables, orchard fruits & unpolished pulses directly from Faridabad FPO farms at wholesale prices.
           </p>
         </div>
-        <div class="w-full md:w-64 h-36 rounded-2xl bg-gradient-to-tr from-emerald-600/30 to-teal-400/20 border border-emerald-500/30 flex items-center justify-center text-6xl shadow-2xl shrink-0">
+        <div class="w-full md:w-64 h-36 rounded-2xl bg-white border border-emerald-200 flex items-center justify-center text-6xl shadow-sm shrink-0">
           🥦🍅🍇
         </div>
       </div>
 
       <!-- ACTIVE TRACKING CARD -->
-      <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-500/30">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-300 bg-white">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
           <div>
-            <span class="text-[10px] text-emerald-400 font-mono-code uppercase font-bold" id="consumer-order-id">ORDER #OD-2026-FBD-8821</span>
-            <h3 class="text-xl font-black text-white" id="consumer-order-title">Desi Fresh Hybrid Tomato</h3>
+            <span class="text-[10px] text-emerald-700 font-mono-code uppercase font-bold" id="consumer-order-id">ORDER #OD-2026-FBD-8821</span>
+            <h3 class="text-xl font-black text-slate-900" id="consumer-order-title">Desi Fresh Hybrid Tomato</h3>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-slate-400 uppercase font-bold">Escrow Vault Locked</span>
-            <p class="text-base font-black text-emerald-400 font-mono-code" id="consumer-order-cost">₹15,600</p>
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Escrow Vault Locked</span>
+            <p class="text-base font-black text-emerald-700 font-mono-code" id="consumer-order-cost">₹15,600</p>
           </div>
         </div>
 
-        <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-wrap justify-between items-center gap-3 text-xs">
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-wrap justify-between items-center gap-3 text-xs">
           <div>
-            <p class="text-slate-400">Live Lifecycle Status:</p>
-            <p class="font-black text-white text-sm" id="consumer-status-text">Order Placed! Awaiting Farmer Rameshwar's confirmation...</p>
+            <p class="text-slate-500">Live Lifecycle Status:</p>
+            <p class="font-black text-slate-900 text-sm" id="consumer-status-text">Order Placed! Awaiting Farmer Rameshwar's confirmation...</p>
           </div>
-          <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-700">
-            <span class="text-[10px] text-slate-400 uppercase font-bold">Your Secret Delivery Gate OTP</span>
-            <p class="text-2xl font-black font-mono-code text-white tracking-widest">4829</p>
+          <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Your Secret Delivery Gate OTP</span>
+            <p class="text-2xl font-black font-mono-code text-slate-900 tracking-widest">4829</p>
           </div>
         </div>
       </div>
 
       <!-- Categories Filter Tabs -->
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
-        <button onclick="filterConsumerCategory('all')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-slate-950 font-black shadow-md transition">All Fresh</button>
-        <button onclick="filterConsumerCategory('vegetable')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🥬 Vegetables</button>
-        <button onclick="filterConsumerCategory('fruit')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🍎 Fresh Fruits</button>
-        <button onclick="filterConsumerCategory('grain')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🌾 Grains & Pulses</button>
-        <button onclick="filterConsumerCategory('exotic')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🥑 Exotic & Hydroponic</button>
+        <button onclick="filterConsumerCategory('all')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-white font-black shadow-sm transition">All Fresh</button>
+        <button onclick="filterConsumerCategory('vegetable')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🥬 Vegetables</button>
+        <button onclick="filterConsumerCategory('fruit')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🍎 Fresh Fruits</button>
+        <button onclick="filterConsumerCategory('grain')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🌾 Grains & Pulses</button>
+        <button onclick="filterConsumerCategory('exotic')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🥑 Exotic & Hydroponic</button>
       </div>
 
       <!-- Produce Catalog Grid -->
@@ -800,47 +844,47 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="cmd-surface rounded-3xl p-6 space-y-5">
           <div>
-            <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
-            <p class="text-xs text-slate-400" id="driver-flow-instructions">Log in to view assigned pickup and delivery coordinates.</p>
+            <h3 class="font-black text-slate-900 text-base">Fleet Operations & Trip Controller</h3>
+            <p class="text-xs text-slate-500" id="driver-flow-instructions">Log in to view assigned pickup and delivery coordinates.</p>
           </div>
 
           <!-- ASSIGNED TRIP NOTIFICATION -->
-          <div id="driver-assigned-job-card" class="p-4 bg-slate-900 rounded-2xl border border-cyan-500/40 space-y-2 text-xs hidden">
-            <span class="text-[10px] font-black uppercase text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded">New Assigned Trip</span>
-            <p class="font-bold text-white text-sm" id="driver-assigned-crop-title">Desi Fresh Hybrid Tomato (650 kg)</p>
-            <div class="space-y-1 text-[11px] text-slate-300 pt-1">
-              <p>📍 <b>Pickup Origin:</b> <span class="text-emerald-400">Dhauj Farm Hub (Rameshwar Sharma)</span></p>
-              <p>🏁 <b>Drop Location:</b> <span class="text-white" id="driver-assigned-drop-addr">Sector 15, Faridabad</span></p>
-              <p>👤 <b>Customer:</b> <span class="text-slate-200" id="driver-assigned-cust-name">Priya Sharma</span></p>
+          <div id="driver-assigned-job-card" class="p-4 bg-cyan-50 rounded-2xl border border-cyan-300 space-y-2 text-xs hidden">
+            <span class="text-[10px] font-black uppercase text-cyan-800 bg-cyan-100 px-2 py-0.5 rounded">New Assigned Trip</span>
+            <p class="font-bold text-slate-900 text-sm" id="driver-assigned-crop-title">Desi Fresh Hybrid Tomato (650 kg)</p>
+            <div class="space-y-1 text-[11px] text-slate-700 pt-1">
+              <p>📍 <b>Pickup Origin:</b> <span class="text-emerald-700 font-bold">Dhauj Farm Hub (Rameshwar Sharma)</span></p>
+              <p>🏁 <b>Drop Location:</b> <span class="text-slate-900" id="driver-assigned-drop-addr">Sector 15, Faridabad</span></p>
+              <p>👤 <b>Customer:</b> <span class="text-slate-800" id="driver-assigned-cust-name">Priya Sharma</span></p>
             </div>
           </div>
 
           <!-- PICKUP VERIFICATION BOX -->
-          <div id="driver-pickup-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-cyan-500/50 space-y-2.5 text-xs hidden">
-            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Farmgate Pickup Checkpoint</span>
-            <p class="text-slate-300">Enter Farmer's Pickup Code to verify loading:</p>
-            <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Code (1122)" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono-code font-bold text-center text-lg focus:outline-none" />
-            <button onclick="driverVerifyPickup()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black rounded-xl transition uppercase tracking-wider">
+          <div id="driver-pickup-box" class="p-4 bg-white rounded-2xl border-2 border-cyan-400 space-y-2.5 text-xs hidden shadow-sm">
+            <span class="text-[10px] font-bold text-cyan-700 uppercase tracking-wider">Farmgate Pickup Checkpoint</span>
+            <p class="text-slate-600">Enter Farmer's Pickup Code to verify loading:</p>
+            <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Code (1122)" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-lg focus:outline-none" />
+            <button onclick="driverVerifyPickup()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm">
               Verify Pickup & Start Highway Route
             </button>
           </div>
 
           <!-- DELIVERY VERIFICATION BOX -->
-          <div id="driver-delivery-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-emerald-500/50 space-y-2.5 text-xs hidden">
-            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Customer Doorstep Checkpoint</span>
-            <p class="text-slate-300">Arrived at Customer location. Enter Customer's Gate OTP:</p>
-            <input type="text" id="driver-delivery-otp-input" placeholder="Enter Customer OTP (4829)" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono-code font-bold text-center text-lg focus:outline-none" />
-            <button onclick="driverVerifyDelivery()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl transition uppercase tracking-wider">
+          <div id="driver-delivery-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs hidden shadow-sm">
+            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Customer Doorstep Checkpoint</span>
+            <p class="text-slate-600">Arrived at Customer location. Enter Customer's Gate OTP:</p>
+            <input type="text" id="driver-delivery-otp-input" placeholder="Enter Customer OTP (4829)" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-lg focus:outline-none" />
+            <button onclick="driverVerifyDelivery()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm">
               Complete Delivery & Release Escrow
             </button>
           </div>
 
-          <div class="p-4.5 rounded-2xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
-            <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Active Logistics Carrier</p>
-            <h4 class="font-black text-white text-base">Mini Truck (Tata Ace &bull; HR-38-AF-4829)</h4>
-            <div class="space-y-1 text-slate-400 pt-1 font-medium">
-              <p>Driver: <span class="font-bold text-slate-200">Vikram Singh</span></p>
-              <p>Trip Earning: <span class="font-black text-emerald-400 font-mono-code">₹1,120</span></p>
+          <div class="p-4.5 rounded-2xl border border-slate-200 bg-slate-50 space-y-1.5 text-xs">
+            <p class="text-emerald-700 font-bold uppercase tracking-wider text-[10px]">Active Logistics Carrier</p>
+            <h4 class="font-black text-slate-900 text-base">Mini Truck (Tata Ace &bull; HR-38-AF-4829)</h4>
+            <div class="space-y-1 text-slate-600 pt-1 font-medium">
+              <p>Driver: <span class="font-bold text-slate-800">Vikram Singh</span></p>
+              <p>Trip Earning: <span class="font-black text-emerald-700 font-mono-code">₹1,120</span></p>
             </div>
           </div>
         </div>
@@ -848,12 +892,12 @@
         <div class="lg:col-span-2 cmd-surface rounded-3xl p-5 flex flex-col space-y-3 relative">
           <div class="flex justify-between items-center">
             <div>
-              <h4 class="font-bold text-white text-sm flex items-center gap-2">
-                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span> Live Geofenced 15-Pincode Routing
+              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Routing
               </h4>
-              <p class="text-xs text-slate-400 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+              <p class="text-xs text-slate-500 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
             </div>
-            <span class="text-xs font-bold text-emerald-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-700 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
           </div>
           
           <div id="driver-map"></div>
@@ -866,49 +910,49 @@
     <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       <div class="cmd-surface rounded-3xl p-6 sm:p-8 space-y-6">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-800">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-100">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Wholesale Batch Transit
+              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span> Wholesale Batch Transit
               </span>
-              <span class="text-xs text-slate-400 font-mono-code">Order #OD-2026-FBD-8821</span>
+              <span class="text-xs text-slate-500 font-mono-code">Order #OD-2026-FBD-8821</span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-black mt-2 text-white">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Origin: <span class="text-emerald-400 font-bold">Dhauj Farm Hub (121007)</span> &bull; Consignee: <span class="text-slate-200 font-bold">BigBasket Wholesale</span></p>
+            <h2 class="text-2xl sm:text-3xl font-black mt-2 text-slate-900">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Origin: <span class="text-emerald-700 font-bold">Dhauj Farm Hub (121007)</span> &bull; Consignee: <span class="text-slate-800 font-bold">BigBasket Wholesale</span></p>
           </div>
 
-          <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-left sm:text-right space-y-1">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimated Delivery</span>
-            <p class="text-lg font-black text-emerald-400 font-mono-code" id="buyer-delivery-eta">Today by 05:30 PM</p>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left sm:text-right space-y-1">
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Estimated Delivery</span>
+            <p class="text-lg font-black text-emerald-700 font-mono-code" id="buyer-delivery-eta">Today by 05:30 PM</p>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="space-y-3.5">
-            <div class="bg-slate-900/80 border border-slate-800 p-4.5 rounded-2xl flex items-center gap-3">
-              <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl">
+            <div class="bg-slate-50 border border-slate-200 p-4.5 rounded-2xl flex items-center gap-3">
+              <div class="p-3 bg-emerald-100 text-emerald-700 rounded-xl">
                 <i data-lucide="truck" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-[10px] text-slate-400 uppercase font-bold">Assigned Carrier</p>
-                <p class="text-xs font-black text-white">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
-                <p class="text-[11px] text-emerald-400 font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
+                <p class="text-[10px] text-slate-500 uppercase font-bold">Assigned Carrier</p>
+                <p class="text-xs font-black text-slate-900">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
+                <p class="text-[11px] text-emerald-700 font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
               </div>
             </div>
 
-            <div class="bg-slate-900/90 border border-emerald-500/30 p-4.5 rounded-2xl flex items-center justify-between">
+            <div class="bg-slate-50 border border-emerald-200 p-4.5 rounded-2xl flex items-center justify-between">
               <div>
-                <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Secret Gate OTP</p>
-                <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
+                <p class="text-[10px] text-emerald-800 font-bold uppercase tracking-wider">Secret Gate OTP</p>
+                <p class="text-3xl font-black font-mono-code tracking-widest text-slate-900 mt-0.5">4829</p>
               </div>
-              <button onclick="downloadGSTInvoicePDF()" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
+              <button onclick="downloadGSTInvoicePDF()" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="download" class="w-4 h-4"></i> PDF Bill
               </button>
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-slate-900/60 p-4.5 rounded-2xl border border-slate-800 space-y-2.5">
+          <div class="lg:col-span-2 bg-slate-50 p-4.5 rounded-2xl border border-slate-200 space-y-2.5">
             <div id="tracking-map"></div>
           </div>
         </div>
@@ -921,37 +965,37 @@
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="cmd-surface rounded-2xl p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster</p>
-          <h3 class="text-2xl font-black text-white mt-1 font-mono-code">10 Farmers</h3>
+          <p class="text-xs font-bold text-slate-500 uppercase">Tracked Cluster</p>
+          <h3 class="text-2xl font-black text-slate-900 mt-1 font-mono-code">10 Farmers</h3>
         </div>
         <div class="cmd-surface rounded-2xl p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Total Yield Pooled</p>
-          <h3 class="text-2xl font-black text-emerald-400 mt-1 font-mono-code">4,850 kg</h3>
+          <p class="text-xs font-bold text-slate-500 uppercase">Total Yield Pooled</p>
+          <h3 class="text-2xl font-black text-emerald-700 mt-1 font-mono-code">4,850 kg</h3>
         </div>
         <div class="cmd-surface rounded-2xl p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Quality Clearance</p>
-          <h3 class="text-2xl font-black text-cyan-400 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
+          <p class="text-xs font-bold text-slate-500 uppercase">Quality Clearance</p>
+          <h3 class="text-2xl font-black text-cyan-700 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
         </div>
         <div class="cmd-surface rounded-2xl p-5">
-          <p class="text-xs font-bold text-slate-400 uppercase">Escrow In Vault</p>
-          <h3 class="text-2xl font-black text-amber-400 mt-1 font-mono-code">₹1,16,400</h3>
+          <p class="text-xs font-bold text-slate-500 uppercase">Escrow In Vault</p>
+          <h3 class="text-2xl font-black text-amber-700 mt-1 font-mono-code">₹1,16,400</h3>
         </div>
       </div>
 
       <div class="cmd-surface rounded-3xl overflow-hidden space-y-4 p-6">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
           <div>
-            <h3 class="text-base font-black text-white">10-Farmer Granular Process Audit Matrix</h3>
-            <p class="text-xs text-slate-400">Quality verification for destoning, moisture control, AI grading, and crate packaging.</p>
+            <h3 class="text-base font-black text-slate-900">10-Farmer Granular Process Audit Matrix</h3>
+            <p class="text-xs text-slate-500">Quality verification for destoning, moisture control, AI grading, and crate packaging.</p>
           </div>
-          <button onclick="auditAllPassed()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition shadow flex items-center gap-2">
+          <button onclick="auditAllPassed()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow flex items-center gap-2">
             <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers 🎉
           </button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
-            <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
               <tr>
                 <th class="p-3.5">Farmer & Location</th>
                 <th class="p-3.5">Crop / Yield</th>
@@ -963,7 +1007,7 @@
                 <th class="p-3.5 text-center">Admin Clearance</th>
               </tr>
             </thead>
-            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-800/60 text-slate-300 font-medium"></tbody>
+            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
           </table>
         </div>
       </div>
@@ -974,39 +1018,39 @@
   <!-- ========================================================= -->
   <!-- CONSUMER CART DRAWER                                      -->
   <!-- ========================================================= -->
-  <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-slate-900/95 backdrop-blur-2xl border-l border-slate-700 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
-    <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+  <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-white border-l border-slate-200 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+    <div class="p-5 border-b border-slate-100 flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
-        <h3 class="font-black text-white text-base">My Fresh Harvest Basket</h3>
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-600"></i>
+        <h3 class="font-black text-slate-900 text-base">My Fresh Harvest Basket</h3>
       </div>
-      <button onclick="toggleCartDrawer()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+      <button onclick="toggleCartDrawer()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
     </div>
 
     <div id="cart-items-container" class="flex-1 p-5 overflow-y-auto space-y-3.5 text-xs"></div>
 
-    <div class="p-5 bg-slate-950/80 border-t border-slate-800 space-y-3">
-      <div class="space-y-1.5 text-xs text-slate-300">
-        <div class="flex justify-between"><span>Item Total (MRP):</span><span class="font-bold text-white font-mono-code" id="cart-mrp-total">₹0</span></div>
-        <div class="flex justify-between text-emerald-400"><span>Direct Farm Discount:</span><span class="font-bold font-mono-code" id="cart-discount-total">-₹0</span></div>
-        <div class="flex justify-between"><span>Delivery Charge:</span><span class="text-emerald-400 font-bold">FREE</span></div>
-        <div class="pt-2 border-t border-slate-800 flex justify-between text-sm font-black text-white">
+    <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-3">
+      <div class="space-y-1.5 text-xs text-slate-600">
+        <div class="flex justify-between"><span>Item Total (MRP):</span><span class="font-bold text-slate-900 font-mono-code" id="cart-mrp-total">₹0</span></div>
+        <div class="flex justify-between text-emerald-700"><span>Direct Farm Discount:</span><span class="font-bold font-mono-code" id="cart-discount-total">-₹0</span></div>
+        <div class="flex justify-between"><span>Delivery Charge:</span><span class="text-emerald-700 font-bold">FREE</span></div>
+        <div class="pt-2 border-t border-slate-200 flex justify-between text-sm font-black text-slate-900">
           <span>To Pay (Escrow):</span>
-          <span class="text-emerald-400 font-mono-code text-base" id="cart-final-total">₹0</span>
+          <span class="text-emerald-700 font-mono-code text-base" id="cart-final-total">₹0</span>
         </div>
       </div>
 
-      <button onclick="openConsumerCheckoutModal()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+      <button onclick="openConsumerCheckoutModal()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
         <i data-lucide="check" class="w-4 h-4"></i> Proceed to Checkout & Delivery Address ⚡
       </button>
     </div>
   </div>
 
   <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
-  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-slate-900/95 backdrop-blur-2xl border border-slate-700 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
-    <div class="bg-slate-950 p-4 text-white flex justify-between items-center border-b border-slate-800">
+  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white border border-slate-200 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
+    <div class="bg-slate-900 p-4 text-white flex justify-between items-center">
       <div class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
           <i data-lucide="bot" class="w-5 h-5"></i>
@@ -1021,53 +1065,54 @@
       </button>
     </div>
 
-    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/80 text-xs">
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
       <div class="flex gap-2.5 items-start">
-        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
-        <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 text-slate-200 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
+        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
           <p>Namaste! I am <b>KisanAI Copilot</b>. I am actively tracking the real-time order lifecycle between consumers, farmers, and drivers.</p>
         </div>
       </div>
     </div>
 
-    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
-      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2.5 bg-slate-900 text-white rounded-xl border border-slate-700 focus:outline-none font-medium" />
-      <button type="submit" class="p-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-xl transition shadow-md">
+    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2.5 bg-slate-50 text-slate-900 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-medium" />
+      <button type="submit" class="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-sm">
         <i data-lucide="send" class="w-4 h-4"></i>
       </button>
     </form>
   </div>
 
   <!-- FLOATING AI TRIGGER BUTTON -->
-  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-30 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/20">
-    <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
-    <span class="pr-1 text-slate-950 font-bold">Ask KisanAI</span>
+  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-30 bg-emerald-600 hover:bg-emerald-700 text-white p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white">
+    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+    <span class="pr-1 font-bold">Ask KisanAI</span>
   </button>
 
   <!-- MODAL: 360° VIRTUAL KHET -->
-  <div id="modal-360-farm" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-3 sm:p-6">
-    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
-      <div class="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
+  <div id="modal-360-farm" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-slate-800">
+      <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 z-10">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
             <i data-lucide="orbit" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-black text-sm text-white" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
-            <p class="text-[10px] text-emerald-400 font-medium">WebGL 3D Interactive Farmgate</p>
+            <h3 class="font-black text-sm text-slate-900" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
+            <p class="text-[10px] text-emerald-700 font-medium">WebGL 3D Interactive Farmgate</p>
           </div>
         </div>
 
         <div class="flex items-center gap-1.5 text-xs">
-          <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
-          <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
-          <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
+          <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🔄 360° Orbit</button>
+          <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🚁 Drone Top-View</button>
+          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🌱 Crop Row Scan</button>
+          <button onclick="close360FarmModal()" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition ml-2 border border-rose-200">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
 
-      <div class="flex-1 w-full h-full relative bg-slate-950">
+      <div class="flex-1 w-full h-full relative bg-slate-900">
         <div id="virtual-farm-container" class="w-full h-full"></div>
       </div>
     </div>
@@ -1091,9 +1136,6 @@
 
   <!-- JAVASCRIPT PERSISTENT MASTER ENGINE -->
   <script>
-    // -------------------------------------------------------------
-    // PERSISTENT STORAGE SYNC HELPERS (PREVENTS RESET ON REFRESH)
-    // -------------------------------------------------------------
     const defaultOrderState = {
       id: null,
       title: 'Desi Fresh Hybrid Tomato',
@@ -1104,7 +1146,7 @@
       paymentMode: 'ONLINE_UPI',
       farmerPickupCode: '1122',
       customerDeliveryOtp: '4829',
-      status: 'IDLE' // IDLE, PLACED, ACCEPTED, READY_FOR_PICKUP, IN_TRANSIT, DELIVERED, REJECTED
+      status: 'IDLE'
     };
 
     function loadActiveOrder() {
@@ -1168,7 +1210,7 @@
         particleCount: 65,
         spread: 70,
         origin: { y: 0.65 },
-        colors: ['#10b981', '#059669', '#34d399', '#f59e0b', '#06b6d4']
+        colors: ['#059669', '#10b981', '#34d399', '#f59e0b', '#06b6d4']
       });
       if (msg) alert(msg);
     }
@@ -1182,30 +1224,25 @@
       syncAllUIComponents();
     });
 
-    // -------------------------------------------------------------
-    // REAL-TIME STATE SYNC CONTROLLER
-    // -------------------------------------------------------------
     function syncAllUIComponents() {
       activeLifecycleOrder = loadActiveOrder();
 
-      // Update Top HUD Badge
       if (activeLifecycleOrder.status === 'IDLE') {
-        updatePipelineBadge('STATUS: IDLE_NO_ORDER', 'bg-slate-800 text-slate-300 border-slate-700');
+        updatePipelineBadge('STATUS: IDLE_NO_ORDER', 'bg-slate-100 text-slate-700 border-slate-300');
       } else if (activeLifecycleOrder.status === 'PLACED') {
-        updatePipelineBadge('STEP 1: ORDER PLACED &bull; AWAITING FARMER', 'bg-amber-500/20 text-amber-300 border-amber-500/40');
+        updatePipelineBadge('STEP 1: ORDER PLACED &bull; AWAITING FARMER', 'bg-amber-100 text-amber-800 border-amber-300');
       } else if (activeLifecycleOrder.status === 'ACCEPTED') {
-        updatePipelineBadge('STEP 2: FARMER ACCEPTED &bull; CRATING PRODUCE', 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40');
+        updatePipelineBadge('STEP 2: FARMER ACCEPTED &bull; CRATING PRODUCE', 'bg-emerald-100 text-emerald-800 border-emerald-300');
       } else if (activeLifecycleOrder.status === 'READY_FOR_PICKUP') {
-        updatePipelineBadge('STEP 3: READY FOR FLEET PICKUP', 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40');
+        updatePipelineBadge('STEP 3: READY FOR FLEET PICKUP', 'bg-cyan-100 text-cyan-800 border-cyan-300');
       } else if (activeLifecycleOrder.status === 'IN_TRANSIT') {
-        updatePipelineBadge('STEP 4: IN-TRANSIT &bull; TRUCK ON HIGHWAY', 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40');
+        updatePipelineBadge('STEP 4: IN-TRANSIT &bull; TRUCK ON HIGHWAY', 'bg-emerald-100 text-emerald-800 border-emerald-300');
       } else if (activeLifecycleOrder.status === 'DELIVERED') {
-        updatePipelineBadge('STEP 5: DELIVERED &bull; ESCROW PAID TO FARMER', 'bg-emerald-500 text-slate-950 font-black');
+        updatePipelineBadge('STEP 5: DELIVERED &bull; ESCROW PAID TO FARMER', 'bg-emerald-600 text-white font-black');
       } else if (activeLifecycleOrder.status === 'REJECTED') {
-        updatePipelineBadge('ORDER REJECTED &bull; 100% ESCROW REFUNDED', 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+        updatePipelineBadge('ORDER REJECTED &bull; 100% ESCROW REFUNDED', 'bg-rose-100 text-rose-800 border-rose-300');
       }
 
-      // Consumer Active Card Sync
       const custCard = document.getElementById('consumer-active-order-card');
       if (activeLifecycleOrder.status !== 'IDLE' && custCard) {
         custCard.classList.remove('hidden');
@@ -1220,7 +1257,6 @@
         else if (activeLifecycleOrder.status === 'DELIVERED') document.getElementById('consumer-status-text').innerText = '✓ ORDER DELIVERED! Thank you for supporting local farmers.';
       }
 
-      // Farmer UI Sync
       const farmerDecisionCard = document.getElementById('farmer-order-decision-card');
       const farmerDispatchCard = document.getElementById('farmer-dispatch-card');
       if (farmerDecisionCard && farmerDispatchCard) {
@@ -1248,7 +1284,6 @@
         }
       }
 
-      // Driver UI Sync
       const driverJobCard = document.getElementById('driver-assigned-job-card');
       const driverPickupBox = document.getElementById('driver-pickup-box');
       const driverDeliveryBox = document.getElementById('driver-delivery-box');
@@ -1267,7 +1302,7 @@
           driverDeliveryBox.classList.remove('hidden');
           document.getElementById('driver-flow-instructions').innerText = `Highway Navigation Active. Moving towards Destination: ${activeLifecycleOrder.customerAddress}`;
           document.getElementById('driver-speed-badge').innerText = 'Speed: 42 km/h';
-          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping';
+          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping';
         } else if (activeLifecycleOrder.status === 'DELIVERED') {
           driverJobCard.classList.add('hidden');
           driverPickupBox.classList.add('hidden');
@@ -1277,9 +1312,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // STEP 1: CONSUMER CHECKOUT & ADDRESS / PAYMENT
-    // -------------------------------------------------------------
     function openConsumerCheckoutModal() {
       toggleCartDrawer();
       document.getElementById('modal-consumer-checkout').classList.remove('hidden');
@@ -1318,7 +1350,6 @@
 
       saveActiveOrder(newOrder);
 
-      // Empty Cart
       consumerCart = {};
       updateCartDisplay();
       renderConsumerCatalog('all');
@@ -1326,14 +1357,10 @@
       triggerConfettiSuccess(`[ORDER PLACED SUCCESSFULLY! 🛍️]\n\nOrder ID: ${newOrder.id}\nPayment: ${newOrder.paymentMode}\n\nAapka order place ho chuka hai! Ab aap Logout karke Farmer (Rameshwar) account se login karke order accept karein.`);
     }
 
-    // -------------------------------------------------------------
-    // STEP 2: FARMER DECISION (ACCEPT / REJECT)
-    // -------------------------------------------------------------
     function farmerRejectOrder() {
       const order = loadActiveOrder();
       order.status = 'REJECTED';
       saveActiveOrder(order);
-
       alert(`[ORDER REJECTED]\n\nFarmer rejected batch request.\nCustomer has been refunded ₹${order.amount}.`);
     }
 
@@ -1341,24 +1368,16 @@
       const order = loadActiveOrder();
       order.status = 'ACCEPTED';
       saveActiveOrder(order);
-
       triggerConfettiSuccess("[ORDER ACCEPTED!]\n\nProduce crating confirmed. Click 'Call Logistics Fleet' when ready for dispatch.");
     }
 
-    // -------------------------------------------------------------
-    // STEP 3: FARMER PACKS & CALLS DRIVER
-    // -------------------------------------------------------------
     function farmerMarkReadyForDriver() {
       const order = loadActiveOrder();
       order.status = 'READY_FOR_PICKUP';
       saveActiveOrder(order);
-
       alert(`[FLEET CALLED! 🚚]\n\nFarmer ne dispatch confirm kar diya hai.\nAb Logout karke Driver (Vikram Singh) account se login karein to pickup & deliver!`);
     }
 
-    // -------------------------------------------------------------
-    // STEP 4: DRIVER VERIFIES PICKUP (CODE: 1122)
-    // -------------------------------------------------------------
     function driverVerifyPickup() {
       const order = loadActiveOrder();
       const code = document.getElementById('driver-pickup-otp-input').value.trim();
@@ -1366,16 +1385,11 @@
         alert('Galat Pickup Code! Kripya sahi code enter karein (1122).');
         return;
       }
-
       order.status = 'IN_TRANSIT';
       saveActiveOrder(order);
-
       triggerConfettiSuccess(`[PICKUP VERIFIED! 🚚]\n\nTruck loaded at Dhauj Farm.\nNavigating to Customer Address:\n${order.customerAddress}\n\nCustomer gate par pahunch kar enter Customer OTP: 4829.`);
     }
 
-    // -------------------------------------------------------------
-    // STEP 5: DRIVER DELIVERS & RELEASES ESCROW (OTP: 4829)
-    // -------------------------------------------------------------
     function driverVerifyDelivery() {
       const order = loadActiveOrder();
       const otp = document.getElementById('driver-delivery-otp-input').value.trim();
@@ -1383,10 +1397,8 @@
         alert('Galat Customer OTP! Kripya Customer Gate OTP (4829) enter karein.');
         return;
       }
-
       order.status = 'DELIVERED';
       saveActiveOrder(order);
-
       triggerConfettiSuccess(`[LIFECYCLE COMPLETED! 🎉]\n\n1. Order Delivered to ${order.customerName}.\n2. ₹${order.amount} transferred from Escrow to Farmer Rameshwar Sharma UPI.`);
     }
 
@@ -1398,9 +1410,6 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // AMC CROP INSURANCE CHECKOUT & ACTIVATION
-    // -------------------------------------------------------------
     function openAMCCheckoutModal(title, coverage, amount) {
       pendingAMCTransaction = {
         title: title,
@@ -1457,14 +1466,14 @@
     function toggleAMCFrequency(freq) {
       currentAMCFrequency = freq;
       if (freq === 'yearly') {
-        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
-        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition';
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
         document.getElementById('plan-1-price').innerHTML = '₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
         document.getElementById('plan-2-price').innerHTML = '₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
         document.getElementById('plan-3-price').innerHTML = '₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
       } else {
-        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
-        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition';
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition';
         document.getElementById('plan-1-price').innerHTML = '₹299 <span class="text-xs text-slate-400 font-normal">/ month</span>';
         document.getElementById('plan-2-price').innerHTML = '₹499 <span class="text-xs text-slate-400 font-normal">/ month</span>';
         document.getElementById('plan-3-price').innerHTML = '₹899 <span class="text-xs text-slate-400 font-normal">/ month</span>';
@@ -1482,127 +1491,6 @@
       triggerConfettiSuccess("Claim Approved! ₹42,500 transferred to Farmer UPI.");
     }
 
-    // -------------------------------------------------------------
-    // CONSUMER SHOPPING & CART
-    // -------------------------------------------------------------
-    function renderConsumerCatalog(filter) {
-      const grid = document.getElementById('consumer-catalog-grid');
-      grid.innerHTML = '';
-      
-      const filtered = filter === 'all' ? consumerCatalog : consumerCatalog.filter(x => x.cat === filter);
-      filtered.forEach(p => {
-        const qtyInCart = consumerCart[p.id] || 0;
-        grid.innerHTML += `
-          <div class="bg-slate-900/90 rounded-3xl border border-slate-800 p-4 space-y-3 flex flex-col justify-between hover:border-emerald-500/50 transition">
-            <div class="space-y-2.5">
-              <div class="w-full h-44 rounded-2xl overflow-hidden relative bg-slate-950">
-                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" />
-                <span class="absolute top-2.5 left-2.5 bg-emerald-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-md">${p.discount}</span>
-                <span class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md text-amber-300 font-bold text-[10px] px-2 py-0.5 rounded-md">${p.rating}</span>
-              </div>
-              <div>
-                <p class="text-[10px] font-mono-code text-emerald-400 font-bold">${p.farm}</p>
-                <h4 class="font-black text-white text-sm leading-snug">${p.name}</h4>
-                <p class="text-slate-400 text-xs">${p.unit}</p>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
-              <div>
-                <span class="text-xs line-through text-slate-500">₹${p.mrp}</span>
-                <span class="text-base font-black text-white font-mono-code ml-1">₹${p.price}</span>
-              </div>
-              
-              ${qtyInCart === 0 ? `
-                <button onclick="addToCart('${p.id}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl transition shadow">
-                  + Add
-                </button>
-              ` : `
-                <div class="flex items-center gap-2 bg-slate-800 rounded-xl px-2 py-1 border border-emerald-500/40 text-xs">
-                  <button onclick="decrementCart('${p.id}')" class="text-emerald-400 font-black px-1">-</button>
-                  <span class="font-bold text-white font-mono-code">${qtyInCart}</span>
-                  <button onclick="addToCart('${p.id}')" class="text-emerald-400 font-black px-1">+</button>
-                </div>
-              `}
-            </div>
-          </div>
-        `;
-      });
-      lucide.createIcons();
-    }
-
-    function filterConsumerCategory(cat) {
-      document.querySelectorAll('.consumer-filter-btn').forEach(btn => {
-        btn.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition';
-      });
-      event.target.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-slate-950 font-black shadow-md transition';
-      renderConsumerCatalog(cat);
-    }
-
-    function addToCart(productId) {
-      consumerCart[productId] = (consumerCart[productId] || 0) + 1;
-      updateCartDisplay();
-      renderConsumerCatalog('all');
-    }
-
-    function decrementCart(productId) {
-      if (consumerCart[productId]) {
-        consumerCart[productId]--;
-        if (consumerCart[productId] <= 0) delete consumerCart[productId];
-      }
-      updateCartDisplay();
-      renderConsumerCatalog('all');
-    }
-
-    function updateCartDisplay() {
-      let totalCount = 0, mrpSum = 0, finalSum = 0;
-      const itemsContainer = document.getElementById('cart-items-container');
-      itemsContainer.innerHTML = '';
-
-      for (let [id, qty] of Object.entries(consumerCart)) {
-        if (qty > 0) {
-          const item = consumerCatalog.find(x => x.id === id);
-          totalCount += qty;
-          mrpSum += item.mrp * qty;
-          finalSum += item.price * qty;
-
-          itemsContainer.innerHTML += `
-            <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
-              <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover shrink-0" />
-              <div class="flex-1 truncate">
-                <p class="font-bold text-white truncate">${item.name}</p>
-                <p class="text-[10px] text-emerald-400">${item.unit} &bull; ₹${item.price}</p>
-              </div>
-              <div class="flex items-center gap-2 bg-slate-900 rounded-lg px-2 py-1 border border-slate-700">
-                <button onclick="decrementCart('${item.id}')" class="text-slate-400 hover:text-white font-bold">-</button>
-                <span class="font-black text-white font-mono-code">${qty}</span>
-                <button onclick="addToCart('${item.id}')" class="text-emerald-400 hover:text-emerald-300 font-bold">+</button>
-              </div>
-            </div>
-          `;
-        }
-      }
-
-      document.getElementById('cart-item-count').innerText = totalCount;
-      document.getElementById('cart-mrp-total').innerText = `₹${mrpSum}`;
-      document.getElementById('cart-discount-total').innerText = `-₹${mrpSum - finalSum}`;
-      document.getElementById('cart-final-total').innerText = `₹${finalSum}`;
-
-      if (totalCount === 0) {
-        itemsContainer.innerHTML = `<p class="text-center text-slate-500 pt-8">Your basket is empty. Add fresh items from the harvest catalog!</p>`;
-      }
-      lucide.createIcons();
-    }
-
-    function toggleCartDrawer() {
-      const drawer = document.getElementById('consumer-cart-drawer');
-      drawer.classList.toggle('translate-x-full');
-      updateCartDisplay();
-    }
-
-    // -------------------------------------------------------------
-    // ONBOARDING & ROLE ROUTING
-    // -------------------------------------------------------------
     function toggleUserDropdown() {
       document.getElementById('user-profile-dropdown').classList.toggle('hidden');
     }
@@ -1637,8 +1525,8 @@
     function showAuthAlert(msg, isError = false) {
       const box = document.getElementById('auth-alert-box');
       box.className = isError 
-        ? "p-3.5 rounded-2xl text-xs font-semibold border bg-rose-950/40 border-rose-500/30 text-rose-300"
-        : "p-3.5 rounded-2xl text-xs font-semibold border bg-emerald-950/40 border-emerald-500/30 text-emerald-300";
+        ? "p-3.5 rounded-2xl text-xs font-semibold border bg-rose-50 border-rose-200 text-rose-800"
+        : "p-3.5 rounded-2xl text-xs font-semibold border bg-emerald-50 border-emerald-200 text-emerald-800";
       box.innerHTML = msg;
       box.classList.remove('hidden');
     }
@@ -1660,7 +1548,7 @@
       document.getElementById('display-otp-target-mobile').innerText = "+91 " + mobile;
       document.getElementById('input-login-otp').value = demoOtp;
 
-      showAuthAlert(`✅ OTP sent to +91-${mobile}! Code: <b class="font-mono-code text-sm text-white">${demoOtp}</b>`, false);
+      showAuthAlert(`✅ OTP sent to +91-${mobile}! Code: <b class="font-mono-code text-sm text-slate-900">${demoOtp}</b>`, false);
       lucide.createIcons();
     }
 
@@ -1720,9 +1608,6 @@
       lucide.createIcons();
     }
 
-    // -------------------------------------------------------------
-    // FARMER TASKS & BAHI KHATA FUNCTIONS
-    // -------------------------------------------------------------
     function renderIndividualFarmerData(f) {
       document.getElementById('farmer-profile-name').innerText = f.name;
       document.getElementById('farmer-profile-sub').innerText = `Allocated Batch: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
@@ -1745,17 +1630,17 @@
         if (f[t.key]) {
           completedCount++;
           completedList.innerHTML += `
-            <div class="p-3.5 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl flex justify-between items-center">
-              <div><p class="font-black text-white">${t.name}</p><p class="text-[10px] text-emerald-400 font-medium">${t.desc}</p></div>
-              <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded">DONE</span>
+            <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex justify-between items-center">
+              <div><p class="font-black text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-700 font-medium">${t.desc}</p></div>
+              <span class="text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded">DONE</span>
             </div>
           `;
         } else {
           pendingCount++;
           pendingList.innerHTML += `
-            <div class="p-3.5 bg-amber-950/40 border border-amber-500/30 rounded-2xl flex justify-between items-center">
-              <div><p class="font-black text-white">${t.name}</p><p class="text-[10px] text-amber-300 font-medium">${t.desc}</p></div>
-              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[10px] rounded-xl transition shadow">MARK DONE</button>
+            <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex justify-between items-center">
+              <div><p class="font-black text-slate-900">${t.name}</p><p class="text-[10px] text-amber-700 font-medium">${t.desc}</p></div>
+              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] rounded-xl transition shadow">MARK DONE</button>
             </div>
           `;
         }
@@ -1786,12 +1671,12 @@
       farmer.expenses.forEach((item, index) => {
         totalExp += Number(item.amt);
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
-            <td class="p-2.5 font-bold text-slate-200">${item.cat}</td>
-            <td class="p-2.5 text-slate-400">${item.desc}</td>
-            <td class="p-2.5 text-right font-black text-rose-400 font-mono-code">₹${Number(item.amt).toLocaleString()}</td>
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="p-2.5 font-bold text-slate-800">${item.cat}</td>
+            <td class="p-2.5 text-slate-600">${item.desc}</td>
+            <td class="p-2.5 text-right font-black text-rose-600 font-mono-code">₹${Number(item.amt).toLocaleString()}</td>
             <td class="p-2.5 text-center">
-              <button onclick="deleteFarmerExpense(${index})" class="text-rose-400 hover:text-rose-300 p-1 font-bold text-xs">&times;</button>
+              <button onclick="deleteFarmerExpense(${index})" class="text-rose-500 hover:text-rose-700 p-1 font-bold text-xs">&times;</button>
             </td>
           </tr>
         `;
@@ -1827,7 +1712,6 @@
       }
     }
 
-    // Maps
     function initTrackingMap() {
       if (trackingMap) { trackingMap.invalidateSize(); return; }
       trackingMap = L.map('tracking-map').setView([28.38, 77.31], 12);
@@ -1836,7 +1720,7 @@
       L.marker(routePoints[0]).addTo(trackingMap).bindPopup("Dhauj Farm Gate");
       L.marker(routePoints[1]).addTo(trackingMap).bindPopup("🚚 Tata Ace (HR-38-AF-4829)").openPopup();
       L.marker(routePoints[2]).addTo(trackingMap).bindPopup("Sector 15 Hub");
-      const poly = L.polyline(routePoints, { color: '#10b981', weight: 4 }).addTo(trackingMap);
+      const poly = L.polyline(routePoints, { color: '#059669', weight: 4 }).addTo(trackingMap);
       trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
@@ -1846,11 +1730,10 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
       const points = [[28.336, 77.161], [28.341, 77.320], [28.408, 77.317], [28.421, 77.305]];
       points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
-      const poly = L.polyline(points, { color: '#10b981', weight: 4 }).addTo(driverMap);
+      const poly = L.polyline(points, { color: '#059669', weight: 4 }).addTo(driverMap);
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
-    // 3D Three.js Farm
     let scene, camera, renderer, farmGroup;
     function open360FarmModal(title) {
       document.getElementById('modal-360-farm').classList.remove('hidden');
@@ -1867,7 +1750,7 @@
       const width = container.clientWidth, height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x020617);
+      scene.background = new THREE.Color(0x0f172a);
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
       camera.position.set(0, 15, 28);
 
@@ -1885,14 +1768,14 @@
       scene.add(farmGroup);
 
       const groundGeo = new THREE.PlaneGeometry(60, 60);
-      const groundMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
       farmGroup.add(ground);
 
       for (let i = -18; i <= 18; i += 4) {
         const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
-        const rowMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
+        const rowMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
         const row = new THREE.Mesh(rowGeo, rowMat);
         row.position.set(0, 0.2, i);
         farmGroup.add(row);
@@ -1920,15 +1803,15 @@
       tbody.innerHTML = '';
       clusterFarmers.forEach(f => {
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
-            <td class="p-3.5 font-bold text-white">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
-            <td class="p-3.5"><span class="font-bold text-emerald-400">${f.crop}</span><br><span class="text-[10px] text-slate-400 font-mono-code font-bold">${f.qty} kg</span></td>
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="p-3.5 font-bold text-slate-900">${f.name}<br><span class="text-[10px] text-slate-500 font-normal">${f.village} (${f.pincode})</span></td>
+            <td class="p-3.5"><span class="font-bold text-emerald-700">${f.crop}</span><br><span class="text-[10px] text-slate-500 font-mono-code font-bold">${f.qty} kg</span></td>
             <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">CLEANED</span></td>
             <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done font-mono-code">11.4% OK</span></td>
             <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">GRADE A</span></td>
             <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">SEALED</span></td>
-            <td class="p-3.5 font-bold text-white font-mono-code">₹${(f.qty * f.rate).toLocaleString()}</td>
-            <td class="p-3.5 text-center"><span class="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded">VERIFIED</span></td>
+            <td class="p-3.5 font-bold text-slate-900 font-mono-code">₹${(f.qty * f.rate).toLocaleString()}</td>
+            <td class="p-3.5 text-center"><span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded">VERIFIED</span></td>
           </tr>
         `;
       });
@@ -1944,10 +1827,10 @@
       const q = input.value.trim();
       if (!q) return;
       const c = document.getElementById('chat-messages');
-      c.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-slate-950 font-bold p-3 rounded-xl text-xs">${q}</div></div>`;
+      c.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-white font-bold p-3 rounded-xl text-xs shadow-sm max-w-[85%]">${q}</div></div>`;
       input.value = '';
       setTimeout(() => {
-        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-200 text-xs">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
+        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800 text-xs">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
         c.scrollTop = c.scrollHeight;
         lucide.createIcons();
       }, 400);

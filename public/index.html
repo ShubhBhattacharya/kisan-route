@@ -71,7 +71,9 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
     }
 
-    #virtual-farm-canvas { width: 100% !important; height: 100% !important; border-radius: 1.5rem; outline: none; }
+    /* Flipkart style category bar scroll */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
@@ -79,33 +81,86 @@
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. REAL-TIME REGISTRATION & OTP MODAL GATE                -->
+  <!-- 0. FLIPKART STYLE PREMIUM 1-CLICK ROLE LOGIN GATE         -->
   <!-- ========================================================= -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-7 sm:p-9 shadow-2xl border border-slate-200 space-y-6 my-auto hover-lift-card text-slate-800">
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-[2rem] max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 my-auto text-slate-800">
       
-      <div class="text-center space-y-2">
-        <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
-          <i data-lucide="smartphone" class="w-8 h-8"></i>
+      <!-- Logo & Title -->
+      <div class="text-center space-y-1">
+        <div class="inline-flex p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
+          <i data-lucide="shield-check" class="w-7 h-7"></i>
         </div>
-        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kisan<span class="text-emerald-600">Route</span> Live Register</h2>
-        <p class="text-xs text-slate-500">Enter your real mobile number, verify OTP & choose your role</p>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-1.5">
+          Kisan<span class="text-emerald-600">Route</span> <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-0.5 rounded-full">AUTH PORTAL</span>
+        </h2>
+        <p class="text-xs text-slate-500">Select your role or enter mobile number for instant verification</p>
+      </div>
+
+      <!-- FLIPKART STYLE TOP ROLE CATEGORY BAR -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between px-1">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">1-Click Fast Role Login</span>
+          <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">Demo Fast Access</span>
+        </div>
+        
+        <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-2 px-1">
+          <!-- Farmer 1 -->
+          <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 border-2 border-emerald-200 group-hover:border-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+              🌱
+            </div>
+            <span class="text-[11px] font-black text-slate-700 group-hover:text-emerald-700 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Ramesh</span></span>
+          </button>
+
+          <!-- Farmer 2 -->
+          <button onclick="quickFillAndSend('9876543211')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 group-hover:bg-amber-500 border-2 border-amber-200 group-hover:border-amber-500 text-amber-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+              🥔
+            </div>
+            <span class="text-[11px] font-black text-slate-700 group-hover:text-amber-700 text-center leading-tight">Farmer 2<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Harpreet</span></span>
+          </button>
+
+          <!-- Driver -->
+          <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
+            <div class="w-14 h-14 rounded-2xl bg-cyan-50 group-hover:bg-cyan-600 border-2 border-cyan-200 group-hover:border-cyan-600 text-cyan-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+              🚚
+            </div>
+            <span class="text-[11px] font-black text-slate-700 group-hover:text-cyan-700 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Vikram</span></span>
+          </button>
+
+          <!-- Buyer -->
+          <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
+            <div class="w-14 h-14 rounded-2xl bg-purple-50 group-hover:bg-purple-600 border-2 border-purple-200 group-hover:border-purple-600 text-purple-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+              🛒
+            </div>
+            <span class="text-[11px] font-black text-slate-700 group-hover:text-purple-700 text-center leading-tight">Buyer<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">BigBasket</span></span>
+          </button>
+
+          <!-- Admin -->
+          <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 group-hover:bg-rose-600 border-2 border-rose-200 group-hover:border-rose-600 text-rose-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+              🛡️
+            </div>
+            <span class="text-[11px] font-black text-slate-700 group-hover:text-rose-700 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Audit Hub</span></span>
+          </button>
+        </div>
       </div>
 
       <!-- Live Notification Banner -->
       <div id="auth-alert-box" class="hidden p-3.5 rounded-2xl text-xs font-semibold border"></div>
 
-      <!-- STEP 1: Enter Real Mobile Number -->
-      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs">
+      <!-- STEP 1: Enter Custom Phone Number -->
+      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-2 border-t border-slate-100">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Apna 10-Digit Mobile Number Dalein</label>
+          <label class="block font-bold text-slate-700 mb-1">Ya Apna Mobile Number Dalein</label>
           <div class="relative flex items-center">
             <span class="absolute left-3.5 text-slate-400 font-bold text-sm">+91</span>
             <input 
               type="tel" 
               id="input-login-mobile" 
               maxlength="10" 
-              placeholder="e.g. 9811044910" 
+              placeholder="e.g. 9876543210" 
               required 
               class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-300 bg-slate-50 font-bold text-slate-900 text-sm tracking-wider focus:outline-none focus:bg-white focus:border-emerald-500" 
             />
@@ -113,14 +168,14 @@
         </div>
 
         <button type="submit" id="btn-send-otp-submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
-          <i data-lucide="send" class="w-4 h-4"></i> Send Live OTP
+          <i data-lucide="send" class="w-4 h-4"></i> Request Live OTP
         </button>
       </form>
 
       <!-- STEP 2: Enter 6-Digit OTP -->
-      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden">
+      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-2 border-t border-slate-100">
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-          <span class="text-slate-600">OTP sent to: <b class="text-slate-900" id="display-otp-target-mobile"></b></span>
+          <span class="text-slate-600">OTP sent to: <b class="text-slate-900 font-mono-code" id="display-otp-target-mobile"></b></span>
           <button type="button" onclick="resetToMobileStep()" class="text-emerald-600 font-bold hover:underline text-[11px]">Change Number</button>
         </div>
 
@@ -137,14 +192,14 @@
         </div>
 
         <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
-          <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP & Proceed
         </button>
       </form>
 
       <!-- STEP 3: Real-Time Role & Profile Selection -->
-      <form id="form-step-role" onsubmit="handleCompleteRegistration(event)" class="space-y-4 text-xs hidden">
+      <form id="form-step-role" onsubmit="handleCompleteRegistration(event)" class="space-y-4 text-xs hidden pt-2 border-t border-slate-100">
         <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-800 text-xs">
-          <span>✓ Mobile <b>+91 <span id="verified-mobile-display"></span></b> verified! Apna role aur details select karein:</span>
+          <span>✓ Mobile <b>+91 <span id="verified-mobile-display" class="font-mono-code"></span></b> verified! Apna role aur details chuniye:</span>
         </div>
 
         <div>
@@ -179,25 +234,6 @@
         </button>
       </form>
 
-      <!-- Quick Fill Test Numbers -->
-      <div class="pt-4 border-t border-slate-100 space-y-2 text-xs">
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Fast Simulation Numbers (Or Enter Your Real Number):</p>
-        <div class="grid grid-cols-2 gap-2 text-[11px]">
-          <button onclick="quickFillAndSend('9876543210')" class="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 font-bold text-slate-700 text-left transition">
-            🌱 9876543210 (Farmer)
-          </button>
-          <button onclick="quickFillAndSend('9811044910')" class="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 font-bold text-slate-700 text-left transition">
-            🚚 9811044910 (Driver)
-          </button>
-          <button onclick="quickFillAndSend('9988776655')" class="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 font-bold text-slate-700 text-left transition">
-            🛒 9988776655 (Buyer)
-          </button>
-          <button onclick="quickFillAndSend('9999999999')" class="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-500 font-bold text-slate-700 text-left transition">
-            🛡️ 9999999999 (Admin)
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -210,7 +246,7 @@
         <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
         <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
         <span>🧅 Onion: Mandi ₹16/kg &bull; <b class="text-white">KisanRoute: ₹22/kg</b></span>
-        <span>🌦️ Faridabad Weather: 28°C (Humidity: 62%) &bull; Clear Field Conditions</span>
+        <span>🌦️ Faridabad Weather: 28°C (Humidity: 62%) &bull; Ideal Harvesting Conditions</span>
       </div>
     </div>
   </div>
@@ -277,7 +313,7 @@
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
     <!-- ======================================================= -->
-    <!-- ROLE 1: MEMBER FARMER WORKSPACE (DYNAMIC LOADED)        -->
+    <!-- ROLE 1: MEMBER FARMER WORKSPACE                         -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
@@ -751,9 +787,7 @@
     <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping"></span>
   </button>
 
-  <!-- ========================================================= -->
-  <!-- MODAL: 360° VIRTUAL KHET & DRONE INSPECTION ARENA (3D)    -->
-  <!-- ========================================================= -->
+  <!-- MODAL: 360° VIRTUAL KHET -->
   <div id="modal-360-farm" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
       <div class="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
@@ -772,7 +806,7 @@
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
           <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
-            <i data-lucide="x" class="w-4 h-4"></i>
+            <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
       </div>

@@ -103,7 +103,34 @@
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. LOGOUT CONFIRMATION MODAL                              -->
+  <!-- 0. LIVE INTERCONNECTED ORDER FLOW HUD STRIP               -->
+  <!-- ========================================================= -->
+  <div class="bg-slate-950/90 border-b border-slate-800 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
+        <i data-lucide="git-merge" class="w-4 h-4"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-white">Live Pipeline State Machine</span>
+          <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">STATUS: IDLE_NO_ORDER</span>
+        </div>
+        <p class="text-[10px] text-slate-400" id="order-lifecycle-sub">Consumer Order &rarr; Farmer Accept/Reject &rarr; Driver Pickup &rarr; Customer Gate OTP &rarr; Escrow Release</p>
+      </div>
+    </div>
+
+    <!-- Quick Role Switcher for seamless flow simulation -->
+    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
+      <button onclick="switchRoleView('consumer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛍️ 1. Consumer Mart</button>
+      <button onclick="switchRoleView('farmer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🌱 2. Farmer Gate</button>
+      <button onclick="switchRoleView('driver')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🚚 3. Fleet Driver</button>
+      <button onclick="switchRoleView('buyer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛒 4. B2B Hub</button>
+      <button onclick="switchRoleView('admin')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛡️ 5. Audit Hub</button>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 1. LOGOUT CONFIRMATION MODAL                              -->
   <!-- ========================================================= -->
   <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="cmd-surface rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-slate-700/80 space-y-5 text-center transform scale-95 transition-all">
@@ -126,7 +153,7 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- 1. AUTH PORTAL & ROLE SWITCHER                            -->
+  <!-- 2. AUTH PORTAL & ROLE SWITCHER                            -->
   <!-- ========================================================= -->
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="cmd-surface rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border-slate-700/80 space-y-6 my-auto text-slate-100">
@@ -305,11 +332,15 @@
 
   <!-- TOP APP BAR -->
   <header class="bg-slate-950/80 backdrop-blur-2xl text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-4">
       
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black shadow-lg shadow-emerald-500/10">
-          <i data-lucide="sprout" class="w-6 h-6"></i>
+          <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
+            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="16" cy="16" r="2" fill="#10b981"/>
+          </svg>
         </div>
         <div>
           <div class="flex items-center gap-2">
@@ -322,7 +353,7 @@
 
       <div class="flex items-center gap-2.5 text-xs">
         
-        <!-- Cart Floating Trigger (Visible for Consumer) -->
+        <!-- Cart Trigger for Consumer -->
         <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-xl font-black flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
         </button>
@@ -378,7 +409,7 @@
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
     <!-- ======================================================= -->
-    <!-- ROLE 1: MEMBER FARMER WORKSPACE + AMC CROP INSURANCE    -->
+    <!-- ROLE 1: MEMBER FARMER WORKSPACE + AMC + DECISION FLOW   -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
@@ -408,6 +439,63 @@
         </div>
       </div>
 
+      <!-- INCOMING CONSUMER ORDER DECISION CARD (INTERCONNECTED FLOW STEP 2) -->
+      <div id="farmer-order-decision-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-amber-500/60 bg-amber-950/20 space-y-5 hidden">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black animate-pulse">
+              <i data-lucide="bell-ring" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-black uppercase bg-amber-500 text-slate-950 px-2 py-0.5 rounded">New Consumer Order Request</span>
+              <h3 class="text-lg font-black text-white mt-0.5" id="farmer-incoming-title">Desi Fresh Hybrid Tomato</h3>
+            </div>
+          </div>
+          <p class="text-xl font-black text-emerald-400 font-mono-code" id="farmer-incoming-payout">Locked Value: ₹15,600</p>
+        </div>
+
+        <p class="text-xs text-slate-300">
+          Consumer has placed an order with Escrow funds pre-locked. Choose to accept and initiate crate packaging, or reject to trigger an instant customer refund.
+        </p>
+
+        <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
+          <button onclick="farmerRejectOrder()" class="py-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl transition flex items-center justify-center gap-1.5">
+            <i data-lucide="x-circle" class="w-4 h-4"></i> Reject Order (Refund 100%)
+          </button>
+          <button onclick="farmerAcceptOrder()" class="py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 uppercase tracking-wider">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Accept Order & Prepare
+          </button>
+        </div>
+      </div>
+
+      <!-- DISPATCH READY CARD (INTERCONNECTED FLOW STEP 3) -->
+      <div id="farmer-dispatch-card" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-emerald-500/40 hidden">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div>
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Crated & Ready for Fleet Pickup</span>
+            <h3 class="text-xl font-black text-white">Harvest Sealed & Geotagged</h3>
+          </div>
+          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold rounded-lg font-mono-code">STATUS: PACKED</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
+            <span class="text-slate-400 font-bold uppercase text-[10px]">Pickup Authentication Code</span>
+            <p class="text-xs text-slate-300">Share this code with Driver Vikram Singh upon truck arrival:</p>
+            <p class="text-2xl font-black font-mono-code text-cyan-400 tracking-widest pt-1">1122</p>
+          </div>
+          <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
+            <span class="text-slate-400 font-bold uppercase text-[10px]">Direct UPI Payout</span>
+            <p class="text-xs text-slate-300">Amount auto-released once customer enters Gate OTP:</p>
+            <p class="text-2xl font-black font-mono-code text-emerald-400 pt-1">₹15,600</p>
+          </div>
+        </div>
+
+        <button onclick="farmerMarkReadyForDriver()" id="btn-farmer-mark-ready" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl shadow-lg transition uppercase tracking-wider flex items-center justify-center gap-2">
+          <i data-lucide="truck" class="w-4 h-4"></i> Call Logistics Fleet for Farm-Gate Pickup
+        </button>
+      </div>
+
       <!-- Farmer Profile Hero -->
       <div class="cmd-surface border-emerald-500/40 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4">
         <div>
@@ -422,7 +510,7 @@
           </div>
           <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
             <p class="text-[10px] text-slate-400 font-bold uppercase">Active AMC Cover</p>
-            <p class="text-2xl font-black text-amber-400 font-mono-code" id="farmer-amc-status">₹50,000</p>
+            <p class="text-2xl font-black text-amber-400 font-mono-code" id="farmer-amc-status">₹60,000</p>
           </div>
         </div>
       </div>
@@ -450,7 +538,7 @@
         </div>
       </div>
 
-      <!-- FARMER AMC (ANNUAL MAINTENANCE & CROP LOSS INSURANCE VAULT) -->
+      <!-- FARMER AMC CROP LOSS INSURANCE VAULT -->
       <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-500/40">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
           <div>
@@ -461,16 +549,13 @@
             <p class="text-xs text-slate-400">Unseasonal rain, pests, frost, ya transport decay me loss ka 100% payout guarantee.</p>
           </div>
           
-          <!-- Monthly/Yearly Toggle -->
           <div class="flex items-center bg-slate-900 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold">
             <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 transition">Monthly</button>
             <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Yearly (Save 20%)</button>
           </div>
         </div>
 
-        <!-- 3 Standard Insurance Tiers -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-          
           <!-- Plan 1 -->
           <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-4 flex flex-col justify-between">
             <div class="space-y-2">
@@ -540,10 +625,8 @@
               </button>
             </div>
           </div>
-
         </div>
 
-        <!-- 1-Click File Claim Action -->
         <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
@@ -558,7 +641,6 @@
             ⚡ File Instant AMC Claim
           </button>
         </div>
-
       </div>
 
       <!-- DIGITAL BAHI-KHATA (LEDGER) -->
@@ -639,7 +721,7 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- ROLE 2: DIRECT CONSUMER FRESH MART (FLIPKART/BLINKIT)   -->
+    <!-- ROLE 2: DIRECT CONSUMER FRESH MART (ORDER CREATION)     -->
     <!-- ======================================================= -->
     <div id="view-consumer" class="role-workspace space-y-6 hidden">
       
@@ -666,6 +748,31 @@
         </div>
       </div>
 
+      <!-- ACTIVE TRACKING CARD (INTERCONNECTED FLOW STEP 1 & 5) -->
+      <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-500/30">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div>
+            <span class="text-[10px] text-emerald-400 font-mono-code uppercase font-bold" id="consumer-order-id">ORDER #OD-2026-FBD-8821</span>
+            <h3 class="text-xl font-black text-white" id="consumer-order-title">Desi Fresh Hybrid Tomato</h3>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 uppercase font-bold">Escrow Vault Locked</span>
+            <p class="text-base font-black text-emerald-400 font-mono-code" id="consumer-order-cost">₹15,600</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-wrap justify-between items-center gap-3 text-xs">
+          <div>
+            <p class="text-slate-400">Live Lifecycle Status:</p>
+            <p class="font-black text-white text-sm" id="consumer-status-text">Awaiting Farmer Rameshwar's confirmation...</p>
+          </div>
+          <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-700">
+            <span class="text-[10px] text-slate-400 uppercase font-bold">Your Secret Delivery Gate OTP</span>
+            <p class="text-2xl font-black font-mono-code text-white tracking-widest">4829</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Categories Filter Tabs -->
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
         <button onclick="filterConsumerCategory('all')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-slate-950 font-black shadow-md transition">All Fresh</button>
@@ -675,20 +782,40 @@
         <button onclick="filterConsumerCategory('exotic')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🥑 Exotic & Hydroponic</button>
       </div>
 
-      <!-- High-Conversion Consumer Produce Catalog Grid -->
+      <!-- Produce Catalog Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
 
     </div>
 
     <!-- ======================================================= -->
-    <!-- ROLE 3: LOGISTICS FLEET DRIVER                          -->
+    <!-- ROLE 3: LOGISTICS FLEET DRIVER (PICKUP & OTP DELIVERY)  -->
     <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="cmd-surface rounded-3xl p-6 space-y-5">
           <div>
             <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
-            <p class="text-xs text-slate-400">Allot vehicle, enter OTP to start route, and release farmer escrow.</p>
+            <p class="text-xs text-slate-400" id="driver-flow-instructions">Allot vehicle or complete live lifecycle transit.</p>
+          </div>
+
+          <!-- PICKUP VERIFICATION BOX (INTERCONNECTED FLOW STEP 4) -->
+          <div id="driver-pickup-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-cyan-500/50 space-y-2.5 text-xs hidden">
+            <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Farmgate Pickup Checkpoint</span>
+            <p class="text-slate-300">Truck has arrived at Dhauj farm gate. Enter Farmer's Pickup Code:</p>
+            <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Code (1122)" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono-code font-bold text-center text-lg focus:outline-none" />
+            <button onclick="driverVerifyPickup()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black rounded-xl transition uppercase tracking-wider">
+              Verify Pickup & Start Highway Route
+            </button>
+          </div>
+
+          <!-- DELIVERY VERIFICATION BOX (INTERCONNECTED FLOW STEP 5) -->
+          <div id="driver-delivery-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-emerald-500/50 space-y-2.5 text-xs hidden">
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Customer Doorstep Checkpoint</span>
+            <p class="text-slate-300">Arrived at Customer location. Enter Customer's Gate OTP:</p>
+            <input type="text" id="driver-delivery-otp-input" placeholder="Enter Customer OTP (4829)" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono-code font-bold text-center text-lg focus:outline-none" />
+            <button onclick="driverVerifyDelivery()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl transition uppercase tracking-wider">
+              Complete Delivery & Release Escrow
+            </button>
           </div>
 
           <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
@@ -701,27 +828,14 @@
             </div>
           </div>
 
-          <div class="p-4 rounded-2xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
+          <div class="p-4.5 rounded-2xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
             <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Optimized Transport Carrier</p>
             <h4 id="vehicle-title" class="font-black text-white text-base">Mini Truck (Tata Ace)</h4>
             <div class="space-y-1 text-slate-400 pt-1 font-medium">
               <p>Capacity: <span class="font-bold text-slate-200 font-mono-code" id="vehicle-cap">1,000 kg</span></p>
               <p>Trip Fare: <span class="font-black text-emerald-400 font-mono-code" id="vehicle-trip-cost">₹1,120</span></p>
-              <p>Status: <b class="text-emerald-400" id="driver-trip-status">STANDBY (Awaiting OTP)</b></p>
+              <p>Status: <b class="text-emerald-400" id="driver-trip-status">STANDBY (Awaiting Pickup)</b></p>
             </div>
-          </div>
-
-          <div class="pt-2 border-t border-slate-800 space-y-2.5">
-            <label class="block text-xs font-bold text-slate-300">Enter Buyer Delivery OTP:</label>
-            <input type="text" id="driver-input-otp" placeholder="Enter OTP (Try: 4829)" class="w-full text-center text-xl font-mono-code font-bold p-3.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none" />
-            
-            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
-              <i data-lucide="play" class="w-4 h-4"></i> Start Active Navigation
-            </button>
-
-            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black text-xs py-3.5 rounded-xl shadow-lg transition hidden flex items-center justify-center gap-2 uppercase tracking-wider">
-              <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow 🏁
-            </button>
           </div>
         </div>
 
@@ -750,7 +864,7 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Transit Status: DISPATCHED
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Wholesale Batch Transit
               </span>
               <span class="text-xs text-slate-400 font-mono-code">Order #OD-2026-FBD-8821</span>
             </div>
@@ -771,7 +885,7 @@
                 <i data-lucide="truck" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-[10px] text-slate-400 uppercase font-bold">Assigned Logistics</p>
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Assigned Carrier</p>
                 <p class="text-xs font-black text-white">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
                 <p class="text-[11px] text-emerald-400 font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
               </div>
@@ -781,7 +895,6 @@
               <div>
                 <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Secret Gate OTP</p>
                 <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
-                <p class="text-[10px] text-slate-400">Share with driver upon arrival</p>
               </div>
               <button onclick="downloadGSTInvoicePDF()" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
                 <i data-lucide="download" class="w-4 h-4"></i> PDF Bill
@@ -797,7 +910,7 @@
     </div>
 
     <!-- ======================================================= -->
-    <!-- ROLE 5: ADMIN AUDIT HUB                                 -->
+    <!-- ROLE 5: ADMIN AUDIT HUB & CENTRAL COMMAND               -->
     <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -853,11 +966,9 @@
   </main>
 
   <!-- ========================================================= -->
-  <!-- CONSUMER SLIDE-OVER CART DRAWER (BLINKIT / ZOMATO STYLE)  -->
+  <!-- CONSUMER CART DRAWER (BLINKIT/FLIPKART FRESH STYLE)       -->
   <!-- ========================================================= -->
   <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-slate-900/95 backdrop-blur-2xl border-l border-slate-700 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
-    
-    <!-- Cart Header -->
     <div class="p-5 border-b border-slate-800 flex justify-between items-center">
       <div class="flex items-center gap-2">
         <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
@@ -868,26 +979,23 @@
       </button>
     </div>
 
-    <!-- Cart Items -->
     <div id="cart-items-container" class="flex-1 p-5 overflow-y-auto space-y-3.5 text-xs"></div>
 
-    <!-- Cart Footer & Bill Checkout -->
     <div class="p-5 bg-slate-950/80 border-t border-slate-800 space-y-3">
       <div class="space-y-1.5 text-xs text-slate-300">
         <div class="flex justify-between"><span>Item Total (MRP):</span><span class="font-bold text-white font-mono-code" id="cart-mrp-total">₹0</span></div>
         <div class="flex justify-between text-emerald-400"><span>Direct Farm Discount:</span><span class="font-bold font-mono-code" id="cart-discount-total">-₹0</span></div>
-        <div class="flex justify-between"><span>Delivery Charge (2-Hr Slot):</span><span class="text-emerald-400 font-bold">FREE</span></div>
+        <div class="flex justify-between"><span>Delivery Charge:</span><span class="text-emerald-400 font-bold">FREE</span></div>
         <div class="pt-2 border-t border-slate-800 flex justify-between text-sm font-black text-white">
-          <span>To Pay:</span>
+          <span>To Pay (Escrow):</span>
           <span class="text-emerald-400 font-mono-code text-base" id="cart-final-total">₹0</span>
         </div>
       </div>
 
-      <button onclick="checkoutConsumerOrder()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
-        <i data-lucide="check" class="w-4 h-4"></i> Place 2-Hour Delivery Order ⚡
+      <button onclick="checkoutConsumerOrder()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <i data-lucide="check" class="w-4 h-4"></i> Place Direct Order & Lock Escrow ⚡
       </button>
     </div>
-
   </div>
 
   <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
@@ -911,7 +1019,7 @@
       <div class="flex gap-2.5 items-start">
         <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
         <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 text-slate-200 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
-          <p>Namaste! I am <b>KisanAI Copilot</b>. I have live awareness of crop AMC protections, consumer fresh orders, farmer payouts, and geofenced trucks.</p>
+          <p>Namaste! I am <b>KisanAI Copilot</b>. I am actively tracking the real-time order lifecycle between consumers, farmers, and drivers.</p>
         </div>
       </div>
     </div>
@@ -947,8 +1055,9 @@
         <div class="flex items-center gap-1.5 text-xs">
           <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
+          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
-            <i data-lucide="x" class="w-5 h-5"></i>
+            <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
@@ -975,9 +1084,20 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT MASTER ONBOARDING & REAL-TIME STORE CONTROLLER -->
+  <!-- JAVASCRIPT REAL-TIME FLOW & APP CONTROLLER -->
   <script>
-    // 1. Consumers Products Database with High-Quality Photos & Discounts
+    // -------------------------------------------------------------
+    // GLOBAL REAL-TIME PIPELINE STATE MACHINE
+    // -------------------------------------------------------------
+    let activeLifecycleOrder = {
+      id: null,
+      title: null,
+      amount: 0,
+      farmerPickupCode: '1122',
+      customerDeliveryOtp: '4829',
+      status: 'IDLE' // IDLE, PLACED, ACCEPTED, READY_FOR_PICKUP, IN_TRANSIT, DELIVERED, REJECTED
+    };
+
     const consumerCatalog = [
       { id: 'c1', name: 'Desi Farm Hybrid Tomato', cat: 'vegetable', price: 28, mrp: 40, unit: '1 kg', discount: '30% OFF', farm: 'Dhauj Hub (Rameshwar)', img: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
       { id: 'c2', name: 'Organic Table Sugar-Free Potato', cat: 'vegetable', price: 22, mrp: 30, unit: '1 kg', discount: '26% OFF', farm: 'Tigaon Farm (Harpreet)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
@@ -990,7 +1110,7 @@
     ];
 
     let consumerCart = {};
-    let currentAMCFrequency = 'monthly'; // 'monthly' or 'yearly'
+    let currentAMCFrequency = 'monthly';
 
     let clusterFarmers = [
       { 
@@ -1029,7 +1149,152 @@
     });
 
     // -------------------------------------------------------------
-    // CONSUMER SHOPPING & CART ENGINE
+    // INTERCONNECTED FLOW: STEP 1 (ORDER PLACEMENT)
+    // -------------------------------------------------------------
+    function placeLiveDemoOrder(title, amount) {
+      activeLifecycleOrder.id = 'OD-2026-FBD-' + Math.floor(1000 + Math.random() * 9000);
+      activeLifecycleOrder.title = title;
+      activeLifecycleOrder.amount = amount;
+      activeLifecycleOrder.status = 'PLACED';
+
+      updatePipelineBadge('STEP 1: ORDER PLACED &bull; AWAITING FARMER', 'bg-amber-500/20 text-amber-300 border-amber-500/40');
+
+      // Update Consumer View UI
+      document.getElementById('consumer-active-order-card').classList.remove('hidden');
+      document.getElementById('consumer-order-id').innerText = `ORDER #${activeLifecycleOrder.id}`;
+      document.getElementById('consumer-order-title').innerText = title;
+      document.getElementById('consumer-order-cost').innerText = `₹${amount.toLocaleString()}`;
+      document.getElementById('consumer-status-text').innerText = "Order sent to Farmer Rameshwar Sharma. Awaiting confirmation...";
+
+      // Update Farmer Notification Decision Box
+      document.getElementById('farmer-order-decision-card').classList.remove('hidden');
+      document.getElementById('farmer-incoming-title').innerText = `${title}`;
+      document.getElementById('farmer-incoming-payout').innerText = `Locked Value: ₹${amount.toLocaleString()}`;
+
+      triggerConfettiSuccess(`[STEP 1: ORDER PLACED!]\n\nOrder ID: ${activeLifecycleOrder.id}\nAmount: ₹${amount} locked in Escrow.\n\nNow switch to '🌱 2. Farmer Gate' to Accept or Reject.`);
+      switchRoleView('farmer');
+    }
+
+    // -------------------------------------------------------------
+    // INTERCONNECTED FLOW: STEP 2 (FARMER DECISION)
+    // -------------------------------------------------------------
+    function farmerRejectOrder() {
+      activeLifecycleOrder.status = 'REJECTED';
+      updatePipelineBadge('ORDER REJECTED &bull; 100% ESCROW REFUNDED', 'bg-rose-500/20 text-rose-300 border-rose-500/40');
+
+      document.getElementById('farmer-order-decision-card').classList.add('hidden');
+      document.getElementById('consumer-status-text').innerText = 'Farmer was unable to fulfill this batch. 100% Escrow Refund initiated to your wallet.';
+
+      alert(`[ORDER REJECTED]\n\nFarmer rejected batch request.\nCustomer has been refunded ₹${activeLifecycleOrder.amount}.`);
+      switchRoleView('consumer');
+    }
+
+    function farmerAcceptOrder() {
+      activeLifecycleOrder.status = 'ACCEPTED';
+      updatePipelineBadge('STEP 2: FARMER ACCEPTED &bull; CRATING PRODUCE', 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40');
+
+      document.getElementById('farmer-order-decision-card').classList.add('hidden');
+      document.getElementById('farmer-dispatch-card').classList.remove('hidden');
+      document.getElementById('consumer-status-text').innerText = 'Farmer ACCEPTED your order! Produce is being crated and sealed.';
+
+      triggerConfettiSuccess("[ORDER ACCEPTED!]\n\nProduce crating confirmed. Click 'Call Logistics Fleet' when ready for dispatch.");
+    }
+
+    // -------------------------------------------------------------
+    // INTERCONNECTED FLOW: STEP 3 (FARMER DISPATCH & CALL DRIVER)
+    // -------------------------------------------------------------
+    function farmerMarkReadyForDriver() {
+      activeLifecycleOrder.status = 'READY_FOR_PICKUP';
+      updatePipelineBadge('STEP 3: READY FOR FLEET PICKUP', 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40');
+
+      document.getElementById('btn-farmer-mark-ready').innerText = '✓ Fleet Dispatched to Farm Gate';
+      document.getElementById('btn-farmer-mark-ready').disabled = true;
+
+      document.getElementById('consumer-status-text').innerText = 'Logistics Carrier dispatched to Dhauj Farm Hub.';
+
+      // Activate Driver Terminal Pickup Box
+      document.getElementById('driver-flow-instructions').innerText = 'Truck reached Dhauj farm gate. Enter Farmer Pickup Code (1122) to load crates:';
+      document.getElementById('driver-pickup-box').classList.remove('hidden');
+
+      alert(`[FLEET DISPATCHED]\n\nDriver Vikram Singh has arrived at Dhauj farm gate.\nNow switch to '🚚 3. Fleet Driver' to verify pickup.`);
+      switchRoleView('driver');
+    }
+
+    // -------------------------------------------------------------
+    // INTERCONNECTED FLOW: STEP 4 (DRIVER VERIFIES PICKUP: 1122)
+    // -------------------------------------------------------------
+    function driverVerifyPickup() {
+      const code = document.getElementById('driver-pickup-otp-input').value.trim();
+      if (code !== activeLifecycleOrder.farmerPickupCode) {
+        alert('Galat Pickup Code! Kripya sahi code enter karein (1122).');
+        return;
+      }
+
+      activeLifecycleOrder.status = 'IN_TRANSIT';
+      updatePipelineBadge('STEP 4: IN-TRANSIT &bull; TRUCK ON HIGHWAY', 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40');
+
+      document.getElementById('driver-pickup-box').classList.add('hidden');
+      document.getElementById('driver-delivery-box').classList.remove('hidden');
+      document.getElementById('driver-flow-instructions').innerText = 'Highway Navigation Active. Moving towards Sector 15 Customer Destination.';
+      document.getElementById('driver-speed-badge').innerText = 'Speed: 42 km/h';
+      document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping';
+
+      document.getElementById('consumer-status-text').innerText = 'Produce loaded! Truck HR-38-AF-4829 on highway towards your location.';
+
+      triggerConfettiSuccess("[PICKUP VERIFIED!]\n\nTruck loaded. Live navigation active.\nWhen arriving at customer gate, enter Customer Gate OTP: 4829.");
+    }
+
+    // -------------------------------------------------------------
+    // INTERCONNECTED FLOW: STEP 5 (DELIVERY & ESCROW RELEASE: 4829)
+    // -------------------------------------------------------------
+    function driverVerifyDelivery() {
+      const otp = document.getElementById('driver-delivery-otp-input').value.trim();
+      if (otp !== activeLifecycleOrder.customerDeliveryOtp) {
+        alert('Galat Customer OTP! Kripya Customer Gate OTP (4829) enter karein.');
+        return;
+      }
+
+      activeLifecycleOrder.status = 'DELIVERED';
+      updatePipelineBadge('STEP 5: DELIVERED &bull; ESCROW PAID TO FARMER', 'bg-emerald-500 text-slate-950 font-black');
+
+      document.getElementById('driver-delivery-box').classList.add('hidden');
+      document.getElementById('driver-flow-instructions').innerText = 'Trip successfully completed! Payout released to Farmer UPI.';
+      document.getElementById('driver-speed-badge').innerText = 'Parked: 0 km/h';
+      document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+
+      document.getElementById('consumer-status-text').innerText = '✓ ORDER DELIVERED! Thank you for supporting local farmers.';
+
+      triggerConfettiSuccess(`[LIFECYCLE COMPLETED! 🎉]\n\n1. Order Delivered to Customer.\n2. ₹${activeLifecycleOrder.amount} transferred from Escrow to Farmer Rameshwar Sharma UPI.`);
+      switchRoleView('consumer');
+    }
+
+    function updatePipelineBadge(text, cls) {
+      const badge = document.getElementById('order-lifecycle-badge');
+      badge.innerHTML = text;
+      badge.className = `text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full border ${cls}`;
+    }
+
+    // Role View Switcher
+    function switchRoleView(role) {
+      document.querySelectorAll('#view-member_farmer, #view-consumer, #view-driver, #view-buyer, #view-admin').forEach(el => el.classList.add('hidden'));
+      
+      if (role === 'farmer') document.getElementById('view-member_farmer').classList.remove('hidden');
+      else if (role === 'consumer') document.getElementById('view-consumer').classList.remove('hidden');
+      else if (role === 'driver') {
+        document.getElementById('view-driver').classList.remove('hidden');
+        setTimeout(initDriverMap, 150);
+      }
+      else if (role === 'buyer') {
+        document.getElementById('view-buyer').classList.remove('hidden');
+        setTimeout(initTrackingMap, 150);
+      }
+      else if (role === 'admin') document.getElementById('view-admin').classList.remove('hidden');
+      
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------
+    // CONSUMER SHOPPING & CART
     // -------------------------------------------------------------
     function renderConsumerCatalog(filter) {
       const grid = document.getElementById('consumer-catalog-grid');
@@ -1151,15 +1416,16 @@
         alert("Pehle basket mein items add karein!");
         return;
       }
+      const totalAmount = parseInt(document.getElementById('cart-final-total').innerText.replace('₹', '')) || 15600;
       toggleCartDrawer();
       consumerCart = {};
       updateCartDisplay();
       renderConsumerCatalog('all');
-      triggerConfettiSuccess("Order Placed! Fresh harvest dispatched for 2-hour doorstep delivery 🚀");
+      placeLiveDemoOrder('Fresh Harvest Basket (Multiple Items)', totalAmount);
     }
 
     // -------------------------------------------------------------
-    // FARMER AMC CROP LOSS INSURANCE ENGINE
+    // FARMER AMC CROP LOSS INSURANCE
     // -------------------------------------------------------------
     function toggleAMCFrequency(freq) {
       currentAMCFrequency = freq;
@@ -1264,7 +1530,6 @@
 
     function handleVerifyOtpReal(e) {
       if (e) e.preventDefault();
-      // Fast Directory Mapping
       if (currentVerifiedMobile === '9876543210') executeLoginSession({ role: 'farmer', name: 'Rameshwar Sharma', mobile: '9876543210' });
       else if (currentVerifiedMobile === '9876543211') executeLoginSession({ role: 'farmer', name: 'Harpreet Singh', mobile: '9876543211' });
       else if (currentVerifiedMobile === '9811044910') executeLoginSession({ role: 'driver', name: 'Vikram Singh', mobile: '9811044910' });
@@ -1457,23 +1722,6 @@
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
-    function driverStartRide() {
-      const otp = document.getElementById('driver-input-otp').value.trim();
-      if (otp !== "4829") { alert("Invalid OTP! Try: 4829"); return; }
-      document.getElementById('driver-trip-status').innerText = "LIVE ON-ROAD";
-      document.getElementById('driver-trip-status').className = "text-emerald-400 font-black animate-pulse";
-      document.getElementById('btn-start-ride').classList.add('hidden');
-      document.getElementById('btn-end-ride').classList.remove('hidden');
-      triggerConfettiSuccess("OTP 4829 Verified! GPS Navigation Activated.");
-    }
-
-    function driverEndRide() {
-      document.getElementById('driver-trip-status').innerText = "COMPLETED";
-      document.getElementById('btn-end-ride').classList.add('hidden');
-      document.getElementById('btn-start-ride').classList.remove('hidden');
-      triggerConfettiSuccess("Trip Completed! ₹15,600 released to Farmer UPI.");
-    }
-
     function calculateVehicleAllocation() {
       const weight = parseInt(document.getElementById("weight-slider").value);
       document.getElementById("weight-display").innerText = `${weight} kg`;
@@ -1548,6 +1796,7 @@
       if (!camera) return;
       if (mode === 'orbit') camera.position.set(0, 16, 28);
       else if (mode === 'drone') camera.position.set(0, 38, 5);
+      else if (mode === 'crop') camera.position.set(8, 3.5, 8);
       camera.lookAt(0, 0, 0);
     }
 

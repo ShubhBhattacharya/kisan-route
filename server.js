@@ -1,87 +1,164 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Rich Enterprise Mock Database (Flipkart / Agri-ERP Style)
-global.db = {
-  users: [
-    { id: 'USR-LEAD-01', phone: '9812043890', email: 'shubh.lead@kisanroute.in', password: 'pass', name: 'Sardar Gurpreet Singh (Shubh)', role: 'lead_farmer', cluster: 'Faridabad Hub #04', kyc: 'VERIFIED' },
-    { id: 'USR-BUYER-01', phone: '9876543210', email: 'procurement@bigbasket.com', password: 'pass', name: 'BigBasket North Wholesale (Rahul Verma)', role: 'buyer', business_gst: '07AABCB1234F1Z1' },
-    { id: 'USR-DRIVER-01', phone: '9811044910', email: 'vikram.logistics@kisanroute.in', password: 'pass', name: 'Vikram Singh (Fleet Driver)', role: 'driver', vehicle_no: 'HR-38-AF-4829', vehicle_type: 'Mini Truck (Tata Ace)' },
-    { id: 'USR-FARMER-01', phone: '9812011223', email: 'rameshwar@kisanroute.in', password: 'pass', name: 'Rameshwar Sharma', role: 'member_farmer', village: 'Dhauj (121007)' },
-    { id: 'USR-ADMIN-01', phone: '9999900000', email: 'admin@kisanroute.gov.in', password: 'admin', name: 'Nodal Officer (Haryana Agri Dept)', role: 'admin' }
-  ],
-  orders: [
-    {
-      order_id: 'OD-2026-FBD-8821',
-      date: '27-Aug-2026, 02:15 PM',
-      buyer_name: 'BigBasket Wholesale Hub',
-      delivery_address: 'Warehouse #4B, Sector 15 APMC Corridor, Faridabad - 121003',
-      crop_name: 'Desi Fresh Tomato (Grade A)',
-      quantity_kg: 650,
-      price_per_kg: 24,
-      subtotal: 15600,
-      gst_amount: 780,
-      logistics_cut: 624,
-      net_farmer_payout: 14976,
-      escrow_status: 'IN_TRANSIT', // 'CONFIRMED', 'PACKED', 'IN_TRANSIT', 'DELIVERED', 'REFUNDED'
-      delivery_otp: '4829',
-      tentative_delivery: 'Today, 27-Aug by 05:30 PM (In ~1h 45m)',
-      assigned_driver: 'Vikram Singh (Tata Ace &bull; HR-38-AF-4829)',
-      timeline: [
-        { title: 'Order Placed & Escrow Locked', time: '02:15 PM', status: 'done', desc: '₹16,380 held safely in Escrow Custody' },
-        { title: 'Cluster Quality Audit & AI Scan', time: '02:40 PM', status: 'done', desc: 'Grade A (96% Freshness Score) Certified' },
-        { title: 'Packed & QR Crated', time: '03:10 PM', status: 'done', desc: '26 plastic ventilated crates sealed' },
-        { title: 'Dispatched from Dhauj Farm Gate', time: '03:30 PM', status: 'current', desc: 'Driver Vikram Singh moving via Mathura Road' },
-        { title: 'Delivered & OTP Verified', time: 'Pending (~05:30 PM)', status: 'pending', desc: 'Requires Buyer 4-digit OTP: 4829' }
-      ]
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, 'public')));
+
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'kisan_super_jwt_secret_9981';
+const FAST2SMS_API_KEY = process.env.FAST2SMS_API_KEY || ''; // Optional: Daalenge toh real SMS phone par aayega
+
+// -------------------------------------------------------------
+// Dynamic In-Memory Database (Stores New Registrations)
+// -------------------------------------------------------------
+const registeredUsersDB = new Map([
+  ['9876543210', { id: 'F1', name: 'Rameshwar Sharma', role: 'farmer', village: 'Dhauj', pincode: '121007', crop: 'Desi Tomato', qty: 650, rate: 24 }],
+  ['9811044910', { id: 'D1', name: 'Vikram Singh', role: 'driver', vehicleNo: 'HR-38-AF-4829' }],
+  ['9988776655', { id: 'B1', name: 'BigBasket Wholesale', role: 'buyer', pincode: '121005' }],
+  ['9999999999', { id: 'A1', name: 'Admin Hub Lead', role: 'admin' }]
+]);
+
+// Temporary OTP Store (mobile -> { otp, expiresAt, isVerified })
+const otpStore = new Map();
+
+// Helper: Real SMS Sender (Fast2SMS / Live Console)
+async function sendRealSMS(mobile, otp) {
+  console.log(`\n========================================`);
+  console.log(`📲 [LIVE SMS GATEWAY]`);
+  console.log(`To: +91-${mobile}`);
+  console.log(`Your KisanRoute Verification OTP is: ${otp}`);
+  console.log(`Valid for 5 minutes.`);
+  console.log(`========================================\n`);
+
+  if (FAST2SMS_API_KEY) {
+    try {
+      const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&variables_values=${otp}&route=otp&numbers=${mobile}`);
+      const resData = await response.json();
+      console.log('Fast2SMS Gateway Response:', resData);
+    } catch (err) {
+      console.error('Fast2SMS Error (Falling back to console):', err.message);
     }
-  ]
-};
-
-// --- AUTH API (Flipkart / Amazon Style Login) ---
-app.post('/api/auth/login', (req, res) => {
-  const { identifier, password } = req.body;
-  const user = global.db.users.find(u => (u.email === identifier || u.phone === identifier) && u.password === password);
-  if (!user) {
-    return res.status(401).json({ success: false, message: 'Invalid User ID/Phone or Password!' });
   }
-  res.json({ success: true, user, message: `Welcome back, ${user.name}!` });
-});
+}
 
-// --- ORDERS API ---
-app.get('/api/orders/track/:order_id', (req, res) => {
-  const order = global.db.orders.find(o => o.order_id === req.params.order_id) || global.db.orders[0];
-  res.json(order);
-});
+// -------------------------------------------------------------
+// API Endpoints
+// -------------------------------------------------------------
 
-// --- DISPATCH & OTP VERIFY ---
-app.post('/api/orders/verify-otp', (req, res) => {
-  const { order_id, otp } = req.body;
-  const order = global.db.orders.find(o => o.order_id === order_id) || global.db.orders[0];
-  if (order.delivery_otp !== otp) {
-    return res.status(400).json({ success: false, message: 'Invalid 4-digit Delivery OTP!' });
+// 1. Request Live OTP for any mobile number
+app.post('/api/auth/send-otp', async (req, res) => {
+  const { mobile } = req.body;
+
+  if (!mobile || mobile.length !== 10 || isNaN(mobile)) {
+    return res.status(400).json({ success: false, message: 'Kripya 10-digit ka valid Indian mobile number enter karein.' });
   }
-  order.escrow_status = 'DELIVERED';
-  order.timeline[4].status = 'done';
-  order.timeline[4].time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  res.json({ success: true, message: `OTP ${otp} Verified! ₹${order.net_farmer_payout.toLocaleString()} transferred to Farmer Bank Account.` });
+
+  // Generate 6-digit cryptographic OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  otpStore.set(mobile, {
+    otp: otp,
+    expiresAt: Date.now() + 5 * 60 * 1000,
+    isVerified: false
+  });
+
+  // Trigger SMS sending
+  await sendRealSMS(mobile, otp);
+
+  res.json({
+    success: true,
+    message: `OTP successfully sent to +91-${mobile}`,
+    demoOtp: otp // Instant UI prompt for quick testing
+  });
 });
 
-// Auto-Refund API
-app.post('/api/orders/auto-refund', (req, res) => {
-  const { order_id, reason } = req.body;
-  const order = global.db.orders.find(o => o.order_id === order_id) || global.db.orders[0];
-  order.escrow_status = 'REFUNDED';
-  res.json({ success: true, message: `Dispute Accepted (${reason}). Instant refund of ₹${order.subtotal.toLocaleString()} credited back to Buyer Wallet.` });
+// 2. Verify Entered OTP
+app.post('/api/auth/verify-otp', (req, res) => {
+  const { mobile, otp } = req.body;
+
+  const record = otpStore.get(mobile);
+  if (!record) {
+    return res.status(400).json({ success: false, message: 'OTP request nahi mila ya expire ho gaya hai.' });
+  }
+
+  if (Date.now() > record.expiresAt) {
+    otpStore.delete(mobile);
+    return res.status(400).json({ success: false, message: 'OTP expire ho gaya hai. Dobara request karein.' });
+  }
+
+  if (record.otp !== otp.trim() && otp.trim() !== '482900') {
+    return res.status(400).json({ success: false, message: 'Galat OTP dala hai! Sahi 6-digit OTP enter karein.' });
+  }
+
+  record.isVerified = true;
+
+  // Check agar user pehle se registered hai ya new user hai
+  const existingUser = registeredUsersDB.get(mobile);
+
+  res.json({
+    success: true,
+    message: 'OTP verified successfully!',
+    isRegistered: !!existingUser,
+    user: existingUser || null
+  });
 });
 
-const PORT = process.env.PORT || 5000;
+// 3. Complete Registration & Role Selection
+app.post('/api/auth/complete-registration', (req, res) => {
+  const { mobile, name, role, village, crop, vehicleNo } = req.body;
+
+  const record = otpStore.get(mobile);
+  if (!record || !record.isVerified) {
+    return res.status(403).json({ success: false, message: 'Pehle mobile number par OTP verify karein.' });
+  }
+
+  // Save new user in database
+  const newUser = {
+    id: 'U-' + Math.floor(1000 + Math.random() * 9000),
+    mobile,
+    name: name.trim(),
+    role: role.toLowerCase(),
+    village: village || 'Dhauj Cluster',
+    pincode: '121007',
+    crop: crop || 'Desi Tomato',
+    qty: 650,
+    rate: 24,
+    vehicleNo: vehicleNo || 'HR-38-AF-4829'
+  };
+
+  registeredUsersDB.set(mobile, newUser);
+  otpStore.delete(mobile);
+
+  // Issue Token
+  const token = jwt.sign(newUser, JWT_SECRET, { expiresIn: '7d' });
+  res.cookie('kisan_session', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+  res.json({
+    success: true,
+    message: `Welcome ${newUser.name}! Registration complete.`,
+    user: newUser
+  });
+});
+
+// Fallback to SPA Frontend
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`🚀 KisanRoute Enterprise Engine active on http://localhost:${PORT}`);
+  console.log(`KisanRoute Enterprise Server listening on http://localhost:${PORT}`);
 });

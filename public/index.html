@@ -7,7 +7,7 @@
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Cpath d='M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z' stroke='%2310b981' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%2310b981'/%3E%3C/svg%3E" />
 
-  <!-- Frameworks & CDN Engines -->
+  <!-- Core CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -17,7 +17,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Translation -->
+  <!-- Google Universal Translation -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -115,22 +115,13 @@
           <span class="text-xs font-black text-white">Live Pipeline State Machine</span>
           <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">STATUS: IDLE_NO_ORDER</span>
         </div>
-        <p class="text-[10px] text-slate-400" id="order-lifecycle-sub">Consumer Order &rarr; Farmer Accept/Reject &rarr; Driver Pickup &rarr; Customer Gate OTP &rarr; Escrow Release</p>
+        <p class="text-[10px] text-slate-400" id="order-lifecycle-sub">Real Isolated Flow: Customer Order &rarr; Logout &rarr; Farmer Accept &rarr; Logout &rarr; Driver Pickup & Delivery</p>
       </div>
-    </div>
-
-    <!-- Quick Role Switcher for seamless flow simulation -->
-    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
-      <button onclick="switchRoleView('consumer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛍️ 1. Consumer Mart</button>
-      <button onclick="switchRoleView('farmer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🌱 2. Farmer Gate</button>
-      <button onclick="switchRoleView('driver')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🚚 3. Fleet Driver</button>
-      <button onclick="switchRoleView('buyer')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛒 4. B2B Hub</button>
-      <button onclick="switchRoleView('admin')" class="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 transition">🛡️ 5. Audit Hub</button>
     </div>
   </div>
 
   <!-- ========================================================= -->
-  <!-- 1. LOGOUT CONFIRMATION MODAL                              -->
+  <!-- 1. INTERACTIVE LOGOUT CONFIRMATION MODAL                  -->
   <!-- ========================================================= -->
   <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="cmd-surface rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-slate-700/80 space-y-5 text-center transform scale-95 transition-all">
@@ -139,7 +130,7 @@
       </div>
       <div class="space-y-1.5">
         <h3 class="text-xl font-black text-white">Do you really want to log out?</h3>
-        <p class="text-xs text-slate-400">Your current operational workspace and encrypted keys will be locked safely.</p>
+        <p class="text-xs text-slate-400">Your session will be securely ended so the next party (Farmer / Driver) can log in.</p>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
         <button onclick="closeLogoutModal()" class="py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 transition">
@@ -153,7 +144,130 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- 2. AUTH PORTAL & ROLE SWITCHER                            -->
+  <!-- 2. CUSTOMER CHECKOUT & ADDRESS / PAYMENT MODAL            -->
+  <!-- ========================================================= -->
+  <div id="modal-consumer-checkout" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="cmd-surface rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border-emerald-500/40 text-slate-100 shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold">
+            <i data-lucide="truck" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-white">Delivery Address & Payment</h3>
+            <p class="text-[10px] text-slate-400">Order will be dispatched to Farmer Rameshwar Sharma</p>
+          </div>
+        </div>
+        <button onclick="closeConsumerCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleExecuteOrderPlacement(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Customer Full Name & Mobile</label>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="checkout-cust-name" value="Priya Sharma" required class="p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500 font-bold" />
+            <input type="tel" id="checkout-cust-phone" value="9911223344" required class="p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500 font-bold" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1">Complete Delivery Street Address</label>
+          <textarea id="checkout-cust-address" rows="2" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none focus:border-emerald-500">Flat 402, Green Valley Apts, Sector 15, Faridabad, Haryana</textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Pincode</label>
+            <input type="text" id="checkout-cust-pincode" value="121002" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold" />
+          </div>
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">City</label>
+            <input type="text" id="checkout-cust-city" value="Faridabad" required class="w-full p-3 rounded-xl border border-slate-700 bg-slate-900 text-white font-bold" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-300 mb-1.5">Select Payment Method</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 font-bold">
+              <input type="radio" name="checkout_payment_mode" value="ONLINE_UPI" checked class="accent-emerald-500" onchange="toggleCheckoutPaymentDisplay('upi')" />
+              <span>⚡ Online UPI (Escrow)</span>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900 flex items-center gap-2 cursor-pointer has-[:checked]:border-emerald-500 font-bold">
+              <input type="radio" name="checkout_payment_mode" value="COD" class="accent-emerald-500" onchange="toggleCheckoutPaymentDisplay('cod')" />
+              <span>💵 Cash On Delivery (COD)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Dynamic UPI QR Scanner Box -->
+        <div id="checkout-upi-qr-box" class="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-2">
+          <p class="text-[10px] text-slate-400 uppercase font-bold">Scan to Lock ₹15,600 in Escrow Guarantee</p>
+          <div class="flex justify-center p-3 bg-white rounded-xl max-w-[140px] mx-auto">
+            <div id="checkout-live-qrcode"></div>
+          </div>
+          <p class="text-emerald-400 font-mono-code font-bold text-xs">UPI: kisanroute.escrow@icici</p>
+        </div>
+
+        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> Place Order & Send Ping to Farmer 🚀
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 3. AMC PURCHASE & UPI PAYMENT MODAL                       -->
+  <!-- ========================================================= -->
+  <div id="modal-amc-checkout" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="cmd-surface rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border-amber-500/40 text-slate-100 shadow-2xl my-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-bold">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-black text-white" id="amc-checkout-title">Pest, Wilt & Rot Cover</h3>
+            <p class="text-[10px] text-slate-400">Government / FPO Backed Crop Insurance Settlement</p>
+          </div>
+        </div>
+        <button onclick="closeAMCCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+        <div class="flex justify-between font-semibold text-slate-400">
+          <span>Billing Frequency:</span>
+          <span class="text-white font-bold uppercase" id="amc-checkout-freq">Yearly Plan</span>
+        </div>
+        <div class="flex justify-between font-semibold text-slate-400">
+          <span>Max Guaranteed Coverage:</span>
+          <span class="text-amber-400 font-bold font-mono-code text-sm" id="amc-checkout-cover">₹60,000 / Acre</span>
+        </div>
+        <div class="pt-2 border-t border-slate-800 flex justify-between font-black text-sm text-white">
+          <span>Payable Premium:</span>
+          <span class="text-emerald-400 font-mono-code text-lg" id="amc-checkout-payable">₹4,999</span>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div class="flex justify-center p-3.5 bg-white rounded-2xl max-w-[170px] mx-auto shadow-lg">
+          <div id="amc-upi-qrcode"></div>
+        </div>
+        <p class="text-center font-mono-code text-[11px] text-emerald-400 font-bold">UPI ID: kisanroute.fpo@icici</p>
+      </div>
+
+      <button onclick="confirmAndActivateAMC()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <i data-lucide="check-circle" class="w-4 h-4"></i> Confirm Payment & Issue AMC Certificate 📜
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 4. AUTH PORTAL & ROLE SWITCHER                            -->
   <!-- ========================================================= -->
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="cmd-surface rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border-slate-700/80 space-y-6 my-auto text-slate-100">
@@ -180,25 +294,25 @@
         </div>
         
         <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-1">
+          <button onclick="quickFillAndSend('9911223344')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border-2 border-emerald-500/40 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+              🛍️
+            </div>
+            <span class="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-500 font-mono-code">Order Item</span></span>
+          </button>
+
           <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border border-slate-800 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🌱
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-500 font-mono-code">Ramesh</span></span>
-          </button>
-
-          <button onclick="quickFillAndSend('9876543211')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-amber-500/20 border border-slate-800 group-hover:border-amber-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
-              🥔
-            </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-amber-400 text-center leading-tight">Farmer 2<br><span class="text-[9px] text-slate-500 font-mono-code">Harpreet</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-500 font-mono-code">Accept Req</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
             <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-cyan-500/20 border border-slate-800 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🚚
             </div>
-            <span class="text-[11px] font-bold text-slate-300 group-hover:text-cyan-400 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-500 font-mono-code">Vikram</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-cyan-400 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-500 font-mono-code">Pickup/Drop</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
@@ -206,13 +320,6 @@
               🛒
             </div>
             <span class="text-[11px] font-bold text-slate-300 group-hover:text-purple-400 text-center leading-tight">B2B Buyer<br><span class="text-[9px] text-slate-500 font-mono-code">Wholesale</span></span>
-          </button>
-
-          <button onclick="quickFillAndSend('9911223344')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border-2 border-emerald-500/40 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
-              🛍️
-            </div>
-            <span class="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-500 font-mono-code">Fresh Mart</span></span>
           </button>
 
           <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
@@ -271,49 +378,6 @@
           <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP & Proceed
         </button>
       </form>
-
-      <!-- STEP 3: Role Registration -->
-      <form id="form-step-role" onsubmit="handleCompleteRegistration(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-800">
-        <div class="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs">
-          <span>✓ Mobile <b>+91 <span id="verified-mobile-display" class="font-mono-code"></span></b> verified! Complete your profile setup:</span>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Full Name</label>
-          <input type="text" id="input-reg-name" placeholder="e.g. Rameshwar Sharma" required class="w-full p-3.5 rounded-xl border border-slate-700 bg-slate-900 font-bold text-white focus:outline-none focus:border-emerald-500" />
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Select Role Type</label>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
-              <input type="radio" name="user_role_select" value="farmer" checked class="accent-emerald-500" />
-              <span>🌱 Farmer / Producer</span>
-            </label>
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
-              <input type="radio" name="user_role_select" value="consumer" class="accent-emerald-500" />
-              <span>🛍️ Consumer Mart</span>
-            </label>
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
-              <input type="radio" name="user_role_select" value="driver" class="accent-emerald-500" />
-              <span>🚚 Fleet Driver</span>
-            </label>
-            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
-              <input type="radio" name="user_role_select" value="buyer" class="accent-emerald-500" />
-              <span>🛒 B2B Buyer Hub</span>
-            </label>
-            <label class="col-span-2 p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center justify-center gap-2 cursor-pointer hover:border-rose-500 has-[:checked]:border-rose-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
-              <input type="radio" name="user_role_select" value="admin" class="accent-rose-500" />
-              <span>🛡️ Admin Mission Control</span>
-            </label>
-          </div>
-        </div>
-
-        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
-          <i data-lucide="check-circle" class="w-4 h-4"></i> Complete & Open Workspace
-        </button>
-      </form>
-
     </div>
   </div>
 
@@ -336,11 +400,7 @@
       
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black shadow-lg shadow-emerald-500/10">
-          <svg class="w-6 h-6" viewBox="0 0 32 32" fill="none">
-            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="16" cy="16" r="2" fill="#10b981"/>
-          </svg>
+          <i data-lucide="sprout" class="w-6 h-6"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
@@ -362,22 +422,7 @@
           <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-400"></i> 360° Virtual Khet
         </button>
 
-        <!-- Language Selector -->
-        <div class="flex items-center gap-1 bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
-          <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-400"></i>
-          <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer">
-            <option value="en" class="bg-slate-900">EN</option>
-            <option value="hi" class="bg-slate-900">हिंदी (HI)</option>
-            <option value="pa" class="bg-slate-900">ਪੰਜਾਬੀ (PA)</option>
-            <option value="bn" class="bg-slate-900">বাংলা (BN)</option>
-            <option value="te" class="bg-slate-900">తెలుగు (TE)</option>
-            <option value="ta" class="bg-slate-900">தமிழ் (TA)</option>
-            <option value="mr" class="bg-slate-900">मराठी (MR)</option>
-            <option value="gu" class="bg-slate-900">ગુજરાતી (GU)</option>
-          </select>
-        </div>
-
-        <!-- Profile & Logout Menu -->
+        <!-- Profile & Logout Menu (Flipkart Style) -->
         <div class="relative">
           <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs transition">
             <div class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-[10px]">
@@ -424,22 +469,13 @@
           <button onclick="scrollToAMCSection()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
             <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i> Crop Loss AMC Vault
           </button>
-
           <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
             <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
-          </button>
-          
-          <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-1.5 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl transition flex items-center gap-1.5">
-            <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
-          </button>
-          
-          <button onclick="speakFarmerTasks()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-700">
-            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Bol Kar Suniye
           </button>
         </div>
       </div>
 
-      <!-- INCOMING CONSUMER ORDER DECISION CARD (INTERCONNECTED FLOW STEP 2) -->
+      <!-- INCOMING CONSUMER ORDER DECISION CARD (STEP 2: ACCEPT/REJECT) -->
       <div id="farmer-order-decision-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-amber-500/60 bg-amber-950/20 space-y-5 hidden">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
           <div class="flex items-center gap-3">
@@ -447,33 +483,35 @@
               <i data-lucide="bell-ring" class="w-5 h-5"></i>
             </div>
             <div>
-              <span class="text-[10px] font-black uppercase bg-amber-500 text-slate-950 px-2 py-0.5 rounded">New Consumer Order Request</span>
+              <span class="text-[10px] font-black uppercase bg-amber-500 text-slate-950 px-2 py-0.5 rounded">New Incoming Order</span>
               <h3 class="text-lg font-black text-white mt-0.5" id="farmer-incoming-title">Desi Fresh Hybrid Tomato</h3>
             </div>
           </div>
-          <p class="text-xl font-black text-emerald-400 font-mono-code" id="farmer-incoming-payout">Locked Value: ₹15,600</p>
+          <p class="text-xl font-black text-emerald-400 font-mono-code" id="farmer-incoming-payout">Locked Escrow: ₹15,600</p>
         </div>
 
-        <p class="text-xs text-slate-300">
-          Consumer has placed an order with Escrow funds pre-locked. Choose to accept and initiate crate packaging, or reject to trigger an instant customer refund.
-        </p>
+        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 text-xs space-y-1">
+          <p class="text-slate-400">Customer Details: <b class="text-white" id="farmer-order-cust-info">Priya Sharma (+91 9911223344)</b></p>
+          <p class="text-slate-400">Delivery Address: <span class="text-slate-200" id="farmer-order-cust-addr">Flat 402, Green Valley Apts, Sector 15, Faridabad</span></p>
+          <p class="text-slate-400">Payment Status: <b class="text-emerald-400">ESCROW LOCKED &bull; 100% GUARANTEED</b></p>
+        </div>
 
-        <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
-          <button onclick="farmerRejectOrder()" class="py-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl transition flex items-center justify-center gap-1.5">
-            <i data-lucide="x-circle" class="w-4 h-4"></i> Reject Order (Refund 100%)
+        <div class="grid grid-cols-2 gap-3 pt-1 text-xs font-bold">
+          <button onclick="farmerRejectOrder()" class="py-3.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 rounded-xl transition flex items-center justify-center gap-1.5">
+            <i data-lucide="x-circle" class="w-4 h-4"></i> Reject Order (Refund Customer)
           </button>
-          <button onclick="farmerAcceptOrder()" class="py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 uppercase tracking-wider">
+          <button onclick="farmerAcceptOrder()" class="py-3.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 uppercase tracking-wider">
             <i data-lucide="check-circle" class="w-4 h-4"></i> Accept Order & Prepare
           </button>
         </div>
       </div>
 
-      <!-- DISPATCH READY CARD (INTERCONNECTED FLOW STEP 3) -->
+      <!-- DISPATCH READY CARD (STEP 3: READY FOR DRIVER) -->
       <div id="farmer-dispatch-card" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-emerald-500/40 hidden">
         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
           <div>
-            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Crated & Ready for Fleet Pickup</span>
-            <h3 class="text-xl font-black text-white">Harvest Sealed & Geotagged</h3>
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Produce Crated & Sealed</span>
+            <h3 class="text-xl font-black text-white">Ready for Driver Farmgate Pickup</h3>
           </div>
           <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold rounded-lg font-mono-code">STATUS: PACKED</span>
         </div>
@@ -485,9 +523,9 @@
             <p class="text-2xl font-black font-mono-code text-cyan-400 tracking-widest pt-1">1122</p>
           </div>
           <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 space-y-1">
-            <span class="text-slate-400 font-bold uppercase text-[10px]">Direct UPI Payout</span>
-            <p class="text-xs text-slate-300">Amount auto-released once customer enters Gate OTP:</p>
-            <p class="text-2xl font-black font-mono-code text-emerald-400 pt-1">₹15,600</p>
+            <span class="text-slate-400 font-bold uppercase text-[10px]">Direct UPI Payout Release</span>
+            <p class="text-xs text-slate-300">Released once driver verifies customer delivery OTP:</p>
+            <p class="text-2xl font-black font-mono-code text-emerald-400 pt-1" id="farmer-ready-payout">₹15,600</p>
           </div>
         </div>
 
@@ -515,6 +553,42 @@
         </div>
       </div>
 
+      <!-- ACTIVE AMC CERTIFICATE & VALIDITY CARD -->
+      <div id="farmer-amc-active-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-emerald-500/50 bg-emerald-950/20 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-3.5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
+              <i data-lucide="award" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-mono-code uppercase text-emerald-300 font-bold bg-emerald-500/20 px-2 py-0.5 rounded">FPO CERTIFIED</span>
+                <span class="text-[10px] text-slate-400 font-mono-code" id="amc-active-policy-no">POL-2026-FBD-7891</span>
+              </div>
+              <h3 class="text-lg font-black text-white mt-0.5" id="amc-active-plan-title">Pest, Wilt & Rot Cover (Active)</h3>
+            </div>
+          </div>
+          <span class="px-3 py-1 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black rounded-full font-mono-code flex items-center gap-1.5 self-start">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> 100% PROTECTED
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Validity Period</p>
+            <p class="font-black text-white text-xs mt-0.5" id="amc-active-dates">29-Aug-2026 to 29-Aug-2027</p>
+          </div>
+          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Max Insured Sum</p>
+            <p class="font-black text-amber-400 text-xs mt-0.5 font-mono-code" id="amc-active-sum-text">₹60,000 / Acre</p>
+          </div>
+          <div class="p-3.5 bg-slate-900 rounded-2xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Audit Mechanism</p>
+            <p class="font-black text-cyan-400 text-xs mt-0.5">Sentinel-2 AI Satellite Feed</p>
+          </div>
+        </div>
+      </div>
+
       <!-- 4 HARVEST & QUALITY PREPARATION TASKS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="cmd-surface rounded-3xl p-6 space-y-4">
@@ -538,7 +612,7 @@
         </div>
       </div>
 
-      <!-- FARMER AMC CROP LOSS INSURANCE VAULT -->
+      <!-- FARMER AMC CROP LOSS INSURANCE VAULT TIERS -->
       <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-500/40">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
           <div>
@@ -550,8 +624,8 @@
           </div>
           
           <div class="flex items-center bg-slate-900 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold">
-            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 transition">Monthly</button>
-            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Yearly (Save 20%)</button>
+            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Monthly</button>
+            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition">Yearly (Save 20%)</button>
           </div>
         </div>
 
@@ -572,14 +646,14 @@
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-1-price">₹299 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
-              <button onclick="subscribeAMCPlan('Weather & Frost Shield', '₹299/mo', 30000)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-1-price">₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Weather & Frost Shield', '₹30,000 / Acre', 2999)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
                 Activate Shield
               </button>
             </div>
           </div>
 
-          <!-- Plan 2 (Popular) -->
+          <!-- Plan 2 -->
           <div class="bg-slate-900/90 rounded-2xl p-5 border-2 border-emerald-500/50 space-y-4 flex flex-col justify-between relative">
             <span class="absolute -top-2.5 right-4 bg-emerald-500 text-slate-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">MOST POPULAR</span>
             <div class="space-y-2">
@@ -596,8 +670,8 @@
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-2-price">₹499 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
-              <button onclick="subscribeAMCPlan('Pest, Wilt & Rot Cover', '₹499/mo', 60000)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition">
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-2-price">₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Pest, Wilt & Rot Cover', '₹60,000 / Acre', 4999)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition">
                 Activate Popular Cover
               </button>
             </div>
@@ -619,8 +693,8 @@
               </div>
             </div>
             <div>
-              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-3-price">₹899 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
-              <button onclick="subscribeAMCPlan('Sovereign 100% Crop Shield', '₹899/mo', 120000)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-3-price">₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
+              <button onclick="openAMCCheckoutModal('Sovereign 100% Crop Shield', '₹1,20,000 / Field', 8999)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
                 Activate Shield
               </button>
             </div>
@@ -640,82 +714,6 @@
           <button onclick="triggerAMCClaimSettlement()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-slate-950 font-black text-xs rounded-xl shadow transition shrink-0">
             ⚡ File Instant AMC Claim
           </button>
-        </div>
-      </div>
-
-      <!-- DIGITAL BAHI-KHATA (LEDGER) -->
-      <div class="cmd-surface rounded-3xl p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-black text-white text-base flex items-center gap-2">
-              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
-            </h3>
-            <p class="text-xs text-slate-400">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
-          </div>
-          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition flex items-center gap-1.5 self-start">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
-          </button>
-        </div>
-
-        <div id="expense-form-box" class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hidden space-y-3">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label class="block font-bold text-slate-300 mb-1">Kharcha Category</label>
-              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold">
-                <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
-                <option value="Beej (Seeds)">Beej & Plant Seeds</option>
-                <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
-                <option value="Labor & Majdoori">Labor & Harvesting</option>
-                <option value="Crop AMC Protection">Crop AMC Protection Premium</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-bold text-slate-300 mb-1">Description</label>
-              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-medium" />
-            </div>
-            <div>
-              <label class="block font-bold text-slate-300 mb-1">Amount (₹)</label>
-              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold" />
-            </div>
-          </div>
-          <div class="flex justify-end gap-2 text-xs">
-            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-400 font-bold">Cancel</button>
-            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-slate-950 font-bold rounded-xl">Save in Bahi-Khata</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
-          <div class="lg:col-span-2 overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[10px]">
-                <tr>
-                  <th class="p-2.5">Category</th>
-                  <th class="p-2.5">Description</th>
-                  <th class="p-2.5 text-right">Kharcha Amount</th>
-                  <th class="p-2.5 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-800/60 font-medium text-slate-300"></tbody>
-            </table>
-          </div>
-
-          <div class="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
-            <div class="flex justify-between font-semibold text-slate-400">
-              <span>Total Batch Income:</span>
-              <span class="font-bold text-white font-mono-code" id="ledger-gross-income">₹15,600</span>
-            </div>
-            <div class="flex justify-between font-semibold text-rose-400">
-              <span>Total Farm Expenses:</span>
-              <span class="font-bold font-mono-code" id="ledger-total-expenses">-₹4,750</span>
-            </div>
-            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
-              <div>
-                <p class="font-black text-white text-sm">Net Fasal Munafa:</p>
-                <p class="text-[10px] text-emerald-400 font-bold">(In Pocket Profit)</p>
-              </div>
-              <span class="text-xl font-black text-emerald-400 font-mono-code" id="ledger-net-profit">₹10,850</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -764,7 +762,7 @@
         <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-wrap justify-between items-center gap-3 text-xs">
           <div>
             <p class="text-slate-400">Live Lifecycle Status:</p>
-            <p class="font-black text-white text-sm" id="consumer-status-text">Awaiting Farmer Rameshwar's confirmation...</p>
+            <p class="font-black text-white text-sm" id="consumer-status-text">Order Placed! Awaiting Farmer Rameshwar's confirmation...</p>
           </div>
           <div class="bg-slate-950 px-4 py-2 rounded-xl border border-slate-700">
             <span class="text-[10px] text-slate-400 uppercase font-bold">Your Secret Delivery Gate OTP</span>
@@ -795,20 +793,31 @@
         <div class="cmd-surface rounded-3xl p-6 space-y-5">
           <div>
             <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
-            <p class="text-xs text-slate-400" id="driver-flow-instructions">Allot vehicle or complete live lifecycle transit.</p>
+            <p class="text-xs text-slate-400" id="driver-flow-instructions">Log in to view assigned pickup and delivery coordinates.</p>
           </div>
 
-          <!-- PICKUP VERIFICATION BOX (INTERCONNECTED FLOW STEP 4) -->
+          <!-- ASSIGNED TRIP NOTIFICATION (STEP 4: DRIVER LOGS IN) -->
+          <div id="driver-assigned-job-card" class="p-4 bg-slate-900 rounded-2xl border border-cyan-500/40 space-y-2 text-xs hidden">
+            <span class="text-[10px] font-black uppercase text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded">New Assigned Trip</span>
+            <p class="font-bold text-white text-sm" id="driver-assigned-crop-title">Desi Fresh Hybrid Tomato (650 kg)</p>
+            <div class="space-y-1 text-[11px] text-slate-300 pt-1">
+              <p>📍 <b>Pickup Origin:</b> <span class="text-emerald-400">Dhauj Farm Hub (Rameshwar Sharma)</span></p>
+              <p>🏁 <b>Drop Location:</b> <span class="text-white" id="driver-assigned-drop-addr">Sector 15, Faridabad</span></p>
+              <p>👤 <b>Customer:</b> <span class="text-slate-200" id="driver-assigned-cust-name">Priya Sharma</span></p>
+            </div>
+          </div>
+
+          <!-- PICKUP VERIFICATION BOX (STEP 4: DRIVER AT FARM) -->
           <div id="driver-pickup-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-cyan-500/50 space-y-2.5 text-xs hidden">
             <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">Farmgate Pickup Checkpoint</span>
-            <p class="text-slate-300">Truck has arrived at Dhauj farm gate. Enter Farmer's Pickup Code:</p>
+            <p class="text-slate-300">Enter Farmer's Pickup Code to verify loading:</p>
             <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Code (1122)" class="w-full p-3 rounded-xl border border-slate-700 bg-slate-950 text-white font-mono-code font-bold text-center text-lg focus:outline-none" />
             <button onclick="driverVerifyPickup()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-black rounded-xl transition uppercase tracking-wider">
               Verify Pickup & Start Highway Route
             </button>
           </div>
 
-          <!-- DELIVERY VERIFICATION BOX (INTERCONNECTED FLOW STEP 5) -->
+          <!-- DELIVERY VERIFICATION BOX (STEP 5: DRIVER AT CUSTOMER GATE) -->
           <div id="driver-delivery-box" class="p-4 bg-slate-900 rounded-2xl border-2 border-emerald-500/50 space-y-2.5 text-xs hidden">
             <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Customer Doorstep Checkpoint</span>
             <p class="text-slate-300">Arrived at Customer location. Enter Customer's Gate OTP:</p>
@@ -818,23 +827,12 @@
             </button>
           </div>
 
-          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
-            <label class="block text-xs font-bold text-slate-300">Payload Weight Allocation (kg):</label>
-            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-emerald-500 cursor-pointer" />
-            <div class="flex justify-between text-xs text-slate-400 font-semibold">
-              <span>10 kg (Bike)</span>
-              <span id="weight-display" class="text-emerald-400 font-black text-sm bg-emerald-500/10 px-2.5 py-0.5 rounded-lg font-mono-code border border-emerald-500/30">650 kg</span>
-              <span>3,000 kg (Truck)</span>
-            </div>
-          </div>
-
           <div class="p-4.5 rounded-2xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
-            <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Optimized Transport Carrier</p>
-            <h4 id="vehicle-title" class="font-black text-white text-base">Mini Truck (Tata Ace)</h4>
+            <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Active Logistics Carrier</p>
+            <h4 class="font-black text-white text-base">Mini Truck (Tata Ace &bull; HR-38-AF-4829)</h4>
             <div class="space-y-1 text-slate-400 pt-1 font-medium">
-              <p>Capacity: <span class="font-bold text-slate-200 font-mono-code" id="vehicle-cap">1,000 kg</span></p>
-              <p>Trip Fare: <span class="font-black text-emerald-400 font-mono-code" id="vehicle-trip-cost">₹1,120</span></p>
-              <p>Status: <b class="text-emerald-400" id="driver-trip-status">STANDBY (Awaiting Pickup)</b></p>
+              <p>Driver: <span class="font-bold text-slate-200">Vikram Singh</span></p>
+              <p>Trip Earning: <span class="font-black text-emerald-400 font-mono-code">₹1,120</span></p>
             </div>
           </div>
         </div>
@@ -880,7 +878,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="space-y-3.5">
-            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+            <div class="bg-slate-900/80 border border-slate-800 p-4.5 rounded-2xl flex items-center gap-3">
               <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl">
                 <i data-lucide="truck" class="w-5 h-5"></i>
               </div>
@@ -966,7 +964,7 @@
   </main>
 
   <!-- ========================================================= -->
-  <!-- CONSUMER CART DRAWER (BLINKIT/FLIPKART FRESH STYLE)       -->
+  <!-- CONSUMER CART DRAWER                                      -->
   <!-- ========================================================= -->
   <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-slate-900/95 backdrop-blur-2xl border-l border-slate-700 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
     <div class="p-5 border-b border-slate-800 flex justify-between items-center">
@@ -987,13 +985,13 @@
         <div class="flex justify-between text-emerald-400"><span>Direct Farm Discount:</span><span class="font-bold font-mono-code" id="cart-discount-total">-₹0</span></div>
         <div class="flex justify-between"><span>Delivery Charge:</span><span class="text-emerald-400 font-bold">FREE</span></div>
         <div class="pt-2 border-t border-slate-800 flex justify-between text-sm font-black text-white">
-          <span>To Pay (Escrow):</span>
+          <span>To Pay:</span>
           <span class="text-emerald-400 font-mono-code text-base" id="cart-final-total">₹0</span>
         </div>
       </div>
 
-      <button onclick="checkoutConsumerOrder()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
-        <i data-lucide="check" class="w-4 h-4"></i> Place Direct Order & Lock Escrow ⚡
+      <button onclick="openConsumerCheckoutModal()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <i data-lucide="check" class="w-4 h-4"></i> Proceed to Checkout & Delivery Address ⚡
       </button>
     </div>
   </div>
@@ -1055,7 +1053,6 @@
         <div class="flex items-center gap-1.5 text-xs">
           <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
-          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
@@ -1084,18 +1081,30 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT REAL-TIME FLOW & APP CONTROLLER -->
+  <!-- JAVASCRIPT MASTER REAL-TIME FLOW ENGINE -->
   <script>
     // -------------------------------------------------------------
-    // GLOBAL REAL-TIME PIPELINE STATE MACHINE
+    // REAL-TIME ISOLATED ORDER STATE
     // -------------------------------------------------------------
     let activeLifecycleOrder = {
       id: null,
       title: null,
-      amount: 0,
+      amount: 15600,
+      customerName: 'Priya Sharma',
+      customerPhone: '9911223344',
+      customerAddress: 'Flat 402, Green Valley Apts, Sector 15, Faridabad',
+      paymentMode: 'ONLINE_UPI',
       farmerPickupCode: '1122',
       customerDeliveryOtp: '4829',
       status: 'IDLE' // IDLE, PLACED, ACCEPTED, READY_FOR_PICKUP, IN_TRANSIT, DELIVERED, REJECTED
+    };
+
+    let pendingAMCTransaction = {
+      title: 'Pest, Wilt & Rot Cover',
+      coverage: '₹60,000 / Acre',
+      coverValue: 60000,
+      amount: 4999,
+      frequency: 'yearly'
     };
 
     const consumerCatalog = [
@@ -1109,8 +1118,8 @@
       { id: 'c8', name: 'Fresh Green Broccoli & Bell Peppers', cat: 'exotic', price: 65, mrp: 90, unit: '500 gm box', discount: '27% OFF', farm: 'Greater Faridabad Greenbelt', img: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' }
     ];
 
-    let consumerCart = {};
-    let currentAMCFrequency = 'monthly';
+    let consumerCart = { 'c1': 2, 'c2': 3 }; // Demo items loaded
+    let currentAMCFrequency = 'yearly';
 
     let clusterFarmers = [
       { 
@@ -1119,7 +1128,7 @@
           { id: 1, cat: "Khad & Fertilizer", desc: "1 Bag Urea + 1 Bag DAP", amt: 1850 },
           { id: 2, cat: "Beej (Seeds)", desc: "Hybrid Tomato F1 Seeds", amt: 900 },
           { id: 3, cat: "Diesel & Tractor", desc: "Rotavator field prep (3 hrs)", amt: 1400 },
-          { id: 4, cat: "Crop AMC Protection", desc: "Pest & Wilt Monthly Cover", amt: 499 }
+          { id: 4, cat: "Crop AMC Protection", desc: "Pest & Wilt Yearly Cover", amt: 4999 }
         ]
       }
     ];
@@ -1146,37 +1155,69 @@
       renderConsumerCatalog('all');
       renderAdminFarmerTable();
       initSpeechRecognitionModule();
+      updateCartDisplay();
     });
 
     // -------------------------------------------------------------
-    // INTERCONNECTED FLOW: STEP 1 (ORDER PLACEMENT)
+    // STEP 1: CONSUMER CHECKOUT & ADDRESS / PAYMENT
     // -------------------------------------------------------------
-    function placeLiveDemoOrder(title, amount) {
+    function openConsumerCheckoutModal() {
+      toggleCartDrawer();
+      document.getElementById('modal-consumer-checkout').classList.remove('hidden');
+
+      const qr = document.getElementById('checkout-live-qrcode');
+      qr.innerHTML = '';
+      new QRCode(qr, { text: 'upi://pay?pa=kisanroute.escrow@icici&pn=KisanRoute%20Escrow&am=15600&cu=INR', width: 120, height: 120 });
+      lucide.createIcons();
+    }
+
+    function closeConsumerCheckoutModal() {
+      document.getElementById('modal-consumer-checkout').classList.add('hidden');
+    }
+
+    function toggleCheckoutPaymentDisplay(type) {
+      if (type === 'cod') document.getElementById('checkout-upi-qr-box').classList.add('hidden');
+      else document.getElementById('checkout-upi-qr-box').classList.remove('hidden');
+    }
+
+    function handleExecuteOrderPlacement(e) {
+      e.preventDefault();
+      closeConsumerCheckoutModal();
+
       activeLifecycleOrder.id = 'OD-2026-FBD-' + Math.floor(1000 + Math.random() * 9000);
-      activeLifecycleOrder.title = title;
-      activeLifecycleOrder.amount = amount;
+      activeLifecycleOrder.title = 'Desi Fresh Farm Produce Basket';
+      activeLifecycleOrder.amount = parseInt(document.getElementById('cart-final-total').innerText.replace('₹', '')) || 15600;
+      activeLifecycleOrder.customerName = document.getElementById('checkout-cust-name').value.trim();
+      activeLifecycleOrder.customerPhone = document.getElementById('checkout-cust-phone').value.trim();
+      activeLifecycleOrder.customerAddress = document.getElementById('checkout-cust-address').value.trim();
+      activeLifecycleOrder.paymentMode = document.querySelector('input[name="checkout_payment_mode"]:checked').value;
       activeLifecycleOrder.status = 'PLACED';
 
       updatePipelineBadge('STEP 1: ORDER PLACED &bull; AWAITING FARMER', 'bg-amber-500/20 text-amber-300 border-amber-500/40');
 
-      // Update Consumer View UI
+      // Update Consumer UI on Customer's own screen (No auto-switch!)
       document.getElementById('consumer-active-order-card').classList.remove('hidden');
       document.getElementById('consumer-order-id').innerText = `ORDER #${activeLifecycleOrder.id}`;
-      document.getElementById('consumer-order-title').innerText = title;
-      document.getElementById('consumer-order-cost').innerText = `₹${amount.toLocaleString()}`;
-      document.getElementById('consumer-status-text').innerText = "Order sent to Farmer Rameshwar Sharma. Awaiting confirmation...";
+      document.getElementById('consumer-order-title').innerText = activeLifecycleOrder.title;
+      document.getElementById('consumer-order-cost').innerText = `₹${activeLifecycleOrder.amount.toLocaleString()}`;
+      document.getElementById('consumer-status-text').innerText = 'Order Placed! Awaiting Farmer Rameshwar Sharma to accept and crate batch.';
 
-      // Update Farmer Notification Decision Box
-      document.getElementById('farmer-order-decision-card').classList.remove('hidden');
-      document.getElementById('farmer-incoming-title').innerText = `${title}`;
-      document.getElementById('farmer-incoming-payout').innerText = `Locked Value: ₹${amount.toLocaleString()}`;
+      // Pre-fill Farmer Notification for when Farmer logs in
+      document.getElementById('farmer-incoming-title').innerText = activeLifecycleOrder.title;
+      document.getElementById('farmer-incoming-payout').innerText = `Locked Escrow: ₹${activeLifecycleOrder.amount.toLocaleString()}`;
+      document.getElementById('farmer-order-cust-info').innerText = `${activeLifecycleOrder.customerName} (+91 ${activeLifecycleOrder.customerPhone})`;
+      document.getElementById('farmer-order-cust-addr').innerText = activeLifecycleOrder.customerAddress;
 
-      triggerConfettiSuccess(`[STEP 1: ORDER PLACED!]\n\nOrder ID: ${activeLifecycleOrder.id}\nAmount: ₹${amount} locked in Escrow.\n\nNow switch to '🌱 2. Farmer Gate' to Accept or Reject.`);
-      switchRoleView('farmer');
+      // Empty Cart
+      consumerCart = {};
+      updateCartDisplay();
+      renderConsumerCatalog('all');
+
+      triggerConfettiSuccess(`[ORDER PLACED SUCCESSFULLY! 🛍️]\n\nOrder ID: ${activeLifecycleOrder.id}\nPayment: ${activeLifecycleOrder.paymentMode}\n\nAapka order place ho chuka hai! Ab aap Logout karke Farmer (Rameshwar) account se login karke order accept karein.`);
     }
 
     // -------------------------------------------------------------
-    // INTERCONNECTED FLOW: STEP 2 (FARMER DECISION)
+    // STEP 2: FARMER DECISION (ACCEPT / REJECT)
     // -------------------------------------------------------------
     function farmerRejectOrder() {
       activeLifecycleOrder.status = 'REJECTED';
@@ -1186,7 +1227,6 @@
       document.getElementById('consumer-status-text').innerText = 'Farmer was unable to fulfill this batch. 100% Escrow Refund initiated to your wallet.';
 
       alert(`[ORDER REJECTED]\n\nFarmer rejected batch request.\nCustomer has been refunded ₹${activeLifecycleOrder.amount}.`);
-      switchRoleView('consumer');
     }
 
     function farmerAcceptOrder() {
@@ -1195,13 +1235,14 @@
 
       document.getElementById('farmer-order-decision-card').classList.add('hidden');
       document.getElementById('farmer-dispatch-card').classList.remove('hidden');
+      document.getElementById('farmer-ready-payout').innerText = `₹${activeLifecycleOrder.amount.toLocaleString()}`;
       document.getElementById('consumer-status-text').innerText = 'Farmer ACCEPTED your order! Produce is being crated and sealed.';
 
       triggerConfettiSuccess("[ORDER ACCEPTED!]\n\nProduce crating confirmed. Click 'Call Logistics Fleet' when ready for dispatch.");
     }
 
     // -------------------------------------------------------------
-    // INTERCONNECTED FLOW: STEP 3 (FARMER DISPATCH & CALL DRIVER)
+    // STEP 3: FARMER PACKS & CALLS DRIVER
     // -------------------------------------------------------------
     function farmerMarkReadyForDriver() {
       activeLifecycleOrder.status = 'READY_FOR_PICKUP';
@@ -1212,16 +1253,19 @@
 
       document.getElementById('consumer-status-text').innerText = 'Logistics Carrier dispatched to Dhauj Farm Hub.';
 
-      // Activate Driver Terminal Pickup Box
-      document.getElementById('driver-flow-instructions').innerText = 'Truck reached Dhauj farm gate. Enter Farmer Pickup Code (1122) to load crates:';
+      // Pre-fill Driver assigned details for when Driver logs in
+      document.getElementById('driver-assigned-job-card').classList.remove('hidden');
+      document.getElementById('driver-assigned-crop-title').innerText = activeLifecycleOrder.title;
+      document.getElementById('driver-assigned-drop-addr').innerText = activeLifecycleOrder.customerAddress;
+      document.getElementById('driver-assigned-cust-name').innerText = `${activeLifecycleOrder.customerName} (+91 ${activeLifecycleOrder.customerPhone})`;
+      document.getElementById('driver-flow-instructions').innerText = 'Trip assigned! Reach Dhauj farm gate and enter Farmer Pickup Code (1122):';
       document.getElementById('driver-pickup-box').classList.remove('hidden');
 
-      alert(`[FLEET DISPATCHED]\n\nDriver Vikram Singh has arrived at Dhauj farm gate.\nNow switch to '🚚 3. Fleet Driver' to verify pickup.`);
-      switchRoleView('driver');
+      alert(`[FLEET CALLED! 🚚]\n\nFarmer ne dispatch confirm kar diya hai.\nAb Logout karke Driver (Vikram Singh) account se login karein to pickup & deliver!`);
     }
 
     // -------------------------------------------------------------
-    // INTERCONNECTED FLOW: STEP 4 (DRIVER VERIFIES PICKUP: 1122)
+    // STEP 4: DRIVER VERIFIES PICKUP (CODE: 1122)
     // -------------------------------------------------------------
     function driverVerifyPickup() {
       const code = document.getElementById('driver-pickup-otp-input').value.trim();
@@ -1235,17 +1279,17 @@
 
       document.getElementById('driver-pickup-box').classList.add('hidden');
       document.getElementById('driver-delivery-box').classList.remove('hidden');
-      document.getElementById('driver-flow-instructions').innerText = 'Highway Navigation Active. Moving towards Sector 15 Customer Destination.';
+      document.getElementById('driver-flow-instructions').innerText = `Highway Navigation Active. Moving towards Destination: ${activeLifecycleOrder.customerAddress}`;
       document.getElementById('driver-speed-badge').innerText = 'Speed: 42 km/h';
       document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping';
 
       document.getElementById('consumer-status-text').innerText = 'Produce loaded! Truck HR-38-AF-4829 on highway towards your location.';
 
-      triggerConfettiSuccess("[PICKUP VERIFIED!]\n\nTruck loaded. Live navigation active.\nWhen arriving at customer gate, enter Customer Gate OTP: 4829.");
+      triggerConfettiSuccess(`[PICKUP VERIFIED! 🚚]\n\nTruck loaded at Dhauj Farm.\nNavigating to Customer Address:\n${activeLifecycleOrder.customerAddress}\n\nCustomer gate par pahunch kar enter Customer OTP: 4829.`);
     }
 
     // -------------------------------------------------------------
-    // INTERCONNECTED FLOW: STEP 5 (DELIVERY & ESCROW RELEASE: 4829)
+    // STEP 5: DRIVER DELIVERS & RELEASES ESCROW (OTP: 4829)
     // -------------------------------------------------------------
     function driverVerifyDelivery() {
       const otp = document.getElementById('driver-delivery-otp-input').value.trim();
@@ -1258,14 +1302,14 @@
       updatePipelineBadge('STEP 5: DELIVERED &bull; ESCROW PAID TO FARMER', 'bg-emerald-500 text-slate-950 font-black');
 
       document.getElementById('driver-delivery-box').classList.add('hidden');
-      document.getElementById('driver-flow-instructions').innerText = 'Trip successfully completed! Payout released to Farmer UPI.';
+      document.getElementById('driver-assigned-job-card').classList.add('hidden');
+      document.getElementById('driver-flow-instructions').innerText = 'Trip completed! ₹1,120 driver fee paid & ₹15,600 released to Farmer UPI.';
       document.getElementById('driver-speed-badge').innerText = 'Parked: 0 km/h';
       document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
 
       document.getElementById('consumer-status-text').innerText = '✓ ORDER DELIVERED! Thank you for supporting local farmers.';
 
-      triggerConfettiSuccess(`[LIFECYCLE COMPLETED! 🎉]\n\n1. Order Delivered to Customer.\n2. ₹${activeLifecycleOrder.amount} transferred from Escrow to Farmer Rameshwar Sharma UPI.`);
-      switchRoleView('consumer');
+      triggerConfettiSuccess(`[LIFECYCLE COMPLETED! 🎉]\n\n1. Order Delivered to ${activeLifecycleOrder.customerName}.\n2. ₹${activeLifecycleOrder.amount} transferred from Escrow to Farmer Rameshwar Sharma UPI.`);
     }
 
     function updatePipelineBadge(text, cls) {
@@ -1274,23 +1318,88 @@
       badge.className = `text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full border ${cls}`;
     }
 
-    // Role View Switcher
-    function switchRoleView(role) {
-      document.querySelectorAll('#view-member_farmer, #view-consumer, #view-driver, #view-buyer, #view-admin').forEach(el => el.classList.add('hidden'));
-      
-      if (role === 'farmer') document.getElementById('view-member_farmer').classList.remove('hidden');
-      else if (role === 'consumer') document.getElementById('view-consumer').classList.remove('hidden');
-      else if (role === 'driver') {
-        document.getElementById('view-driver').classList.remove('hidden');
-        setTimeout(initDriverMap, 150);
-      }
-      else if (role === 'buyer') {
-        document.getElementById('view-buyer').classList.remove('hidden');
-        setTimeout(initTrackingMap, 150);
-      }
-      else if (role === 'admin') document.getElementById('view-admin').classList.remove('hidden');
-      
+    // -------------------------------------------------------------
+    // AMC CROP INSURANCE CHECKOUT & ACTIVATION
+    // -------------------------------------------------------------
+    function openAMCCheckoutModal(title, coverage, amount) {
+      pendingAMCTransaction = {
+        title: title,
+        coverage: coverage,
+        coverValue: coverage.includes('1,20,000') ? 120000 : (coverage.includes('60,000') ? 60000 : 30000),
+        amount: amount,
+        frequency: currentAMCFrequency
+      };
+
+      document.getElementById('amc-checkout-title').innerText = title;
+      document.getElementById('amc-checkout-freq').innerText = currentAMCFrequency === 'yearly' ? 'Yearly Plan (Active for 1 Year)' : 'Monthly Plan (Active for 30 Days)';
+      document.getElementById('amc-checkout-cover').innerText = coverage;
+      document.getElementById('amc-checkout-payable').innerText = `₹${amount.toLocaleString()}`;
+
+      document.getElementById('modal-amc-checkout').classList.remove('hidden');
+
+      const qrContainer = document.getElementById('amc-upi-qrcode');
+      qrContainer.innerHTML = '';
+      new QRCode(qrContainer, { text: `upi://pay?pa=kisanroute.fpo@icici&pn=KisanRoute%20FPO&am=${amount}&cu=INR`, width: 140, height: 140 });
       lucide.createIcons();
+    }
+
+    function closeAMCCheckoutModal() {
+      document.getElementById('modal-amc-checkout').classList.add('hidden');
+    }
+
+    function confirmAndActivateAMC() {
+      closeAMCCheckoutModal();
+      
+      const now = new Date(2026, 7, 29);
+      const endDate = new Date(now);
+      if (pendingAMCTransaction.frequency === 'yearly') endDate.setFullYear(now.getFullYear() + 1);
+      else endDate.setMonth(now.getMonth() + 1);
+
+      const formatDate = (d) => `${d.getDate()}-${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}-${d.getFullYear()}`;
+      const validityString = `${formatDate(now)} to ${formatDate(endDate)}`;
+
+      document.getElementById('farmer-amc-active-card').classList.remove('hidden');
+      document.getElementById('amc-active-policy-no').innerText = `POL-2026-FBD-${Math.floor(1000 + Math.random() * 9000)}`;
+      document.getElementById('amc-active-plan-title').innerText = `${pendingAMCTransaction.title} (${pendingAMCTransaction.frequency.toUpperCase()})`;
+      document.getElementById('amc-active-dates').innerText = validityString;
+      document.getElementById('amc-active-sum-text').innerText = pendingAMCTransaction.coverage;
+      document.getElementById('farmer-amc-status').innerText = `₹${pendingAMCTransaction.coverValue.toLocaleString()}`;
+
+      if (currentFarmerObject && currentFarmerObject.expenses) {
+        currentFarmerObject.expenses.push({ id: Date.now(), cat: "Crop AMC Protection", desc: `${pendingAMCTransaction.title} (${pendingAMCTransaction.frequency})`, amt: pendingAMCTransaction.amount });
+        renderBahiKhataLedger(currentFarmerObject);
+      }
+
+      triggerConfettiSuccess(`[PAYMENT VERIFIED & AMC ACTIVATED! 📜]\n\nPolicy: ${pendingAMCTransaction.title}\nCoverage: ${pendingAMCTransaction.coverage}\nValidity: ${validityString}`);
+      scrollToAMCSection();
+    }
+
+    function toggleAMCFrequency(freq) {
+      currentAMCFrequency = freq;
+      if (freq === 'yearly') {
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('plan-1-price').innerHTML = '₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
+        document.getElementById('plan-2-price').innerHTML = '₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
+        document.getElementById('plan-3-price').innerHTML = '₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span>';
+      } else {
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('plan-1-price').innerHTML = '₹299 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+        document.getElementById('plan-2-price').innerHTML = '₹499 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+        document.getElementById('plan-3-price').innerHTML = '₹899 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+      }
+    }
+
+    function scrollToAMCSection() {
+      const el = document.getElementById('farmer-amc-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function triggerAMCClaimSettlement() {
+      const claimId = "CLM-2026-FBD-" + Math.floor(1000 + Math.random() * 9000);
+      alert(`[AI SATELLITE AUDIT COMPLETE]\n\nClaim ID: ${claimId}\nDamage Cause: Excess Rain & Blight Detected via Sentinel-2\nCompensation: ₹42,500\nStatus: Released directly to Farmer Bank UPI!`);
+      triggerConfettiSuccess("Claim Approved! ₹42,500 transferred to Farmer UPI.");
     }
 
     // -------------------------------------------------------------
@@ -1411,59 +1520,6 @@
       updateCartDisplay();
     }
 
-    function checkoutConsumerOrder() {
-      if (Object.keys(consumerCart).length === 0) {
-        alert("Pehle basket mein items add karein!");
-        return;
-      }
-      const totalAmount = parseInt(document.getElementById('cart-final-total').innerText.replace('₹', '')) || 15600;
-      toggleCartDrawer();
-      consumerCart = {};
-      updateCartDisplay();
-      renderConsumerCatalog('all');
-      placeLiveDemoOrder('Fresh Harvest Basket (Multiple Items)', totalAmount);
-    }
-
-    // -------------------------------------------------------------
-    // FARMER AMC CROP LOSS INSURANCE
-    // -------------------------------------------------------------
-    function toggleAMCFrequency(freq) {
-      currentAMCFrequency = freq;
-      if (freq === 'yearly') {
-        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
-        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
-        document.getElementById('plan-1-price').innerHTML = '₹2,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹589)</span>';
-        document.getElementById('plan-2-price').innerHTML = '₹4,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹989)</span>';
-        document.getElementById('plan-3-price').innerHTML = '₹8,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹1,789)</span>';
-      } else {
-        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
-        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
-        document.getElementById('plan-1-price').innerHTML = '₹299 <span class="text-xs text-slate-400 font-normal">/ month</span>';
-        document.getElementById('plan-2-price').innerHTML = '₹499 <span class="text-xs text-slate-400 font-normal">/ month</span>';
-        document.getElementById('plan-3-price').innerHTML = '₹899 <span class="text-xs text-slate-400 font-normal">/ month</span>';
-      }
-    }
-
-    function scrollToAMCSection() {
-      const el = document.getElementById('farmer-amc-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function subscribeAMCPlan(title, cost, coverAmt) {
-      document.getElementById('farmer-amc-status').innerText = `₹${coverAmt.toLocaleString()}`;
-      if (currentFarmerObject && currentFarmerObject.expenses) {
-        currentFarmerObject.expenses.push({ id: Date.now(), cat: "Crop AMC Protection", desc: `${title} (${currentAMCFrequency})`, amt: currentAMCFrequency === 'yearly' ? 4999 : 499 });
-        renderBahiKhataLedger(currentFarmerObject);
-      }
-      triggerConfettiSuccess(`AMC Activated: ${title}! Your field is now insured up to ₹${coverAmt.toLocaleString()}.`);
-    }
-
-    function triggerAMCClaimSettlement() {
-      const claimId = "CLM-2026-FBD-" + Math.floor(1000 + Math.random() * 9000);
-      alert(`[AI SATELLITE AUDIT COMPLETE]\n\nClaim ID: ${claimId}\nDamage Cause: Excess Rain & Blight Detected via Sentinel-2\nCompensation: ₹42,500\nStatus: Released directly to Farmer Bank UPI!`);
-      triggerConfettiSuccess("Claim Approved! ₹42,500 transferred to Farmer UPI.");
-    }
-
     // -------------------------------------------------------------
     // ONBOARDING & ROLE ROUTING
     // -------------------------------------------------------------
@@ -1495,7 +1551,7 @@
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
       resetToMobileStep();
       document.getElementById('auth-portal-screen').classList.remove('hidden');
-      showAuthAlert("You have logged out successfully.", false);
+      showAuthAlert("You have logged out successfully. Next party can now sign in.", false);
     }
 
     function showAuthAlert(msg, isError = false) {
@@ -1537,22 +1593,12 @@
       else if (currentVerifiedMobile === '9911223344') executeLoginSession({ role: 'consumer', name: 'Priya Sharma (Consumer)', mobile: '9911223344' });
       else if (currentVerifiedMobile === '9999999999') executeLoginSession({ role: 'admin', name: 'Admin Lead', mobile: '9999999999' });
       else {
-        document.getElementById('form-step-otp').classList.add('hidden');
-        document.getElementById('form-step-role').classList.remove('hidden');
-        document.getElementById('verified-mobile-display').innerText = currentVerifiedMobile;
+        executeLoginSession({ role: 'consumer', name: 'New User', mobile: currentVerifiedMobile });
       }
-    }
-
-    function handleCompleteRegistration(e) {
-      if (e) e.preventDefault();
-      const name = document.getElementById('input-reg-name').value.trim();
-      const role = document.querySelector('input[name="user_role_select"]:checked').value;
-      executeLoginSession({ role, name: name || 'User', mobile: currentVerifiedMobile });
     }
 
     function resetToMobileStep() {
       document.getElementById('form-step-otp').classList.add('hidden');
-      document.getElementById('form-step-role').classList.add('hidden');
       document.getElementById('form-step-mobile').classList.remove('hidden');
       document.getElementById('auth-alert-box').classList.add('hidden');
     }
@@ -1588,6 +1634,11 @@
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(currentFarmerObject);
         renderBahiKhataLedger(currentFarmerObject);
+
+        // Check if there is an active order waiting for farmer decision
+        if (activeLifecycleOrder.status === 'PLACED') {
+          document.getElementById('farmer-order-decision-card').classList.remove('hidden');
+        }
       }
       lucide.createIcons();
     }
@@ -1699,7 +1750,7 @@
       }
     }
 
-    // Maps & Driver Navigation
+    // Maps
     function initTrackingMap() {
       if (trackingMap) { trackingMap.invalidateSize(); return; }
       trackingMap = L.map('tracking-map').setView([28.38, 77.31], 12);
@@ -1720,18 +1771,6 @@
       points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
       const poly = L.polyline(points, { color: '#10b981', weight: 4 }).addTo(driverMap);
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
-    }
-
-    function calculateVehicleAllocation() {
-      const weight = parseInt(document.getElementById("weight-slider").value);
-      document.getElementById("weight-display").innerText = `${weight} kg`;
-      let vehicle = "Heavy Truck", cap = "5,000 kg", rate = 60;
-      if (weight <= 50) { vehicle = "Motorcycle"; cap = "50 kg"; rate = 10; }
-      else if (weight <= 350) { vehicle = "E-Rickshaw"; cap = "350 kg"; rate = 20; }
-      else if (weight <= 1000) { vehicle = "Mini Truck (Tata Ace)"; cap = "1,000 kg"; rate = 35; }
-      document.getElementById("vehicle-title").innerText = vehicle;
-      document.getElementById("vehicle-cap").innerText = cap;
-      document.getElementById("vehicle-trip-cost").innerText = `₹${rate * 32}`;
     }
 
     // 3D Three.js Farm
@@ -1796,7 +1835,6 @@
       if (!camera) return;
       if (mode === 'orbit') camera.position.set(0, 16, 28);
       else if (mode === 'drone') camera.position.set(0, 38, 5);
-      else if (mode === 'crop') camera.position.set(8, 3.5, 8);
       camera.lookAt(0, 0, 0);
     }
 
@@ -1844,29 +1882,13 @@
       triggerConfettiSuccess("GST Tax Invoice PDF Downloaded!");
     }
 
-    function speakFarmerTasks() {
-      if (currentFarmerObject) {
-        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई ₹${currentFarmerObject.qty * currentFarmerObject.rate} है.`;
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = 'hi-IN';
-        window.speechSynthesis.speak(utter);
-      }
-    }
-
     function initSpeechRecognitionModule() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRec) {
         speechRecognition = new SpeechRec();
         speechRecognition.continuous = false;
         speechRecognition.lang = 'hi-IN';
-        speechRecognition.onstart = () => { isRecordingVoice = true; document.getElementById('voice-btn-text').innerText = "Listening..."; };
-        speechRecognition.onend = () => { isRecordingVoice = false; document.getElementById('voice-btn-text').innerText = "बोलकर काम करें (Mic)"; };
       }
-    }
-
-    function toggleSpeechRecording() {
-      if (!speechRecognition) { alert("Speech Recognition Google Chrome me best chalta hai!"); return; }
-      if (isRecordingVoice) speechRecognition.stop(); else speechRecognition.start();
     }
 
     function translateWebsiteRealtime(langCode) {

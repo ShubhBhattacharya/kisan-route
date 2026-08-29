@@ -12,10 +12,21 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- 30+ Regional Languages Universal Translation Engine -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'hi,pa,bn,te,ta,mr,gu,kn,ml,or,as,ur,sa,mai,ne,sd,kok,doi,bho,ks,sat,brx,mwr,bgc,hne,raj,tcy,mag,gbm,kfy,gom,mni,en',
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script async defer src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 
@@ -52,6 +63,10 @@
     .badge-done { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
     .badge-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    #google_translate_element { display: none; }
+    .goog-tooltip, .goog-tooltip:hover { display: none !important; }
+
     .cmd-surface {
       background: var(--panel-surface);
       border: 1px solid var(--panel-border);
@@ -79,6 +94,8 @@
   </style>
 </head>
 <body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden text-slate-800">
+
+  <div id="google_translate_element"></div>
 
   <!-- 0. LIVE INTERCONNECTED ORDER FLOW HUD STRIP -->
   <div class="bg-white/95 border-b border-slate-200 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3 shadow-sm">
@@ -334,7 +351,7 @@
     </div>
   </div>
 
-  <!-- TOP APP BAR -->
+  <!-- TOP APP BAR WITH 30+ REGIONAL LANGUAGES -->
   <header class="bg-white border-b border-emerald-100 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3">
@@ -351,12 +368,53 @@
       </div>
 
       <div class="flex items-center gap-2.5 text-xs">
+        
+        <!-- Cart Trigger for Consumer -->
         <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-sm">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
         </button>
-        <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-xl font-bold flex items-center gap-1.5 transition">
-          <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-600"></i> 360° Virtual Khet
-        </button>
+
+        <!-- 30+ REGIONAL LANGUAGES SELECTOR -->
+        <div class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl font-bold transition">
+          <i data-lucide="languages" class="w-4 h-4 text-emerald-700 shrink-0"></i>
+          <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-emerald-900 font-black text-xs focus:outline-none cursor-pointer">
+            <option value="en" selected>English (EN)</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="or">ଓଡ଼ିଆ (Odia)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="sa">संस्कृतम् (Sanskrit)</option>
+            <option value="mai">मैथिली (Maithili)</option>
+            <option value="ne">नेपाली (Nepali)</option>
+            <option value="sd">سنڌي (Sindhi)</option>
+            <option value="kok">कोंकणी (Konkani)</option>
+            <option value="doi">डोगरी (Dogri)</option>
+            <option value="bho">भोजपुरी (Bhojpuri)</option>
+            <option value="ks">कश्मीरी (Kashmiri)</option>
+            <option value="sat">ᱥᱟᱱᱛᱟᱲᱤ (Santali)</option>
+            <option value="brx">बड़ो (Bodo)</option>
+            <option value="mwr">मारवाड़ी (Marwari)</option>
+            <option value="bgc">हरियाणवी (Haryanvi)</option>
+            <option value="hne">छत्तीसगढ़ी (Chhattisgarhi)</option>
+            <option value="raj">राजस्थानी (Rajasthani)</option>
+            <option value="tcy">ತುಳು (Tulu)</option>
+            <option value="mag">मगही (Magahi)</option>
+            <option value="gbm">गढ़वाली (Garhwali)</option>
+            <option value="kfy">कुमाऊँनी (Kumaoni)</option>
+            <option value="gom">गोंयची कोंकणी (Goan)</option>
+            <option value="mni">মৈতৈলোন্ (Manipuri)</option>
+          </select>
+        </div>
+
+        <!-- Profile & Logout Menu -->
         <div class="relative">
           <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-emerald-50/80 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl border border-emerald-200 text-xs transition text-slate-800">
             <div class="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
@@ -376,6 +434,7 @@
             </button>
           </div>
         </div>
+
       </div>
     </div>
   </header>
@@ -646,116 +705,6 @@
         </div>
       </div>
 
-      <!-- 4 HARVEST PREPARATION TASKS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="cmd-surface rounded-3xl p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
-            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
-            </h3>
-            <span class="text-[10px] font-black text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
-          </div>
-          <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
-        </div>
-
-        <div class="cmd-surface rounded-3xl p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
-            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
-            </h3>
-            <span class="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
-          </div>
-          <div id="completed-tasks-list" class="space-y-3 text-xs"></div>
-        </div>
-      </div>
-
-      <!-- FARMER AMC CROP LOSS INSURANCE VAULT TIERS -->
-      <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-300 bg-amber-50/40">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-amber-200 pb-4">
-          <div>
-            <span class="text-[10px] font-mono-code font-bold uppercase text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded">Risk Mitigation Vault</span>
-            <h3 class="text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-5 h-5 text-amber-600"></i> Fasal Rakshak AMC (Crop Maintenance & 100% Loss Protection)
-            </h3>
-            <p class="text-xs text-slate-600">Unseasonal rain, pests, frost, ya transport decay me loss ka 100% payout guarantee.</p>
-          </div>
-          
-          <div class="flex items-center bg-white p-1.5 rounded-2xl border border-slate-200 text-xs font-bold shadow-sm">
-            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl text-slate-500 hover:text-slate-900 transition">Monthly</button>
-            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition">Yearly (Save 20%)</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-          <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4 flex flex-col justify-between shadow-sm">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded">CLIMATE SHIELD</span>
-                <span class="text-[10px] text-slate-400">Tier 1</span>
-              </div>
-              <h4 class="text-base font-black text-slate-900">Weather & Frost Shield</h4>
-              <p class="text-slate-500 text-[11px]">Covers hail, unseasonal rain, high heatwave damage to crops.</p>
-              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
-                <p>✓ Max Cover: <b class="text-slate-900">₹30,000 / Acre</b></p>
-                <p>✓ Satellite Rainfall Audit</p>
-                <p>✓ Claim Payout: <b>24 Hours</b></p>
-              </div>
-            </div>
-            <div>
-              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-1-price">₹2,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Weather & Frost Shield', '₹30,000 / Acre', 2999)" class="w-full py-2.5 bg-slate-50 hover:bg-emerald-600 hover:text-white text-slate-700 font-bold rounded-xl border border-slate-200 transition">
-                Activate Shield
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-5 border-2 border-emerald-500 space-y-4 flex flex-col justify-between relative shadow-md">
-            <span class="absolute -top-2.5 right-4 bg-emerald-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full">MOST POPULAR</span>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">PEST & DISEASE</span>
-                <span class="text-[10px] text-slate-400">Tier 2</span>
-              </div>
-              <h4 class="text-base font-black text-slate-900">Pest, Wilt & Rot Cover</h4>
-              <p class="text-slate-500 text-[11px]">Covers fungal blight, locust attacks, viral wilts, and moisture transit decay.</p>
-              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
-                <p>✓ Max Cover: <b class="text-slate-900">₹60,000 / Acre</b></p>
-                <p>✓ AI Drone Disease Scan + Agronomist</p>
-                <p>✓ Claim Payout: <b>12 Hours Direct UPI</b></p>
-              </div>
-            </div>
-            <div>
-              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-2-price">₹4,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Pest, Wilt & Rot Cover', '₹60,000 / Acre', 4999)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl shadow-md transition">
-                Activate Popular Cover
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4 flex flex-col justify-between shadow-sm">
-            <div class="space-y-2">
-              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">SOVEREIGN COMPLETE</span>
-                <span class="text-[10px] text-slate-400">Tier 3</span>
-              </div>
-              <h4 class="text-base font-black text-slate-900">Sovereign 100% Crop Shield</h4>
-              <p class="text-slate-500 text-[11px]">Full yield price loss + Mandi crash guarantee + Free crop advisory.</p>
-              <div class="py-2 border-y border-slate-100 space-y-1 text-slate-600">
-                <p>✓ Max Cover: <b class="text-slate-900">₹1,20,000 / Field</b></p>
-                <p>✓ Price Drop Loss Protection</p>
-                <p>✓ Zero Deductible Instant Transfer</p>
-              </div>
-            </div>
-            <div>
-              <p class="text-xl font-black text-emerald-700 font-mono-code mb-2" id="plan-3-price">₹8,999 <span class="text-xs text-slate-400 font-normal">/ year</span></p>
-              <button onclick="openAMCCheckoutModal('Sovereign 100% Crop Shield', '₹1,20,000 / Field', 8999)" class="w-full py-2.5 bg-slate-50 hover:bg-emerald-600 hover:text-white text-slate-700 font-bold rounded-xl border border-slate-200 transition">
-                Activate Shield
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- DIGITAL BAHI-KHATA (LEDGER) -->
       <div class="cmd-surface rounded-3xl p-6 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-emerald-100 pb-3">
@@ -890,68 +839,93 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
     </div>
 
-    <!-- ROLE 3: LOGISTICS FLEET DRIVER -->
+    <!-- ROLE 3: LOGISTICS FLEET DRIVER (DYNAMIC A->B CARD) -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="cmd-surface rounded-3xl p-6 space-y-5">
-          <div>
-            <h3 class="font-black text-slate-900 text-base">Fleet Operations & Trip Controller</h3>
-            <p class="text-xs text-slate-500" id="driver-flow-instructions">Log in to view assigned pickup and delivery coordinates.</p>
-          </div>
-
-          <!-- ASSIGNED TRIP NOTIFICATION -->
-          <div id="driver-assigned-job-card" class="p-4 bg-cyan-50 rounded-2xl border border-cyan-300 space-y-2 text-xs">
-            <span class="text-[10px] font-black uppercase text-cyan-800 bg-cyan-100 px-2 py-0.5 rounded">New Assigned Trip</span>
-            <p class="font-bold text-slate-900 text-sm" id="driver-assigned-crop-title">Desi Fresh Hybrid Tomato (650 kg)</p>
-            <div class="space-y-1 text-[11px] text-slate-700 pt-1">
-              <p>📍 <b>Pickup Origin (Point A):</b> <span class="text-emerald-700 font-bold">Dhauj Farm Hub #04 (Rameshwar Sharma)</span></p>
-              <p>🏁 <b>Drop Location (Point B):</b> <span class="text-slate-900 font-bold" id="driver-assigned-drop-addr">Sector 15, Faridabad</span></p>
-              <p>👤 <b>Customer:</b> <span class="text-slate-800" id="driver-assigned-cust-name">Priya Sharma (+91 9911223344)</span></p>
+      
+      <!-- TOP NOTIFICATION ALERT FOR DRIVER (POINT A -> POINT B) -->
+      <div id="driver-assigned-job-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-cyan-400 bg-cyan-50/70 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-cyan-200 pb-3.5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-cyan-100 text-cyan-800 border border-cyan-300 flex items-center justify-center font-black animate-pulse">
+              <i data-lucide="navigation-2" class="w-5 h-5"></i>
             </div>
-          </div>
-
-          <!-- PICKUP VERIFICATION BOX -->
-          <div id="driver-pickup-box" class="p-4 bg-white rounded-2xl border-2 border-cyan-400 space-y-2.5 text-xs shadow-sm">
-            <span class="text-[10px] font-bold text-cyan-700 uppercase tracking-wider">Farmgate Pickup Checkpoint</span>
-            <p class="text-slate-600">Enter Farmer's Pickup Code to verify loading:</p>
-            <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Code (1122)" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-lg focus:outline-none" />
-            <button onclick="driverVerifyPickup()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm">
-              Verify Pickup & Start Highway Route
-            </button>
-          </div>
-
-          <!-- DELIVERY VERIFICATION BOX -->
-          <div id="driver-delivery-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs hidden shadow-sm">
-            <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Customer Doorstep Checkpoint</span>
-            <p class="text-slate-600">Arrived at Customer location. Enter Customer's Gate OTP:</p>
-            <input type="text" id="driver-delivery-otp-input" placeholder="Enter Customer OTP (4829)" class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-lg focus:outline-none" />
-            <button onclick="driverVerifyDelivery()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm">
-              Complete Delivery & Release Escrow
-            </button>
-          </div>
-
-          <div class="p-4.5 rounded-2xl border border-slate-200 bg-slate-50 space-y-1.5 text-xs">
-            <p class="text-emerald-700 font-bold uppercase tracking-wider text-[10px]">Active Logistics Carrier</p>
-            <h4 class="font-black text-slate-900 text-base">Mini Truck (Tata Ace &bull; HR-38-AF-4829)</h4>
-            <div class="space-y-1 text-slate-600 pt-1 font-medium">
-              <p>Driver: <span class="font-bold text-slate-800">Vikram Singh</span></p>
-              <p>Trip Earning: <span class="font-black text-emerald-700 font-mono-code">₹1,120</span></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-2 cmd-surface rounded-3xl p-5 flex flex-col space-y-3 relative">
-          <div class="flex justify-between items-center">
             <div>
-              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Routing
-              </h4>
-              <p class="text-xs text-slate-500 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+              <span class="text-[10px] font-black uppercase text-cyan-900 bg-cyan-200 px-2.5 py-0.5 rounded-full">🚨 LIVE ASSIGNED ROUTE &bull; READY FOR ACTION</span>
+              <h3 class="text-lg font-black text-slate-900 mt-0.5" id="driver-assigned-crop-title">Desi Fresh Hybrid Tomato (650 kg)</h3>
             </div>
-            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
           </div>
-          <div id="driver-map"></div>
+          <div class="text-left sm:text-right">
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Guaranteed Driver Fare</span>
+            <p class="text-xl font-black text-emerald-700 font-mono-code">₹1,120</p>
+          </div>
         </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <!-- Point A -->
+          <div class="p-4 bg-white rounded-2xl border border-cyan-200 space-y-1 shadow-sm">
+            <div class="flex items-center gap-1.5 font-black text-emerald-700">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> 🟢 POINT A (Farmgate Pickup)
+            </div>
+            <p class="font-bold text-slate-900 text-sm">Dhauj Farm Hub #04</p>
+            <p class="text-slate-600">Farmer: <b class="text-slate-900">Rameshwar Sharma</b> (+91 98765-43210)</p>
+            <p class="text-[11px] text-slate-500">Pincode: 121007 (Dhauj, Faridabad)</p>
+          </div>
+
+          <!-- Point B -->
+          <div class="p-4 bg-white rounded-2xl border border-cyan-200 space-y-1 shadow-sm">
+            <div class="flex items-center gap-1.5 font-black text-rose-600">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span> 🔴 POINT B (Customer Destination)
+            </div>
+            <p class="font-bold text-slate-900 text-sm" id="driver-assigned-drop-addr">Flat 402, Green Valley Apts, Sector 15, Faridabad</p>
+            <p class="text-slate-600">Customer: <b class="text-slate-900" id="driver-assigned-cust-name">Priya Sharma</b> (+91 9911223344)</p>
+            <p class="text-[11px] text-slate-500">City: Faridabad, Haryana - 121002</p>
+          </div>
+        </div>
+
+        <!-- Verification Steps Inside Driver Card -->
+        <div class="pt-1">
+          <!-- Pickup Step -->
+          <div id="driver-pickup-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs shadow-sm">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Step 1: Verify Farmgate Loading</span>
+              <span class="text-[10px] text-slate-500 font-mono-code font-bold">Ask Farmer for Code: 1122</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Pickup Code (1122)" class="flex-1 p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-sm focus:outline-none focus:border-emerald-500" />
+              <button onclick="driverVerifyPickup()" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm shrink-0">
+                Confirm Pickup & Start Highway Route
+              </button>
+            </div>
+          </div>
+
+          <!-- Delivery Step -->
+          <div id="driver-delivery-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs hidden shadow-sm">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Step 2: Complete Doorstep Delivery</span>
+              <span class="text-[10px] text-slate-500 font-mono-code font-bold">Ask Customer for OTP: 4829</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="driver-delivery-otp-input" placeholder="Enter Customer Gate OTP (4829)" class="flex-1 p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-sm focus:outline-none focus:border-emerald-500" />
+              <button onclick="driverVerifyDelivery()" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm shrink-0">
+                Verify OTP & Release Escrow 🏁
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Driver Map & Telemetry -->
+      <div class="cmd-surface rounded-3xl p-5 flex flex-col space-y-3 relative bg-white">
+        <div class="flex justify-between items-center">
+          <div>
+            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Routing
+            </h4>
+            <p class="text-xs text-slate-500 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
+        </div>
+        <div id="driver-map"></div>
       </div>
     </div>
 
@@ -1101,29 +1075,6 @@
     <span class="pr-1 font-bold">Ask KisanAI</span>
   </button>
 
-  <!-- MODAL: 360° VIRTUAL KHET -->
-  <div id="modal-360-farm" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6">
-    <div class="bg-white border border-slate-200 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-slate-800">
-      <div class="p-4 bg-emerald-50/70 border-b border-emerald-100 flex flex-wrap items-center justify-between gap-3 z-10">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black">
-            <i data-lucide="orbit" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h3 class="font-black text-sm text-slate-900" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
-            <p class="text-[10px] text-emerald-700 font-medium">WebGL 3D Interactive Farmgate</p>
-          </div>
-        </div>
-        <button onclick="close360FarmModal()" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition ml-2 border border-rose-200">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-      <div class="flex-1 w-full h-full relative bg-slate-900">
-        <div id="virtual-farm-container" class="w-full h-full"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- JAVASCRIPT MASTER PERSISTENT CONTROLLER -->
   <script>
     const mandisBenchmark = [
@@ -1230,6 +1181,25 @@
       runMandiPriceComparison('Tomato');
       if (window.lucide) lucide.createIcons();
     });
+
+    // -------------------------------------------------------------
+    // 30+ REGIONAL LANGUAGES DYNAMIC SWITCHER
+    // -------------------------------------------------------------
+    function translateWebsiteRealtime(langCode) {
+      if (langCode === 'en') {
+        const select = document.querySelector('select.goog-te-combo');
+        if (select) {
+          select.value = 'en';
+          select.dispatchEvent(new Event('change'));
+        }
+        return;
+      }
+      const select = document.querySelector('select.goog-te-combo');
+      if (select) {
+        select.value = langCode;
+        select.dispatchEvent(new Event('change'));
+      }
+    }
 
     // -------------------------------------------------------------
     // 1-CLICK INSTANT DISPATCH AUTH
@@ -1637,6 +1607,100 @@
       updateCartDisplay();
     }
 
+    function syncAllUIComponents() {
+      activeLifecycleOrder = loadActiveOrder();
+
+      if (activeLifecycleOrder.status === 'IDLE') {
+        updatePipelineBadge('STATUS: IDLE_NO_ORDER', 'bg-slate-100 text-slate-700 border-slate-200');
+      } else if (activeLifecycleOrder.status === 'PLACED') {
+        updatePipelineBadge('STEP 1: ORDER PLACED &bull; AWAITING FARMER', 'bg-amber-100 text-amber-800 border-amber-300');
+      } else if (activeLifecycleOrder.status === 'ACCEPTED') {
+        updatePipelineBadge('STEP 2: FARMER ACCEPTED &bull; CRATING PRODUCE', 'bg-emerald-100 text-emerald-800 border-emerald-300');
+      } else if (activeLifecycleOrder.status === 'READY_FOR_PICKUP') {
+        updatePipelineBadge('STEP 3: READY FOR FLEET PICKUP', 'bg-cyan-100 text-cyan-800 border-cyan-300');
+      } else if (activeLifecycleOrder.status === 'IN_TRANSIT') {
+        updatePipelineBadge('STEP 4: IN-TRANSIT &bull; TRUCK ON HIGHWAY', 'bg-emerald-100 text-emerald-800 border-emerald-300');
+      } else if (activeLifecycleOrder.status === 'DELIVERED') {
+        updatePipelineBadge('STEP 5: DELIVERED &bull; ESCROW PAID TO FARMER', 'bg-emerald-600 text-white font-black');
+      } else if (activeLifecycleOrder.status === 'REJECTED') {
+        updatePipelineBadge('ORDER REJECTED &bull; 100% ESCROW REFUNDED', 'bg-rose-100 text-rose-800 border-rose-300');
+      }
+
+      // Consumer Active Card Sync
+      const custCard = document.getElementById('consumer-active-order-card');
+      if (activeLifecycleOrder.status !== 'IDLE' && custCard) {
+        custCard.classList.remove('hidden');
+        document.getElementById('consumer-order-id').innerText = `ORDER #${activeLifecycleOrder.id}`;
+        document.getElementById('consumer-order-title').innerText = activeLifecycleOrder.title;
+        document.getElementById('consumer-order-cost').innerText = `₹${(activeLifecycleOrder.amount || 15600).toLocaleString()}`;
+        
+        if (activeLifecycleOrder.status === 'PLACED') document.getElementById('consumer-status-text').innerText = 'Order sent to Farmer Rameshwar Sharma. Awaiting confirmation...';
+        else if (activeLifecycleOrder.status === 'ACCEPTED') document.getElementById('consumer-status-text').innerText = 'Farmer ACCEPTED your order! Produce is being crated and sealed.';
+        else if (activeLifecycleOrder.status === 'READY_FOR_PICKUP') document.getElementById('consumer-status-text').innerText = 'Logistics Carrier dispatched to Dhauj Farm Hub.';
+        else if (activeLifecycleOrder.status === 'IN_TRANSIT') document.getElementById('consumer-status-text').innerText = 'Produce loaded! Truck HR-38-AF-4829 on highway towards your location.';
+        else if (activeLifecycleOrder.status === 'DELIVERED') document.getElementById('consumer-status-text').innerText = '✓ ORDER DELIVERED! Thank you for supporting local farmers.';
+      }
+
+      // Farmer UI Sync
+      const farmerDecisionCard = document.getElementById('farmer-order-decision-card');
+      const farmerDispatchCard = document.getElementById('farmer-dispatch-card');
+      if (farmerDecisionCard && farmerDispatchCard) {
+        if (activeLifecycleOrder.status === 'PLACED') {
+          farmerDecisionCard.classList.remove('hidden');
+          farmerDispatchCard.classList.add('hidden');
+          document.getElementById('farmer-incoming-title').innerText = activeLifecycleOrder.title;
+          document.getElementById('farmer-incoming-payout').innerText = `Locked Escrow: ₹${(activeLifecycleOrder.amount || 15600).toLocaleString()}`;
+          document.getElementById('farmer-order-cust-info').innerText = `${activeLifecycleOrder.customerName} (+91 ${activeLifecycleOrder.customerPhone})`;
+          document.getElementById('farmer-order-cust-addr').innerText = activeLifecycleOrder.customerAddress;
+        } else if (activeLifecycleOrder.status === 'ACCEPTED') {
+          farmerDecisionCard.classList.add('hidden');
+          farmerDispatchCard.classList.remove('hidden');
+          document.getElementById('farmer-ready-payout').innerText = `₹${(activeLifecycleOrder.amount || 15600).toLocaleString()}`;
+          document.getElementById('btn-farmer-mark-ready').innerText = 'Call Logistics Fleet for Farm-Gate Pickup';
+          document.getElementById('btn-farmer-mark-ready').disabled = false;
+        } else if (activeLifecycleOrder.status === 'READY_FOR_PICKUP' || activeLifecycleOrder.status === 'IN_TRANSIT' || activeLifecycleOrder.status === 'DELIVERED') {
+          farmerDecisionCard.classList.add('hidden');
+          farmerDispatchCard.classList.remove('hidden');
+          document.getElementById('btn-farmer-mark-ready').innerText = '✓ Fleet Dispatched to Farm Gate';
+          document.getElementById('btn-farmer-mark-ready').disabled = true;
+        } else {
+          farmerDecisionCard.classList.add('hidden');
+          farmerDispatchCard.classList.add('hidden');
+        }
+      }
+
+      // Driver UI Sync (Always renders Point A -> Point B Assignment Card)
+      const driverJobCard = document.getElementById('driver-assigned-job-card');
+      const driverPickupBox = document.getElementById('driver-pickup-box');
+      const driverDeliveryBox = document.getElementById('driver-delivery-box');
+      
+      if (driverJobCard && driverPickupBox && driverDeliveryBox) {
+        document.getElementById('driver-assigned-crop-title').innerText = activeLifecycleOrder.title;
+        document.getElementById('driver-assigned-drop-addr').innerText = activeLifecycleOrder.customerAddress;
+        document.getElementById('driver-assigned-cust-name').innerText = `${activeLifecycleOrder.customerName} (+91 ${activeLifecycleOrder.customerPhone})`;
+
+        if (activeLifecycleOrder.status === 'IN_TRANSIT') {
+          driverPickupBox.classList.add('hidden');
+          driverDeliveryBox.classList.remove('hidden');
+          document.getElementById('driver-speed-badge').innerText = 'Speed: 42 km/h';
+          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping';
+        } else if (activeLifecycleOrder.status === 'DELIVERED') {
+          driverPickupBox.classList.add('hidden');
+          driverDeliveryBox.classList.add('hidden');
+          document.getElementById('driver-speed-badge').innerText = 'Parked: 0 km/h';
+          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+        } else {
+          driverPickupBox.classList.remove('hidden');
+          driverDeliveryBox.classList.add('hidden');
+          document.getElementById('driver-speed-badge').innerText = 'Speed: 0 km/h';
+          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+        }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // CONSUMER CHECKOUT & EXECUTE
+    // -------------------------------------------------------------
     function openConsumerCheckoutModal() {
       toggleCartDrawer();
       document.getElementById('modal-consumer-checkout').classList.remove('hidden');
@@ -1894,70 +1958,6 @@
       points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
       const poly = L.polyline(points, { color: '#059669', weight: 4 }).addTo(driverMap);
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
-    }
-
-    let scene, camera, renderer, farmGroup;
-    function open360FarmModal(title) {
-      document.getElementById('modal-360-farm').classList.remove('hidden');
-      if (title) document.getElementById('farm-360-title').innerText = title;
-      if (window.lucide) lucide.createIcons();
-      setTimeout(init360FarmThreeScene, 100);
-    }
-
-    function close360FarmModal() { document.getElementById('modal-360-farm').classList.add('hidden'); }
-
-    function init360FarmThreeScene() {
-      const container = document.getElementById('virtual-farm-container');
-      container.innerHTML = '';
-      const width = container.clientWidth, height = container.clientHeight;
-
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x020617);
-      camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-      camera.position.set(0, 15, 28);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(width, height);
-      container.appendChild(renderer.domElement);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-      scene.add(ambientLight);
-      const sunLight = new THREE.DirectionalLight(0xfef08a, 1.2);
-      sunLight.position.set(20, 40, 20);
-      scene.add(sunLight);
-
-      farmGroup = new THREE.Group();
-      scene.add(farmGroup);
-
-      const groundGeo = new THREE.PlaneGeometry(60, 60);
-      const groundMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
-      const ground = new THREE.Mesh(groundGeo, groundMat);
-      ground.rotation.x = -Math.PI / 2;
-      farmGroup.add(ground);
-
-      for (let i = -18; i <= 18; i += 4) {
-        const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
-        const rowMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
-        const row = new THREE.Mesh(rowGeo, rowMat);
-        row.position.set(0, 0.2, i);
-        farmGroup.add(row);
-      }
-
-      function animate() {
-        if (!document.getElementById('modal-360-farm').classList.contains('hidden')) {
-          requestAnimationFrame(animate);
-          farmGroup.rotation.y += 0.002;
-          renderer.render(scene, camera);
-        }
-      }
-      animate();
-    }
-
-    function setCameraView(mode) {
-      if (!camera) return;
-      if (mode === 'orbit') camera.position.set(0, 16, 28);
-      else if (mode === 'drone') camera.position.set(0, 38, 5);
-      camera.lookAt(0, 0, 0);
     }
 
     function toggleAIChat() { alert("KisanAI Copilot active on real-time neural network!"); }

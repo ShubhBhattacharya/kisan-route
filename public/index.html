@@ -7,17 +7,17 @@
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23059669'/%3E%3Cpath d='M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z' stroke='white' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18' stroke='%23a7f3d0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='white'/%3E%3C/svg%3E" />
 
-  <!-- Core CDNs -->
+  <!-- Core CDNs with Defer / Async to prevent Infinite Tab Spinner -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Translation -->
+  <!-- Non-Blocking Google Universal Translation -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -27,7 +27,7 @@
       }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <script async defer src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 
@@ -98,7 +98,7 @@
 
   <div id="google_translate_element"></div>
 
-  <!-- 0. LIVE ORDER FLOW HUD STRIP -->
+  <!-- 0. LIVE INTERCONNECTED ORDER FLOW HUD STRIP -->
   <div class="bg-white/95 border-b border-slate-200 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3 shadow-sm">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black">
@@ -109,7 +109,7 @@
           <span class="text-xs font-black text-slate-900">Live Pipeline State Machine</span>
           <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">STATUS: IDLE_NO_ORDER</span>
         </div>
-        <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Handover Lifecycle: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
+        <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Real Isolated Handover: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
       </div>
     </div>
   </div>
@@ -135,7 +135,7 @@
     </div>
   </div>
 
-  <!-- 2. CUSTOMER CHECKOUT & ADDRESS MODAL -->
+  <!-- 2. CUSTOMER CHECKOUT & ADDRESS / PAYMENT MODAL -->
   <div id="modal-consumer-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -145,7 +145,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Delivery Address & Payment</h3>
-            <p class="text-[10px] text-slate-500">Order will be sent to Farmer Rameshwar Sharma</p>
+            <p class="text-[10px] text-slate-500">Order will be sent to Farmer Rameshwar Sharma (Dhauj)</p>
           </div>
         </div>
         <button onclick="closeConsumerCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
@@ -207,7 +207,7 @@
     </div>
   </div>
 
-  <!-- 3. AMC PURCHASE MODAL -->
+  <!-- 3. AMC PURCHASE & UPI MODAL -->
   <div id="modal-amc-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3.5">
@@ -491,9 +491,7 @@
         </div>
       </div>
 
-      <!-- ======================================================= -->
-      <!-- NEW: DYNAMIC CROP LISTING & 10 MANDI COMPARISON ENGINE  -->
-      <!-- ======================================================= -->
+      <!-- DYNAMIC CROP LISTING & 10 MANDI COMPARISON ENGINE -->
       <div id="farmer-harvest-publisher-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-6 border-emerald-200 bg-white">
         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
           <div>
@@ -507,8 +505,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
-          <!-- Crop Input Form -->
           <form onsubmit="handlePublishFarmerCrop(event)" class="space-y-4 text-xs bg-slate-50 p-5 rounded-2xl border border-slate-200">
             <div>
               <label class="block font-bold text-slate-700 mb-1">Select Crop Type (Fasal Ka Type)</label>
@@ -562,7 +558,7 @@
               <span class="text-[10px] text-slate-500 font-medium font-mono-code">Faridabad Region &bull; 2026</span>
             </div>
 
-            <div class="overflow-y-auto max-h-[340px] rounded-2xl border border-slate-200 bg-white">
+            <div class="overflow-y-auto max-h-[340px] rounded-2xl border border-slate-200 bg-white shadow-sm">
               <table class="w-full text-left text-xs border-collapse">
                 <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 text-[10px] uppercase sticky top-0">
                   <tr>
@@ -575,7 +571,6 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -1158,11 +1153,8 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT MASTER APPLICATION ENGINE -->
+  <!-- JAVASCRIPT MASTER PERSISTENT ENGINE -->
   <script>
-    // -------------------------------------------------------------
-    // 10 MANDIS REAL-TIME PRICE MATRIX
-    // -------------------------------------------------------------
     const mandisBenchmark = [
       { name: "KisanRoute Direct FPO Hub", distance: "0 km (Farmgate)", rateFactor: 1.0, isBest: true },
       { name: "Faridabad APMC Market", distance: "14 km", rateFactor: 0.65 },
@@ -1242,7 +1234,6 @@
     let currentLoggedInUser = null;
     let currentFarmerObject = null;
     let trackingMap, driverMap;
-    let speechRecognition = null;
 
     function triggerConfettiSuccess(msg) {
       confetti({
@@ -1260,7 +1251,7 @@
       updateCartDisplay();
       syncAllUIComponents();
       runMandiPriceComparison('Tomato');
-      setTimeout(() => { lucide.createIcons(); }, 100);
+      setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 120);
     });
 
     // -------------------------------------------------------------
@@ -1273,6 +1264,7 @@
       calculatePublishedTotal();
 
       const tbody = document.getElementById('mandi-comparison-tbody');
+      if (!tbody) return;
       tbody.innerHTML = '';
 
       mandisBenchmark.forEach(m => {
@@ -1390,7 +1382,7 @@
           </div>
         `;
       });
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function filterConsumerCategory(cat, btnElement) {
@@ -1458,7 +1450,7 @@
       if (totalCount === 0) {
         itemsContainer.innerHTML = `<p class="text-center text-slate-400 pt-8">Your basket is empty. Click '+ Add' on any fresh harvest card!</p>`;
       }
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function toggleCartDrawer() {
@@ -1562,7 +1554,7 @@
       const qr = document.getElementById('checkout-live-qrcode');
       qr.innerHTML = '';
       new QRCode(qr, { text: 'upi://pay?pa=kisanroute.escrow@icici&pn=KisanRoute%20Escrow&am=15600&cu=INR', width: 120, height: 120 });
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function closeConsumerCheckoutModal() {
@@ -1672,7 +1664,7 @@
       const qrContainer = document.getElementById('amc-upi-qrcode');
       qrContainer.innerHTML = '';
       new QRCode(qrContainer, { text: `upi://pay?pa=kisanroute.fpo@icici&pn=KisanRoute%20FPO&am=${amount}&cu=INR`, width: 140, height: 140 });
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function closeAMCCheckoutModal() {
@@ -1746,7 +1738,7 @@
     function openLogoutModal() {
       document.getElementById('user-profile-dropdown').classList.add('hidden');
       document.getElementById('logout-confirm-modal').classList.remove('hidden');
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function closeLogoutModal() {
@@ -1792,7 +1784,7 @@
       document.getElementById('input-login-otp').value = demoOtp;
 
       showAuthAlert(`✅ OTP sent to +91-${mobile}! Code: <b class="font-mono-code text-sm text-slate-900">${demoOtp}</b>`, false);
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function handleVerifyOtpReal(e) {
@@ -1846,11 +1838,10 @@
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(currentFarmerObject);
         renderBahiKhataLedger(currentFarmerObject);
-        runMandiPriceComparison('Tomato');
       }
       
       syncAllUIComponents();
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function renderIndividualFarmerData(f) {
@@ -1892,7 +1883,7 @@
       });
       document.getElementById('pending-tasks-count').innerText = `${pendingCount} Pending`;
       document.getElementById('completed-tasks-count').innerText = `${completedCount} Completed`;
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function completeCurrentFarmerTask(farmerId, taskKey) {
@@ -1983,7 +1974,7 @@
     function open360FarmModal(title) {
       document.getElementById('modal-360-farm').classList.remove('hidden');
       if (title) document.getElementById('farm-360-title').innerText = title;
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
       setTimeout(init360FarmThreeScene, 100);
     }
 
@@ -2075,9 +2066,9 @@
       c.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-white font-bold p-3 rounded-xl text-xs shadow-sm max-w-[85%]">${q}</div></div>`;
       input.value = '';
       setTimeout(() => {
-        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800 text-xs">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
+        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-white p-3 rounded-xl border border-emerald-100 text-slate-800 text-xs shadow-sm">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
         c.scrollTop = c.scrollHeight;
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
       }, 400);
     }
 
@@ -2085,15 +2076,6 @@
       const element = document.getElementById('invoice-pdf-template');
       html2pdf().set({ margin: 10, filename: 'KisanRoute_GST_Invoice.pdf' }).from(element).save();
       triggerConfettiSuccess("GST Tax Invoice PDF Downloaded!");
-    }
-
-    function initSpeechRecognitionModule() {
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRec) {
-        speechRecognition = new SpeechRec();
-        speechRecognition.continuous = false;
-        speechRecognition.lang = 'hi-IN';
-      }
     }
   </script>
 </body>

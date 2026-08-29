@@ -1094,6 +1094,48 @@
     <span class="pr-1 font-bold">Ask KisanAI</span>
   </button>
 
+  <!-- FLOATING AI COPILOT CHATBOT DRAWER (ACTIVE) -->
+  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white border border-emerald-100 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300" style="height: 520px;">
+    <div class="bg-gradient-to-r from-emerald-800 to-teal-800 p-4 text-white flex justify-between items-center shadow-sm">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-700/80 text-white border border-emerald-500/40 flex items-center justify-center font-black">
+          <i data-lucide="bot" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-bold text-xs leading-none text-white">KisanAI Copilot</h4>
+          <span class="text-[10px] text-emerald-200 font-medium">Autonomous Agri & Logistic Assistant</span>
+        </div>
+      </div>
+      <button onclick="toggleAIChat()" class="text-emerald-200 hover:text-white p-1 rounded-lg transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Quick Action Chips -->
+    <div class="bg-emerald-50/70 px-3 py-2 border-b border-emerald-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <button onclick="sendQuickPrompt('Check current live order status')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">📦 Order Status</button>
+      <button onclick="sendQuickPrompt('What is the best APMC rate for Tomato?')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">🍅 Tomato Rate</button>
+      <button onclick="sendQuickPrompt('How does Fasal AMC Insurance work?')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">🛡️ AMC Insurance</button>
+      <button onclick="sendQuickPrompt('How do I earn referral KisanPoints?')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">🎁 KisanPoints</button>
+    </div>
+
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+      <div class="flex gap-2.5 items-start">
+        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+        <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[88%]">
+          <p>Namaste! 🙏 Main <b>KisanAI Copilot</b> hoon. Aap mujhse mandi rates, order pipeline tracking, crop loss AMC ya platform actions ke baare me pooch sakte hain.</p>
+        </div>
+      </div>
+    </div>
+
+    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
+      <input type="text" id="chat-input" placeholder="Poochhein ya command dein..." class="flex-1 text-xs p-3 bg-slate-50 text-slate-900 rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-500 font-medium" />
+      <button type="submit" class="p-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow-sm shrink-0">
+        <i data-lucide="send" class="w-4 h-4"></i>
+      </button>
+    </form>
+  </div>
+
   <!-- JAVASCRIPT MASTER PERSISTENT CONTROLLER -->
   <script>
     const mandisBenchmark = [
@@ -1187,12 +1229,10 @@
     let currentFarmerObject = null;
     let trackingMap, driverMap;
 
-    // GPS Tracker State
     let realGpsWatchId = null;
     let driverLiveMarker = null;
     let driverAccuracyCircle = null;
 
-    // Voice Assistant Engine
     let speechRecognition = null;
     let isListeningVoice = false;
 
@@ -1212,7 +1252,69 @@
     });
 
     // -------------------------------------------------------------
-    // REAL-TIME VOICE COMMAND ASSISTANT (WEB SPEECH RECOGNITION)
+    // CHATBOT INTERACTIVE CONTROLLER (NO ALERTS)
+    // -------------------------------------------------------------
+    function toggleAIChat() {
+      const chatWindow = document.getElementById('ai-chat-window');
+      chatWindow.classList.toggle('hidden');
+      if (!chatWindow.classList.contains('hidden')) {
+        document.getElementById('chat-input').focus();
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chat-input').value = promptText;
+      handleChatSubmit(new Event('submit'));
+    }
+
+    function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const q = input.value.trim();
+      if (!q) return;
+
+      const container = document.getElementById('chat-messages');
+      container.innerHTML += `
+        <div class="flex gap-2.5 items-start justify-end">
+          <div class="bg-emerald-600 text-white font-bold p-3 rounded-2xl text-xs shadow-sm max-w-[85%]">${q}</div>
+        </div>
+      `;
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      setTimeout(() => {
+        let aiResponse = "";
+        const lowerQ = q.toLowerCase();
+
+        if (lowerQ.includes("status") || lowerQ.includes("order")) {
+          const ord = loadActiveOrder();
+          aiResponse = `<b>📦 Current Pipeline Status:</b> <span class="text-emerald-700 font-bold">${ord.status}</span><br>Produce: ${ord.title}<br>Amount: ₹${ord.amount.toLocaleString()}<br>Destination: ${ord.customerAddress}`;
+        } else if (lowerQ.includes("tomato") || lowerQ.includes("mandi") || lowerQ.includes("rate") || lowerQ.includes("price")) {
+          aiResponse = `<b>🍅 10-APMC Mandi Intelligence:</b><br>&bull; KisanRoute Fair Farm Price: <b>₹24/kg</b><br>&bull; Faridabad APMC: ₹12/kg (50% Middlemen Cut)<br>&bull; Azadpur Mega Mandi: ₹21/kg<br><b>Arbitrage Advantage:</b> Kisaano ko +100% direct gross gain mil raha hai.`;
+        } else if (lowerQ.includes("amc") || lowerQ.includes("insurance") || lowerQ.includes("bima")) {
+          aiResponse = `<b>🛡️ Fasal Rakshak AMC Protection:</b><br>&bull; Tier 1 (Weather Shield): ₹2,999/yr (₹30k Cover)<br>&bull; Tier 2 (Pest/Wilt Cover): ₹4,999/yr (₹60k Cover)<br>&bull; Tier 3 (Sovereign Shield): ₹8,999/yr (₹1.2L Cover)<br>Claims Sentinel-2 AI satellite verification se 24h me seedhe UPI me disburse hote hain.`;
+        } else if (lowerQ.includes("kisanpoint") || lowerQ.includes("referral") || lowerQ.includes("point")) {
+          aiResponse = `<b>🎁 Kisan Mitra Rewards:</b><br>Har naye kisaan bhai ko jodne par <b>500 KisanPoints (= ₹500 discount)</b> milte hain. Isse aap apni Fasal AMC buy karte time direct claim kar sakte hain.`;
+        } else {
+          aiResponse = `Main KisanRoute AI engine hoon. Platform telemetry par aapka role: <b>${currentLoggedInUser ? currentLoggedInUser.toUpperCase() : 'Active Member'}</b> verify ho chuka hai. Aap kisi bhi fasal ke live rate, fleet driver GPS route ya order handover ki jaankari le sakte hain.`;
+        }
+
+        container.innerHTML += `
+          <div class="flex gap-2.5 items-start">
+            <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+            <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 text-slate-800 text-xs shadow-sm leading-relaxed max-w-[88%] space-y-1">
+              ${aiResponse}
+            </div>
+          </div>
+        `;
+        container.scrollTop = container.scrollHeight;
+        if (window.lucide) lucide.createIcons();
+      }, 350);
+    }
+
+    // -------------------------------------------------------------
+    // REAL-TIME VOICE COMMAND ASSISTANT
     // -------------------------------------------------------------
     function initVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1282,7 +1384,6 @@
         navigator.geolocation.clearWatch(realGpsWatchId);
         realGpsWatchId = null;
         toggleText.innerText = "Enable Phone GPS";
-        alert("Real device GPS tracking paused.");
         return;
       }
 
@@ -2097,8 +2198,9 @@
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
-    function toggleAIChat() { alert("KisanAI Copilot active on real-time neural network!"); }
-    function downloadGSTInvoicePDF() { alert("GST Tax Invoice Generated!"); }
+    function downloadGSTInvoicePDF() {
+      alert("GST Tax Invoice Generated!");
+    }
   </script>
 </body>
 </html>

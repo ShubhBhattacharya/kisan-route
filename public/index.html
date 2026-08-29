@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KisanRoute Enterprise &bull; Smart Logistics & Live Registration</title>
+  <title>KisanRoute Enterprise &bull; Smart Agro-Logistics & Direct Consumer Mart</title>
   
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'%3E%3Crect width='32' height='32' rx='8' fill='%23050a14'/%3E%3Cpath d='M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z' stroke='%2310b981' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18' stroke='%2306b6d4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='2' fill='%2310b981'/%3E%3C/svg%3E" />
 
-  <!-- Core Scripts & Frameworks -->
+  <!-- Frameworks & CDN Engines -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -17,7 +17,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- Google Universal Translation -->
+  <!-- Google Translation -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({
@@ -29,71 +29,96 @@
   </script>
   <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; top: 0px !important; }
+    :root {
+      --bg-canvas: #060a12;
+      --panel-surface: rgba(13, 22, 38, 0.78);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --emerald-neon: #10b981;
+      --cyan-neon: #06b6d4;
+    }
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: var(--bg-canvas);
+      background-image: 
+        radial-gradient(circle at 5% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 40%),
+        radial-gradient(circle at 95% 0%, rgba(6, 182, 212, 0.10) 0px, transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(245, 158, 11, 0.06) 0px, transparent 45%),
+        linear-gradient(180deg, #060a12 0%, #03060c 100%);
+      background-attachment: fixed;
+      color: #f1f5f9;
+      top: 0px !important;
+    }
     .font-mono-code { font-family: 'JetBrains Mono', monospace; }
-    #tracking-map, #driver-map { height: 360px !important; min-height: 360px !important; width: 100% !important; border-radius: 1.25rem; z-index: 10; }
-    .badge-done { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-    .badge-pending { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
-    #chat-messages::-webkit-scrollbar { width: 4px; }
-    #chat-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
     
+    #tracking-map, #driver-map { 
+      height: 380px !important; 
+      min-height: 380px !important; 
+      width: 100% !important; 
+      border-radius: 1.25rem; 
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #090f1d;
+    }
+    
+    .badge-done { background-color: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+    .badge-pending { background-color: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+
     .goog-te-banner-frame.skiptranslate { display: none !important; }
-    body { top: 0px !important; }
     #google_translate_element { display: none; }
     .goog-tooltip, .goog-tooltip:hover { display: none !important; }
+
+    .cmd-surface {
+      background: var(--panel-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cmd-surface:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 24px 50px -12px rgba(16, 185, 129, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
 
     button {
       position: relative;
       overflow: hidden;
-      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     }
-    button:hover { transform: translateY(-2px); }
-    button:active { transform: scale(0.96) !important; }
-
-    .hover-lift-card {
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-    .hover-lift-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 30px -10px rgba(15, 23, 42, 0.12);
-    }
-
-    input:focus, select:focus, textarea:focus {
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
-    }
+    button:hover { transform: translateY(-1.5px); }
+    button:active { transform: scale(0.97) translateY(0) !important; }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    .animate-marquee { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white relative">
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
   <div id="google_translate_element"></div>
 
   <!-- ========================================================= -->
-  <!-- 0. FLIPKART STYLE INTERACTIVE LOGOUT CONFIRMATION MODAL   -->
+  <!-- 0. LOGOUT CONFIRMATION MODAL                              -->
   <!-- ========================================================= -->
-  <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5 text-center transform scale-95 transition-all">
-      <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto border-4 border-rose-100 shadow-sm">
-        <i data-lucide="log-out" class="w-7 h-7"></i>
+  <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="cmd-surface rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-slate-700/80 space-y-5 text-center transform scale-95 transition-all">
+      <div class="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/30 flex items-center justify-center mx-auto shadow-lg shadow-rose-500/10">
+        <i data-lucide="log-out" class="w-8 h-8"></i>
       </div>
-      
       <div class="space-y-1.5">
-        <h3 class="text-xl font-black text-slate-900">Are you sure you want to log out?</h3>
-        <p class="text-xs text-slate-500">You will need to re-verify your phone number or select a role to re-enter your private workspace.</p>
+        <h3 class="text-xl font-black text-white">Do you really want to log out?</h3>
+        <p class="text-xs text-slate-400">Your current operational workspace and encrypted keys will be locked safely.</p>
       </div>
-
-      <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-        <button onclick="closeLogoutModal()" class="py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">
+      <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
+        <button onclick="closeLogoutModal()" class="py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700 transition">
           Stay Logged In
         </button>
-        <button onclick="confirmAndExecuteLogout()" class="py-3 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl shadow-lg transition flex items-center justify-center gap-1.5">
+        <button onclick="confirmAndExecuteLogout()" class="py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-lg transition flex items-center justify-center gap-1.5">
           <i data-lucide="power" class="w-4 h-4"></i> Yes, Log Out
         </button>
       </div>
@@ -101,150 +126,163 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- 1. FLIPKART STYLE 1-CLICK ROLE LOGIN MODAL GATE           -->
+  <!-- 1. AUTH PORTAL & ROLE SWITCHER                            -->
   <!-- ========================================================= -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-white rounded-[2rem] max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6 my-auto text-slate-800">
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="cmd-surface rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border-slate-700/80 space-y-6 my-auto text-slate-100">
       
-      <!-- Logo & Title -->
-      <div class="text-center space-y-1">
-        <div class="inline-flex p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 mb-1">
-          <i data-lucide="shield-check" class="w-7 h-7"></i>
+      <div class="text-center space-y-1.5">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
+          <svg class="w-7 h-7" viewBox="0 0 32 32" fill="none">
+            <path d="M16 4L27 10.5V21.5L16 28L5 21.5V10.5L16 4Z" stroke="#10b981" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M16 11V21M11 14L16 11L21 14M11 18L16 21L21 18" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="16" cy="16" r="2" fill="#10b981"/>
+          </svg>
         </div>
-        <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-1.5">
-          Kisan<span class="text-emerald-600">Route</span> <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-0.5 rounded-full">SECURE ACCESS</span>
+        <h2 class="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+          Kisan<span class="text-emerald-400">Route</span> <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-500/30">NEXUS ACCESS</span>
         </h2>
-        <p class="text-xs text-slate-500">Select a role icon or enter your phone number to proceed</p>
+        <p class="text-xs text-slate-400 font-medium">Select a direct role icon or enter your phone number &bull; SIH 2026</p>
       </div>
 
       <!-- FLIPKART STYLE TOP ROLE CATEGORY BAR -->
-      <div class="space-y-2">
+      <div class="space-y-2.5">
         <div class="flex items-center justify-between px-1">
-          <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">1-Click Role Login</span>
-          <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">Instant Simulation</span>
+          <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">1-Click Fast Role Sign-In</span>
+          <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">Instant Simulation</span>
         </div>
         
-        <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-2 px-1">
-          <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
-            <div class="w-14 h-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 border-2 border-emerald-200 group-hover:border-emerald-600 text-emerald-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+        <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-1">
+          <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border border-slate-800 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🌱
             </div>
-            <span class="text-[11px] font-black text-slate-700 group-hover:text-emerald-700 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Ramesh</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-emerald-400 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-500 font-mono-code">Ramesh</span></span>
           </button>
 
-          <button onclick="quickFillAndSend('9876543211')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
-            <div class="w-14 h-14 rounded-2xl bg-amber-50 group-hover:bg-amber-500 border-2 border-amber-200 group-hover:border-amber-500 text-amber-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+          <button onclick="quickFillAndSend('9876543211')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-amber-500/20 border border-slate-800 group-hover:border-amber-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🥔
             </div>
-            <span class="text-[11px] font-black text-slate-700 group-hover:text-amber-700 text-center leading-tight">Farmer 2<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Harpreet</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-amber-400 text-center leading-tight">Farmer 2<br><span class="text-[9px] text-slate-500 font-mono-code">Harpreet</span></span>
           </button>
 
-          <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
-            <div class="w-14 h-14 rounded-2xl bg-cyan-50 group-hover:bg-cyan-600 border-2 border-cyan-200 group-hover:border-cyan-600 text-cyan-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+          <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-cyan-500/20 border border-slate-800 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🚚
             </div>
-            <span class="text-[11px] font-black text-slate-700 group-hover:text-cyan-700 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Vikram</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-cyan-400 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-500 font-mono-code">Vikram</span></span>
           </button>
 
-          <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
-            <div class="w-14 h-14 rounded-2xl bg-purple-50 group-hover:bg-purple-600 border-2 border-purple-200 group-hover:border-purple-600 text-purple-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+          <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-purple-500/20 border border-slate-800 group-hover:border-purple-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🛒
             </div>
-            <span class="text-[11px] font-black text-slate-700 group-hover:text-purple-700 text-center leading-tight">Buyer<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">BigBasket</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-purple-400 text-center leading-tight">B2B Buyer<br><span class="text-[9px] text-slate-500 font-mono-code">Wholesale</span></span>
           </button>
 
-          <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[76px] transition focus:outline-none">
-            <div class="w-14 h-14 rounded-2xl bg-rose-50 group-hover:bg-rose-600 border-2 border-rose-200 group-hover:border-rose-600 text-rose-700 group-hover:text-white flex items-center justify-center text-2xl shadow-sm transition transform group-hover:scale-105">
+          <button onclick="quickFillAndSend('9911223344')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-emerald-500/20 border-2 border-emerald-500/40 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
+              🛍️
+            </div>
+            <span class="text-[11px] font-bold text-emerald-400 group-hover:text-emerald-300 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-500 font-mono-code">Fresh Mart</span></span>
+          </button>
+
+          <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 group-hover:bg-rose-500/20 border border-slate-800 group-hover:border-rose-400 text-2xl flex items-center justify-center shadow-lg transition transform group-hover:scale-105 p-3">
               🛡️
             </div>
-            <span class="text-[11px] font-black text-slate-700 group-hover:text-rose-700 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-400 font-medium font-mono-code">Audit Hub</span></span>
+            <span class="text-[11px] font-bold text-slate-300 group-hover:text-rose-400 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-500 font-mono-code">Audit Hub</span></span>
           </button>
         </div>
       </div>
 
-      <!-- Notification Banner -->
       <div id="auth-alert-box" class="hidden p-3.5 rounded-2xl text-xs font-semibold border"></div>
 
-      <!-- STEP 1: Enter Custom Phone Number -->
-      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-2 border-t border-slate-100">
+      <!-- STEP 1: Phone Form -->
+      <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-3 border-t border-slate-800">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Enter Mobile Number</label>
+          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Or Enter Your Mobile Number</label>
           <div class="relative flex items-center">
-            <span class="absolute left-3.5 text-slate-400 font-bold text-sm">+91</span>
+            <span class="absolute left-3.5 text-slate-500 font-bold text-sm">+91</span>
             <input 
               type="tel" 
               id="input-login-mobile" 
               maxlength="10" 
               placeholder="e.g. 9876543210" 
               required 
-              class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-300 bg-slate-50 font-bold text-slate-900 text-sm tracking-wider focus:outline-none focus:bg-white focus:border-emerald-500" 
+              class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-700 bg-slate-900/90 font-bold text-white text-sm tracking-wider focus:outline-none focus:border-emerald-500" 
             />
           </div>
         </div>
 
-        <button type="submit" id="btn-send-otp-submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" id="btn-send-otp-submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="send" class="w-4 h-4"></i> Request Live OTP
         </button>
       </form>
 
-      <!-- STEP 2: Enter 6-Digit OTP -->
-      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-2 border-t border-slate-100">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-          <span class="text-slate-600">OTP sent to: <b class="text-slate-900 font-mono-code" id="display-otp-target-mobile"></b></span>
-          <button type="button" onclick="resetToMobileStep()" class="text-emerald-600 font-bold hover:underline text-[11px]">Change Number</button>
+      <!-- STEP 2: OTP Form -->
+      <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-800">
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+          <span class="text-slate-400">OTP sent to: <b class="text-white font-mono-code" id="display-otp-target-mobile"></b></span>
+          <button type="button" onclick="resetToMobileStep()" class="text-emerald-400 font-bold hover:underline text-[11px]">Change Number</button>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Enter 6-Digit SMS Code</label>
+          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Enter 6-Digit SMS Verification Code</label>
           <input 
             type="text" 
             id="input-login-otp" 
             maxlength="6" 
             placeholder="&bull; &bull; &bull; &bull; &bull; &bull;" 
             required 
-            class="w-full py-3 text-center rounded-xl border border-slate-300 bg-slate-50 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-600 focus:outline-none focus:bg-white focus:border-emerald-500" 
+            class="w-full py-3.5 text-center rounded-xl border border-slate-700 bg-slate-900/90 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-400 focus:outline-none focus:border-emerald-500" 
           />
         </div>
 
-        <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP & Proceed
         </button>
       </form>
 
-      <!-- STEP 3: Role & Profile Selection -->
-      <form id="form-step-role" onsubmit="handleCompleteRegistration(event)" class="space-y-4 text-xs hidden pt-2 border-t border-slate-100">
-        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-800 text-xs">
-          <span>✓ Mobile <b>+91 <span id="verified-mobile-display" class="font-mono-code"></span></b> verified! Complete your profile:</span>
+      <!-- STEP 3: Role Registration -->
+      <form id="form-step-role" onsubmit="handleCompleteRegistration(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-800">
+        <div class="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs">
+          <span>✓ Mobile <b>+91 <span id="verified-mobile-display" class="font-mono-code"></span></b> verified! Complete your profile setup:</span>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Full Name</label>
-          <input type="text" id="input-reg-name" placeholder="e.g. Rameshwar Sharma" required class="w-full p-3 rounded-xl border border-slate-300 bg-slate-50 font-bold text-slate-900 focus:outline-none focus:bg-white focus:border-emerald-500" />
+          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Full Name</label>
+          <input type="text" id="input-reg-name" placeholder="e.g. Rameshwar Sharma" required class="w-full p-3.5 rounded-xl border border-slate-700 bg-slate-900 font-bold text-white focus:outline-none focus:border-emerald-500" />
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1.5">Select Role Type</label>
+          <label class="block font-bold text-slate-300 mb-1.5 uppercase tracking-wider text-[10px]">Select Role Type</label>
           <div class="grid grid-cols-2 gap-2 text-xs">
-            <label class="p-3 border rounded-xl flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/60 font-bold">
-              <input type="radio" name="user_role_select" value="farmer" checked class="accent-emerald-600" />
-              <span>🌱 Farmer / Kisaan</span>
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
+              <input type="radio" name="user_role_select" value="farmer" checked class="accent-emerald-500" />
+              <span>🌱 Farmer / Producer</span>
             </label>
-            <label class="p-3 border rounded-xl flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/60 font-bold">
-              <input type="radio" name="user_role_select" value="driver" class="accent-emerald-600" />
-              <span>🚚 Logistics Driver</span>
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
+              <input type="radio" name="user_role_select" value="consumer" class="accent-emerald-500" />
+              <span>🛍️ Consumer Mart</span>
             </label>
-            <label class="p-3 border rounded-xl flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/60 font-bold">
-              <input type="radio" name="user_role_select" value="buyer" class="accent-emerald-600" />
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
+              <input type="radio" name="user_role_select" value="driver" class="accent-emerald-500" />
+              <span>🚚 Fleet Driver</span>
+            </label>
+            <label class="p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
+              <input type="radio" name="user_role_select" value="buyer" class="accent-emerald-500" />
               <span>🛒 B2B Buyer Hub</span>
             </label>
-            <label class="p-3 border rounded-xl flex items-center gap-2 cursor-pointer hover:border-emerald-500 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/60 font-bold">
-              <input type="radio" name="user_role_select" value="admin" class="accent-emerald-600" />
-              <span>🛡️ Admin Oversight</span>
+            <label class="col-span-2 p-3 rounded-xl border border-slate-800 bg-slate-900/80 flex items-center justify-center gap-2 cursor-pointer hover:border-rose-500 has-[:checked]:border-rose-500 has-[:checked]:bg-slate-800 font-bold text-slate-200">
+              <input type="radio" name="user_role_select" value="admin" class="accent-rose-500" />
+              <span>🛡️ Admin Mission Control</span>
             </label>
           </div>
         </div>
 
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-xs rounded-xl shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="check-circle" class="w-4 h-4"></i> Complete & Open Workspace
         </button>
       </form>
@@ -252,68 +290,65 @@
     </div>
   </div>
 
-  <!-- LIVE APMC MANDI TICKER -->
-  <div class="bg-emerald-950 text-emerald-300 text-[11px] font-bold py-1.5 px-4 overflow-hidden border-b border-emerald-900 flex items-center gap-3">
-    <span class="bg-emerald-600 text-slate-950 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Rates</span>
+  <!-- LIVE APMC MANDI SPREAD TICKER -->
+  <div class="bg-slate-950/90 text-emerald-400 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-slate-800 flex items-center gap-3">
+    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Spread</span>
     <div class="w-full overflow-hidden">
-      <div class="animate-marquee space-x-6">
-        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Cluster: ₹24/kg (+100%)</b></span>
-        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
-        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
-        <span>🧅 Onion: Mandi ₹16/kg &bull; <b class="text-white">KisanRoute: ₹22/kg</b></span>
-        <span>🌦️ Faridabad Weather: 28°C (Humidity: 62%) &bull; Ideal Harvesting Conditions</span>
+      <div class="animate-marquee space-x-8 text-slate-300">
+        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-emerald-400">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
+        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-emerald-400">KisanRoute: ₹18/kg</b></span>
+        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-emerald-400">KisanRoute: ₹28/kg</b></span>
+        <span>🛡️ Farmer Crop AMC: Instant Claim disbursals active for Faridabad cluster</span>
       </div>
     </div>
   </div>
 
   <!-- TOP APP BAR -->
-  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+  <header class="bg-slate-950/80 backdrop-blur-2xl text-white border-b border-slate-800 sticky top-0 z-30 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
       <div class="flex items-center gap-3">
-        <div class="bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 p-2.5 rounded-2xl shadow-md font-black transform hover:rotate-6 transition">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black shadow-lg shadow-emerald-500/10">
           <i data-lucide="sprout" class="w-6 h-6"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
             <span class="text-xl font-black tracking-tight text-white">Kisan<span class="text-emerald-400">Route</span></span>
-            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.5 rounded-full border border-emerald-500/30" id="top-role-badge">ENTERPRISE HUB</span>
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-extrabold uppercase" id="top-role-badge">ENTERPRISE TERMINAL</span>
           </div>
-          <p class="text-[11px] text-slate-400">Faridabad Agro FPO &bull; 15 Geofenced Mandi Pincodes</p>
+          <p class="text-[10px] text-slate-400 font-medium">Faridabad Agro FPO &bull; Direct Farm-to-Consumer Corridor</p>
         </div>
       </div>
 
-      <!-- Action Tools -->
       <div class="flex items-center gap-2.5 text-xs">
         
+        <!-- Cart Floating Trigger (Visible for Consumer) -->
+        <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 rounded-xl font-black flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
+        </button>
+
         <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 rounded-xl font-bold flex items-center gap-1.5 transition">
           <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-400"></i> 360° Virtual Khet
         </button>
 
-        <!-- 22+ Languages Selector -->
-        <div class="flex items-center gap-1 bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700">
+        <!-- Language Selector -->
+        <div class="flex items-center gap-1 bg-slate-900 px-2.5 py-1 rounded-xl border border-slate-800">
           <i data-lucide="globe" class="w-3.5 h-3.5 text-slate-400"></i>
           <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-white font-bold text-xs focus:outline-none cursor-pointer">
-            <option value="en">EN</option>
-            <option value="hi">हिंदी (HI)</option>
-            <option value="pa">ਪੰਜਾਬੀ (PA)</option>
-            <option value="bn">বাংলা (BN)</option>
-            <option value="te">తెలుగు (TE)</option>
-            <option value="ta">தமிழ் (TA)</option>
-            <option value="mr">मराठी (MR)</option>
-            <option value="gu">ગુજરાતી (GU)</option>
-            <option value="kn">ಕನ್ನಡ (KN)</option>
-            <option value="ml">മലയാളം (ML)</option>
-            <option value="or">ଓଡ଼ିଆ (OR)</option>
-            <option value="as">অসমীয়া (AS)</option>
-            <option value="ur">اردو (UR)</option>
-            <option value="bho">भोजपुरी (BHO)</option>
+            <option value="en" class="bg-slate-900">EN</option>
+            <option value="hi" class="bg-slate-900">हिंदी (HI)</option>
+            <option value="pa" class="bg-slate-900">ਪੰਜਾਬੀ (PA)</option>
+            <option value="bn" class="bg-slate-900">বাংলা (BN)</option>
+            <option value="te" class="bg-slate-900">తెలుగు (TE)</option>
+            <option value="ta" class="bg-slate-900">தமிழ் (TA)</option>
+            <option value="mr" class="bg-slate-900">मराठी (MR)</option>
+            <option value="gu" class="bg-slate-900">ગુજરાતી (GU)</option>
           </select>
         </div>
 
-        <!-- FLIPKART STYLE PROFILE & LOGOUT TRIGGER -->
+        <!-- Profile & Logout Menu -->
         <div class="relative">
-          <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl border border-slate-700 text-xs transition">
+          <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs transition">
             <div class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-[10px]">
               <i data-lucide="user" class="w-3 h-3"></i>
             </div>
@@ -321,15 +356,14 @@
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
           </button>
 
-          <!-- Dropdown Menu -->
-          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 text-slate-800 p-2 space-y-1 hidden z-50">
-            <div class="p-2.5 border-b border-slate-100">
+          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-700 text-slate-200 p-2 space-y-1 hidden z-50">
+            <div class="p-2.5 border-b border-slate-800">
               <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Signed in as</p>
-              <p class="text-xs font-black text-slate-900 truncate" id="dropdown-user-name">Guest User</p>
-              <p class="text-[10px] text-emerald-600 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
+              <p class="text-xs font-black text-white truncate" id="dropdown-user-name">Guest User</p>
+              <p class="text-[10px] text-emerald-400 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
             </div>
 
-            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition">
+            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs font-bold transition">
               <i data-lucide="log-out" class="w-4 h-4"></i> Logout Account
             </button>
           </div>
@@ -343,118 +377,235 @@
   <!-- MAIN WORKSPACE CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-    <!-- ROLE 1: MEMBER FARMER WORKSPACE -->
+    <!-- ======================================================= -->
+    <!-- ROLE 1: MEMBER FARMER WORKSPACE + AMC CROP INSURANCE    -->
+    <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
-      <div class="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4 hover-lift-card">
+      
+      <!-- Top Action Strip -->
+      <div class="cmd-surface rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-500 uppercase">Verified Account:</span>
-          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs">FARMER #01</span>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Verified Producer:</span>
+          <span id="farmer-display-id" class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-black rounded-lg text-xs font-mono-code">FARMER #01</span>
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+          <button onclick="scrollToAMCSection()" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i> Crop Loss AMC Vault
+          </button>
+
+          <button onclick="open360FarmModal('My Khet 360 Drone Arena')" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 font-bold text-xs rounded-xl transition flex items-center gap-1.5">
             <i data-lucide="scan-eye" class="w-4 h-4"></i> 360° Khet View
           </button>
           
-          <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-2 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+          <button id="btn-voice-rec" onclick="toggleSpeechRecording()" class="px-3.5 py-1.5 bg-gradient-to-tr from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs rounded-xl transition flex items-center gap-1.5">
             <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-btn-text">बोलकर काम करें (Mic)</span>
           </button>
           
-          <button onclick="speakFarmerTasks()" class="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-emerald-300">
-            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-700"></i> Bol Kar Suniye
+          <button onclick="speakFarmerTasks()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-slate-700">
+            <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i> Bol Kar Suniye
           </button>
-          <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-2 rounded-xl" id="farmer-pincode-badge">
-            Pincode: 121007 (Dhauj)
-          </span>
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-emerald-800 to-teal-800 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4 shadow-lg hover-lift-card">
+      <!-- Farmer Profile Hero -->
+      <div class="cmd-surface border-emerald-500/40 text-white p-6 rounded-3xl flex flex-wrap justify-between items-center gap-4">
         <div>
-          <span class="text-xs uppercase font-bold tracking-wider bg-white/20 px-3 py-1 rounded-full">Private Farmer Terminal</span>
-          <h2 class="text-2xl font-black mt-2" id="farmer-profile-name">Rameshwar Sharma</h2>
-          <p class="text-xs text-emerald-200 mt-1" id="farmer-profile-sub">Allocated Produce: Desi Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
+          <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded border border-emerald-500/30">Member Producer Terminal</span>
+          <h2 class="text-2xl font-black mt-2 text-white" id="farmer-profile-name">Rameshwar Sharma</h2>
+          <p class="text-xs text-slate-400 mt-0.5" id="farmer-profile-sub">Allocated Batch: Desi Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
         </div>
         <div class="flex gap-3 text-center">
-          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
-            <p class="text-[10px] text-emerald-200 font-bold uppercase">Expected Direct UPI</p>
-            <p class="text-xl font-black text-emerald-300" id="farmer-expected-payout">₹15,600</p>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Expected Direct UPI</p>
+            <p class="text-2xl font-black text-emerald-400 font-mono-code" id="farmer-expected-payout">₹15,600</p>
           </div>
-          <div class="bg-white/10 p-3 rounded-2xl border border-white/10">
-            <p class="text-[10px] text-emerald-200 font-bold uppercase">Net Fasal Munafa</p>
-            <p class="text-xl font-black text-white" id="farmer-net-profit-badge">₹10,850</p>
+          <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Active AMC Cover</p>
+            <p class="text-2xl font-black text-amber-400 font-mono-code" id="farmer-amc-status">₹50,000</p>
           </div>
         </div>
       </div>
 
-      <!-- 4 Harvest Preparation Tasks -->
+      <!-- 4 HARVEST & QUALITY PREPARATION TASKS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
-          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-500"></i> Pending Harvest & Prep Tasks
+        <div class="cmd-surface rounded-3xl p-6 space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-black text-white text-sm flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Pending Harvest & Prep Tasks
             </h3>
-            <span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
+            <span class="text-[10px] font-black text-amber-300 bg-amber-500/20 border border-amber-500/30 px-2.5 py-0.5 rounded-full" id="pending-tasks-count">0 Pending</span>
           </div>
           <div id="pending-tasks-list" class="space-y-3 text-xs"></div>
         </div>
 
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
-          <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> Completed & Verified Tasks
+        <div class="cmd-surface rounded-3xl p-6 space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h3 class="font-black text-white text-sm flex items-center gap-2">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> Completed & Verified Tasks
             </h3>
-            <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
+            <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded-full" id="completed-tasks-count">4 Completed</span>
           </div>
           <div id="completed-tasks-list" class="space-y-3 text-xs"></div>
         </div>
       </div>
 
-      <!-- DIGITAL BAHI-KHATA -->
-      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-100 pb-3">
+      <!-- FARMER AMC (ANNUAL MAINTENANCE & CROP LOSS INSURANCE VAULT) -->
+      <div id="farmer-amc-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-amber-500/40">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
           <div>
-            <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-              <i data-lucide="calculator" class="w-4 h-4 text-emerald-600"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            <span class="text-[10px] font-mono-code font-bold uppercase text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded">Risk Mitigation Vault</span>
+            <h3 class="text-lg font-black text-white mt-1 flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i> Fasal Rakshak AMC (Crop Maintenance & 100% Loss Protection)
             </h3>
-            <p class="text-xs text-slate-500">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+            <p class="text-xs text-slate-400">Unseasonal rain, pests, frost, ya transport decay me loss ka 100% payout guarantee.</p>
           </div>
-          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 self-start">
+          
+          <!-- Monthly/Yearly Toggle -->
+          <div class="flex items-center bg-slate-900 p-1.5 rounded-2xl border border-slate-800 text-xs font-bold">
+            <button onclick="toggleAMCFrequency('monthly')" id="btn-amc-monthly" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 transition">Monthly</button>
+            <button onclick="toggleAMCFrequency('yearly')" id="btn-amc-yearly" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition">Yearly (Save 20%)</button>
+          </div>
+        </div>
+
+        <!-- 3 Standard Insurance Tiers -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
+          
+          <!-- Plan 1 -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded">CLIMATE SHIELD</span>
+                <span class="text-[10px] text-slate-400">Tier 1</span>
+              </div>
+              <h4 class="text-base font-black text-white">Weather & Frost Shield</h4>
+              <p class="text-slate-400 text-[11px]">Covers hail, unseasonal rain, high heatwave damage to crops.</p>
+              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
+                <p>✓ Max Cover: <b class="text-white">₹30,000 / Acre</b></p>
+                <p>✓ Satellite Rainfall Audit</p>
+                <p>✓ Claim Payout: <b>24 Hours</b></p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-1-price">₹299 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
+              <button onclick="subscribeAMCPlan('Weather & Frost Shield', '₹299/mo', 30000)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+                Activate Shield
+              </button>
+            </div>
+          </div>
+
+          <!-- Plan 2 (Popular) -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border-2 border-emerald-500/50 space-y-4 flex flex-col justify-between relative">
+            <span class="absolute -top-2.5 right-4 bg-emerald-500 text-slate-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">MOST POPULAR</span>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded">PEST & DISEASE</span>
+                <span class="text-[10px] text-slate-400">Tier 2</span>
+              </div>
+              <h4 class="text-base font-black text-white">Pest, Wilt & Rot Cover</h4>
+              <p class="text-slate-400 text-[11px]">Covers fungal blight, locust attacks, viral wilts, and moisture transit decay.</p>
+              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
+                <p>✓ Max Cover: <b class="text-white">₹60,000 / Acre</b></p>
+                <p>✓ AI Drone Disease Scan + Agronomist</p>
+                <p>✓ Claim Payout: <b>12 Hours Direct UPI</b></p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-2-price">₹499 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
+              <button onclick="subscribeAMCPlan('Pest, Wilt & Rot Cover', '₹499/mo', 60000)" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl shadow-lg transition">
+                Activate Popular Cover
+              </button>
+            </div>
+          </div>
+
+          <!-- Plan 3 -->
+          <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] font-bold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">SOVEREIGN COMPLETE</span>
+                <span class="text-[10px] text-slate-400">Tier 3</span>
+              </div>
+              <h4 class="text-base font-black text-white">Sovereign 100% Crop Shield</h4>
+              <p class="text-slate-400 text-[11px]">Full yield price loss + Mandi crash guarantee + Free crop advisory.</p>
+              <div class="py-2 border-y border-slate-800 space-y-1 text-slate-300">
+                <p>✓ Max Cover: <b class="text-white">₹1,20,000 / Field</b></p>
+                <p>✓ Price Drop Loss Protection</p>
+                <p>✓ Zero Deductible Instant Transfer</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xl font-black text-emerald-400 font-mono-code mb-2" id="plan-3-price">₹899 <span class="text-xs text-slate-400 font-normal">/ month</span></p>
+              <button onclick="subscribeAMCPlan('Sovereign 100% Crop Shield', '₹899/mo', 120000)" class="w-full py-2.5 bg-slate-800 hover:bg-emerald-600 hover:text-slate-950 text-slate-200 font-bold rounded-xl border border-slate-700 transition">
+                Activate Shield
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 1-Click File Claim Action -->
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <i data-lucide="alert-octagon" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white">Crop damaged due to weather or disease?</p>
+              <p class="text-[11px] text-slate-400">Our automated satellite audit inspects your field & transfers claim money.</p>
+            </div>
+          </div>
+          <button onclick="triggerAMCClaimSettlement()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 text-slate-950 font-black text-xs rounded-xl shadow transition shrink-0">
+            ⚡ File Instant AMC Claim
+          </button>
+        </div>
+
+      </div>
+
+      <!-- DIGITAL BAHI-KHATA (LEDGER) -->
+      <div class="cmd-surface rounded-3xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-black text-white text-base flex items-center gap-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            </h3>
+            <p class="text-xs text-slate-400">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+          </div>
+          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition flex items-center gap-1.5 self-start">
             <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
           </button>
         </div>
 
-        <div id="expense-form-box" class="p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden space-y-3">
+        <div id="expense-form-box" class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 hidden space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Kharcha Category</label>
-              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold">
+              <label class="block font-bold text-slate-300 mb-1">Kharcha Category</label>
+              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold">
                 <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
                 <option value="Beej (Seeds)">Beej & Plant Seeds</option>
                 <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
                 <option value="Labor & Majdoori">Labor & Harvesting</option>
-                <option value="Pesticide & Spray">Pesticide / Dawai</option>
+                <option value="Crop AMC Protection">Crop AMC Protection Premium</option>
               </select>
             </div>
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Description</label>
-              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-medium" />
+              <label class="block font-bold text-slate-300 mb-1">Description</label>
+              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-medium" />
             </div>
             <div>
-              <label class="block font-bold text-slate-700 mb-1">Amount (₹)</label>
-              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold" />
+              <label class="block font-bold text-slate-300 mb-1">Amount (₹)</label>
+              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-950 text-white font-bold" />
             </div>
           </div>
           <div class="flex justify-end gap-2 text-xs">
-            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-500 font-bold">Cancel</button>
-            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-white rounded-xl font-bold shadow-md">Save in Bahi-Khata</button>
+            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-400 font-bold">Cancel</button>
+            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-slate-950 font-bold rounded-xl">Save in Bahi-Khata</button>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
           <div class="lg:col-span-2 overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+              <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th class="p-2.5">Category</th>
                   <th class="p-2.5">Description</th>
@@ -462,83 +613,127 @@
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-800/60 font-medium text-slate-300"></tbody>
             </table>
           </div>
 
-          <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2 text-xs flex flex-col justify-center hover-lift-card">
-            <div class="flex justify-between font-semibold text-slate-600">
+          <div class="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-2 text-xs flex flex-col justify-center">
+            <div class="flex justify-between font-semibold text-slate-400">
               <span>Total Batch Income:</span>
-              <span class="font-bold text-slate-900" id="ledger-gross-income">₹15,600</span>
+              <span class="font-bold text-white font-mono-code" id="ledger-gross-income">₹15,600</span>
             </div>
-            <div class="flex justify-between font-semibold text-rose-600">
+            <div class="flex justify-between font-semibold text-rose-400">
               <span>Total Farm Expenses:</span>
-              <span class="font-bold" id="ledger-total-expenses">-₹4,750</span>
+              <span class="font-bold font-mono-code" id="ledger-total-expenses">-₹4,750</span>
             </div>
-            <div class="pt-2 border-t border-emerald-200 flex justify-between items-center">
+            <div class="pt-2 border-t border-slate-800 flex justify-between items-center">
               <div>
-                <p class="font-black text-slate-900 text-sm">Net Fasal Munafa:</p>
-                <p class="text-[10px] text-emerald-700 font-bold">(In Pocket Profit)</p>
+                <p class="font-black text-white text-sm">Net Fasal Munafa:</p>
+                <p class="text-[10px] text-emerald-400 font-bold">(In Pocket Profit)</p>
               </div>
-              <span class="text-xl font-black text-emerald-700" id="ledger-net-profit">₹10,850</span>
+              <span class="text-xl font-black text-emerald-400 font-mono-code" id="ledger-net-profit">₹10,850</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ROLE 2: LOGISTICS DRIVER WORKSPACE -->
+    <!-- ======================================================= -->
+    <!-- ROLE 2: DIRECT CONSUMER FRESH MART (FLIPKART/BLINKIT)   -->
+    <!-- ======================================================= -->
+    <div id="view-consumer" class="role-workspace space-y-6 hidden">
+      
+      <!-- Consumer Hero Banner -->
+      <div class="cmd-surface border-emerald-500/30 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+        <div class="space-y-3 z-10 max-w-xl">
+          <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase tracking-wider rounded-full">
+            ⚡ 100% FARM-TO-FORK DIRECT &bull; 0 MIDDLEMEN
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Fresh Organic Harvest <span class="text-emerald-400">Delivered in 2 Hours</span>
+          </h2>
+          <p class="text-xs text-slate-300">
+            Pure Desi vegetables, orchard fruits & unpolished pulses directly from Faridabad FPO farms at wholesale prices.
+          </p>
+          <div class="flex flex-wrap gap-4 text-xs font-bold text-emerald-400 pt-1">
+            <span>✓ Chemical-Free</span>
+            <span>✓ 25% Off APMC Rates</span>
+            <span>✓ Direct Farmer UPI Paid</span>
+          </div>
+        </div>
+        <div class="w-full md:w-64 h-36 rounded-2xl bg-gradient-to-tr from-emerald-600/30 to-teal-400/20 border border-emerald-500/30 flex items-center justify-center text-6xl shadow-2xl shrink-0">
+          🥦🍅🍇
+        </div>
+      </div>
+
+      <!-- Categories Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
+        <button onclick="filterConsumerCategory('all')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-slate-950 font-black shadow-md transition">All Fresh</button>
+        <button onclick="filterConsumerCategory('vegetable')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🥬 Vegetables</button>
+        <button onclick="filterConsumerCategory('fruit')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🍎 Fresh Fruits</button>
+        <button onclick="filterConsumerCategory('grain')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🌾 Grains & Pulses</button>
+        <button onclick="filterConsumerCategory('exotic')" class="consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition">🥑 Exotic & Hydroponic</button>
+      </div>
+
+      <!-- High-Conversion Consumer Produce Catalog Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- ROLE 3: LOGISTICS FLEET DRIVER                          -->
+    <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 hover-lift-card">
+        <div class="cmd-surface rounded-3xl p-6 space-y-5">
           <div>
-            <h3 class="font-bold text-slate-900 text-base">Driver Navigation & Trip Controller</h3>
-            <p class="text-xs text-slate-500">Auto-allot vehicle, enter OTP to start active GPS route, and end ride.</p>
+            <h3 class="font-black text-white text-base">Fleet Operations & Trip Controller</h3>
+            <p class="text-xs text-slate-400">Allot vehicle, enter OTP to start route, and release farmer escrow.</p>
           </div>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Batch Weight Slider (kg):</label>
-            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-emerald-600 cursor-pointer" />
-            <div class="flex justify-between text-xs text-slate-500 font-semibold mt-1">
+          <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2">
+            <label class="block text-xs font-bold text-slate-300">Payload Weight Allocation (kg):</label>
+            <input type="range" min="10" max="3000" step="10" value="650" id="weight-slider" oninput="calculateVehicleAllocation()" class="w-full accent-emerald-500 cursor-pointer" />
+            <div class="flex justify-between text-xs text-slate-400 font-semibold">
               <span>10 kg (Bike)</span>
-              <span id="weight-display" class="text-emerald-700 font-bold text-sm bg-emerald-50 px-2 py-0.5 rounded-md">650 kg</span>
+              <span id="weight-display" class="text-emerald-400 font-black text-sm bg-emerald-500/10 px-2.5 py-0.5 rounded-lg font-mono-code border border-emerald-500/30">650 kg</span>
               <span>3,000 kg (Truck)</span>
             </div>
           </div>
 
-          <div id="allotment-result-card" class="p-4 rounded-2xl border border-emerald-200 bg-emerald-50/70 space-y-2 text-xs hover-lift-card">
-            <p class="text-emerald-800 font-bold uppercase tracking-wider text-[10px]">Allotted Transport Vehicle</p>
-            <h4 id="vehicle-title" class="font-bold text-slate-900 text-base">Mini Truck (Tata Ace)</h4>
-            <div class="space-y-1 text-slate-600 pt-1">
-              <p>Max Capacity: <span class="font-semibold text-slate-800" id="vehicle-cap">1,000 kg</span></p>
-              <p>Trip Fare: <span class="font-bold text-emerald-800" id="vehicle-trip-cost">₹1,120</span></p>
-              <p>Trip Status: <b class="text-emerald-700" id="driver-trip-status">IDLE (Awaiting OTP)</b></p>
+          <div class="p-4 rounded-2xl border border-emerald-500/30 bg-slate-900/80 space-y-1.5 text-xs">
+            <p class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">Optimized Transport Carrier</p>
+            <h4 id="vehicle-title" class="font-black text-white text-base">Mini Truck (Tata Ace)</h4>
+            <div class="space-y-1 text-slate-400 pt-1 font-medium">
+              <p>Capacity: <span class="font-bold text-slate-200 font-mono-code" id="vehicle-cap">1,000 kg</span></p>
+              <p>Trip Fare: <span class="font-black text-emerald-400 font-mono-code" id="vehicle-trip-cost">₹1,120</span></p>
+              <p>Status: <b class="text-emerald-400" id="driver-trip-status">STANDBY (Awaiting OTP)</b></p>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 space-y-2.5">
-            <label class="block text-xs font-bold text-slate-800">1. Enter Buyer OTP to Start Ride:</label>
-            <input type="text" id="driver-input-otp" placeholder="Enter Buyer OTP (Try: 4829)" class="w-full text-center text-lg font-mono-code font-bold p-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none" />
+          <div class="pt-2 border-t border-slate-800 space-y-2.5">
+            <label class="block text-xs font-bold text-slate-300">Enter Buyer Delivery OTP:</label>
+            <input type="text" id="driver-input-otp" placeholder="Enter OTP (Try: 4829)" class="w-full text-center text-xl font-mono-code font-bold p-3.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:outline-none" />
             
-            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-              <i data-lucide="play" class="w-4 h-4"></i> Start Live GPS Navigation
+            <button id="btn-start-ride" onclick="driverStartRide()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs py-3.5 rounded-xl shadow-lg transition flex items-center justify-center gap-2 uppercase tracking-wider">
+              <i data-lucide="play" class="w-4 h-4"></i> Start Active Navigation
             </button>
 
-            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-3 rounded-xl shadow-md transition hidden flex items-center justify-center gap-2">
-              <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow Funds 🏁
+            <button id="btn-end-ride" onclick="driverEndRide()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black text-xs py-3.5 rounded-xl shadow-lg transition hidden flex items-center justify-center gap-2 uppercase tracking-wider">
+              <i data-lucide="square" class="w-4 h-4"></i> End Ride & Release Escrow 🏁
             </button>
           </div>
         </div>
 
-        <div class="lg:col-span-2 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col space-y-3 hover-lift-card relative">
+        <div class="lg:col-span-2 cmd-surface rounded-3xl p-5 flex flex-col space-y-3 relative">
           <div class="flex justify-between items-center">
             <div>
-              <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Navigation
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span> Live Geofenced 15-Pincode Routing
               </h4>
-              <p class="text-xs text-slate-500" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
+              <p class="text-xs text-slate-400 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
             </div>
-            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full" id="driver-speed-badge">Speed: 0 km/h</span>
+            <span class="text-xs font-bold text-emerald-400 bg-slate-900 px-3 py-1 rounded-lg border border-slate-700 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
           </div>
           
           <div id="driver-map"></div>
@@ -546,95 +741,110 @@
       </div>
     </div>
 
-    <!-- ROLE 3: B2B BUYER WORKSPACE -->
+    <!-- ======================================================= -->
+    <!-- ROLE 4: B2B BUYER WHOLESALE HUB                         -->
+    <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
-      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-slate-700/60 space-y-6 hover-lift-card">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-4 border-b border-white/10">
+      <div class="cmd-surface rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-slate-800">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+              <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Transit Status: DISPATCHED
               </span>
-              <span class="text-xs text-slate-400 font-mono-code font-bold">Order #OD-2026-FBD-8821</span>
+              <span class="text-xs text-slate-400 font-mono-code">Order #OD-2026-FBD-8821</span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-black mt-2 tracking-tight">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
-            <p class="text-xs sm:text-sm text-slate-300 mt-0.5">Dispatched from <span class="text-emerald-400 font-bold">Dhauj Farm Hub (Pincode: 121007)</span> &bull; Billed to: <span class="text-white font-bold">BigBasket Wholesale</span></p>
+            <h2 class="text-2xl sm:text-3xl font-black mt-2 text-white">Desi Tomato (650 kg &bull; Grade A Certified)</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Origin: <span class="text-emerald-400 font-bold">Dhauj Farm Hub (121007)</span> &bull; Consignee: <span class="text-slate-200 font-bold">BigBasket Wholesale</span></p>
           </div>
 
-          <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-left sm:text-right space-y-1">
-            <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider block">Delivery ETA</span>
-            <p class="text-xl font-black text-white" id="buyer-delivery-eta">Today by 05:30 PM</p>
+          <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-left sm:text-right space-y-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimated Delivery</span>
+            <p class="text-lg font-black text-emerald-400 font-mono-code" id="buyer-delivery-eta">Today by 05:30 PM</p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-          <div class="space-y-4">
-            <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-3 hover-lift-card">
-              <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl border border-emerald-500/30">
-                <i data-lucide="truck" class="w-6 h-6"></i>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
+          <div class="space-y-3.5">
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+              <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                <i data-lucide="truck" class="w-5 h-5"></i>
               </div>
               <div>
-                <p class="text-[11px] text-slate-400 uppercase font-bold">Assigned Carrier</p>
-                <p class="text-xs font-black text-white">Tata Ace &bull; HR-38-AF-4829</p>
-                <p class="text-[11px] text-emerald-300 font-medium">Driver: Vikram Singh</p>
+                <p class="text-[10px] text-slate-400 uppercase font-bold">Assigned Logistics</p>
+                <p class="text-xs font-black text-white">Tata Ace Mini Truck &bull; HR-38-AF-4829</p>
+                <p class="text-[11px] text-emerald-400 font-medium">Driver: Vikram Singh (+91 98110-44910)</p>
               </div>
             </div>
 
-            <div class="bg-gradient-to-tr from-slate-900 to-slate-800 border border-emerald-500/40 p-4 rounded-2xl flex items-center justify-between hover-lift-card">
+            <div class="bg-slate-900/90 border border-emerald-500/30 p-4.5 rounded-2xl flex items-center justify-between">
               <div>
-                <p class="text-[10px] text-emerald-300 font-extrabold uppercase">Secret Delivery OTP</p>
+                <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Secret Gate OTP</p>
                 <p class="text-3xl font-black font-mono-code tracking-widest text-white mt-0.5">4829</p>
+                <p class="text-[10px] text-slate-400">Share with driver upon arrival</p>
               </div>
-              <button onclick="downloadGSTInvoicePDF()" class="px-3.5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl transition shadow-lg flex items-center gap-1.5">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> PDF Bill
+              <button onclick="downloadGSTInvoicePDF()" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/20">
+                <i data-lucide="download" class="w-4 h-4"></i> PDF Bill
               </button>
             </div>
           </div>
 
-          <div class="lg:col-span-2 bg-slate-950/60 p-4 rounded-2xl border border-white/10 space-y-2 hover-lift-card">
+          <div class="lg:col-span-2 bg-slate-900/60 p-4.5 rounded-2xl border border-slate-800 space-y-2.5">
             <div id="tracking-map"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ROLE 4: ADMIN AUDIT HUB -->
+    <!-- ======================================================= -->
+    <!-- ROLE 5: ADMIN AUDIT HUB                                 -->
+    <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
-          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster Farmers</p>
-          <h3 class="text-2xl font-black text-slate-900 mt-1">10 Farmers</h3>
+        <div class="cmd-surface rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Tracked Cluster</p>
+          <h3 class="text-2xl font-black text-white mt-1 font-mono-code">10 Farmers</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
-          <p class="text-xs font-bold text-slate-400 uppercase">Total Pooled Batch</p>
-          <h3 class="text-2xl font-black text-emerald-700 mt-1">4,850 kg</h3>
+        <div class="cmd-surface rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Total Yield Pooled</p>
+          <h3 class="text-2xl font-black text-emerald-400 mt-1 font-mono-code">4,850 kg</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
-          <p class="text-xs font-bold text-slate-400 uppercase">Quality Audit Passed</p>
-          <h3 class="text-2xl font-black text-slate-900 mt-1" id="admin-passed-count">8 / 10 Farmers</h3>
+        <div class="cmd-surface rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Quality Clearance</p>
+          <h3 class="text-2xl font-black text-cyan-400 mt-1 font-mono-code" id="admin-passed-count">8 / 10 Farmers</h3>
         </div>
-        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hover-lift-card">
-          <p class="text-xs font-bold text-slate-400 uppercase">Escrow Vault</p>
-          <h3 class="text-2xl font-black text-emerald-700 mt-1">₹1,16,400</h3>
+        <div class="cmd-surface rounded-2xl p-5">
+          <p class="text-xs font-bold text-slate-400 uppercase">Escrow In Vault</p>
+          <h3 class="text-2xl font-black text-amber-400 mt-1 font-mono-code">₹1,16,400</h3>
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4 p-6 hover-lift-card">
+      <div class="cmd-surface rounded-3xl overflow-hidden space-y-4 p-6">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-base font-black text-white">10-Farmer Granular Process Audit Matrix</h3>
+            <p class="text-xs text-slate-400">Quality verification for destoning, moisture control, AI grading, and crate packaging.</p>
+          </div>
+          <button onclick="auditAllPassed()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs rounded-xl transition shadow flex items-center gap-2">
+            <i data-lucide="check-check" class="w-4 h-4"></i> Auto-Approve All Ready Farmers 🎉
+          </button>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
-            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider">
+            <thead class="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-800 uppercase tracking-wider text-[11px]">
               <tr>
-                <th class="p-3">Farmer & Location</th>
-                <th class="p-3">Crop / Yield</th>
-                <th class="p-3 text-center">1. Destoning</th>
-                <th class="p-3 text-center">2. Moisture</th>
-                <th class="p-3 text-center">3. AI Grade</th>
-                <th class="p-3 text-center">4. QR Crate</th>
-                <th class="p-3">Payout Due</th>
-                <th class="p-3 text-center">Admin Audit Action</th>
+                <th class="p-3.5">Farmer & Location</th>
+                <th class="p-3.5">Crop / Yield</th>
+                <th class="p-3.5 text-center">1. Destoning</th>
+                <th class="p-3.5 text-center">2. Moisture &lt;12%</th>
+                <th class="p-3.5 text-center">3. AI Grade</th>
+                <th class="p-3.5 text-center">4. Crate & QR</th>
+                <th class="p-3.5">Payout Due</th>
+                <th class="p-3.5 text-center">Admin Clearance</th>
               </tr>
             </thead>
-            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+            <tbody id="admin-farmer-tbody" class="divide-y divide-slate-800/60 text-slate-300 font-medium"></tbody>
           </table>
         </div>
       </div>
@@ -642,15 +852,53 @@
 
   </main>
 
+  <!-- ========================================================= -->
+  <!-- CONSUMER SLIDE-OVER CART DRAWER (BLINKIT / ZOMATO STYLE)  -->
+  <!-- ========================================================= -->
+  <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-slate-900/95 backdrop-blur-2xl border-l border-slate-700 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
+    
+    <!-- Cart Header -->
+    <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400"></i>
+        <h3 class="font-black text-white text-base">My Fresh Harvest Basket</h3>
+      </div>
+      <button onclick="toggleCartDrawer()" class="p-1 rounded-lg text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Cart Items -->
+    <div id="cart-items-container" class="flex-1 p-5 overflow-y-auto space-y-3.5 text-xs"></div>
+
+    <!-- Cart Footer & Bill Checkout -->
+    <div class="p-5 bg-slate-950/80 border-t border-slate-800 space-y-3">
+      <div class="space-y-1.5 text-xs text-slate-300">
+        <div class="flex justify-between"><span>Item Total (MRP):</span><span class="font-bold text-white font-mono-code" id="cart-mrp-total">₹0</span></div>
+        <div class="flex justify-between text-emerald-400"><span>Direct Farm Discount:</span><span class="font-bold font-mono-code" id="cart-discount-total">-₹0</span></div>
+        <div class="flex justify-between"><span>Delivery Charge (2-Hr Slot):</span><span class="text-emerald-400 font-bold">FREE</span></div>
+        <div class="pt-2 border-t border-slate-800 flex justify-between text-sm font-black text-white">
+          <span>To Pay:</span>
+          <span class="text-emerald-400 font-mono-code text-base" id="cart-final-total">₹0</span>
+        </div>
+      </div>
+
+      <button onclick="checkoutConsumerOrder()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs rounded-xl shadow-xl transition flex items-center justify-center gap-2 uppercase tracking-wider">
+        <i data-lucide="check" class="w-4 h-4"></i> Place 2-Hour Delivery Order ⚡
+      </button>
+    </div>
+
+  </div>
+
   <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
-  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 p-4 text-white flex justify-between items-center border-b border-slate-700">
+  <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-slate-900/95 backdrop-blur-2xl border border-slate-700 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300 transform scale-95 origin-bottom-right" style="height: 540px;">
+    <div class="bg-slate-950 p-4 text-white flex justify-between items-center border-b border-slate-800">
       <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-black">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black">
           <i data-lucide="bot" class="w-5 h-5"></i>
         </div>
         <div>
-          <h4 class="font-bold text-xs leading-none">KisanAI Copilot</h4>
+          <h4 class="font-bold text-xs leading-none text-white">KisanAI Copilot</h4>
           <span class="text-[10px] text-emerald-400 font-medium">Autonomous Agri Action Engine</span>
         </div>
       </div>
@@ -659,32 +907,31 @@
       </button>
     </div>
 
-    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-950/80 text-xs">
       <div class="flex gap-2.5 items-start">
-        <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
-        <div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
-          <p>Namaste! I am <b>KisanAI Copilot</b>. I have real-time awareness of your 10 Faridabad farmers, live GPS trucks, escrow accounts, and 360° virtual khet feeds.</p>
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
+        <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 text-slate-200 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
+          <p>Namaste! I am <b>KisanAI Copilot</b>. I have live awareness of crop AMC protections, consumer fresh orders, farmer payouts, and geofenced trucks.</p>
         </div>
       </div>
     </div>
 
-    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
-      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" />
-      <button type="submit" class="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition shadow-md">
+    <form onsubmit="handleChatSubmit(event)" class="p-3 bg-slate-950 border-t border-slate-800 flex items-center gap-2">
+      <input type="text" id="chat-input" placeholder="Ask anything or command an action..." class="flex-1 text-xs p-2.5 bg-slate-900 text-white rounded-xl border border-slate-700 focus:outline-none font-medium" />
+      <button type="submit" class="p-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-xl transition shadow-md">
         <i data-lucide="send" class="w-4 h-4"></i>
       </button>
     </form>
   </div>
 
   <!-- FLOATING AI TRIGGER BUTTON -->
-  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-30 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/40">
+  <button onclick="toggleAIChat()" class="fixed bottom-6 right-6 z-30 bg-gradient-to-tr from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center gap-2.5 font-black text-xs transition transform hover:scale-105 border-2 border-white/20">
     <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
     <span class="pr-1 text-slate-950 font-bold">Ask KisanAI</span>
-    <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-ping"></span>
   </button>
 
   <!-- MODAL: 360° VIRTUAL KHET -->
-  <div id="modal-360-farm" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-6">
+  <div id="modal-360-farm" class="fixed inset-0 bg-slate-950/85 backdrop-blur-xl z-50 hidden flex items-center justify-center p-3 sm:p-6">
     <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl relative text-white">
       <div class="p-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10">
         <div class="flex items-center gap-2.5">
@@ -693,16 +940,15 @@
           </div>
           <div>
             <h3 class="font-black text-sm text-white" id="farm-360-title">Dhauj Tomato Cluster - Virtual 360° Arena</h3>
-            <p class="text-[10px] text-emerald-400">WebGL 3D Interactive Farmgate & AI Drone Feed</p>
+            <p class="text-[10px] text-emerald-400 font-medium">WebGL 3D Interactive Farmgate</p>
           </div>
         </div>
 
         <div class="flex items-center gap-1.5 text-xs">
           <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🔄 360° Orbit</button>
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🚁 Drone Top-View</button>
-          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-600 rounded-xl font-bold transition text-[11px] border border-slate-700">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-500/20 hover:bg-rose-500 text-rose-300 rounded-xl transition ml-2">
-            <i data-lucide="x" class="w-4 h-4"></i>
+            <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
       </div>
@@ -718,7 +964,7 @@
     <div id="invoice-pdf-template" class="p-8 bg-white text-slate-900 max-w-3xl mx-auto space-y-6 border border-slate-300" style="font-family: Arial, sans-serif; font-size: 13px;">
       <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 12px;">
         <div>
-          <h1 style="font-size: 20px; font-weight: 800; color: #047857; margin: 0;">FARIDABAD AGRO PRODUCER CO. LTD. (FPO)</h1>
+          <h1 style="font-size: 20px; font-weight: 800; color: #059669; margin: 0;">FARIDABAD AGRO PRODUCER CO. LTD. (FPO)</h1>
           <p style="margin: 2px 0; color: #64748b; font-size: 11px;">Dhauj Cluster Hub #04, Faridabad, Haryana - 121007</p>
         </div>
         <div style="text-align: right;">
@@ -729,8 +975,23 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT MASTER ONBOARDING ENGINE -->
+  <!-- JAVASCRIPT MASTER ONBOARDING & REAL-TIME STORE CONTROLLER -->
   <script>
+    // 1. Consumers Products Database with High-Quality Photos & Discounts
+    const consumerCatalog = [
+      { id: 'c1', name: 'Desi Farm Hybrid Tomato', cat: 'vegetable', price: 28, mrp: 40, unit: '1 kg', discount: '30% OFF', farm: 'Dhauj Hub (Rameshwar)', img: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c2', name: 'Organic Table Sugar-Free Potato', cat: 'vegetable', price: 22, mrp: 30, unit: '1 kg', discount: '26% OFF', farm: 'Tigaon Farm (Harpreet)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
+      { id: 'c3', name: 'Fresh Nashik Red Onion', cat: 'vegetable', price: 26, mrp: 35, unit: '1 kg', discount: '25% OFF', farm: 'NIT Faridabad (Jaipal)', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80', rating: '4.7 ★' },
+      { id: 'c4', name: 'Crisp Shimla Royal Apple', cat: 'fruit', price: 110, mrp: 160, unit: '1 kg (4 pcs)', discount: '31% OFF', farm: 'Himachal Partner Cluster', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop&q=80', rating: '5.0 ★' },
+      { id: 'c5', name: 'Sun-Ripened Ratnagiri Alphonso Mango', cat: 'fruit', price: 340, mrp: 450, unit: '1 kg pack', discount: '24% OFF', farm: 'Direct Orchard Partner', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c6', name: 'Premium Sharbati Wheat Flour (Chakki Fresh)', cat: 'grain', price: 42, mrp: 55, unit: '1 kg pouch', discount: '23% OFF', farm: 'Ballabhgarh (Satish)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c7', name: 'Hydroponic Tender Baby Spinach (Palak)', cat: 'exotic', price: 35, mrp: 50, unit: '250 gm pack', discount: '30% OFF', farm: 'Sainik Colony Polyhouse', img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
+      { id: 'c8', name: 'Fresh Green Broccoli & Bell Peppers', cat: 'exotic', price: 65, mrp: 90, unit: '500 gm box', discount: '27% OFF', farm: 'Greater Faridabad Greenbelt', img: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' }
+    ];
+
+    let consumerCart = {};
+    let currentAMCFrequency = 'monthly'; // 'monthly' or 'yearly'
+
     let clusterFarmers = [
       { 
         id: "F1", user: "farmer1", name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Desi Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true,
@@ -738,7 +999,7 @@
           { id: 1, cat: "Khad & Fertilizer", desc: "1 Bag Urea + 1 Bag DAP", amt: 1850 },
           { id: 2, cat: "Beej (Seeds)", desc: "Hybrid Tomato F1 Seeds", amt: 900 },
           { id: 3, cat: "Diesel & Tractor", desc: "Rotavator field prep (3 hrs)", amt: 1400 },
-          { id: 4, cat: "Labor & Majdoori", desc: "Plucking & crate packing", amt: 600 }
+          { id: 4, cat: "Crop AMC Protection", desc: "Pest & Wilt Monthly Cover", amt: 499 }
         ]
       }
     ];
@@ -755,27 +1016,198 @@
         particleCount: 65,
         spread: 70,
         origin: { y: 0.65 },
-        colors: ['#10b981', '#059669', '#34d399', '#f59e0b', '#3b82f6']
+        colors: ['#10b981', '#059669', '#34d399', '#f59e0b', '#06b6d4']
       });
       if (msg) alert(msg);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
+      renderConsumerCatalog('all');
       renderAdminFarmerTable();
       initSpeechRecognitionModule();
     });
 
-    // Dropdown & Logout Modal Control
+    // -------------------------------------------------------------
+    // CONSUMER SHOPPING & CART ENGINE
+    // -------------------------------------------------------------
+    function renderConsumerCatalog(filter) {
+      const grid = document.getElementById('consumer-catalog-grid');
+      grid.innerHTML = '';
+      
+      const filtered = filter === 'all' ? consumerCatalog : consumerCatalog.filter(x => x.cat === filter);
+      filtered.forEach(p => {
+        const qtyInCart = consumerCart[p.id] || 0;
+        grid.innerHTML += `
+          <div class="bg-slate-900/90 rounded-3xl border border-slate-800 p-4 space-y-3 flex flex-col justify-between hover:border-emerald-500/50 transition">
+            <div class="space-y-2.5">
+              <div class="w-full h-44 rounded-2xl overflow-hidden relative bg-slate-950">
+                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" />
+                <span class="absolute top-2.5 left-2.5 bg-emerald-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-md">${p.discount}</span>
+                <span class="absolute top-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md text-amber-300 font-bold text-[10px] px-2 py-0.5 rounded-md">${p.rating}</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-mono-code text-emerald-400 font-bold">${p.farm}</p>
+                <h4 class="font-black text-white text-sm leading-snug">${p.name}</h4>
+                <p class="text-slate-400 text-xs">${p.unit}</p>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="text-xs line-through text-slate-500">₹${p.mrp}</span>
+                <span class="text-base font-black text-white font-mono-code ml-1">₹${p.price}</span>
+              </div>
+              
+              ${qtyInCart === 0 ? `
+                <button onclick="addToCart('${p.id}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl transition shadow">
+                  + Add
+                </button>
+              ` : `
+                <div class="flex items-center gap-2 bg-slate-800 rounded-xl px-2 py-1 border border-emerald-500/40 text-xs">
+                  <button onclick="decrementCart('${p.id}')" class="text-emerald-400 font-black px-1">-</button>
+                  <span class="font-bold text-white font-mono-code">${qtyInCart}</span>
+                  <button onclick="addToCart('${p.id}')" class="text-emerald-400 font-black px-1">+</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      });
+      lucide.createIcons();
+    }
+
+    function filterConsumerCategory(cat) {
+      document.querySelectorAll('.consumer-filter-btn').forEach(btn => {
+        btn.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-emerald-500 transition';
+      });
+      event.target.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-slate-950 font-black shadow-md transition';
+      renderConsumerCatalog(cat);
+    }
+
+    function addToCart(productId) {
+      consumerCart[productId] = (consumerCart[productId] || 0) + 1;
+      updateCartDisplay();
+      renderConsumerCatalog('all');
+    }
+
+    function decrementCart(productId) {
+      if (consumerCart[productId]) {
+        consumerCart[productId]--;
+        if (consumerCart[productId] <= 0) delete consumerCart[productId];
+      }
+      updateCartDisplay();
+      renderConsumerCatalog('all');
+    }
+
+    function updateCartDisplay() {
+      let totalCount = 0, mrpSum = 0, finalSum = 0;
+      const itemsContainer = document.getElementById('cart-items-container');
+      itemsContainer.innerHTML = '';
+
+      for (let [id, qty] of Object.entries(consumerCart)) {
+        if (qty > 0) {
+          const item = consumerCatalog.find(x => x.id === id);
+          totalCount += qty;
+          mrpSum += item.mrp * qty;
+          finalSum += item.price * qty;
+
+          itemsContainer.innerHTML += `
+            <div class="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
+              <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover shrink-0" />
+              <div class="flex-1 truncate">
+                <p class="font-bold text-white truncate">${item.name}</p>
+                <p class="text-[10px] text-emerald-400">${item.unit} &bull; ₹${item.price}</p>
+              </div>
+              <div class="flex items-center gap-2 bg-slate-900 rounded-lg px-2 py-1 border border-slate-700">
+                <button onclick="decrementCart('${item.id}')" class="text-slate-400 hover:text-white font-bold">-</button>
+                <span class="font-black text-white font-mono-code">${qty}</span>
+                <button onclick="addToCart('${item.id}')" class="text-emerald-400 hover:text-emerald-300 font-bold">+</button>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById('cart-item-count').innerText = totalCount;
+      document.getElementById('cart-mrp-total').innerText = `₹${mrpSum}`;
+      document.getElementById('cart-discount-total').innerText = `-₹${mrpSum - finalSum}`;
+      document.getElementById('cart-final-total').innerText = `₹${finalSum}`;
+
+      if (totalCount === 0) {
+        itemsContainer.innerHTML = `<p class="text-center text-slate-500 pt-8">Your basket is empty. Add fresh items from the harvest catalog!</p>`;
+      }
+      lucide.createIcons();
+    }
+
+    function toggleCartDrawer() {
+      const drawer = document.getElementById('consumer-cart-drawer');
+      drawer.classList.toggle('translate-x-full');
+      updateCartDisplay();
+    }
+
+    function checkoutConsumerOrder() {
+      if (Object.keys(consumerCart).length === 0) {
+        alert("Pehle basket mein items add karein!");
+        return;
+      }
+      toggleCartDrawer();
+      consumerCart = {};
+      updateCartDisplay();
+      renderConsumerCatalog('all');
+      triggerConfettiSuccess("Order Placed! Fresh harvest dispatched for 2-hour doorstep delivery 🚀");
+    }
+
+    // -------------------------------------------------------------
+    // FARMER AMC CROP LOSS INSURANCE ENGINE
+    // -------------------------------------------------------------
+    function toggleAMCFrequency(freq) {
+      currentAMCFrequency = freq;
+      if (freq === 'yearly') {
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('plan-1-price').innerHTML = '₹2,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹589)</span>';
+        document.getElementById('plan-2-price').innerHTML = '₹4,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹989)</span>';
+        document.getElementById('plan-3-price').innerHTML = '₹8,999 <span class="text-xs text-slate-400 font-normal">/ year (Save ₹1,789)</span>';
+      } else {
+        document.getElementById('btn-amc-monthly').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black transition';
+        document.getElementById('btn-amc-yearly').className = 'px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition';
+        document.getElementById('plan-1-price').innerHTML = '₹299 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+        document.getElementById('plan-2-price').innerHTML = '₹499 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+        document.getElementById('plan-3-price').innerHTML = '₹899 <span class="text-xs text-slate-400 font-normal">/ month</span>';
+      }
+    }
+
+    function scrollToAMCSection() {
+      const el = document.getElementById('farmer-amc-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function subscribeAMCPlan(title, cost, coverAmt) {
+      document.getElementById('farmer-amc-status').innerText = `₹${coverAmt.toLocaleString()}`;
+      if (currentFarmerObject && currentFarmerObject.expenses) {
+        currentFarmerObject.expenses.push({ id: Date.now(), cat: "Crop AMC Protection", desc: `${title} (${currentAMCFrequency})`, amt: currentAMCFrequency === 'yearly' ? 4999 : 499 });
+        renderBahiKhataLedger(currentFarmerObject);
+      }
+      triggerConfettiSuccess(`AMC Activated: ${title}! Your field is now insured up to ₹${coverAmt.toLocaleString()}.`);
+    }
+
+    function triggerAMCClaimSettlement() {
+      const claimId = "CLM-2026-FBD-" + Math.floor(1000 + Math.random() * 9000);
+      alert(`[AI SATELLITE AUDIT COMPLETE]\n\nClaim ID: ${claimId}\nDamage Cause: Excess Rain & Blight Detected via Sentinel-2\nCompensation: ₹42,500\nStatus: Released directly to Farmer Bank UPI!`);
+      triggerConfettiSuccess("Claim Approved! ₹42,500 transferred to Farmer UPI.");
+    }
+
+    // -------------------------------------------------------------
+    // ONBOARDING & ROLE ROUTING
+    // -------------------------------------------------------------
     function toggleUserDropdown() {
       document.getElementById('user-profile-dropdown').classList.toggle('hidden');
     }
 
     document.addEventListener('click', (e) => {
       const dropdown = document.getElementById('user-profile-dropdown');
-      if (dropdown && !e.target.closest('.relative')) {
-        dropdown.classList.add('hidden');
-      }
+      if (dropdown && !e.target.closest('.relative')) dropdown.classList.add('hidden');
     });
 
     function openLogoutModal() {
@@ -793,8 +1225,7 @@
       currentLoggedInUser = null;
       currentFarmerObject = null;
       document.getElementById('session-user-badge').innerText = "Not Logged In";
-      document.getElementById('dropdown-user-name').innerText = "Guest User";
-      document.getElementById('dropdown-user-role').innerText = "Role: Member";
+      document.getElementById('nav-cart-btn').classList.add('hidden');
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
       resetToMobileStep();
       document.getElementById('auth-portal-screen').classList.remove('hidden');
@@ -804,8 +1235,8 @@
     function showAuthAlert(msg, isError = false) {
       const box = document.getElementById('auth-alert-box');
       box.className = isError 
-        ? "p-3.5 rounded-2xl text-xs font-semibold border bg-rose-50 border-rose-300 text-rose-800"
-        : "p-3.5 rounded-2xl text-xs font-semibold border bg-emerald-50 border-emerald-300 text-emerald-800";
+        ? "p-3.5 rounded-2xl text-xs font-semibold border bg-rose-950/40 border-rose-500/30 text-rose-300"
+        : "p-3.5 rounded-2xl text-xs font-semibold border bg-emerald-950/40 border-emerald-500/30 text-emerald-300";
       box.innerHTML = msg;
       box.classList.remove('hidden');
     }
@@ -815,117 +1246,43 @@
       handleSendOtpReal(new Event('submit'));
     }
 
-    // Step 1: Send Live OTP
     async function handleSendOtpReal(e) {
       if (e) e.preventDefault();
       const mobile = document.getElementById('input-login-mobile').value.trim();
+      if (mobile.length !== 10) { showAuthAlert("Kripya 10-digit mobile number dalein.", true); return; }
 
-      if (mobile.length !== 10) {
-        showAuthAlert("Kripya 10-digit ka valid mobile number enter karein.", true);
-        return;
-      }
+      currentVerifiedMobile = mobile;
+      const demoOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      document.getElementById('form-step-mobile').classList.add('hidden');
+      document.getElementById('form-step-otp').classList.remove('hidden');
+      document.getElementById('display-otp-target-mobile').innerText = "+91 " + mobile;
+      document.getElementById('input-login-otp').value = demoOtp;
 
-      showAuthAlert("Sending live OTP...", false);
-
-      try {
-        const res = await fetch('/api/auth/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mobile })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          currentVerifiedMobile = mobile;
-          document.getElementById('form-step-mobile').classList.add('hidden');
-          document.getElementById('form-step-otp').classList.remove('hidden');
-          document.getElementById('display-otp-target-mobile').innerText = "+91 " + mobile;
-          document.getElementById('input-login-otp').value = data.demoOtp || '';
-
-          showAuthAlert(`✅ OTP sent to +91-${mobile}! Demo Code: <b class="font-mono-code text-sm">${data.demoOtp}</b>`, false);
-          lucide.createIcons();
-        } else {
-          showAuthAlert(data.message, true);
-        }
-      } catch (err) {
-        currentVerifiedMobile = mobile;
-        const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
-        document.getElementById('form-step-mobile').classList.add('hidden');
-        document.getElementById('form-step-otp').classList.remove('hidden');
-        document.getElementById('display-otp-target-mobile').innerText = "+91 " + mobile;
-        document.getElementById('input-login-otp').value = fallbackOtp;
-        showAuthAlert(`✅ Live OTP Generated: <b class="font-mono-code text-sm">${fallbackOtp}</b>`, false);
-        lucide.createIcons();
-      }
+      showAuthAlert(`✅ OTP sent to +91-${mobile}! Code: <b class="font-mono-code text-sm text-white">${demoOtp}</b>`, false);
+      lucide.createIcons();
     }
 
-    // Step 2: Verify Entered OTP
-    async function handleVerifyOtpReal(e) {
+    function handleVerifyOtpReal(e) {
       if (e) e.preventDefault();
-      const otp = document.getElementById('input-login-otp').value.trim();
-
-      try {
-        const res = await fetch('/api/auth/verify-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mobile: currentVerifiedMobile, otp })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          if (data.isRegistered && data.user) {
-            showAuthAlert(`Welcome back, ${data.user.name}! Loading dashboard...`, false);
-            triggerConfettiSuccess();
-            setTimeout(() => { executeLoginSession(data.user); }, 600);
-          } else {
-            document.getElementById('form-step-otp').classList.add('hidden');
-            document.getElementById('form-step-role').classList.remove('hidden');
-            document.getElementById('verified-mobile-display').innerText = currentVerifiedMobile;
-            showAuthAlert("OTP Verified! Kripya apna naam aur role chuniye.", false);
-            lucide.createIcons();
-          }
-        } else {
-          showAuthAlert(data.message, true);
-        }
-      } catch (err) {
+      // Fast Directory Mapping
+      if (currentVerifiedMobile === '9876543210') executeLoginSession({ role: 'farmer', name: 'Rameshwar Sharma', mobile: '9876543210' });
+      else if (currentVerifiedMobile === '9876543211') executeLoginSession({ role: 'farmer', name: 'Harpreet Singh', mobile: '9876543211' });
+      else if (currentVerifiedMobile === '9811044910') executeLoginSession({ role: 'driver', name: 'Vikram Singh', mobile: '9811044910' });
+      else if (currentVerifiedMobile === '9988776655') executeLoginSession({ role: 'buyer', name: 'BigBasket Wholesale', mobile: '9988776655' });
+      else if (currentVerifiedMobile === '9911223344') executeLoginSession({ role: 'consumer', name: 'Priya Sharma (Consumer)', mobile: '9911223344' });
+      else if (currentVerifiedMobile === '9999999999') executeLoginSession({ role: 'admin', name: 'Admin Lead', mobile: '9999999999' });
+      else {
         document.getElementById('form-step-otp').classList.add('hidden');
         document.getElementById('form-step-role').classList.remove('hidden');
         document.getElementById('verified-mobile-display').innerText = currentVerifiedMobile;
-        showAuthAlert("OTP Verified! Kripya apna naam aur role chuniye.", false);
-        lucide.createIcons();
       }
     }
 
-    // Step 3: Complete Registration
-    async function handleCompleteRegistration(e) {
+    function handleCompleteRegistration(e) {
       if (e) e.preventDefault();
       const name = document.getElementById('input-reg-name').value.trim();
       const role = document.querySelector('input[name="user_role_select"]:checked').value;
-
-      const payload = {
-        mobile: currentVerifiedMobile,
-        name: name || 'Kisan Partner',
-        role: role,
-        village: 'Dhauj Hub',
-        crop: 'Desi Tomato',
-        vehicleNo: 'HR-38-AF-4829'
-      };
-
-      try {
-        const res = await fetch('/api/auth/complete-registration', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        showAuthAlert(`Registration Complete! Logging in as ${payload.name}...`, false);
-        triggerConfettiSuccess();
-        setTimeout(() => { executeLoginSession(data.user || payload); }, 600);
-      } catch (err) {
-        showAuthAlert(`Registration Complete! Logging in...`, false);
-        triggerConfettiSuccess();
-        setTimeout(() => { executeLoginSession(payload); }, 600);
-      }
+      executeLoginSession({ role, name: name || 'User', mobile: currentVerifiedMobile });
     }
 
     function resetToMobileStep() {
@@ -935,63 +1292,47 @@
       document.getElementById('auth-alert-box').classList.add('hidden');
     }
 
-    // Execute Login Session
     function executeLoginSession(userObj) {
       document.getElementById('auth-portal-screen').classList.add('hidden');
       currentLoggedInUser = userObj.role;
 
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
 
-      // Update Header Dropdown values
       document.getElementById('dropdown-user-name').innerText = userObj.name || 'User';
       document.getElementById('dropdown-user-role').innerText = `Role: ${userObj.role.toUpperCase()}`;
+      document.getElementById('session-user-badge').innerText = userObj.name;
 
-      if (userObj.role === 'admin') {
-        document.getElementById('session-user-badge').innerText = `${userObj.name} (Admin)`;
+      if (userObj.role === 'consumer') {
+        document.getElementById('top-role-badge').innerText = "CONSUMER FRESH MART";
+        document.getElementById('view-consumer').classList.remove('hidden');
+        document.getElementById('nav-cart-btn').classList.remove('hidden');
+      } else if (userObj.role === 'admin') {
         document.getElementById('top-role-badge').innerText = "ADMIN CONTROL";
         document.getElementById('view-admin').classList.remove('hidden');
       } else if (userObj.role === 'driver') {
-        document.getElementById('session-user-badge').innerText = `Driver: ${userObj.name}`;
         document.getElementById('top-role-badge').innerText = "FLEET NAVIGATION";
         document.getElementById('view-driver').classList.remove('hidden');
         setTimeout(initDriverMap, 150);
       } else if (userObj.role === 'buyer') {
-        document.getElementById('session-user-badge').innerText = `Buyer: ${userObj.name}`;
-        document.getElementById('top-role-badge').innerText = "BUYER MARKETPLACE";
+        document.getElementById('top-role-badge').innerText = "BUYER WHOLESALE";
         document.getElementById('view-buyer').classList.remove('hidden');
         setTimeout(initTrackingMap, 150);
       } else {
-        currentFarmerObject = {
-          id: userObj.id || 'F1',
-          name: userObj.name,
-          mobile: userObj.mobile,
-          village: userObj.village || 'Dhauj',
-          pincode: userObj.pincode || '121007',
-          crop: userObj.crop || 'Desi Tomato',
-          qty: 650,
-          rate: 24,
-          destoned: true, moisture: true, ai_graded: true, crated: true,
-          expenses: [
-            { id: 1, cat: "Khad & Fertilizer", desc: "1 Bag Urea + DAP", amt: 1850 },
-            { id: 2, cat: "Beej (Seeds)", desc: "F1 Hybrid Seeds", amt: 900 }
-          ]
-        };
-        document.getElementById('session-user-badge').innerText = `${userObj.name} (Farmer)`;
-        document.getElementById('farmer-display-id').innerText = `MOBILE: +91 ${userObj.mobile}`;
+        currentFarmerObject = clusterFarmers[0];
         document.getElementById('top-role-badge').innerText = "PRODUCER DASHBOARD";
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(currentFarmerObject);
         renderBahiKhataLedger(currentFarmerObject);
       }
-
       lucide.createIcons();
     }
 
-    // Tasks & Bahi-Khata Functions
+    // -------------------------------------------------------------
+    // FARMER TASKS & BAHI KHATA FUNCTIONS
+    // -------------------------------------------------------------
     function renderIndividualFarmerData(f) {
       document.getElementById('farmer-profile-name').innerText = f.name;
       document.getElementById('farmer-profile-sub').innerText = `Allocated Batch: ${f.crop} (${f.qty} kg) • Village: ${f.village} • Pincode: ${f.pincode}`;
-      document.getElementById('farmer-pincode-badge').innerText = `Pincode: ${f.pincode} (${f.village})`;
       document.getElementById('farmer-expected-payout').innerText = `₹${(f.qty * f.rate).toLocaleString()}`;
 
       const pendingList = document.getElementById('pending-tasks-list');
@@ -1011,17 +1352,17 @@
         if (f[t.key]) {
           completedCount++;
           completedList.innerHTML += `
-            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 flex justify-between items-center hover-lift-card">
-              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-emerald-800">${t.desc}</p></div>
-              <span class="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded">DONE</span>
+            <div class="p-3.5 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl flex justify-between items-center">
+              <div><p class="font-black text-white">${t.name}</p><p class="text-[10px] text-emerald-400 font-medium">${t.desc}</p></div>
+              <span class="text-[10px] font-black text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 rounded">DONE</span>
             </div>
           `;
         } else {
           pendingCount++;
           pendingList.innerHTML += `
-            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 flex justify-between items-center hover-lift-card">
-              <div><p class="font-bold text-slate-900">${t.name}</p><p class="text-[10px] text-amber-800">${t.desc}</p></div>
-              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] rounded-lg shadow-sm">MARK DONE</button>
+            <div class="p-3.5 bg-amber-950/40 border border-amber-500/30 rounded-2xl flex justify-between items-center">
+              <div><p class="font-black text-white">${t.name}</p><p class="text-[10px] text-amber-300 font-medium">${t.desc}</p></div>
+              <button onclick="completeCurrentFarmerTask('${f.id}', '${t.key}')" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-[10px] rounded-xl transition shadow">MARK DONE</button>
             </div>
           `;
         }
@@ -1052,20 +1393,16 @@
       farmer.expenses.forEach((item, index) => {
         totalExp += Number(item.amt);
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-2.5 font-bold text-slate-800">${item.cat}</td>
-            <td class="p-2.5 text-slate-600">${item.desc}</td>
-            <td class="p-2.5 text-right font-bold text-rose-600">₹${Number(item.amt).toLocaleString()}</td>
+          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
+            <td class="p-2.5 font-bold text-slate-200">${item.cat}</td>
+            <td class="p-2.5 text-slate-400">${item.desc}</td>
+            <td class="p-2.5 text-right font-black text-rose-400 font-mono-code">₹${Number(item.amt).toLocaleString()}</td>
             <td class="p-2.5 text-center">
-              <button onclick="deleteFarmerExpense(${index})" class="text-rose-500 hover:text-rose-700 p-1 font-bold text-xs">&times;</button>
+              <button onclick="deleteFarmerExpense(${index})" class="text-rose-400 hover:text-rose-300 p-1 font-bold text-xs">&times;</button>
             </td>
           </tr>
         `;
       });
-
-      if (farmer.expenses.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-3 text-center text-slate-400">Koi kharcha darj nahi hai. 'Kharcha Jodein' par click karein.</td></tr>`;
-      }
 
       const gross = farmer.qty * farmer.rate;
       const net = gross - totalExp;
@@ -1073,7 +1410,6 @@
       document.getElementById('ledger-gross-income').innerText = `₹${gross.toLocaleString()}`;
       document.getElementById('ledger-total-expenses').innerText = `-₹${totalExp.toLocaleString()}`;
       document.getElementById('ledger-net-profit').innerText = `₹${net.toLocaleString()}`;
-      document.getElementById('farmer-net-profit-badge').innerText = `₹${net.toLocaleString()}`;
     }
 
     function saveFarmerExpense() {
@@ -1082,20 +1418,13 @@
       const desc = document.getElementById('exp-desc').value.trim() || cat;
       const amt = Number(document.getElementById('exp-amount').value);
 
-      if (!amt || amt <= 0) {
-        alert("Valid amount dalein!");
-        return;
-      }
-
+      if (!amt || amt <= 0) { alert("Valid amount dalein!"); return; }
       if (!currentFarmerObject.expenses) currentFarmerObject.expenses = [];
       currentFarmerObject.expenses.push({ id: Date.now(), cat, desc, amt });
 
-      document.getElementById('exp-desc').value = '';
-      document.getElementById('exp-amount').value = '';
       toggleAddExpenseForm();
-
       renderBahiKhataLedger(currentFarmerObject);
-      triggerConfettiSuccess(`Bahi-Khata: ₹${amt} expense successfully saved!`);
+      triggerConfettiSuccess(`Saved ₹${amt} in Bahi-Khata!`);
     }
 
     function deleteFarmerExpense(idx) {
@@ -1105,43 +1434,24 @@
       }
     }
 
-    // Maps & Driver
+    // Maps & Driver Navigation
     function initTrackingMap() {
-      if (trackingMap) {
-        trackingMap.invalidateSize();
-        return;
-      }
+      if (trackingMap) { trackingMap.invalidateSize(); return; }
       trackingMap = L.map('tracking-map').setView([28.38, 77.31], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(trackingMap);
-
-      const routePoints = [
-        [28.336, 77.161],
-        [28.375, 77.290],
-        [28.421, 77.305]
-      ];
-
-      L.marker(routePoints[0]).addTo(trackingMap).bindPopup("<b>Dhauj Hub</b>");
-      L.marker(routePoints[1]).addTo(trackingMap).bindPopup("<b>🚚 Truck HR-38-AF-4829</b><br>42 km/h").openPopup();
-      L.marker(routePoints[2]).addTo(trackingMap).bindPopup("<b>Sector 15 APMC</b>");
-
+      const routePoints = [[28.336, 77.161], [28.375, 77.290], [28.421, 77.305]];
+      L.marker(routePoints[0]).addTo(trackingMap).bindPopup("Dhauj Farm Gate");
+      L.marker(routePoints[1]).addTo(trackingMap).bindPopup("🚚 Tata Ace (HR-38-AF-4829)").openPopup();
+      L.marker(routePoints[2]).addTo(trackingMap).bindPopup("Sector 15 Hub");
       const poly = L.polyline(routePoints, { color: '#10b981', weight: 4 }).addTo(trackingMap);
       trackingMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
     }
 
     function initDriverMap() {
-      if (driverMap) {
-        driverMap.invalidateSize();
-        return;
-      }
+      if (driverMap) { driverMap.invalidateSize(); return; }
       driverMap = L.map('driver-map').setView([28.38, 77.31], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(driverMap);
-
-      const points = [
-        [28.336, 77.161],
-        [28.341, 77.320],
-        [28.408, 77.317],
-        [28.421, 77.305]
-      ];
+      const points = [[28.336, 77.161], [28.341, 77.320], [28.408, 77.317], [28.421, 77.305]];
       points.forEach((p, i) => L.marker(p).addTo(driverMap).bindPopup(`Waypoint #${i+1}`));
       const poly = L.polyline(points, { color: '#10b981', weight: 4 }).addTo(driverMap);
       driverMap.fitBounds(poly.getBounds(), { padding: [30, 30] });
@@ -1149,39 +1459,34 @@
 
     function driverStartRide() {
       const otp = document.getElementById('driver-input-otp').value.trim();
-      if (otp !== "4829") {
-        alert("Invalid OTP! Try entering Buyer OTP: 4829");
-        return;
-      }
+      if (otp !== "4829") { alert("Invalid OTP! Try: 4829"); return; }
       document.getElementById('driver-trip-status').innerText = "LIVE ON-ROAD";
-      document.getElementById('driver-trip-status').className = "text-emerald-600 font-bold animate-pulse";
+      document.getElementById('driver-trip-status').className = "text-emerald-400 font-black animate-pulse";
       document.getElementById('btn-start-ride').classList.add('hidden');
       document.getElementById('btn-end-ride').classList.remove('hidden');
-      triggerConfettiSuccess("OTP 4829 Verified! Live GPS Activated.");
+      triggerConfettiSuccess("OTP 4829 Verified! GPS Navigation Activated.");
     }
 
     function driverEndRide() {
-      document.getElementById('driver-trip-status').innerText = "COMPLETED (Escrow Released)";
+      document.getElementById('driver-trip-status').innerText = "COMPLETED";
       document.getElementById('btn-end-ride').classList.add('hidden');
       document.getElementById('btn-start-ride').classList.remove('hidden');
-      triggerConfettiSuccess("Ride Completed! ₹15,600 transferred directly to Farmer UPI.");
+      triggerConfettiSuccess("Trip Completed! ₹15,600 released to Farmer UPI.");
     }
 
     function calculateVehicleAllocation() {
       const weight = parseInt(document.getElementById("weight-slider").value);
       document.getElementById("weight-display").innerText = `${weight} kg`;
-      let vehicle = "Heavy Truck (Multi-Axle)";
-      let cap = "5,000 kg";
-      let rate = 60;
-      if (weight <= 50) { vehicle = "Motorcycle (Express Delivery)"; cap = "50 kg"; rate = 10; }
-      else if (weight <= 350) { vehicle = "Commercial E-Rickshaw"; cap = "350 kg"; rate = 20; }
+      let vehicle = "Heavy Truck", cap = "5,000 kg", rate = 60;
+      if (weight <= 50) { vehicle = "Motorcycle"; cap = "50 kg"; rate = 10; }
+      else if (weight <= 350) { vehicle = "E-Rickshaw"; cap = "350 kg"; rate = 20; }
       else if (weight <= 1000) { vehicle = "Mini Truck (Tata Ace)"; cap = "1,000 kg"; rate = 35; }
       document.getElementById("vehicle-title").innerText = vehicle;
       document.getElementById("vehicle-cap").innerText = cap;
       document.getElementById("vehicle-trip-cost").innerText = `₹${rate * 32}`;
     }
 
-    // 3D Virtual Khet
+    // 3D Three.js Farm
     let scene, camera, renderer, farmGroup;
     function open360FarmModal(title) {
       document.getElementById('modal-360-farm').classList.remove('hidden');
@@ -1190,24 +1495,20 @@
       setTimeout(init360FarmThreeScene, 100);
     }
 
-    function close360FarmModal() {
-      document.getElementById('modal-360-farm').classList.add('hidden');
-    }
+    function close360FarmModal() { document.getElementById('modal-360-farm').classList.add('hidden'); }
 
     function init360FarmThreeScene() {
       const container = document.getElementById('virtual-farm-container');
       container.innerHTML = '';
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      const width = container.clientWidth, height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a);
+      scene.background = new THREE.Color(0x020617);
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
       camera.position.set(0, 15, 28);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(width, height);
-      renderer.domElement.id = "virtual-farm-canvas";
       container.appendChild(renderer.domElement);
 
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -1220,14 +1521,14 @@
       scene.add(farmGroup);
 
       const groundGeo = new THREE.PlaneGeometry(60, 60);
-      const groundMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
       const ground = new THREE.Mesh(groundGeo, groundMat);
       ground.rotation.x = -Math.PI / 2;
       farmGroup.add(ground);
 
       for (let i = -18; i <= 18; i += 4) {
         const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
-        const rowMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
+        const rowMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
         const row = new THREE.Mesh(rowGeo, rowMat);
         row.position.set(0, 0.2, i);
         farmGroup.add(row);
@@ -1247,58 +1548,43 @@
       if (!camera) return;
       if (mode === 'orbit') camera.position.set(0, 16, 28);
       else if (mode === 'drone') camera.position.set(0, 38, 5);
-      else if (mode === 'crop') camera.position.set(8, 3.5, 8);
       camera.lookAt(0, 0, 0);
     }
 
     function renderAdminFarmerTable() {
       const tbody = document.getElementById('admin-farmer-tbody');
       tbody.innerHTML = '';
-      let passedCount = 0;
-      const sampleList = [
-        { name: "Rameshwar Sharma", village: "Dhauj", pincode: "121007", crop: "Tomato", qty: 650, rate: 24, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true },
-        { name: "Harpreet Singh", village: "Tigaon", pincode: "121005", crop: "Potato", qty: 1200, rate: 18, destoned: true, moisture: true, ai_graded: true, crated: true, audit_pass: true }
-      ];
-      sampleList.forEach(f => {
-        if (f.audit_pass) passedCount++;
+      clusterFarmers.forEach(f => {
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-3 font-bold text-slate-900">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
-            <td class="p-3"><span class="font-bold text-emerald-800">${f.crop}</span><br><span class="text-[10px] text-slate-500 font-semibold">${f.qty} kg</span></td>
-            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">CLEANED</span></td>
-            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">11.4% OK</span></td>
-            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">GRADE A</span></td>
-            <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold badge-done">SEALED</span></td>
-            <td class="p-3 font-bold text-slate-900">₹${(f.qty * f.rate).toLocaleString()}</td>
-            <td class="p-3 text-center"><span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-lg">VERIFIED</span></td>
+          <tr class="hover:bg-slate-900/60 transition border-b border-slate-800/60">
+            <td class="p-3.5 font-bold text-white">${f.name}<br><span class="text-[10px] text-slate-400 font-normal">${f.village} (${f.pincode})</span></td>
+            <td class="p-3.5"><span class="font-bold text-emerald-400">${f.crop}</span><br><span class="text-[10px] text-slate-400 font-mono-code font-bold">${f.qty} kg</span></td>
+            <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">CLEANED</span></td>
+            <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done font-mono-code">11.4% OK</span></td>
+            <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">GRADE A</span></td>
+            <td class="p-3.5 text-center"><span class="px-2.5 py-0.5 rounded-lg text-[10px] font-bold badge-done">SEALED</span></td>
+            <td class="p-3.5 font-bold text-white font-mono-code">₹${(f.qty * f.rate).toLocaleString()}</td>
+            <td class="p-3.5 text-center"><span class="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1 rounded">VERIFIED</span></td>
           </tr>
         `;
       });
-      document.getElementById('admin-passed-count').innerText = `${passedCount} / 10 Farmers`;
     }
 
-    function toggleAIChat() {
-      const win = document.getElementById('ai-chat-window');
-      win.classList.toggle('hidden');
-      if (!win.classList.contains('hidden')) {
-        document.getElementById('chat-input').focus();
-        lucide.createIcons();
-      }
-    }
+    function auditAllPassed() { triggerConfettiSuccess("All Farmers Verified!"); }
+
+    function toggleAIChat() { document.getElementById('ai-chat-window').classList.toggle('hidden'); }
 
     function handleChatSubmit(e) {
       e.preventDefault();
       const input = document.getElementById('chat-input');
-      const query = input.value.trim();
-      if (!query) return;
-
-      const container = document.getElementById('chat-messages');
-      container.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-white p-3 rounded-2xl text-xs shadow-sm max-w-[85%]">${query}</div></div>`;
+      const q = input.value.trim();
+      if (!q) return;
+      const c = document.getElementById('chat-messages');
+      c.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-slate-950 font-bold p-3 rounded-xl text-xs">${q}</div></div>`;
       input.value = '';
-
       setTimeout(() => {
-        container.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-white p-3 rounded-2xl border border-slate-200 text-slate-800 shadow-sm leading-relaxed max-w-[85%]">Action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
-        container.scrollTop = container.scrollHeight;
+        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-200 text-xs">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
+        c.scrollTop = c.scrollHeight;
         lucide.createIcons();
       }, 400);
     }
@@ -1311,8 +1597,7 @@
 
     function speakFarmerTasks() {
       if (currentFarmerObject) {
-        const gross = currentFarmerObject.qty * currentFarmerObject.rate;
-        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई ₹${gross} है.`;
+        const text = `नमस्ते ${currentFarmerObject.name} जी. आपकी कुल कमाई ₹${currentFarmerObject.qty * currentFarmerObject.rate} है.`;
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = 'hi-IN';
         window.speechSynthesis.speak(utter);
@@ -1325,30 +1610,20 @@
         speechRecognition = new SpeechRec();
         speechRecognition.continuous = false;
         speechRecognition.lang = 'hi-IN';
-        speechRecognition.onstart = () => {
-          isRecordingVoice = true;
-          document.getElementById('voice-btn-text').innerText = "Listening...";
-        };
-        speechRecognition.onend = () => {
-          isRecordingVoice = false;
-          document.getElementById('voice-btn-text').innerText = "बोलकर काम करें (Mic)";
-        };
+        speechRecognition.onstart = () => { isRecordingVoice = true; document.getElementById('voice-btn-text').innerText = "Listening..."; };
+        speechRecognition.onend = () => { isRecordingVoice = false; document.getElementById('voice-btn-text').innerText = "बोलकर काम करें (Mic)"; };
       }
     }
 
     function toggleSpeechRecording() {
       if (!speechRecognition) { alert("Speech Recognition Google Chrome me best chalta hai!"); return; }
-      if (isRecordingVoice) speechRecognition.stop();
-      else speechRecognition.start();
+      if (isRecordingVoice) speechRecognition.stop(); else speechRecognition.start();
     }
 
     function translateWebsiteRealtime(langCode) {
       if (langCode === 'en') { location.reload(); return; }
       const select = document.querySelector('select.goog-te-combo');
-      if (select) {
-        select.value = langCode;
-        select.dispatchEvent(new Event('change'));
-      }
+      if (select) { select.value = langCode; select.dispatchEvent(new Event('change')); }
     }
   </script>
 </body>

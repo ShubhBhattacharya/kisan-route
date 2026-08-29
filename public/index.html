@@ -234,7 +234,6 @@
           <span class="text-amber-700 font-bold font-mono-code text-sm" id="amc-checkout-cover">₹60,000 / Acre</span>
         </div>
 
-        <!-- Referral Points Redemption Checkbox -->
         <div class="p-3 bg-white rounded-xl border border-emerald-200 flex items-center justify-between mt-2 shadow-sm">
           <div class="flex items-center gap-2">
             <input type="checkbox" id="amc-use-points" onchange="toggleReferralDiscount()" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
@@ -369,6 +368,11 @@
 
       <div class="flex items-center gap-2.5 text-xs">
         
+        <!-- Voice Command Button -->
+        <button id="btn-voice-assistant" onclick="toggleVoiceAssistant()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 text-white rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm">
+          <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-assistant-text">Voice AI (बोलें)</span>
+        </button>
+
         <!-- Cart Trigger for Consumer -->
         <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-sm">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
@@ -438,6 +442,15 @@
       </div>
     </div>
   </header>
+
+  <!-- VOICE COMMAND LIVE HUD -->
+  <div id="voice-hud-indicator" class="bg-amber-50 border-b border-amber-200 px-4 py-2 hidden text-xs flex justify-between items-center text-amber-900">
+    <div class="flex items-center gap-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
+      <span>Listening... Boliye: <b id="voice-recognized-phrase">"Order book karo", "Accept order", "Start ride"</b></span>
+    </div>
+    <button onclick="toggleVoiceAssistant()" class="font-bold text-amber-700 hover:underline">Stop Mic</button>
+  </div>
 
   <!-- MAIN WORKSPACE CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
@@ -839,7 +852,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
     </div>
 
-    <!-- ROLE 3: LOGISTICS FLEET DRIVER (DYNAMIC A->B CARD) -->
+    <!-- ROLE 3: LOGISTICS FLEET DRIVER (DYNAMIC A->B & REAL GPS) -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       
       <!-- TOP NOTIFICATION ALERT FOR DRIVER (POINT A -> POINT B) -->
@@ -893,7 +906,7 @@
             <div class="flex gap-2">
               <input type="text" id="driver-pickup-otp-input" placeholder="Enter Farmer Pickup Code (1122)" class="flex-1 p-3 rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-mono-code font-bold text-center text-sm focus:outline-none focus:border-emerald-500" />
               <button onclick="driverVerifyPickup()" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition uppercase tracking-wider shadow-sm shrink-0">
-                Confirm Pickup & Start Highway Route
+                Confirm Pickup & Start Route
               </button>
             </div>
           </div>
@@ -914,16 +927,22 @@
         </div>
       </div>
 
-      <!-- Driver Map & Telemetry -->
+      <!-- Real GPS Control & Map -->
       <div class="cmd-surface rounded-3xl p-5 flex flex-col space-y-3 relative bg-white">
-        <div class="flex justify-between items-center">
+        <div class="flex flex-wrap justify-between items-center gap-2">
           <div>
             <h4 class="font-bold text-slate-900 text-sm flex items-center gap-2">
               <span id="driver-live-dot" class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Live Geofenced 15-Pincode Routing
             </h4>
             <p class="text-xs text-slate-500 font-medium" id="driver-map-sub">Dhauj Farm (Pickup) &rarr; Ballabhgarh &rarr; Sector 15 Hub (Delivery)</p>
           </div>
-          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="toggleRealDeviceGPS()" id="btn-real-gps-toggle" class="px-3 py-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 rounded-xl font-bold text-xs flex items-center gap-1.5 transition">
+              <i data-lucide="crosshair" class="w-3.5 h-3.5 text-cyan-600"></i> <span id="gps-toggle-text">Enable Phone GPS</span>
+            </button>
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 font-mono-code" id="driver-speed-badge">Speed: 0 km/h</span>
+          </div>
         </div>
         <div id="driver-map"></div>
       </div>
@@ -1168,6 +1187,15 @@
     let currentFarmerObject = null;
     let trackingMap, driverMap;
 
+    // GPS Tracker State
+    let realGpsWatchId = null;
+    let driverLiveMarker = null;
+    let driverAccuracyCircle = null;
+
+    // Voice Assistant Engine
+    let speechRecognition = null;
+    let isListeningVoice = false;
+
     function triggerConfettiSuccess(msg) {
       confetti({ particleCount: 65, spread: 70, origin: { y: 0.65 }, colors: ['#059669', '#10b981', '#34d399', '#f59e0b', '#06b6d4'] });
       if (msg) alert(msg);
@@ -1179,8 +1207,117 @@
       syncAllUIComponents();
       renderAdminPriceSheet();
       runMandiPriceComparison('Tomato');
+      initVoiceRecognition();
       if (window.lucide) lucide.createIcons();
     });
+
+    // -------------------------------------------------------------
+    // REAL-TIME VOICE COMMAND ASSISTANT (WEB SPEECH RECOGNITION)
+    // -------------------------------------------------------------
+    function initVoiceRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = 'hi-IN';
+
+      speechRecognition.onresult = function(event) {
+        const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        document.getElementById('voice-recognized-phrase').innerText = `"${transcript}"`;
+
+        if (transcript.includes('order') || transcript.includes('buy') || transcript.includes('kharid')) {
+          quickFillAndSend('9911223344');
+          triggerConfettiSuccess("Voice AI: Consumer Mart Opened!");
+        } else if (transcript.includes('accept') || transcript.includes('farmer') || transcript.includes('kisan')) {
+          quickFillAndSend('9876543210');
+          if (activeLifecycleOrder.status === 'PLACED') farmerAcceptOrder();
+        } else if (transcript.includes('driver') || transcript.includes('pickup') || transcript.includes('start')) {
+          quickFillAndSend('9811044910');
+          if (activeLifecycleOrder.status === 'READY_FOR_PICKUP') driverVerifyPickup();
+        } else if (transcript.includes('amc') || transcript.includes('insurance') || transcript.includes('bima')) {
+          quickFillAndSend('9876543210');
+          scrollToAMCSection();
+        }
+      };
+
+      speechRecognition.onerror = function() {
+        toggleVoiceAssistant();
+      };
+    }
+
+    function toggleVoiceAssistant() {
+      if (!speechRecognition) {
+        alert("Voice Assistant is supported in Google Chrome, Edge & Safari.");
+        return;
+      }
+
+      const hud = document.getElementById('voice-hud-indicator');
+      const text = document.getElementById('voice-assistant-text');
+
+      if (!isListeningVoice) {
+        try {
+          speechRecognition.start();
+          isListeningVoice = true;
+          hud.classList.remove('hidden');
+          text.innerText = "Listening...";
+        } catch (e) {
+          isListeningVoice = false;
+        }
+      } else {
+        speechRecognition.stop();
+        isListeningVoice = false;
+        hud.classList.add('hidden');
+        text.innerText = "Voice AI (बोलें)";
+      }
+    }
+
+    // -------------------------------------------------------------
+    // REAL DEVICE GPS TRACKING FOR DRIVER
+    // -------------------------------------------------------------
+    function toggleRealDeviceGPS() {
+      const toggleText = document.getElementById('gps-toggle-text');
+      if (realGpsWatchId) {
+        navigator.geolocation.clearWatch(realGpsWatchId);
+        realGpsWatchId = null;
+        toggleText.innerText = "Enable Phone GPS";
+        alert("Real device GPS tracking paused.");
+        return;
+      }
+
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+
+      realGpsWatchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const speed = position.coords.speed ? Math.round(position.coords.speed * 3.6) : 38;
+
+          toggleText.innerText = "Live Phone GPS (Active)";
+          document.getElementById('driver-speed-badge').innerText = `Speed: ${speed} km/h`;
+          document.getElementById('driver-live-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping';
+
+          if (driverMap) {
+            if (!driverLiveMarker) {
+              driverLiveMarker = L.marker([lat, lng]).addTo(driverMap).bindPopup("<b>🚚 Real Driver GPS Device</b>").openPopup();
+              driverAccuracyCircle = L.circle([lat, lng], { radius: position.coords.accuracy || 20, color: '#059669', fillOpacity: 0.15 }).addTo(driverMap);
+              driverMap.setView([lat, lng], 14);
+            } else {
+              driverLiveMarker.setLatLng([lat, lng]);
+              driverAccuracyCircle.setLatLng([lat, lng]);
+            }
+          }
+        },
+        () => {
+          alert("Unable to retrieve real GPS location. Please allow location access.");
+        },
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
+      );
+    }
 
     // -------------------------------------------------------------
     // 30+ REGIONAL LANGUAGES DYNAMIC SWITCHER
@@ -1669,7 +1806,7 @@
         }
       }
 
-      // Driver UI Sync (Always renders Point A -> Point B Assignment Card)
+      // Driver UI Sync
       const driverJobCard = document.getElementById('driver-assigned-job-card');
       const driverPickupBox = document.getElementById('driver-pickup-box');
       const driverDeliveryBox = document.getElementById('driver-delivery-box');

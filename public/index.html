@@ -98,9 +98,7 @@
 
   <div id="google_translate_element"></div>
 
-  <!-- ========================================================= -->
-  <!-- 0. LIVE INTERCONNECTED ORDER FLOW HUD STRIP               -->
-  <!-- ========================================================= -->
+  <!-- 0. LIVE ORDER FLOW HUD STRIP -->
   <div class="bg-white/95 border-b border-slate-200 px-4 py-2.5 sticky top-0 z-40 backdrop-blur-md flex flex-wrap justify-between items-center gap-3 shadow-sm">
     <div class="flex items-center gap-2.5">
       <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black">
@@ -111,14 +109,12 @@
           <span class="text-xs font-black text-slate-900">Live Pipeline State Machine</span>
           <span id="order-lifecycle-badge" class="text-[10px] font-mono-code font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">STATUS: IDLE_NO_ORDER</span>
         </div>
-        <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Real Isolated Handover: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
+        <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Handover Lifecycle: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
       </div>
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- 1. LOGOUT CONFIRMATION MODAL                              -->
-  <!-- ========================================================= -->
+  <!-- 1. LOGOUT CONFIRMATION MODAL -->
   <div id="logout-confirm-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 text-center transform scale-95 transition-all">
       <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto shadow-sm">
@@ -139,9 +135,7 @@
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- 2. CUSTOMER CHECKOUT & ADDRESS / PAYMENT MODAL            -->
-  <!-- ========================================================= -->
+  <!-- 2. CUSTOMER CHECKOUT & ADDRESS MODAL -->
   <div id="modal-consumer-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -151,7 +145,7 @@
           </div>
           <div>
             <h3 class="text-base font-black text-slate-900">Delivery Address & Payment</h3>
-            <p class="text-[10px] text-slate-500">Order will be sent to Farmer Rameshwar Sharma (Dhauj)</p>
+            <p class="text-[10px] text-slate-500">Order will be sent to Farmer Rameshwar Sharma</p>
           </div>
         </div>
         <button onclick="closeConsumerCheckoutModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600">
@@ -213,9 +207,7 @@
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- 3. AMC PURCHASE & UPI PAYMENT MODAL                       -->
-  <!-- ========================================================= -->
+  <!-- 3. AMC PURCHASE MODAL -->
   <div id="modal-amc-checkout" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 border border-slate-200 text-slate-800 shadow-2xl my-auto">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3.5">
@@ -261,12 +253,9 @@
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- 4. AUTH PORTAL & ROLE SWITCHER                            -->
-  <!-- ========================================================= -->
+  <!-- 4. AUTH PORTAL MODAL -->
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border border-emerald-100 space-y-6 my-auto text-slate-800">
-      
       <div class="text-center space-y-1.5">
         <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-sm">
           <i data-lucide="sprout" class="w-7 h-7 text-emerald-600"></i>
@@ -277,46 +266,30 @@
         <p class="text-xs text-slate-500 font-medium">Select a direct role icon or enter your phone number &bull; SIH 2026</p>
       </div>
 
-      <!-- FLIPKART STYLE TOP ROLE CATEGORY BAR -->
       <div class="space-y-2.5">
         <div class="flex items-center justify-between px-1">
           <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">1-Click Fast Role Sign-In</span>
           <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Instant Simulation</span>
         </div>
-        
         <div class="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar py-1">
           <button onclick="quickFillAndSend('9911223344')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 border-2 border-emerald-300 group-hover:border-emerald-600 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
-              🛍️
-            </div>
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 group-hover:bg-emerald-600 border-2 border-emerald-300 group-hover:border-emerald-600 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">🛍️</div>
             <span class="text-[11px] font-bold text-emerald-800 group-hover:text-emerald-600 text-center leading-tight">Consumer<br><span class="text-[9px] text-emerald-600 font-mono-code">Order Item</span></span>
           </button>
-
           <button onclick="quickFillAndSend('9876543210')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-emerald-50 border border-slate-200 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
-              🌱
-            </div>
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-emerald-50 border border-slate-200 group-hover:border-emerald-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">🌱</div>
             <span class="text-[11px] font-bold text-slate-700 group-hover:text-emerald-700 text-center leading-tight">Farmer 1<br><span class="text-[9px] text-slate-400 font-mono-code">Accept Req</span></span>
           </button>
-
           <button onclick="quickFillAndSend('9811044910')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-cyan-50 border border-slate-200 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
-              🚚
-            </div>
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-cyan-50 border border-slate-200 group-hover:border-cyan-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">🚚</div>
             <span class="text-[11px] font-bold text-slate-700 group-hover:text-cyan-700 text-center leading-tight">Driver<br><span class="text-[9px] text-slate-400 font-mono-code">Pickup/Drop</span></span>
           </button>
-
           <button onclick="quickFillAndSend('9988776655')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-purple-50 border border-slate-200 group-hover:border-purple-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
-              🛒
-            </div>
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-purple-50 border border-slate-200 group-hover:border-purple-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">🛒</div>
             <span class="text-[11px] font-bold text-slate-700 group-hover:text-purple-700 text-center leading-tight">B2B Buyer<br><span class="text-[9px] text-slate-400 font-mono-code">Wholesale</span></span>
           </button>
-
           <button onclick="quickFillAndSend('9999999999')" class="group flex flex-col items-center gap-1.5 min-w-[70px] transition focus:outline-none">
-            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-rose-50 border border-slate-200 group-hover:border-rose-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">
-              🛡️
-            </div>
+            <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-slate-50 group-hover:bg-rose-50 border border-slate-200 group-hover:border-rose-400 text-2xl flex items-center justify-center shadow-sm transition transform group-hover:scale-105 p-3">🛡️</div>
             <span class="text-[11px] font-bold text-slate-700 group-hover:text-rose-700 text-center leading-tight">Admin<br><span class="text-[9px] text-slate-400 font-mono-code">Audit Hub</span></span>
           </button>
         </div>
@@ -324,47 +297,28 @@
 
       <div id="auth-alert-box" class="hidden p-3.5 rounded-2xl text-xs font-semibold border"></div>
 
-      <!-- STEP 1: Phone Form -->
       <form id="form-step-mobile" onsubmit="handleSendOtpReal(event)" class="space-y-4 text-xs pt-3 border-t border-slate-100">
         <div>
           <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">Or Enter Your Mobile Number</label>
           <div class="relative flex items-center">
             <span class="absolute left-3.5 text-slate-400 font-bold text-sm">+91</span>
-            <input 
-              type="tel" 
-              id="input-login-mobile" 
-              maxlength="10" 
-              placeholder="e.g. 9876543210" 
-              required 
-              class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 text-sm tracking-wider focus:outline-none focus:border-emerald-500" 
-            />
+            <input type="tel" id="input-login-mobile" maxlength="10" placeholder="e.g. 9876543210" required class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 font-bold text-slate-900 text-sm tracking-wider focus:outline-none focus:border-emerald-500" />
           </div>
         </div>
-
         <button type="submit" id="btn-send-otp-submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="send" class="w-4 h-4"></i> Request Live OTP
         </button>
       </form>
 
-      <!-- STEP 2: OTP Form -->
       <form id="form-step-otp" onsubmit="handleVerifyOtpReal(event)" class="space-y-4 text-xs hidden pt-3 border-t border-slate-100">
         <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
           <span class="text-slate-600">OTP sent to: <b class="text-slate-900 font-mono-code" id="display-otp-target-mobile"></b></span>
           <button type="button" onclick="resetToMobileStep()" class="text-emerald-600 font-bold hover:underline text-[11px]">Change Number</button>
         </div>
-
         <div>
           <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-wider text-[10px]">Enter 6-Digit SMS Verification Code</label>
-          <input 
-            type="text" 
-            id="input-login-otp" 
-            maxlength="6" 
-            placeholder="&bull; &bull; &bull; &bull; &bull; &bull;" 
-            required 
-            class="w-full py-3.5 text-center rounded-xl border border-slate-200 bg-slate-50 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-600 focus:outline-none focus:border-emerald-500" 
-          />
+          <input type="text" id="input-login-otp" maxlength="6" placeholder="&bull; &bull; &bull; &bull; &bull; &bull;" required class="w-full py-3.5 text-center rounded-xl border border-slate-200 bg-slate-50 font-mono-code font-black text-2xl tracking-[0.4em] text-emerald-600 focus:outline-none focus:border-emerald-500" />
         </div>
-
         <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
           <i data-lucide="shield-check" class="w-4 h-4"></i> Verify OTP & Proceed
         </button>
@@ -372,7 +326,7 @@
     </div>
   </div>
 
-  <!-- LIVE APMC MANDI SPREAD TICKER -->
+  <!-- LIVE MANDI SPREAD TICKER -->
   <div class="bg-emerald-900 text-emerald-200 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-emerald-800 flex items-center gap-3">
     <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Spread</span>
     <div class="w-full overflow-hidden">
@@ -388,7 +342,6 @@
   <!-- TOP APP BAR -->
   <header class="bg-white border-b border-emerald-100 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-      
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black shadow-sm">
           <i data-lucide="sprout" class="w-6 h-6"></i>
@@ -403,17 +356,12 @@
       </div>
 
       <div class="flex items-center gap-2.5 text-xs">
-        
-        <!-- Cart Trigger for Consumer -->
         <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-sm">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
         </button>
-
         <button onclick="open360FarmModal('Dhauj Cluster #04 (650kg Tomato Lot)')" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-xl font-bold flex items-center gap-1.5 transition">
           <i data-lucide="scan-eye" class="w-4 h-4 text-emerald-600"></i> 360° Virtual Khet
         </button>
-
-        <!-- Profile & Logout Menu -->
         <div class="relative">
           <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-emerald-50/80 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl border border-emerald-200 text-xs transition text-slate-800">
             <div class="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
@@ -422,22 +370,18 @@
             <span id="session-user-badge" class="font-bold text-slate-900 max-w-[130px] truncate">Not Logged In</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
           </button>
-
           <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 text-slate-800 p-2 space-y-1 hidden z-50">
             <div class="p-2.5 border-b border-slate-100">
               <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Signed in as</p>
               <p class="text-xs font-black text-slate-900 truncate" id="dropdown-user-name">Guest User</p>
               <p class="text-[10px] text-emerald-600 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
             </div>
-
             <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition">
               <i data-lucide="log-out" class="w-4 h-4"></i> Logout Account
             </button>
           </div>
         </div>
-
       </div>
-
     </div>
   </header>
 
@@ -445,7 +389,7 @@
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
     <!-- ======================================================= -->
-    <!-- ROLE 1: MEMBER FARMER WORKSPACE + AMC + DECISION FLOW   -->
+    <!-- ROLE 1: MEMBER FARMER WORKSPACE                         -->
     <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
@@ -457,6 +401,9 @@
         </div>
         
         <div class="flex flex-wrap items-center gap-2">
+          <button onclick="scrollToHarvestPublisher()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> + List New Crop Batch
+          </button>
           <button onclick="scrollToAMCSection()" class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-sm">
             <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600"></i> Crop Loss AMC Vault
           </button>
@@ -544,6 +491,94 @@
         </div>
       </div>
 
+      <!-- ======================================================= -->
+      <!-- NEW: DYNAMIC CROP LISTING & 10 MANDI COMPARISON ENGINE  -->
+      <!-- ======================================================= -->
+      <div id="farmer-harvest-publisher-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-6 border-emerald-200 bg-white">
+        <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+          <div>
+            <span class="text-[10px] font-mono-code font-bold uppercase text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded">Produce Intake Engine</span>
+            <h3 class="text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
+              <i data-lucide="package-plus" class="w-5 h-5 text-emerald-600"></i> List Harvest & 10-APMC Mandi Price Comparison Scanner
+            </h3>
+            <p class="text-xs text-slate-500">Apni fasal ka type, wajan aur expected rate dalein. System 10 mandis compare karke sabse best rate suggest karega.</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 shrink-0">Live APMC Arbitrage Active</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Crop Input Form -->
+          <form onsubmit="handlePublishFarmerCrop(event)" class="space-y-4 text-xs bg-slate-50 p-5 rounded-2xl border border-slate-200">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Select Crop Type (Fasal Ka Type)</label>
+              <select id="farmer-crop-type" onchange="runMandiPriceComparison(this.value)" class="w-full p-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:outline-none focus:border-emerald-500">
+                <option value="Tomato" selected>🍅 Desi Fresh Tomato</option>
+                <option value="Potato">🥔 Table Sugar-Free Potato</option>
+                <option value="Onion">🧅 Nashik Red Onion</option>
+                <option value="Wheat">🌾 Sharbati Premium Wheat</option>
+                <option value="Cauliflower">🥦 Fresh Cauliflower (Phool Gobhi)</option>
+                <option value="Mustard">🌱 Pusa Mustard Seeds (Sarson)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Harvest Quantity (Kitne kg)</label>
+                <input type="number" id="farmer-crop-qty" value="650" min="10" max="50000" required oninput="calculatePublishedTotal()" class="w-full p-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:outline-none focus:border-emerald-500 font-mono-code" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Expected Rate (₹ per kg)</label>
+                <input type="number" id="farmer-crop-rate" value="24" min="1" max="500" required oninput="calculatePublishedTotal()" class="w-full p-3 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:outline-none focus:border-emerald-500 font-mono-code" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Crop Photo (Upload or Live Snap)</label>
+              <div class="flex items-center gap-3">
+                <input type="file" id="farmer-crop-photo" accept="image/*" onchange="previewFarmerCropImage(event)" class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer" />
+                <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
+                  <img id="farmer-crop-img-preview" src="https://images.unsplash.com/photo-1546470427-e26264be0b11?w=300" class="w-full h-full object-cover" />
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex justify-between items-center font-bold">
+              <span class="text-slate-600">Total Lot Value (Gross):</span>
+              <span class="text-emerald-800 font-mono-code text-base" id="farmer-publish-gross">₹15,600</span>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
+              <i data-lucide="check" class="w-4 h-4"></i> Publish Crop Lot to Marketplace 🚀
+            </button>
+          </form>
+
+          <!-- 10 APMC Mandi Rate Comparison Table -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-black text-slate-900 text-sm flex items-center gap-1.5">
+                <i data-lucide="trending-up" class="w-4 h-4 text-emerald-600"></i> 10 Mandi Live Price Comparison
+              </h4>
+              <span class="text-[10px] text-slate-500 font-medium font-mono-code">Faridabad Region &bull; 2026</span>
+            </div>
+
+            <div class="overflow-y-auto max-h-[340px] rounded-2xl border border-slate-200 bg-white">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 text-[10px] uppercase sticky top-0">
+                  <tr>
+                    <th class="p-2.5">APMC Mandi Name</th>
+                    <th class="p-2.5 text-right">Mandi Rate</th>
+                    <th class="p-2.5 text-center">Profit Advantage</th>
+                  </tr>
+                </thead>
+                <tbody id="mandi-comparison-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ACTIVE AMC CERTIFICATE & VALIDITY CARD -->
       <div id="farmer-amc-active-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-emerald-300 bg-emerald-50/50 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-emerald-200 pb-3.5">
@@ -580,7 +615,7 @@
         </div>
       </div>
 
-      <!-- 4 HARVEST & QUALITY PREPARATION TASKS -->
+      <!-- 4 HARVEST PREPARATION TASKS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="cmd-surface rounded-3xl p-6 space-y-4">
           <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
@@ -689,10 +724,86 @@
           </div>
         </div>
       </div>
+
+      <!-- DIGITAL BAHI-KHATA (LEDGER) -->
+      <div class="cmd-surface rounded-3xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-emerald-100 pb-3">
+          <div>
+            <h3 class="font-black text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="calculator" class="w-4 h-4 text-emerald-600"></i> डिजिटल बही-खाता (Farmer Cost & Net Profit Ledger)
+            </h3>
+            <p class="text-xs text-slate-500">Khad, beej aur diesel ke kharche jod kar fasal ka sachha munafa dekhein.</p>
+          </div>
+          <button onclick="toggleAddExpenseForm()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 self-start shadow-sm">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Kharcha Jodein (+ Expense)
+          </button>
+        </div>
+
+        <div id="expense-form-box" class="p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kharcha Category</label>
+              <select id="exp-category" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold">
+                <option value="Khad & Fertilizer">Khad & Fertilizer (DAP/Urea)</option>
+                <option value="Beej (Seeds)">Beej & Plant Seeds</option>
+                <option value="Diesel & Tractor">Diesel / Tractor Rental</option>
+                <option value="Labor & Majdoori">Labor & Harvesting</option>
+                <option value="Crop AMC Protection">Crop AMC Protection Premium</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Description</label>
+              <input type="text" id="exp-desc" placeholder="e.g. 1 Bag DAP + Spray" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-medium" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Amount (₹)</label>
+              <input type="number" id="exp-amount" placeholder="e.g. 1350" class="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 font-bold" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 text-xs">
+            <button onclick="toggleAddExpenseForm()" class="px-3 py-1.5 text-slate-500 font-bold">Cancel</button>
+            <button onclick="saveFarmerExpense()" class="px-4 py-1.5 bg-emerald-600 text-white font-bold rounded-xl shadow-sm">Save in Bahi-Khata</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-1">
+          <div class="lg:col-span-2 overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200 uppercase tracking-wider text-[10px]">
+                <tr>
+                  <th class="p-2.5">Category</th>
+                  <th class="p-2.5">Description</th>
+                  <th class="p-2.5 text-right">Kharcha Amount</th>
+                  <th class="p-2.5 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="bahi-khata-tbody" class="divide-y divide-slate-100 font-medium text-slate-700"></tbody>
+            </table>
+          </div>
+
+          <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl space-y-2 text-xs flex flex-col justify-center shadow-sm">
+            <div class="flex justify-between font-semibold text-slate-600">
+              <span>Total Batch Income:</span>
+              <span class="font-bold text-slate-900 font-mono-code" id="ledger-gross-income">₹15,600</span>
+            </div>
+            <div class="flex justify-between font-semibold text-rose-600">
+              <span>Total Farm Expenses:</span>
+              <span class="font-bold font-mono-code" id="ledger-total-expenses">-₹4,750</span>
+            </div>
+            <div class="pt-2 border-t border-emerald-200 flex justify-between items-center">
+              <div>
+                <p class="font-black text-slate-900 text-sm">Net Fasal Munafa:</p>
+                <p class="text-[10px] text-emerald-600 font-bold">(In Pocket Profit)</p>
+              </div>
+              <span class="text-xl font-black text-emerald-700 font-mono-code" id="ledger-net-profit">₹10,850</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ======================================================= -->
-    <!-- ROLE 2: DIRECT CONSUMER FRESH MART (ORDER CREATION)     -->
+    <!-- ROLE 2: DIRECT CONSUMER FRESH MART                      -->
     <!-- ======================================================= -->
     <div id="view-consumer" class="role-workspace space-y-6 hidden">
       
@@ -931,9 +1042,7 @@
 
   </main>
 
-  <!-- ========================================================= -->
-  <!-- CONSUMER CART DRAWER                                      -->
-  <!-- ========================================================= -->
+  <!-- CONSUMER CART DRAWER -->
   <div id="consumer-cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-white border-l border-emerald-100 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between">
     <div class="p-5 border-b border-emerald-100 flex justify-between items-center bg-emerald-50/50">
       <div class="flex items-center gap-2">
@@ -985,7 +1094,7 @@
       <div class="flex gap-2.5 items-start">
         <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div>
         <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 text-slate-800 shadow-sm leading-relaxed space-y-2 max-w-[85%]">
-          <p>Namaste! I am <b>KisanAI Copilot</b>. I am actively tracking the real-time order lifecycle between consumers, farmers, and drivers.</p>
+          <p>Namaste! I am <b>KisanAI Copilot</b>. I am tracking the live 10-Mandi arbitrage prices, farmer crop listings, and delivery lifecycles.</p>
         </div>
       </div>
     </div>
@@ -1021,7 +1130,6 @@
         <div class="flex items-center gap-1.5 text-xs">
           <button onclick="setCameraView('orbit')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🔄 360° Orbit</button>
           <button onclick="setCameraView('drone')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🚁 Drone Top-View</button>
-          <button onclick="setCameraView('crop')" class="px-3 py-1.5 bg-white hover:bg-emerald-50 rounded-xl font-bold transition text-[11px] border border-slate-200">🌱 Crop Row Scan</button>
           <button onclick="close360FarmModal()" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition ml-2 border border-rose-200">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
@@ -1050,8 +1158,24 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT MASTER ENGINE -->
+  <!-- JAVASCRIPT MASTER APPLICATION ENGINE -->
   <script>
+    // -------------------------------------------------------------
+    // 10 MANDIS REAL-TIME PRICE MATRIX
+    // -------------------------------------------------------------
+    const mandisBenchmark = [
+      { name: "KisanRoute Direct FPO Hub", distance: "0 km (Farmgate)", rateFactor: 1.0, isBest: true },
+      { name: "Faridabad APMC Market", distance: "14 km", rateFactor: 0.65 },
+      { name: "Ballabhgarh Grain & Veg Mandi", distance: "18 km", rateFactor: 0.72 },
+      { name: "Palwal APMC Market", distance: "28 km", rateFactor: 0.68 },
+      { name: "Azadpur Mandi (Delhi Mega-Hub)", distance: "52 km", rateFactor: 0.88 },
+      { name: "Okhla Wholesale Mandi", distance: "38 km", rateFactor: 0.80 },
+      { name: "Gurugram Sector-48 Mandi", distance: "34 km", rateFactor: 0.82 },
+      { name: "Sohna Agricultural Mandi", distance: "22 km", rateFactor: 0.70 },
+      { name: "Nuh Vegetable APMC", distance: "32 km", rateFactor: 0.64 },
+      { name: "Hodal Border Wholesale Market", distance: "46 km", rateFactor: 0.66 }
+    ];
+
     const defaultOrderState = {
       id: null,
       title: 'Desi Fresh Hybrid Tomato',
@@ -1088,7 +1212,7 @@
       frequency: 'yearly'
     };
 
-    const consumerCatalog = [
+    let consumerCatalog = [
       { id: 'c1', name: 'Desi Farm Hybrid Tomato', cat: 'vegetable', price: 28, mrp: 40, unit: '1 kg', discount: '30% OFF', farm: 'Dhauj Hub (Rameshwar)', img: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
       { id: 'c2', name: 'Organic Table Sugar-Free Potato', cat: 'vegetable', price: 22, mrp: 30, unit: '1 kg', discount: '26% OFF', farm: 'Tigaon Farm (Harpreet)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
       { id: 'c3', name: 'Fresh Nashik Red Onion', cat: 'vegetable', price: 26, mrp: 35, unit: '1 kg', discount: '25% OFF', farm: 'NIT Faridabad (Jaipal)', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80', rating: '4.7 ★' },
@@ -1119,7 +1243,6 @@
     let currentFarmerObject = null;
     let trackingMap, driverMap;
     let speechRecognition = null;
-    let isRecordingVoice = false;
 
     function triggerConfettiSuccess(msg) {
       confetti({
@@ -1136,8 +1259,88 @@
       renderAdminFarmerTable();
       updateCartDisplay();
       syncAllUIComponents();
+      runMandiPriceComparison('Tomato');
       setTimeout(() => { lucide.createIcons(); }, 100);
     });
+
+    // -------------------------------------------------------------
+    // FARMER CROP PUBLISHER & 10-MANDI ARBITRAGE LOGIC
+    // -------------------------------------------------------------
+    function runMandiPriceComparison(cropType) {
+      const baseRates = { Tomato: 24, Potato: 18, Onion: 22, Wheat: 28, Cauliflower: 20, Mustard: 52 };
+      const baseRate = baseRates[cropType] || 24;
+      document.getElementById('farmer-crop-rate').value = baseRate;
+      calculatePublishedTotal();
+
+      const tbody = document.getElementById('mandi-comparison-tbody');
+      tbody.innerHTML = '';
+
+      mandisBenchmark.forEach(m => {
+        const calculatedMandiRate = Math.round(baseRate * m.rateFactor);
+        const diff = baseRate - calculatedMandiRate;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100 ${m.isBest ? 'bg-emerald-50/60 font-bold' : ''}">
+            <td class="p-2.5">
+              <span class="text-slate-900">${m.name}</span>
+              <span class="block text-[10px] text-slate-400 font-normal">${m.distance}</span>
+            </td>
+            <td class="p-2.5 text-right font-black font-mono-code text-slate-900">₹${calculatedMandiRate}/kg</td>
+            <td class="p-2.5 text-center">
+              ${m.isBest 
+                ? '<span class="px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[9px] font-black uppercase">BEST APMC RATE (+100%)</span>' 
+                : `<span class="text-rose-600 text-[10px] font-bold font-mono-code">-₹${diff}/kg loss</span>`
+              }
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function calculatePublishedTotal() {
+      const qty = parseFloat(document.getElementById('farmer-crop-qty').value) || 0;
+      const rate = parseFloat(document.getElementById('farmer-crop-rate').value) || 0;
+      const gross = qty * rate;
+      document.getElementById('farmer-publish-gross').innerText = `₹${gross.toLocaleString()}`;
+    }
+
+    function previewFarmerCropImage(event) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        document.getElementById('farmer-crop-img-preview').src = reader.result;
+      }
+      if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function scrollToHarvestPublisher() {
+      const el = document.getElementById('farmer-harvest-publisher-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function handlePublishFarmerCrop(e) {
+      e.preventDefault();
+      const crop = document.getElementById('farmer-crop-type').value;
+      const qty = parseFloat(document.getElementById('farmer-crop-qty').value);
+      const rate = parseFloat(document.getElementById('farmer-crop-rate').value);
+      const imgSrc = document.getElementById('farmer-crop-img-preview').src;
+
+      const newId = 'c' + (consumerCatalog.length + 1);
+      consumerCatalog.unshift({
+        id: newId,
+        name: `Fresh Farm ${crop} (Batch #${Math.floor(1000 + Math.random() * 9000)})`,
+        cat: crop === 'Tomato' || crop === 'Potato' || crop === 'Onion' || crop === 'Cauliflower' ? 'vegetable' : 'grain',
+        price: rate,
+        mrp: Math.round(rate * 1.35),
+        unit: '1 kg',
+        discount: '25% OFF',
+        farm: 'Dhauj Farm (Rameshwar)',
+        img: imgSrc,
+        rating: '5.0 ★'
+      });
+
+      renderConsumerCatalog('all');
+      triggerConfettiSuccess(`[CROP PUBLISHED TO MARKETPLACE! 🎉]\n\nCrop: ${crop}\nQuantity: ${qty} kg\nYour Rate: ₹${rate}/kg\nGross Value: ₹${(qty * rate).toLocaleString()}\n\nYeh lot Consumer Mart aur B2B Wholesale me live publish ho gaya hai!`);
+    }
 
     // -------------------------------------------------------------
     // CONSUMER SHOPPING CATALOG RENDERER
@@ -1643,6 +1846,7 @@
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(currentFarmerObject);
         renderBahiKhataLedger(currentFarmerObject);
+        runMandiPriceComparison('Tomato');
       }
       
       syncAllUIComponents();
@@ -1791,7 +1995,7 @@
       const width = container.clientWidth, height = container.clientHeight;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a);
+      scene.background = new THREE.Color(0x020617);
       camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
       camera.position.set(0, 15, 28);
 
@@ -1816,7 +2020,7 @@
 
       for (let i = -18; i <= 18; i += 4) {
         const rowGeo = new THREE.BoxGeometry(42, 0.4, 1.8);
-        const rowMat = new THREE.MeshStandardMaterial({ color: 0x14532d });
+        const rowMat = new THREE.MeshStandardMaterial({ color: 0x064e3b });
         const row = new THREE.Mesh(rowGeo, rowMat);
         row.position.set(0, 0.2, i);
         farmGroup.add(row);
@@ -1871,7 +2075,7 @@
       c.innerHTML += `<div class="flex gap-2.5 items-start justify-end"><div class="bg-emerald-600 text-white font-bold p-3 rounded-xl text-xs shadow-sm max-w-[85%]">${q}</div></div>`;
       input.value = '';
       setTimeout(() => {
-        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-white p-3 rounded-xl border border-emerald-100 text-slate-800 text-xs shadow-sm">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
+        c.innerHTML += `<div class="flex gap-2.5 items-start"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">AI</div><div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800 text-xs">Autonomous action executed for <b>${currentLoggedInUser || 'User'}</b>.</div></div>`;
         c.scrollTop = c.scrollHeight;
         lucide.createIcons();
       }, 400);

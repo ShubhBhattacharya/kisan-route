@@ -111,6 +111,151 @@
         <p class="text-[10px] text-slate-500" id="order-lifecycle-sub">Real Isolated Handover: Customer Orders &rarr; Farmer Accepts &rarr; Driver Delivers</p>
       </div>
     </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">📍 Hub: Faridabad Cluster &bull; 121002</span>
+    </div>
+  </div>
+
+  <!-- FLIPKART STYLE TOP HEADER BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-[49px] z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 sm:gap-6">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchToPublicMart()">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black shadow-md shadow-emerald-600/20">
+          <i data-lucide="sprout" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <span class="text-xl font-black tracking-tight text-slate-900">Kisan<span class="text-emerald-600">Route</span></span>
+          <span class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-extrabold block uppercase tracking-wider">Direct Farm Mart</span>
+        </div>
+      </div>
+
+      <!-- Flipkart Style Big Search Bar -->
+      <div class="flex-1 min-w-[240px] max-w-xl relative">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+        <input 
+          type="text" 
+          id="global-produce-search" 
+          oninput="handleProduceSearch(this.value)"
+          placeholder="Search for Fresh Tomatoes, Organic Potatoes, Sharbati Wheat, Mustard..." 
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white transition"
+        />
+      </div>
+
+      <!-- Actions & Profile Strip -->
+      <div class="flex items-center gap-2 sm:gap-3 text-xs">
+        
+        <!-- Voice Assistant -->
+        <button id="btn-voice-assistant" onclick="toggleVoiceAssistant()" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 rounded-xl font-bold flex items-center gap-1.5 transition">
+          <i data-lucide="mic" class="w-4 h-4 text-amber-600"></i> <span id="voice-assistant-text" class="hidden sm:inline">Voice AI</span>
+        </button>
+
+        <!-- 30+ Regional Languages Selector -->
+        <div class="flex items-center gap-1.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200 text-slate-700 hover:text-emerald-800 px-2.5 py-2 rounded-xl font-bold transition">
+          <i data-lucide="languages" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+          <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-xs font-bold focus:outline-none cursor-pointer">
+            <option value="en" selected>English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="or">ଓଡ଼ିଆ (Odia)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="bho">भोजपुरी (Bhojpuri)</option>
+            <option value="bgc">हरियाणवी (Haryanvi)</option>
+          </select>
+        </div>
+
+        <!-- Cart Trigger (Always Accessible) -->
+        <button onclick="toggleCartDrawer()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-md shadow-emerald-600/20">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> <span class="hidden sm:inline">Cart</span> (<span id="cart-item-count">0</span>)
+        </button>
+
+        <!-- Login / User Dropdown Button (Flipkart Style) -->
+        <div class="relative" id="nav-auth-wrapper">
+          <!-- Button When NOT Logged In -->
+          <button id="btn-header-login" onclick="openLoginModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs flex items-center gap-1.5 transition shadow-sm">
+            <i data-lucide="user" class="w-4 h-4 text-emerald-400"></i> <span>Login</span>
+          </button>
+
+          <!-- Button When Logged In -->
+          <button id="btn-header-user" onclick="toggleUserDropdown()" class="hidden flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl border border-emerald-200 text-xs transition text-slate-800 font-bold">
+            <div class="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+              <i data-lucide="user-check" class="w-3 h-3"></i>
+            </div>
+            <span id="session-user-badge" class="max-w-[120px] truncate">My Account</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
+          </button>
+
+          <!-- User Menu Dropdown -->
+          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 text-slate-800 p-2 space-y-1 hidden z-50">
+            <div class="p-2.5 border-b border-slate-100">
+              <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Active Session</p>
+              <p class="text-xs font-black text-slate-900 truncate" id="dropdown-user-name">Guest User</p>
+              <p class="text-[10px] text-emerald-600 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Consumer</p>
+            </div>
+            <button onclick="switchToPublicMart()" class="w-full flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-emerald-50 rounded-xl text-xs font-bold transition">
+              <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-600"></i> Browse Consumer Mart
+            </button>
+            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition">
+              <i data-lucide="log-out" class="w-4 h-4"></i> Switch / Logout Account
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- FLIPKART STYLE TOP ROLE / CATEGORY NAVIGATION BAR -->
+  <div class="bg-white border-b border-slate-200 shadow-sm py-2 px-4 overflow-x-auto no-scrollbar">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs font-bold min-w-[700px]">
+      <button onclick="filterConsumerCategory('all', this)" class="consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition">
+        <span>🛒</span> All Fresh
+      </button>
+      <button onclick="filterConsumerCategory('vegetable', this)" class="consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 transition">
+        <span>🥬</span> Fresh Veggies
+      </button>
+      <button onclick="filterConsumerCategory('fruit', this)" class="consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 transition">
+        <span>🍎</span> Orchard Fruits
+      </button>
+      <button onclick="filterConsumerCategory('grain', this)" class="consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 transition">
+        <span>🌾</span> Chakki Grains
+      </button>
+      <button onclick="filterConsumerCategory('exotic', this)" class="consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 transition">
+        <span>🥑</span> Hydroponics
+      </button>
+      <button onclick="requireRoleAccess('farmer')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold transition">
+        <span>🌱</span> Producer Dashboard
+      </button>
+      <button onclick="requireRoleAccess('driver')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-300 font-bold transition">
+        <span>🚚</span> Fleet Driver GPS
+      </button>
+      <button onclick="requireRoleAccess('admin')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold transition">
+        <span>🛡️</span> Admin Arbitrage Matrix
+      </button>
+    </div>
+  </div>
+
+  <!-- LIVE APMC MANDI SPREAD TICKER -->
+  <div class="bg-emerald-900 text-emerald-200 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-emerald-800 flex items-center gap-3">
+    <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Arbitrage</span>
+    <div class="w-full overflow-hidden">
+      <div class="animate-marquee space-x-8 text-emerald-100">
+        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
+        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
+        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
+        <span>🛡️ Fasal Rakshak AMC: Direct Satellite-verified payouts active for Faridabad cluster</span>
+      </div>
+    </div>
   </div>
 
   <!-- 1. LOGOUT CONFIRMATION MODAL -->
@@ -264,9 +409,15 @@
     </div>
   </div>
 
-  <!-- 4. AUTH PORTAL & 1-CLICK ROLE SWITCHER GATE -->
-  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-40 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-    <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border border-emerald-100 space-y-6 my-auto text-slate-800">
+  <!-- 4. AUTH PORTAL & 1-CLICK ROLE SWITCHER GATE (MODAL) -->
+  <div id="auth-portal-screen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-40 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border border-emerald-100 space-y-6 my-auto text-slate-800 relative">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeLoginModal()" class="absolute top-6 right-6 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
       <div class="text-center space-y-1.5">
         <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-sm">
           <i data-lucide="sprout" class="w-7 h-7 text-emerald-600"></i>
@@ -274,7 +425,7 @@
         <h2 class="text-2xl font-black text-slate-900 tracking-tight flex items-center justify-center gap-2">
           Kisan<span class="text-emerald-600">Route</span> <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-0.5 rounded-full">NEXUS ACCESS</span>
         </h2>
-        <p class="text-xs text-slate-500 font-medium">Select a direct role icon or enter your phone number &bull; SIH 2026</p>
+        <p class="text-xs text-slate-500 font-medium">Select a role icon or enter your phone number &bull; SIH 2026</p>
       </div>
 
       <div class="space-y-2.5">
@@ -337,125 +488,84 @@
     </div>
   </div>
 
-  <!-- LIVE MANDI SPREAD TICKER -->
-  <div class="bg-emerald-900 text-emerald-200 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-emerald-800 flex items-center gap-3">
-    <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Spread</span>
-    <div class="w-full overflow-hidden">
-      <div class="animate-marquee space-x-8 text-emerald-100">
-        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
-        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
-        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
-        <span>🛡️ Farmer Crop AMC: Instant Claim disbursals active for Faridabad cluster</span>
-      </div>
-    </div>
-  </div>
+  <!-- MAIN WORKSPACE CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-  <!-- TOP APP BAR WITH 30+ REGIONAL LANGUAGES -->
-  <header class="bg-white border-b border-emerald-100 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center font-black shadow-sm">
-          <i data-lucide="sprout" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xl font-black tracking-tight text-slate-900">Kisan<span class="text-emerald-600">Route</span></span>
-            <span class="text-[9px] bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200 font-extrabold uppercase" id="top-role-badge">ENTERPRISE TERMINAL</span>
-          </div>
-          <p class="text-[10px] text-slate-500 font-medium">Faridabad Agro FPO &bull; Direct Farm-to-Consumer Corridor</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2.5 text-xs">
-        
-        <!-- Voice Command Button -->
-        <button id="btn-voice-assistant" onclick="toggleVoiceAssistant()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 text-white rounded-xl font-bold flex items-center gap-1.5 transition shadow-sm">
-          <i data-lucide="mic" class="w-4 h-4"></i> <span id="voice-assistant-text">Voice AI (बोलें)</span>
-        </button>
-
-        <!-- Cart Trigger for Consumer -->
-        <button onclick="toggleCartDrawer()" id="nav-cart-btn" class="hidden px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-sm">
-          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Cart (<span id="cart-item-count">0</span>)
-        </button>
-
-        <!-- 30+ REGIONAL LANGUAGES SELECTOR -->
-        <div class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 px-3 py-1.5 rounded-xl font-bold transition">
-          <i data-lucide="languages" class="w-4 h-4 text-emerald-700 shrink-0"></i>
-          <select id="all-india-lang-select" onchange="translateWebsiteRealtime(this.value)" class="bg-transparent text-emerald-900 font-black text-xs focus:outline-none cursor-pointer">
-            <option value="en" selected>English (EN)</option>
-            <option value="hi">हिंदी (Hindi)</option>
-            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-            <option value="bn">বাংলা (Bengali)</option>
-            <option value="te">తెలుగు (Telugu)</option>
-            <option value="ta">தமிழ் (Tamil)</option>
-            <option value="mr">मराठी (Marathi)</option>
-            <option value="gu">ગુજરાતી (Gujarati)</option>
-            <option value="kn">ಕನ್ನಡ (Kannada)</option>
-            <option value="ml">മലയാളം (Malayalam)</option>
-            <option value="or">ଓଡ଼ିଆ (Odia)</option>
-            <option value="as">অসমীয়া (Assamese)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="sa">संस्कृतम् (Sanskrit)</option>
-            <option value="mai">मैथिली (Maithili)</option>
-            <option value="ne">नेपाली (Nepali)</option>
-            <option value="sd">سنڌي (Sindhi)</option>
-            <option value="kok">कोंकणी (Konkani)</option>
-            <option value="doi">डोगरी (Dogri)</option>
-            <option value="bho">भोजपुरी (Bhojpuri)</option>
-            <option value="ks">कश्मीरी (Kashmiri)</option>
-            <option value="sat">ᱥᱟᱱᱛᱟᱲᱤ (Santali)</option>
-            <option value="brx">बड़ो (Bodo)</option>
-            <option value="mwr">मारवाड़ी (Marwari)</option>
-            <option value="bgc">हरियाणवी (Haryanvi)</option>
-            <option value="hne">छत्तीसगढ़ी (Chhattisgarhi)</option>
-            <option value="raj">राजस्थानी (Rajasthani)</option>
-            <option value="tcy">ತುಳು (Tulu)</option>
-            <option value="mag">मगही (Magahi)</option>
-            <option value="gbm">गढ़वाली (Garhwali)</option>
-            <option value="kfy">कुमाऊँनी (Kumaoni)</option>
-            <option value="gom">गोंयची कोंकणी (Goan)</option>
-            <option value="mni">মৈতৈলোন্ (Manipuri)</option>
-          </select>
-        </div>
-
-        <!-- Profile & Logout Menu -->
-        <div class="relative">
-          <button onclick="toggleUserDropdown()" class="flex items-center gap-2 bg-emerald-50/80 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl border border-emerald-200 text-xs transition text-slate-800">
-            <div class="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
-              <i data-lucide="user" class="w-3 h-3"></i>
-            </div>
-            <span id="session-user-badge" class="font-bold text-slate-900 max-w-[130px] truncate">Not Logged In</span>
-            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
-          </button>
-          <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 text-slate-800 p-2 space-y-1 hidden z-50">
-            <div class="p-2.5 border-b border-slate-100">
-              <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Signed in as</p>
-              <p class="text-xs font-black text-slate-900 truncate" id="dropdown-user-name">Guest User</p>
-              <p class="text-[10px] text-emerald-600 font-mono-code font-bold mt-0.5" id="dropdown-user-role">Role: Member</p>
-            </div>
-            <button onclick="openLogoutModal()" class="w-full flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition">
-              <i data-lucide="log-out" class="w-4 h-4"></i> Logout Account
+    <!-- ======================================================= -->
+    <!-- VIEW 1: FLIPKART STYLE PUBLIC CONSUMER MART (DEFAULT)   -->
+    <!-- ======================================================= -->
+    <div id="view-consumer" class="role-workspace space-y-6">
+      
+      <!-- Flipkart Style Hero Banner Carousel -->
+      <div class="cmd-surface border-emerald-200 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-800 text-white rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-lg">
+        <div class="space-y-3 z-10 max-w-xl">
+          <span class="px-3.5 py-1 bg-white/20 text-white border border-white/30 text-[10px] font-black uppercase tracking-wider rounded-full backdrop-blur-md">
+            ⚡ 100% FARM-TO-FORK DIRECT &bull; ZERO INTERMEDIARY CUT
+          </span>
+          <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Direct Farm Harvest <span class="text-emerald-200 block">Delivered in 2 Hours</span>
+          </h2>
+          <p class="text-xs text-emerald-100 font-medium">
+            Pure Desi vegetables, fresh orchard fruits & unpolished pulses directly from Faridabad FPO clusters at guaranteed fair prices.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <button onclick="scrollToProduceCatalog()" class="px-5 py-3 bg-white hover:bg-emerald-50 text-emerald-900 font-black text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+              <i data-lucide="shopping-bag" class="w-4 h-4 text-emerald-600"></i> Shop Fresh Today
+            </button>
+            <button onclick="requireRoleAccess('farmer')" class="px-4 py-3 bg-emerald-900/60 hover:bg-emerald-900 text-white font-bold text-xs rounded-xl border border-white/20 transition">
+              I am a Farmer &rarr;
             </button>
           </div>
         </div>
 
+        <div class="w-full md:w-72 h-44 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-center text-center p-4 shadow-xl shrink-0">
+          <span class="text-5xl animate-bounce">🥦🍅🍎</span>
+          <p class="text-xs font-black text-white mt-2">15+ Pincodes Covered</p>
+          <p class="text-[10px] text-emerald-200">Dhauj &bull; Ballabhgarh &bull; Sector 15 Hub</p>
+        </div>
       </div>
+
+      <!-- ACTIVE ORDER TRACKING BANNER (SHOWN WHEN AN ORDER IS PLACED) -->
+      <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-300 bg-white shadow-sm">
+        <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
+          <div>
+            <span class="text-[10px] text-emerald-700 font-mono-code uppercase font-bold" id="consumer-order-id">ORDER #OD-2026-FBD-8821</span>
+            <h3 class="text-xl font-black text-slate-900" id="consumer-order-title">Desi Fresh Hybrid Tomato</h3>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Escrow Vault Locked</span>
+            <p class="text-base font-black text-emerald-700 font-mono-code" id="consumer-order-cost">₹15,600</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-wrap justify-between items-center gap-3 text-xs">
+          <div>
+            <p class="text-slate-500">Live Lifecycle Status:</p>
+            <p class="font-black text-slate-900 text-sm" id="consumer-status-text">Order Placed! Awaiting Farmer Rameshwar's confirmation...</p>
+          </div>
+          <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Your Secret Delivery Gate OTP</span>
+            <p class="text-2xl font-black font-mono-code text-slate-900 tracking-widest">4829</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produce Catalog Grid Header -->
+      <div id="produce-catalog-anchor" class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 pt-2">
+        <div>
+          <h3 class="text-xl font-black text-slate-900">Fresh Harvest Deals of the Day</h3>
+          <p class="text-xs text-slate-500">Graded farm-fresh produce harvested this morning across Faridabad FPO clusters.</p>
+        </div>
+        <span class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl self-start">⚡ 100% Organic & Graded</span>
+      </div>
+
+      <!-- Produce Catalog Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
     </div>
-  </header>
 
-  <!-- VOICE COMMAND LIVE HUD -->
-  <div id="voice-hud-indicator" class="bg-amber-50 border-b border-amber-200 px-4 py-2 hidden text-xs flex justify-between items-center text-amber-900">
-    <div class="flex items-center gap-2">
-      <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
-      <span>Listening... Boliye: <b id="voice-recognized-phrase">"Order book karo", "Accept order", "Start ride"</b></span>
-    </div>
-    <button onclick="toggleVoiceAssistant()" class="font-bold text-amber-700 hover:underline">Stop Mic</button>
-  </div>
-
-  <!-- MAIN WORKSPACE CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
-
-    <!-- ROLE 1: MEMBER FARMER WORKSPACE -->
+    <!-- ======================================================= -->
+    <!-- VIEW 2: MEMBER FARMER DASHBOARD & CROP INTAKE           -->
+    <!-- ======================================================= -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
       
       <!-- Top Action Strip -->
@@ -542,7 +652,7 @@
         <div>
           <span class="text-[10px] uppercase font-bold tracking-wider bg-white/20 text-white px-2.5 py-1 rounded">Member Producer Terminal</span>
           <h2 class="text-2xl font-black mt-2 text-white" id="farmer-profile-name">Rameshwar Sharma</h2>
-          <p class="text-xs text-emerald-100 mt-0.5" id="farmer-profile-sub">Allocated Batch: Desi Tomato (650 kg) &bull; Lead Supervisor: Gurpreet Singh</p>
+          <p class="text-xs text-emerald-100 mt-0.5" id="farmer-profile-sub">Allocated Batch: Desi Tomato (650 kg) &bull; Village: Dhauj &bull; Pincode: 121007</p>
         </div>
         <div class="flex gap-3 text-center">
           <div class="bg-white/10 p-3 rounded-xl border border-white/20">
@@ -795,64 +905,9 @@
       </div>
     </div>
 
-    <!-- ROLE 2: DIRECT CONSUMER FRESH MART -->
-    <div id="view-consumer" class="role-workspace space-y-6 hidden">
-      <div class="cmd-surface border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
-        <div class="space-y-3 z-10 max-w-xl">
-          <span class="px-3 py-1 bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-black uppercase tracking-wider rounded-full">
-            ⚡ 100% FARM-TO-FORK DIRECT &bull; 0 MIDDLEMEN
-          </span>
-          <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Fresh Organic Harvest <span class="text-emerald-700">Delivered in 2 Hours</span>
-          </h2>
-          <p class="text-xs text-slate-600">
-            Pure Desi vegetables, orchard fruits & unpolished pulses directly from Faridabad FPO farms at wholesale prices.
-          </p>
-        </div>
-        <div class="w-full md:w-64 h-36 rounded-2xl bg-white border border-emerald-200 flex items-center justify-center text-6xl shadow-sm shrink-0">
-          🥦🍅🍇
-        </div>
-      </div>
-
-      <!-- ACTIVE TRACKING CARD -->
-      <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-300 bg-white">
-        <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
-          <div>
-            <span class="text-[10px] text-emerald-700 font-mono-code uppercase font-bold" id="consumer-order-id">ORDER #OD-2026-FBD-8821</span>
-            <h3 class="text-xl font-black text-slate-900" id="consumer-order-title">Desi Fresh Hybrid Tomato</h3>
-          </div>
-          <div class="text-right">
-            <span class="text-[10px] text-slate-500 uppercase font-bold">Escrow Vault Locked</span>
-            <p class="text-base font-black text-emerald-700 font-mono-code" id="consumer-order-cost">₹15,600</p>
-          </div>
-        </div>
-
-        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-wrap justify-between items-center gap-3 text-xs">
-          <div>
-            <p class="text-slate-500">Live Lifecycle Status:</p>
-            <p class="font-black text-slate-900 text-sm" id="consumer-status-text">Order Placed! Awaiting Farmer Rameshwar's confirmation...</p>
-          </div>
-          <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
-            <span class="text-[10px] text-slate-500 uppercase font-bold">Your Secret Delivery Gate OTP</span>
-            <p class="text-2xl font-black font-mono-code text-slate-900 tracking-widest">4829</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Categories Filter Tabs -->
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold">
-        <button onclick="filterConsumerCategory('all', this)" class="consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-white font-black shadow-sm transition">All Fresh</button>
-        <button onclick="filterConsumerCategory('vegetable', this)" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🥬 Vegetables</button>
-        <button onclick="filterConsumerCategory('fruit', this)" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🍎 Fresh Fruits</button>
-        <button onclick="filterConsumerCategory('grain', this)" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🌾 Grains & Pulses</button>
-        <button onclick="filterConsumerCategory('exotic', this)" class="consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition">🥑 Exotic & Hydroponic</button>
-      </div>
-
-      <!-- Produce Catalog Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
-    </div>
-
-    <!-- ROLE 3: LOGISTICS FLEET DRIVER (DYNAMIC A->B & REAL GPS) -->
+    <!-- ======================================================= -->
+    <!-- VIEW 3: FLEET DRIVER TERMINAL & GPS DISPATCH            -->
+    <!-- ======================================================= -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
       
       <!-- TOP NOTIFICATION ALERT FOR DRIVER (POINT A -> POINT B) -->
@@ -948,7 +1003,9 @@
       </div>
     </div>
 
-    <!-- ROLE 4: B2B BUYER WHOLESALE HUB -->
+    <!-- ======================================================= -->
+    <!-- VIEW 4: B2B BUYER WHOLESALE TERMINAL                    -->
+    <!-- ======================================================= -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       <div class="cmd-surface rounded-3xl p-6 sm:p-8 space-y-6">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-emerald-100">
@@ -1000,7 +1057,9 @@
       </div>
     </div>
 
-    <!-- ROLE 5: ADMIN EXCLUSIVE ARBITRAGE & PRICE SHEET -->
+    <!-- ======================================================= -->
+    <!-- VIEW 5: ADMIN EXCLUSIVE ARBITRAGE & PRICE SHEET         -->
+    <!-- ======================================================= -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="cmd-surface rounded-2xl p-5">
@@ -1082,7 +1141,8 @@
         </div>
       </div>
 
-      <button onclick="openConsumerCheckoutModal()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
+      <!-- Action Button Triggers Login if Guest -->
+      <button onclick="handleCartCheckoutIntent()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
         <i data-lucide="check" class="w-4 h-4"></i> Proceed to Checkout & Delivery Address ⚡
       </button>
     </div>
@@ -1252,6 +1312,110 @@
     });
 
     // -------------------------------------------------------------
+    // GUEST-FIRST CHECKOUT & ROLE ACCESS GATING
+    // -------------------------------------------------------------
+    function handleCartCheckoutIntent() {
+      toggleCartDrawer();
+      if (!currentLoggedInUser) {
+        openLoginModal("Please Login or Enter Mobile Number to place your delivery order 🛍️");
+      } else {
+        openConsumerCheckoutModal();
+      }
+    }
+
+    function requireRoleAccess(roleName) {
+      if (!currentLoggedInUser || currentLoggedInUser !== roleName) {
+        openLoginModal(`Sign in as ${roleName.toUpperCase()} to access this terminal`);
+      } else {
+        executeLoginSession({ role: roleName, name: getRoleDisplayName(roleName) });
+      }
+    }
+
+    function getRoleDisplayName(role) {
+      if (role === 'farmer') return 'Rameshwar Sharma';
+      if (role === 'driver') return 'Vikram Singh';
+      if (role === 'admin') return 'Audit Command Lead';
+      if (role === 'buyer') return 'BigBasket Wholesale';
+      return 'Priya Sharma (Consumer)';
+    }
+
+    function openLoginModal(customMsg) {
+      document.getElementById('auth-portal-screen').classList.remove('hidden');
+      if (customMsg) showAuthAlert(customMsg, false);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeLoginModal() {
+      document.getElementById('auth-portal-screen').classList.add('hidden');
+    }
+
+    function switchToPublicMart() {
+      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
+      document.getElementById('view-consumer').classList.remove('hidden');
+      document.getElementById('user-profile-dropdown').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToProduceCatalog() {
+      const el = document.getElementById('produce-catalog-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function handleProduceSearch(query) {
+      const q = query.trim().toLowerCase();
+      const grid = document.getElementById('consumer-catalog-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      const filtered = consumerCatalog.filter(x => x.name.toLowerCase().includes(q) || x.cat.toLowerCase().includes(q) || x.farm.toLowerCase().includes(q));
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 font-bold">No fresh harvest found matching "${query}". Try searching "Tomato", "Potato", or "Wheat"!</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const qtyInCart = consumerCart[p.id] || 0;
+        grid.innerHTML += `
+          <div class="cmd-surface rounded-3xl p-4 space-y-3 flex flex-col justify-between bg-white border border-slate-200">
+            <div class="space-y-2.5">
+              <div class="w-full h-44 rounded-2xl overflow-hidden relative bg-slate-100 border border-slate-100">
+                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600'" />
+                <span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white font-black text-[9px] px-2 py-0.5 rounded-md shadow-sm">${p.discount}</span>
+                <span class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-md text-amber-600 font-bold text-[10px] px-2 py-0.5 rounded-md border border-slate-200">${p.rating}</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-mono-code text-emerald-700 font-bold">${p.farm}</p>
+                <h4 class="font-black text-slate-900 text-sm leading-snug">${p.name}</h4>
+                <p class="text-slate-500 text-xs">${p.unit}</p>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+              <div>
+                <span class="text-xs line-through text-slate-400">₹${p.mrp}</span>
+                <span class="text-base font-black text-slate-900 font-mono-code ml-1">₹${p.price}</span>
+              </div>
+              
+              ${qtyInCart === 0 ? `
+                <button onclick="addToCart('${p.id}')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl transition shadow-sm">
+                  + Add
+                </button>
+              ` : `
+                <div class="flex items-center gap-2 bg-emerald-50 rounded-xl px-2.5 py-1 border border-emerald-300 text-xs font-bold text-emerald-900">
+                  <button onclick="decrementCart('${p.id}')" class="text-emerald-700 font-black px-1">-</button>
+                  <span class="font-black text-slate-900 font-mono-code">${qtyInCart}</span>
+                  <button onclick="addToCart('${p.id}')" class="text-emerald-700 font-black px-1">+</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------
     // CHATBOT INTERACTIVE CONTROLLER (NO ALERTS)
     // -------------------------------------------------------------
     function toggleAIChat() {
@@ -1297,7 +1461,7 @@
         } else if (lowerQ.includes("kisanpoint") || lowerQ.includes("referral") || lowerQ.includes("point")) {
           aiResponse = `<b>🎁 Kisan Mitra Rewards:</b><br>Har naye kisaan bhai ko jodne par <b>500 KisanPoints (= ₹500 discount)</b> milte hain. Isse aap apni Fasal AMC buy karte time direct claim kar sakte hain.`;
         } else {
-          aiResponse = `Main KisanRoute AI engine hoon. Platform telemetry par aapka role: <b>${currentLoggedInUser ? currentLoggedInUser.toUpperCase() : 'Active Member'}</b> verify ho chuka hai. Aap kisi bhi fasal ke live rate, fleet driver GPS route ya order handover ki jaankari le sakte hain.`;
+          aiResponse = `Main KisanRoute AI engine hoon. Platform telemetry par aapka role: <b>${currentLoggedInUser ? currentLoggedInUser.toUpperCase() : 'Guest Visitor'}</b> verify ho chuka hai. Aap kisi bhi fasal ke live rate, fleet driver GPS route ya order handover ki jaankari le sakte hain.`;
         }
 
         container.innerHTML += `
@@ -1330,8 +1494,7 @@
         document.getElementById('voice-recognized-phrase').innerText = `"${transcript}"`;
 
         if (transcript.includes('order') || transcript.includes('buy') || transcript.includes('kharid')) {
-          quickFillAndSend('9911223344');
-          triggerConfettiSuccess("Voice AI: Consumer Mart Opened!");
+          handleCartCheckoutIntent();
         } else if (transcript.includes('accept') || transcript.includes('farmer') || transcript.includes('kisan')) {
           quickFillAndSend('9876543210');
           if (activeLifecycleOrder.status === 'PLACED') farmerAcceptOrder();
@@ -1339,7 +1502,7 @@
           quickFillAndSend('9811044910');
           if (activeLifecycleOrder.status === 'READY_FOR_PICKUP') driverVerifyPickup();
         } else if (transcript.includes('amc') || transcript.includes('insurance') || transcript.includes('bima')) {
-          quickFillAndSend('9876543210');
+          requireRoleAccess('farmer');
           scrollToAMCSection();
         }
       };
@@ -1371,7 +1534,7 @@
         speechRecognition.stop();
         isListeningVoice = false;
         hud.classList.add('hidden');
-        text.innerText = "Voice AI (बोलें)";
+        text.innerText = "Voice AI";
       }
     }
 
@@ -1414,7 +1577,7 @@
           }
         },
         () => {
-          alert("Unable to retrieve real GPS location. Please allow location access.");
+          alert("Unable to retrieve real GPS location. Please allow location access in browser.");
         },
         { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
       );
@@ -1440,7 +1603,7 @@
     }
 
     // -------------------------------------------------------------
-    // 1-CLICK INSTANT DISPATCH AUTH
+    // AUTH ENGINE & SESSION HANDLER
     // -------------------------------------------------------------
     function quickFillAndSend(num) {
       document.getElementById('input-login-mobile').value = num;
@@ -1480,8 +1643,12 @@
     }
 
     function executeLoginSession(userObj) {
-      document.getElementById('auth-portal-screen').classList.add('hidden');
+      closeLoginModal();
       currentLoggedInUser = userObj.role;
+
+      // Update Header Buttons
+      document.getElementById('btn-header-login').classList.add('hidden');
+      document.getElementById('btn-header-user').classList.remove('hidden');
 
       document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
 
@@ -1490,25 +1657,19 @@
       document.getElementById('session-user-badge').innerText = userObj.name;
 
       if (userObj.role === 'consumer') {
-        document.getElementById('top-role-badge').innerText = "CONSUMER FRESH MART";
         document.getElementById('view-consumer').classList.remove('hidden');
-        document.getElementById('nav-cart-btn').classList.remove('hidden');
         renderConsumerCatalog('all');
       } else if (userObj.role === 'admin') {
-        document.getElementById('top-role-badge').innerText = "ADMIN CONTROL";
         document.getElementById('view-admin').classList.remove('hidden');
         renderAdminPriceSheet();
       } else if (userObj.role === 'driver') {
-        document.getElementById('top-role-badge').innerText = "FLEET NAVIGATION";
         document.getElementById('view-driver').classList.remove('hidden');
         setTimeout(initDriverMap, 150);
       } else if (userObj.role === 'buyer') {
-        document.getElementById('top-role-badge').innerText = "BUYER WHOLESALE";
         document.getElementById('view-buyer').classList.remove('hidden');
         setTimeout(initTrackingMap, 150);
       } else {
         currentFarmerObject = clusterFarmers[0];
-        document.getElementById('top-role-badge').innerText = "PRODUCER DASHBOARD";
         document.getElementById('view-member_farmer').classList.remove('hidden');
         renderIndividualFarmerData(currentFarmerObject);
         renderBahiKhataLedger(currentFarmerObject);
@@ -1525,7 +1686,7 @@
 
     document.addEventListener('click', (e) => {
       const dropdown = document.getElementById('user-profile-dropdown');
-      if (dropdown && !e.target.closest('.relative')) dropdown.classList.add('hidden');
+      if (dropdown && !e.target.closest('#nav-auth-wrapper')) dropdown.classList.add('hidden');
     });
 
     function openLogoutModal() {
@@ -1542,12 +1703,15 @@
       closeLogoutModal();
       currentLoggedInUser = null;
       currentFarmerObject = null;
+      
+      // Revert Header Buttons to Guest Login State
+      document.getElementById('btn-header-user').classList.add('hidden');
+      document.getElementById('btn-header-login').classList.remove('hidden');
       document.getElementById('session-user-badge').innerText = "Not Logged In";
-      document.getElementById('nav-cart-btn').classList.add('hidden');
-      document.querySelectorAll('.role-workspace').forEach(el => el.classList.add('hidden'));
+      
       resetToMobileStep();
-      document.getElementById('auth-portal-screen').classList.remove('hidden');
-      showAuthAlert("You have logged out successfully. Next party can now sign in.", false);
+      switchToPublicMart();
+      showAuthAlert("You have logged out. You can now browse as a guest or switch accounts.", false);
     }
 
     function showAuthAlert(msg, isError = false) {
@@ -1940,7 +2104,6 @@
     // CONSUMER CHECKOUT & EXECUTE
     // -------------------------------------------------------------
     function openConsumerCheckoutModal() {
-      toggleCartDrawer();
       document.getElementById('modal-consumer-checkout').classList.remove('hidden');
 
       const qr = document.getElementById('checkout-live-qrcode');

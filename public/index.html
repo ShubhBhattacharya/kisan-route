@@ -16,6 +16,18 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+  <!-- Google Translate Engine -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        autoDisplay: false,
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -51,9 +63,10 @@
     .badge-done { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
     .badge-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
-    .goog-te-banner-frame.skiptranslate { display: none !important; }
-    #google_translate_element { display: none; }
+    .goog-te-banner-frame.skiptranslate, iframe.goog-te-banner-frame { display: none !important; }
+    #google_translate_element { display: none !important; }
     .goog-tooltip, .goog-tooltip:hover { display: none !important; }
+    .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
 
     .cmd-surface {
       background: var(--panel-surface);
@@ -157,7 +170,7 @@
             <option value="as">অসমীয়া (Assamese)</option>
             <option value="ur">اردو (Urdu)</option>
             <option value="bho">भोजपुरी (Bhojpuri)</option>
-            <option value="bgc">हरियाणवी (Haryanvi)</option>
+            <option value="hi">हरियाणवी (Haryanvi)</option>
           </select>
         </div>
 
@@ -1259,6 +1272,35 @@
     });
 
     // -------------------------------------------------------------
+    // 30+ REGIONAL LANGUAGES DYNAMIC SWITCHER WITH AUTO FALLBACK
+    // -------------------------------------------------------------
+    function translateWebsiteRealtime(langCode) {
+      // Set the Google Translate cookie for persistence across pages & elements
+      document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`;
+      document.cookie = `googtrans=/en/${langCode}; path=/;`;
+
+      const combo = document.querySelector('select.goog-te-combo');
+      if (combo) {
+        combo.value = langCode;
+        combo.dispatchEvent(new Event('change'));
+      } else {
+        // If the combo is still loading, wait and retry
+        let checkCount = 0;
+        const interval = setInterval(() => {
+          checkCount++;
+          const retryCombo = document.querySelector('select.goog-te-combo');
+          if (retryCombo) {
+            retryCombo.value = langCode;
+            retryCombo.dispatchEvent(new Event('change'));
+            clearInterval(interval);
+          } else if (checkCount > 15) {
+            clearInterval(interval);
+          }
+        }, 200);
+      }
+    }
+
+    // -------------------------------------------------------------
     // GUEST-FIRST CHECKOUT & ROLE ACCESS GATING
     // -------------------------------------------------------------
     function handleCartCheckoutIntent() {
@@ -1438,7 +1480,6 @@
 
       speechRecognition.onresult = function(event) {
         const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-        document.getElementById('voice-recognized-phrase').innerText = `"${transcript}"`;
 
         if (transcript.includes('order') || transcript.includes('buy') || transcript.includes('kharid')) {
           handleCartCheckoutIntent();
@@ -1465,14 +1506,12 @@
         return;
       }
 
-      const hud = document.getElementById('voice-hud-indicator');
       const text = document.getElementById('voice-assistant-text');
 
       if (!isListeningVoice) {
         try {
           speechRecognition.start();
           isListeningVoice = true;
-          hud.classList.remove('hidden');
           text.innerText = "Listening...";
         } catch (e) {
           isListeningVoice = false;
@@ -1480,7 +1519,6 @@
       } else {
         speechRecognition.stop();
         isListeningVoice = false;
-        hud.classList.add('hidden');
         text.innerText = "Voice AI";
       }
     }
@@ -1528,25 +1566,6 @@
         },
         { enableHighAccuracy: true, maximumAge: 1000, timeout: 5000 }
       );
-    }
-
-    // -------------------------------------------------------------
-    // 30+ REGIONAL LANGUAGES DYNAMIC SWITCHER
-    // -------------------------------------------------------------
-    function translateWebsiteRealtime(langCode) {
-      if (langCode === 'en') {
-        const select = document.querySelector('select.goog-te-combo');
-        if (select) {
-          select.value = 'en';
-          select.dispatchEvent(new Event('change'));
-        }
-        return;
-      }
-      const select = document.querySelector('select.goog-te-combo');
-      if (select) {
-        select.value = langCode;
-        select.dispatchEvent(new Event('change'));
-      }
     }
 
     // -------------------------------------------------------------

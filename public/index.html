@@ -16,18 +16,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- 30+ Regional Languages Universal Translation Engine -->
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'hi,pa,bn,te,ta,mr,gu,kn,ml,or,as,ur,sa,mai,ne,sd,kok,doi,bho,ks,sat,brx,mwr,bgc,hne,raj,tcy,mag,gbm,kfy,gom,mni,en',
-        autoDisplay: false
-      }, 'google_translate_element');
-    }
-  </script>
-  <script async defer src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -131,7 +119,7 @@
         </div>
       </div>
 
-      <!-- Flipkart Style Big Search Bar -->
+      <!-- Search Bar -->
       <div class="flex-1 min-w-[240px] max-w-xl relative">
         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
         <input 
@@ -173,19 +161,17 @@
           </select>
         </div>
 
-        <!-- Cart Trigger (Always Accessible) -->
+        <!-- Cart Trigger -->
         <button onclick="toggleCartDrawer()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black flex items-center gap-2 transition shadow-md shadow-emerald-600/20">
           <i data-lucide="shopping-cart" class="w-4 h-4"></i> <span class="hidden sm:inline">Cart</span> (<span id="cart-item-count">0</span>)
         </button>
 
-        <!-- Login / User Dropdown Button (Flipkart Style) -->
+        <!-- Login / User Dropdown Button -->
         <div class="relative" id="nav-auth-wrapper">
-          <!-- Button When NOT Logged In -->
           <button id="btn-header-login" onclick="openLoginModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-black text-xs flex items-center gap-1.5 transition shadow-sm">
             <i data-lucide="user" class="w-4 h-4 text-emerald-400"></i> <span>Login</span>
           </button>
 
-          <!-- Button When Logged In -->
           <button id="btn-header-user" onclick="toggleUserDropdown()" class="hidden flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 px-3.5 py-2 rounded-xl border border-emerald-200 text-xs transition text-slate-800 font-bold">
             <div class="w-5 h-5 rounded-full bg-emerald-200 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
               <i data-lucide="user-check" class="w-3 h-3"></i>
@@ -194,7 +180,6 @@
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
           </button>
 
-          <!-- User Menu Dropdown -->
           <div id="user-profile-dropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 text-slate-800 p-2 space-y-1 hidden z-50">
             <div class="p-2.5 border-b border-slate-100">
               <p class="text-[10px] text-slate-400 uppercase font-extrabold tracking-wider">Active Session</p>
@@ -242,19 +227,6 @@
       <button onclick="requireRoleAccess('admin')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 font-bold transition">
         <span>🛡️</span> Admin Arbitrage Matrix
       </button>
-    </div>
-  </div>
-
-  <!-- LIVE APMC MANDI SPREAD TICKER -->
-  <div class="bg-emerald-900 text-emerald-200 text-[11px] font-bold py-2 px-4 overflow-hidden border-b border-emerald-800 flex items-center gap-3">
-    <span class="bg-emerald-600 text-white px-2.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shrink-0 animate-pulse">Live Mandi Arbitrage</span>
-    <div class="w-full overflow-hidden">
-      <div class="animate-marquee space-x-8 text-emerald-100">
-        <span>🍅 Tomato (Faridabad APMC): ₹12/kg &bull; <b class="text-white">KisanRoute Fair Price: ₹24/kg (+100%)</b></span>
-        <span>🥔 Potato: Mandi ₹11/kg &bull; <b class="text-white">KisanRoute: ₹18/kg</b></span>
-        <span>🌾 Wheat (Sharbati): Mandi ₹22/kg &bull; <b class="text-white">KisanRoute: ₹28/kg</b></span>
-        <span>🛡️ Fasal Rakshak AMC: Direct Satellite-verified payouts active for Faridabad cluster</span>
-      </div>
     </div>
   </div>
 
@@ -409,11 +381,10 @@
     </div>
   </div>
 
-  <!-- 4. AUTH PORTAL & 1-CLICK ROLE SWITCHER GATE (MODAL) -->
+  <!-- 4. AUTH PORTAL MODAL -->
   <div id="auth-portal-screen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-40 hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-[2.5rem] max-w-xl w-full p-7 sm:p-9 shadow-2xl border border-emerald-100 space-y-6 my-auto text-slate-800 relative">
       
-      <!-- Modal Close Button -->
       <button onclick="closeLoginModal()" class="absolute top-6 right-6 p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
@@ -491,12 +462,8 @@
   <!-- MAIN WORKSPACE CONTAINER -->
   <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-    <!-- ======================================================= -->
-    <!-- VIEW 1: FLIPKART STYLE PUBLIC CONSUMER MART (DEFAULT)   -->
-    <!-- ======================================================= -->
+    <!-- VIEW 1: FLIPKART STYLE PUBLIC CONSUMER MART -->
     <div id="view-consumer" class="role-workspace space-y-6">
-      
-      <!-- Flipkart Style Hero Banner Carousel -->
       <div class="cmd-surface border-emerald-200 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-800 text-white rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden shadow-lg">
         <div class="space-y-3 z-10 max-w-xl">
           <span class="px-3.5 py-1 bg-white/20 text-white border border-white/30 text-[10px] font-black uppercase tracking-wider rounded-full backdrop-blur-md">
@@ -525,7 +492,7 @@
         </div>
       </div>
 
-      <!-- ACTIVE ORDER TRACKING BANNER (SHOWN WHEN AN ORDER IS PLACED) -->
+      <!-- ACTIVE ORDER TRACKING BANNER -->
       <div id="consumer-active-order-card" class="cmd-surface rounded-3xl p-6 space-y-4 hidden border-emerald-300 bg-white shadow-sm">
         <div class="flex justify-between items-center border-b border-emerald-100 pb-3">
           <div>
@@ -550,7 +517,6 @@
         </div>
       </div>
 
-      <!-- Produce Catalog Grid Header -->
       <div id="produce-catalog-anchor" class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 pt-2">
         <div>
           <h3 class="text-xl font-black text-slate-900">Fresh Harvest Deals of the Day</h3>
@@ -559,16 +525,11 @@
         <span class="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl self-start">⚡ 100% Organic & Graded</span>
       </div>
 
-      <!-- Produce Catalog Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="consumer-catalog-grid"></div>
     </div>
 
-    <!-- ======================================================= -->
-    <!-- VIEW 2: MEMBER FARMER DASHBOARD & CROP INTAKE           -->
-    <!-- ======================================================= -->
+    <!-- VIEW 2: MEMBER FARMER DASHBOARD -->
     <div id="view-member_farmer" class="role-workspace space-y-6 hidden">
-      
-      <!-- Top Action Strip -->
       <div class="cmd-surface rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Producer:</span>
@@ -588,7 +549,7 @@
         </div>
       </div>
 
-      <!-- INCOMING CONSUMER ORDER DECISION CARD -->
+      <!-- Farmer Order Decision Card -->
       <div id="farmer-order-decision-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-amber-400 bg-amber-50/60 space-y-5 hidden">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
           <div class="flex items-center gap-3">
@@ -619,7 +580,7 @@
         </div>
       </div>
 
-      <!-- DISPATCH READY CARD -->
+      <!-- Dispatch Ready Card -->
       <div id="farmer-dispatch-card" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-5 border-emerald-300 bg-emerald-50/40 hidden">
         <div class="flex justify-between items-center border-b border-emerald-200 pb-3">
           <div>
@@ -670,7 +631,7 @@
         </div>
       </div>
 
-      <!-- FARMER REFERRAL SYSTEM & REWARDS VAULT -->
+      <!-- FARMER REFERRAL SYSTEM -->
       <div id="farmer-referral-section" class="cmd-surface rounded-3xl p-6 sm:p-7 space-y-4 border-purple-200 bg-gradient-to-r from-purple-50/60 to-indigo-50/40">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-purple-100 pb-3.5">
           <div class="flex items-center gap-3">
@@ -752,7 +713,7 @@
               <div class="flex items-center gap-3">
                 <input type="file" id="farmer-crop-photo" accept="image/*" onchange="previewFarmerCropImage(event)" class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer" />
                 <div class="w-12 h-12 rounded-xl bg-white border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center">
-                  <img id="farmer-crop-img-preview" src="https://images.unsplash.com/photo-1546470427-e26264be0b11?w=300" class="w-full h-full object-cover" />
+                  <img id="farmer-crop-img-preview" src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=500&auto=format&fit=crop&q=80'" />
                 </div>
               </div>
             </div>
@@ -905,12 +866,8 @@
       </div>
     </div>
 
-    <!-- ======================================================= -->
-    <!-- VIEW 3: FLEET DRIVER TERMINAL & GPS DISPATCH            -->
-    <!-- ======================================================= -->
+    <!-- VIEW 3: FLEET DRIVER TERMINAL -->
     <div id="view-driver" class="role-workspace space-y-6 hidden">
-      
-      <!-- TOP NOTIFICATION ALERT FOR DRIVER (POINT A -> POINT B) -->
       <div id="driver-assigned-job-card" class="cmd-surface rounded-3xl p-6 sm:p-7 border-2 border-cyan-400 bg-cyan-50/70 space-y-4">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-cyan-200 pb-3.5">
           <div class="flex items-center gap-3">
@@ -929,7 +886,6 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <!-- Point A -->
           <div class="p-4 bg-white rounded-2xl border border-cyan-200 space-y-1 shadow-sm">
             <div class="flex items-center gap-1.5 font-black text-emerald-700">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> 🟢 POINT A (Farmgate Pickup)
@@ -939,7 +895,6 @@
             <p class="text-[11px] text-slate-500">Pincode: 121007 (Dhauj, Faridabad)</p>
           </div>
 
-          <!-- Point B -->
           <div class="p-4 bg-white rounded-2xl border border-cyan-200 space-y-1 shadow-sm">
             <div class="flex items-center gap-1.5 font-black text-rose-600">
               <span class="w-2.5 h-2.5 rounded-full bg-rose-600"></span> 🔴 POINT B (Customer Destination)
@@ -950,9 +905,7 @@
           </div>
         </div>
 
-        <!-- Verification Steps Inside Driver Card -->
         <div class="pt-1">
-          <!-- Pickup Step -->
           <div id="driver-pickup-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs shadow-sm">
             <div class="flex justify-between items-center">
               <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Step 1: Verify Farmgate Loading</span>
@@ -966,7 +919,6 @@
             </div>
           </div>
 
-          <!-- Delivery Step -->
           <div id="driver-delivery-box" class="p-4 bg-white rounded-2xl border-2 border-emerald-500 space-y-2.5 text-xs hidden shadow-sm">
             <div class="flex justify-between items-center">
               <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Step 2: Complete Doorstep Delivery</span>
@@ -1003,9 +955,7 @@
       </div>
     </div>
 
-    <!-- ======================================================= -->
-    <!-- VIEW 4: B2B BUYER WHOLESALE TERMINAL                    -->
-    <!-- ======================================================= -->
+    <!-- VIEW 4: B2B BUYER WHOLESALE TERMINAL -->
     <div id="view-buyer" class="role-workspace space-y-6 hidden">
       <div class="cmd-surface rounded-3xl p-6 sm:p-8 space-y-6">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-5 border-b border-emerald-100">
@@ -1057,9 +1007,7 @@
       </div>
     </div>
 
-    <!-- ======================================================= -->
-    <!-- VIEW 5: ADMIN EXCLUSIVE ARBITRAGE & PRICE SHEET         -->
-    <!-- ======================================================= -->
+    <!-- VIEW 5: ADMIN EXCLUSIVE ARBITRAGE & PRICE SHEET -->
     <div id="view-admin" class="role-workspace space-y-6 hidden">
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div class="cmd-surface rounded-2xl p-5">
@@ -1080,7 +1028,6 @@
         </div>
       </div>
 
-      <!-- EXCLUSIVE: ADMIN LIVE ARBITRAGE & PRICE COMPARISON SHEET -->
       <div class="cmd-surface rounded-3xl overflow-hidden space-y-4 p-6 border-emerald-300 bg-white">
         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
           <div>
@@ -1141,7 +1088,6 @@
         </div>
       </div>
 
-      <!-- Action Button Triggers Login if Guest -->
       <button onclick="handleCartCheckoutIntent()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 uppercase tracking-wider">
         <i data-lucide="check" class="w-4 h-4"></i> Proceed to Checkout & Delivery Address ⚡
       </button>
@@ -1154,7 +1100,7 @@
     <span class="pr-1 font-bold">Ask KisanAI</span>
   </button>
 
-  <!-- FLOATING AI COPILOT CHATBOT DRAWER (ACTIVE) -->
+  <!-- FLOATING AI COPILOT CHATBOT DRAWER -->
   <div id="ai-chat-window" class="fixed bottom-24 right-5 w-96 max-w-[calc(100vw-2.5rem)] bg-white border border-emerald-100 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col hidden transition-all duration-300" style="height: 520px;">
     <div class="bg-gradient-to-r from-emerald-800 to-teal-800 p-4 text-white flex justify-between items-center shadow-sm">
       <div class="flex items-center gap-2.5">
@@ -1171,7 +1117,6 @@
       </button>
     </div>
 
-    <!-- Quick Action Chips -->
     <div class="bg-emerald-50/70 px-3 py-2 border-b border-emerald-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
       <button onclick="sendQuickPrompt('Check current live order status')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">📦 Order Status</button>
       <button onclick="sendQuickPrompt('What is the best APMC rate for Tomato?')" class="px-2.5 py-1 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-bold shrink-0 transition">🍅 Tomato Rate</button>
@@ -1196,7 +1141,7 @@
     </form>
   </div>
 
-  <!-- JAVASCRIPT MASTER PERSISTENT CONTROLLER -->
+  <!-- JAVASCRIPT MASTER CONTROLLER -->
   <script>
     const mandisBenchmark = [
       { name: "KisanRoute Direct FPO Hub", distance: "0 km (Farmgate)", rateFactor: 1.0, isBest: true },
@@ -1258,15 +1203,16 @@
       frequency: 'yearly'
     };
 
+    // Verified permanent image sources with fail-safe fallback
     let consumerCatalog = [
-      { id: 'c1', name: 'Desi Farm Hybrid Tomato', cat: 'vegetable', price: 28, mrp: 40, unit: '1 kg', discount: '30% OFF', farm: 'Dhauj Hub (Rameshwar)', img: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600', rating: '4.9 ★' },
-      { id: 'c2', name: 'Organic Table Sugar-Free Potato', cat: 'vegetable', price: 22, mrp: 30, unit: '1 kg', discount: '26% OFF', farm: 'Tigaon Farm (Harpreet)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600', rating: '4.8 ★' },
-      { id: 'c3', name: 'Fresh Nashik Red Onion', cat: 'vegetable', price: 26, mrp: 35, unit: '1 kg', discount: '25% OFF', farm: 'NIT Faridabad (Jaipal)', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600', rating: '4.7 ★' },
-      { id: 'c4', name: 'Crisp Shimla Royal Apple', cat: 'fruit', price: 110, mrp: 160, unit: '1 kg (4 pcs)', discount: '31% OFF', farm: 'Himachal Partner Cluster', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600', rating: '5.0 ★' },
-      { id: 'c5', name: 'Sun-Ripened Ratnagiri Alphonso Mango', cat: 'fruit', price: 340, mrp: 450, unit: '1 kg pack', discount: '24% OFF', farm: 'Direct Orchard Partner', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600', rating: '4.9 ★' },
-      { id: 'c6', name: 'Premium Sharbati Wheat Flour', cat: 'grain', price: 42, mrp: 55, unit: '1 kg pouch', discount: '23% OFF', farm: 'Ballabhgarh (Satish)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600', rating: '4.9 ★' },
-      { id: 'c7', name: 'Hydroponic Tender Baby Spinach', cat: 'exotic', price: 35, mrp: 50, unit: '250 gm pack', discount: '30% OFF', farm: 'Sainik Colony Polyhouse', img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600', rating: '4.8 ★' },
-      { id: 'c8', name: 'Fresh Green Broccoli & Bell Peppers', cat: 'exotic', price: 65, mrp: 90, unit: '500 gm box', discount: '27% OFF', farm: 'Greater Faridabad Greenbelt', img: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600', rating: '4.9 ★' }
+      { id: 'c1', name: 'Desi Farm Hybrid Tomato', cat: 'vegetable', price: 28, mrp: 40, unit: '1 kg', discount: '30% OFF', farm: 'Dhauj Hub (Rameshwar)', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c2', name: 'Organic Table Sugar-Free Potato', cat: 'vegetable', price: 22, mrp: 30, unit: '1 kg', discount: '26% OFF', farm: 'Tigaon Farm (Harpreet)', img: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
+      { id: 'c3', name: 'Fresh Nashik Red Onion', cat: 'vegetable', price: 26, mrp: 35, unit: '1 kg', discount: '25% OFF', farm: 'NIT Faridabad (Jaipal)', img: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80', rating: '4.7 ★' },
+      { id: 'c4', name: 'Crisp Shimla Royal Apple', cat: 'fruit', price: 110, mrp: 160, unit: '1 kg (4 pcs)', discount: '31% OFF', farm: 'Himachal Partner Cluster', img: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&auto=format&fit=crop&q=80', rating: '5.0 ★' },
+      { id: 'c5', name: 'Sun-Ripened Ratnagiri Alphonso Mango', cat: 'fruit', price: 340, mrp: 450, unit: '1 kg pack', discount: '24% OFF', farm: 'Direct Orchard Partner', img: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c6', name: 'Premium Sharbati Wheat Flour', cat: 'grain', price: 42, mrp: 55, unit: '1 kg pouch', discount: '23% OFF', farm: 'Ballabhgarh (Satish)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' },
+      { id: 'c7', name: 'Hydroponic Tender Baby Spinach', cat: 'exotic', price: 35, mrp: 50, unit: '250 gm pack', discount: '30% OFF', farm: 'Sainik Colony Polyhouse', img: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&auto=format&fit=crop&q=80', rating: '4.8 ★' },
+      { id: 'c8', name: 'Fresh Green Broccoli & Bell Peppers', cat: 'exotic', price: 65, mrp: 90, unit: '500 gm box', discount: '27% OFF', farm: 'Greater Faridabad Greenbelt', img: 'https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=600&auto=format&fit=crop&q=80', rating: '4.9 ★' }
     ];
 
     let consumerCart = {};
@@ -1301,6 +1247,7 @@
       if (msg) alert(msg);
     }
 
+    // Instant Non-blocking Boot
     document.addEventListener("DOMContentLoaded", () => {
       renderConsumerCatalog('all');
       updateCartDisplay();
@@ -1380,7 +1327,7 @@
           <div class="cmd-surface rounded-3xl p-4 space-y-3 flex flex-col justify-between bg-white border border-slate-200">
             <div class="space-y-2.5">
               <div class="w-full h-44 rounded-2xl overflow-hidden relative bg-slate-100 border border-slate-100">
-                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600'" />
+                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=600&auto=format&fit=crop&q=80'" />
                 <span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white font-black text-[9px] px-2 py-0.5 rounded-md shadow-sm">${p.discount}</span>
                 <span class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-md text-amber-600 font-bold text-[10px] px-2 py-0.5 rounded-md border border-slate-200">${p.rating}</span>
               </div>
@@ -1416,7 +1363,7 @@
     }
 
     // -------------------------------------------------------------
-    // CHATBOT INTERACTIVE CONTROLLER (NO ALERTS)
+    // CHATBOT INTERACTIVE CONTROLLER
     // -------------------------------------------------------------
     function toggleAIChat() {
       const chatWindow = document.getElementById('ai-chat-window');
@@ -1704,7 +1651,6 @@
       currentLoggedInUser = null;
       currentFarmerObject = null;
       
-      // Revert Header Buttons to Guest Login State
       document.getElementById('btn-header-user').classList.add('hidden');
       document.getElementById('btn-header-login').classList.remove('hidden');
       document.getElementById('session-user-badge').innerText = "Not Logged In";
@@ -1900,7 +1846,7 @@
           <div class="cmd-surface rounded-3xl p-4 space-y-3 flex flex-col justify-between bg-white border border-slate-200">
             <div class="space-y-2.5">
               <div class="w-full h-44 rounded-2xl overflow-hidden relative bg-slate-100 border border-slate-100">
-                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600'" />
+                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover transform hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=600&auto=format&fit=crop&q=80'" />
                 <span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white font-black text-[9px] px-2 py-0.5 rounded-md shadow-sm">${p.discount}</span>
                 <span class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-md text-amber-600 font-bold text-[10px] px-2 py-0.5 rounded-md border border-slate-200">${p.rating}</span>
               </div>
@@ -1937,10 +1883,10 @@
 
     function filterConsumerCategory(cat, btnElement) {
       document.querySelectorAll('.consumer-filter-btn').forEach(btn => {
-        btn.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 transition';
+        btn.className = 'consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 transition';
       });
       if (btnElement) {
-        btnElement.className = 'consumer-filter-btn px-4 py-2 rounded-xl bg-emerald-600 text-white font-black shadow-sm transition';
+        btnElement.className = 'consumer-filter-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-black transition';
       }
       renderConsumerCatalog(cat);
     }
@@ -1976,7 +1922,7 @@
 
             itemsContainer.innerHTML += `
               <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
-                <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover shrink-0" />
+                <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover shrink-0" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1582284540020-8acbe03f4924?w=600&auto=format&fit=crop&q=80'" />
                 <div class="flex-1 truncate">
                   <p class="font-bold text-slate-900 truncate">${item.name}</p>
                   <p class="text-[10px] text-emerald-700 font-bold">${item.unit} &bull; ₹${item.price}</p>

@@ -1,7 +1,10 @@
 import os
+import sys
+
+# Ensure Vercel finds all relative imports properly
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from flask import Flask, session
-
 from config import Config
 from extensions import db
 from translations.strings import LANGUAGES, translate
@@ -11,8 +14,19 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Vercel Serverless environment compatibility
+    if os.environ.get("VERCEL"):
+        # Serverless environment me sirf /tmp writable hota hai
+        app.config["UPLOAD_FOLDER"] = "/tmp/uploads"
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/kisanroute.db"
+
     db.init_app(app)
-    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+    # Safe folder creation (crash hone se rokega)
+    try:
+        os.makedirs(app.config.get("UPLOAD_FOLDER", "/tmp"), exist_ok=True)
+    except Exception as e:
+        print("Upload folder setup skipped:", e)
 
     # --- Blueprints: one per role, plus a shared "main" blueprint ---
     from blueprints.main import main_bp
@@ -38,8 +52,12 @@ def create_app():
 
         return dict(t=t, current_lang=lang, languages=LANGUAGES)
 
+    # Database create ko safe try-except me rakhein
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            print("Database creation handled:", e)
 
     return app
 
@@ -47,6 +65,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    # debug=True gives auto-reload + in-browser tracebacks while you build.
-    # Turn it off before showing this to judges on a shared network.
     app.run(debug=True, host="127.0.0.1", port=5000)

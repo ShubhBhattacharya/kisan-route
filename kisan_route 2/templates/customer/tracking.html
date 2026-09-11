@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">🚚</span> Order Tracking</h1>
+  {% if order %}
+  <p>{{ order.quantity }} kg of {{ order.listing.crop }} from {{ order.listing.farmer }}</p>
+  {% endif %}
+  <ol class="timeline">
+    {% for step in timeline %}
+    <li class="{{ 'done' if step.done else '' }}">
+      <span class="timeline-dot" aria-hidden="true"></span>
+      <div><strong>{{ step.step }}</strong><br><small>{{ step.time }}</small></div>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}

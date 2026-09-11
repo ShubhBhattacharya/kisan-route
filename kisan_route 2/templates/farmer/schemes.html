@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">🏛️</span> Government Schemes</h1>
+  <div class="dashboard-grid">
+    {% for s in schemes %}
+    <div class="card">
+      <h2>{{ s.name }}</h2>
+      <p>{{ s.desc }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <p class="form-note">Mock scheme summaries for the prototype — verify current details on the official scheme portals before presenting this as fact.</p>
+</section>
+{% endblock %}

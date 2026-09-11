@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="dashboard">
+  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🛒</span></h1>
+  <form method="get" class="inline-form">
+    <label class="visually-hidden" for="q">Search crops</label>
+    <input type="text" id="q" name="q" placeholder="Search crops" value="{{ query }}">
+    <button class="btn" type="submit">Search</button>
+  </form>
+  <div class="dashboard-grid">
+    {% for l in listings %}
+    <div class="card">
+      <h2>{{ l.crop }}</h2>
+      <p>From {{ l.farmer }}, {{ l.village }}</p>
+      <p class="price-tag">₹{{ l.price }} / {{ l.unit }} · {{ l.available_kg }} kg available</p>
+      <a class="btn btn-primary" href="{{ url_for('customer.order', listing_id=l.id) }}">Order</a>
+    </div>
+    {% else %}
+    <p>No crops match "{{ query }}".</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

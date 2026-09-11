@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="dashboard">
+  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🌾</span></h1>
+  {% if crop_type %}
+  <p class="dashboard-subtitle">Growing: <strong>{{ crop_type }}</strong></p>
+  {% endif %}
+  <div class="dashboard-grid">
+    <a class="feature-card" href="{{ url_for('farmer.crop_quality') }}">
+      <span class="feature-icon" aria-hidden="true">📷</span>
+      <h2>Crop Quality Check</h2>
+      <p>Upload a photo and get an instant quality grade.</p>
+    </a>
+    <a class="feature-card" href="{{ url_for('farmer.mandi_rates') }}">
+      <span class="feature-icon" aria-hidden="true">📊</span>
+      <h2>Mandi Rate Detector</h2>
+      <p>Compare live rates across 7 nearby mandis.</p>
+    </a>
+    <a class="feature-card" href="{{ url_for('farmer.profit_calculator') }}">
+      <span class="feature-icon" aria-hidden="true">💰</span>
+      <h2>Net Profit Calculator</h2>
+      <p>Estimate revenue, transport cost, and profit.</p>
+    </a>
+    <a class="feature-card" href="{{ url_for('farmer.insurance') }}">
+      <span class="feature-icon" aria-hidden="true">🛡️</span>
+      <h2>Crop Protection</h2>
+      <p>Transit and weather protection plans.</p>
+    </a>
+    <a class="feature-card" href="{{ url_for('farmer.schemes') }}">
+      <span class="feature-icon" aria-hidden="true">🏛️</span>
+      <h2>Government Schemes</h2>
+      <p>Latest schemes relevant to you.</p>
+    </a>
+    <a class="feature-card" href="{{ url_for('farmer.tracking') }}">
+      <span class="feature-icon" aria-hidden="true">🚚</span>
+      <h2>Shipment Tracking</h2>
+      <p>See where your crop is right now.</p>
+    </a>
+  </div>
+</section>
+{% endblock %}

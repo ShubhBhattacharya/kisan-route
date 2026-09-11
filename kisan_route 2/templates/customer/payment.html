@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1>UPI Payment (Demo)</h1>
+  <div class="card">
+    <p>Paying for {{ pending.listing.crop }} — {{ pending.quantity }} kg</p>
+    <p class="price-tag">Amount: ₹{{ '%.2f'|format(pending.amount) }}</p>
+    <form method="post">
+      <button class="btn btn-primary" type="submit">Simulate UPI payment</button>
+    </form>
+    <p class="form-note">This is a mock payment for the prototype — no real money moves.</p>
+  </div>
+</section>
+{% endblock %}

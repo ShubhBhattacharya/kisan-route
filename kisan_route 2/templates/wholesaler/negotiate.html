@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1>Negotiate with {{ listing.name }}</h1>
+  <p>{{ listing.crop }} · {{ listing.quantity_qtl }} quintals available · asking ₹{{ listing.asking_rate }} / quintal · {{ listing.distance_km }} km away</p>
+  <form method="post" class="form-grid">
+    <div class="form-group"><label for="offer_price">Your offer (₹ / quintal)</label><input type="number" step="0.1" min="0" id="offer_price" name="offer_price" required></div>
+    <div class="form-group"><label for="offer_qty">Quantity you want (quintals)</label><input type="number" step="0.1" min="0" max="{{ listing.quantity_qtl }}" id="offer_qty" name="offer_qty" required></div>
+    <button class="btn btn-primary" type="submit">Send offer</button>
+  </form>
+
+  {% if offer_result %}
+  <div class="result-card">
+    <h2>Offer sent</h2>
+    <p>₹{{ offer_result.offer_price }} / quintal × {{ offer_result.offer_qty }} quintals = <strong>₹{{ '%.2f'|format(offer_result.total) }}</strong></p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

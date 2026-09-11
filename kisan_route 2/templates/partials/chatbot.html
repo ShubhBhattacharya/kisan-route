@@ -1,0 +1,235 @@
+<!-- Floating Chatbot Launcher Button -->
+<div id="krChatLauncher" style="position: fixed; bottom: 24px; right: 24px; z-index: 99999;">
+  <button id="krChatToggleBtn" type="button" aria-label="Open Kisan Route Assistant" style="
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+  ">
+    💬
+  </button>
+</div>
+
+<!-- Chatbot Popup Modal/Window -->
+<div id="krChatContainer" style="
+  display: none;
+  position: fixed;
+  bottom: 95px;
+  right: 24px;
+  width: 360px;
+  max-width: 90vw;
+  height: 480px;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+  border: 1px solid #dcedc8;
+  flex-direction: column;
+  z-index: 999999;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, sans-serif;
+">
+
+  <!-- Header -->
+  <div style="
+    background: linear-gradient(135deg, #1b5e20, #2e7d32);
+    color: #ffffff;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  ">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 20px;">🌾</span>
+      <div>
+        <h4 style="margin: 0; font-size: 15px; font-weight: 700;">Kisan Route Assistant</h4>
+        <small style="font-size: 11px; color: #c8e6c9;">Online | Krishi Sahayak</small>
+      </div>
+    </div>
+    <button id="krChatCloseBtn" type="button" style="
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">&times;</button>
+  </div>
+
+  <!-- Messages Scroll Area -->
+  <div id="krChatBody" style="
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+    background: #f8faf8;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  ">
+    <!-- Bot Welcome Message -->
+    <div style="align-self: flex-start; max-width: 85%; background: #ffffff; border: 1px solid #e0e0e0; padding: 10px 14px; border-radius: 14px 14px 14px 2px; font-size: 13.5px; color: #222; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+      Namaste! 🙏 Main Kisan Route Assistant hoon. Main mandi rates, transport booking, ya dashboard me aapki kya madad kar sakta hoon?
+    </div>
+
+    <!-- Quick Options -->
+    <div id="krQuickChips" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+      <button type="button" class="kr-chip-btn" data-msg="Mandi rate kaise check karein?">📊 Mandi Rates</button>
+      <button type="button" class="kr-chip-btn" data-msg="Transport kaise book karein?">🚚 Book Transport</button>
+      <button type="button" class="kr-chip-btn" data-msg="Customer Care number kya hai?">📞 Helpline Support</button>
+    </div>
+  </div>
+
+  <!-- Input Footer -->
+  <form id="krChatForm" style="
+    display: flex;
+    border-top: 1px solid #e0e0e0;
+    padding: 8px 10px;
+    background: #ffffff;
+    gap: 6px;
+    align-items: center;
+  ">
+    <input type="text" id="krChatInput" placeholder="Apna prashn likhein..." autocomplete="off" style="
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 20px;
+      border: 1px solid #c8e6c9;
+      outline: none;
+      font-size: 13.5px;
+      background: #fafdfa;
+    " />
+    <button type="submit" style="
+      background: #2e7d32;
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    ">➤</button>
+  </form>
+</div>
+
+<style>
+  .kr-chip-btn {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    color: #1b5e20;
+    border-radius: 14px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .kr-chip-btn:hover {
+    background: #2e7d32;
+    color: #ffffff;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var toggleBtn = document.getElementById('krChatToggleBtn');
+  var chatContainer = document.getElementById('krChatContainer');
+  var closeBtn = document.getElementById('krChatCloseBtn');
+  var chatForm = document.getElementById('krChatForm');
+  var chatInput = document.getElementById('krChatInput');
+  var chatBody = document.getElementById('krChatBody');
+
+  if (!toggleBtn || !chatContainer) return;
+
+  // Toggle open/close
+  toggleBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var isOpen = chatContainer.style.display === 'flex';
+    chatContainer.style.display = isOpen ? 'none' : 'flex';
+    if (!isOpen && chatInput) chatInput.focus();
+  });
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      chatContainer.style.display = 'none';
+    });
+  }
+
+  // Pre-defined intelligent response dictionary
+  var botAnswers = {
+    "mandi": "Aap Mandi Rate Detector page (/farmer/mandi-rates) par jakar apne kshetra ke taaza daam dekh sakte hain.",
+    "rate": "Faslon ke taaza daam check karne ke liye apne dashboard se Mandi Rates par click karein.",
+    "transport": "Transport booking ke liye Shared Logistics section me jakar apna pickup point aur delivery mandi select karein.",
+    "driver": "Driver connect hone par unka vehicle number aur live location aapke dashboard par update ho jayega.",
+    "helpline": "Aap hamare toll-free helpline +91 1800-123-4567 par subah 8 se shaam 8 baje tak call kar sakte hain.",
+    "support": "Aap WhatsApp support (+91 98765 43210) ya support@kisanapp.com par email bhej sakte hain."
+  };
+
+  function appendMessage(sender, text) {
+    var msgDiv = document.createElement('div');
+    if (sender === 'user') {
+      msgDiv.style.cssText = "align-self: flex-end; max-width: 80%; background: #2e7d32; color: #ffffff; padding: 8px 12px; border-radius: 14px 14px 2px 14px; font-size: 13px; line-height: 1.4; word-break: break-word;";
+    } else {
+      msgDiv.style.cssText = "align-self: flex-start; max-width: 85%; background: #ffffff; border: 1px solid #e0e0e0; padding: 10px 14px; border-radius: 14px 14px 14px 2px; font-size: 13.5px; color: #222; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.03); word-break: break-word;";
+    }
+    msgDiv.textContent = text;
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function handleUserMessage(query) {
+    if (!query.trim()) return;
+    appendMessage('user', query);
+
+    var lower = query.toLowerCase();
+    var reply = "Kisan Route par aap mandi bhav, shared truck booking, aur fasal profit calculate kar sakte hain. Aapka prashn note kar liya gaya hai!";
+
+    for (var key in botAnswers) {
+      if (lower.indexOf(key) !== -1) {
+        reply = botAnswers[key];
+        break;
+      }
+    }
+
+    setTimeout(function() {
+      appendMessage('bot', reply);
+    }, 450);
+  }
+
+  if (chatForm) {
+    chatForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var txt = chatInput.value.trim();
+      if (txt) {
+        handleUserMessage(txt);
+        chatInput.value = '';
+      }
+    });
+  }
+
+  // Handle Quick Chips
+  document.querySelectorAll('.kr-chip-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var query = this.getAttribute('data-msg');
+      handleUserMessage(query);
+    });
+  });
+});
+</script>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page about-page">
+  <h1>About {{ t('site_name') }}</h1>
+
+  <div class="card">
+    <h2>Our mission</h2>
+    <p>Kisan Route exists to shorten the distance — in price and in trust — between the people who grow food and the people who move, sell, and buy it. We do that by putting mandi rates, shared logistics, and direct market access in one place.</p>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <h2>🌾 For farmers &amp; clusters</h2>
+      <p>Compare mandi rates before you sell, check crop quality, calculate net profit after transport, and track your shipment from pickup to delivery.</p>
+    </div>
+    <div class="card">
+      <h2>🛒 For customers</h2>
+      <p>Buy directly from nearby farms with transparent pricing and simple order tracking.</p>
+    </div>
+    <div class="card">
+      <h2>🚚 For drivers</h2>
+      <p>Find nearby loads, get an optimized route, and manage deliveries the way you would on any modern logistics app.</p>
+    </div>
+    <div class="card">
+      <h2>🏬 For wholesalers</h2>
+      <p>Discover farmer listings near your mandi, filter by crop, and negotiate directly.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>About this build</h2>
+    <p>This is a hackathon prototype: the backend, routing, and logic are real Python (Flask); OTP, payments, crop-quality grading, and route optimization use clearly-marked mock modules so real APIs can be dropped in later without changing the rest of the app.</p>
+  </div>
+</section>
+{% endblock %}

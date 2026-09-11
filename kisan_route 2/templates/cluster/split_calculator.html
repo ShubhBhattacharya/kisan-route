@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">➗</span> Cost Splitting Calculator</h1>
+  <form method="post" class="form-grid">
+    <div class="form-group"><label for="quantity">Total quantity (quintals)</label><input type="number" step="0.1" min="0" id="quantity" name="quantity" required></div>
+    <div class="form-group"><label for="rate">Agreed rate (₹ / quintal)</label><input type="number" step="0.1" min="0" id="rate" name="rate" required></div>
+    <div class="form-group"><label for="total_cost">Total transport cost (₹)</label><input type="number" step="0.1" min="0" id="total_cost" name="total_cost" required></div>
+    <div class="form-group"><label for="members">Number of members</label><input type="number" min="1" id="members" name="members" required></div>
+    <button class="btn btn-primary" type="submit">Calculate split</button>
+  </form>
+
+  {% if breakdown %}
+  <div class="result-card">
+    <h2>Split across {{ breakdown.members }} members</h2>
+    <ul class="breakdown-list">
+      <li>Total revenue: ₹{{ '%.2f'|format(breakdown.revenue) }}</li>
+      <li>Total net profit: ₹{{ '%.2f'|format(breakdown.net_profit) }}</li>
+      <li>Transport cost per member: ₹{{ '%.2f'|format(breakdown.cost_per_member) }}</li>
+      <li class="total-line">Profit per member: ₹{{ '%.2f'|format(breakdown.profit_per_member) }}</li>
+    </ul>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

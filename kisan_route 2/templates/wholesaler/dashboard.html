@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="dashboard">
+  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🏬</span></h1>
+  <form method="get" class="inline-form">
+    <label for="crop">Filter by crop</label>
+    <select id="crop" name="crop" onchange="this.form.submit()">
+      <option value="">All crops</option>
+      {% for c in crops %}<option value="{{ c }}" {% if c == selected_crop %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+  </form>
+  <table class="table">
+    <thead><tr><th>Farmer</th><th>Village</th><th>Crop</th><th>Qty (qtl)</th><th>Rate</th><th>Distance</th><th></th></tr></thead>
+    <tbody>
+    {% for f in listings %}
+      <tr>
+        <td>{{ f.name }}</td><td>{{ f.village }}</td><td>{{ f.crop }}</td><td>{{ f.quantity_qtl }}</td>
+        <td>₹{{ f.asking_rate }}</td><td>{{ f.distance_km }} km</td>
+        <td><a class="btn btn-small" href="{{ url_for('wholesaler.negotiate', name=f.name) }}">Negotiate</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

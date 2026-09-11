@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="cluster-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px; font-family: 'Inter', sans-serif;">
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="background: #e8f5e9; color: #1b5e20; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700; text-transform: uppercase;">Cluster Aggregation Hub</span>
+        <span style="color: #666; font-size: 13px;">Region: Greater Noida / Dadri Block</span>
+      </div>
+      <h1 style="color: #1b5e20; font-size: 28px; font-weight: 800; margin: 8px 0 0 0;">🌾 Dynamic Cluster Price Normalizer</h1>
+      <p style="color: #555; margin: 6px 0 0 0; font-size: 14.5px;">Multi-farmer produce pooling, fair pricing negotiation, and transparent dispatch settlements.</p>
+    </div>
+
+    <!-- Live Status Indicator -->
+    <div style="background: #ffffff; border: 1.5px solid #a5d6a7; border-radius: 14px; padding: 10px 18px; text-align: right; box-shadow: 0 2px 10px rgba(0,0,0,0.04);">
+      <span style="font-size: 12px; color: #666; font-weight: 600;">Active Farmers in Pool</span>
+      <div style="font-size: 20px; font-weight: 800; color: #1b5e20;">10 Farmers Joined</div>
+    </div>
+  </div>
+
+  <!-- Real-time Cluster Summary & Wholesaler Aggregation Card -->
+  <div style="background: #ffffff; border-radius: 18px; padding: 26px 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); border: 1px solid #e0e0e0; margin-bottom: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 1.5px solid #f0f0f0; padding-bottom: 14px;">
+      <div>
+        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #1b5e20;">Pool Summary for: 🌾 Wheat (Sharbati HD-2967)</h3>
+        <small style="color: #666;">Lot ID: #KR-CLUSTER-2026-09</small>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span style="background: #fff8e1; color: #b78103; font-weight: 700; padding: 6px 12px; border-radius: 20px; font-size: 13px; border: 1px solid #ffe082;">
+          ⚡ Live Weighted Valuation Active
+        </span>
+      </div>
+    </div>
+
+    <!-- Key Numerical Metrics -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 25px;">
+      
+      <div style="background: #f1f8e9; padding: 16px 20px; border-radius: 14px; border-left: 4px solid #2e7d32;">
+        <span style="font-size: 12.5px; color: #555; font-weight: 600; text-transform: uppercase;">Total Pooled Quantity</span>
+        <div id="metricTotalQty" style="font-size: 24px; font-weight: 800; color: #1b5e20; margin-top: 4px;">350 Qtl (35,000 Kg)</div>
+      </div>
+
+      <div style="background: #fdfbf7; padding: 16px 20px; border-radius: 14px; border-left: 4px solid #fbc02d;">
+        <span style="font-size: 12.5px; color: #666; font-weight: 600; text-transform: uppercase;">Farmers Weighted Avg Rate</span>
+        <div id="metricAvgRate" style="font-size: 24px; font-weight: 800; color: #b78103; margin-top: 4px;">₹ 23.40 / kg</div>
+        <small style="font-size: 11.5px; color: #777;">(₹ 2,340 / Quintal base)</small>
+      </div>
+
+      <div style="background: #e3f2fd; padding: 16px 20px; border-radius: 14px; border-left: 4px solid #1976d2;">
+        <span style="font-size: 12.5px; color: #444; font-weight: 600; text-transform: uppercase;">Wholesaler Final Landing Price</span>
+        <div id="metricWholesalerPrice" style="font-size: 24px; font-weight: 800; color: #0d47a1; margin-top: 4px;">₹ 25.90 / kg</div>
+        <small style="font-size: 11.5px; color: #555;">(Includes Freight + Grading Fee)</small>
+      </div>
+
+    </div>
+
+    <!-- Transparent Cost Breakdown for Wholesaler & Farmers -->
+    <div style="background: #fafdfa; border: 1.5px dashed #a5d6a7; border-radius: 12px; padding: 16px 20px; font-size: 14px; color: #333; line-height: 1.7;">
+      <strong>🔍 Fair Price Transparent Formula:</strong>
+      <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 6px; font-weight: 500; font-size: 13.5px;">
+        <span>• Farmer Base Avg: <strong id="cBaseRate">₹23.40/kg</strong></span>
+        <span>+ Grading & Quality QC: <strong>₹0.80/kg</strong></span>
+        <span>+ Shared Transport Logistics: <strong>₹1.20/kg</strong></span>
+        <span>+ Buffer Margin: <strong>₹0.50/kg</strong></span>
+        <span style="color: #0d47a1;">= <strong>Wholesaler Pays: ₹25.90/kg (₹2,590/Qtl)</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Farmers Individual Lots & Dispatch Approval Table -->
+  <div style="background: #ffffff; border-radius: 18px; border: 1px solid #e0e0e0; box-shadow: 0 4px 18px rgba(0,0,0,0.05); overflow: hidden;">
+    <div style="padding: 18px 25px; border-bottom: 1.5px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h3 style="margin: 0; font-size: 19px; font-weight: 800; color: #1b5e20;">Individual Farmer Lots & Dispatch Approvals</h3>
+        <p style="margin: 4px 0 0 0; font-size: 13.5px; color: #666;">Each farmer can approve or decline their lot dispatch at the calculated standardized rate.</p>
+      </div>
+      <div>
+        <button onclick="approveAllLots()" style="background: #2e7d32; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer;">
+          ✅ Approve All Eligible Lots
+        </button>
+      </div>
+    </div>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+        <thead>
+          <tr style="background: #1b5e20; color: #ffffff;">
+            <th style="padding: 14px 18px;">Farmer Name</th>
+            <th style="padding: 14px 18px;">Village / Location</th>
+            <th style="padding: 14px 18px;">Quantity</th>
+            <th style="padding: 14px 18px;">Farmer Ask Price</th>
+            <th style="padding: 14px 18px;">Dispatch Payout Rate</th>
+            <th style="padding: 14px 18px;">Total Payout (₹)</th>
+            <th style="padding: 14px 18px; text-align: center;">Dispatch Decision</th>
+          </tr>
+        </thead>
+        <tbody id="farmerLotsTbody">
+          <!-- Populated by dynamic script below -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 10 Farmers in the Greater Noida / Dadri Village Cluster with varying asked prices
+  var clusterFarmers = [
+    { id: 1, name: "Rameshwar Singh", village: "Dadri Khas", qty: 40, askPrice: 22.80, status: "pending" },
+    { id: 2, name: "Sukhbir Yadav", village: "Surajpur", qty: 50, askPrice: 24.50, status: "pending" },
+    { id: 3, name: "Harish Chandra", village: "Jarcha", qty: 30, askPrice: 23.00, status: "approved" },
+    { id: 4, name: "Mahesh Bhati", village: "Dankaur", qty: 45, askPrice: 25.00, status: "pending" },
+    { id: 5, name: "Jaipal Sharma", village: "Bilaspur", qty: 25, askPrice: 22.50, status: "pending" },
+    { id: 6, name: "Narender Gurjar", village: "Kasna", qty: 35, askPrice: 23.80, status: "approved" },
+    { id: 7, name: "Baljeet Singh", village: "Chhapraula", qty: 30, askPrice: 22.90, status: "pending" },
+    { id: 8, name: "Rajendra Prasad", village: "Badpura", qty: 20, askPrice: 24.00, status: "pending" },
+    { id: 9, name: "Virender Kumar", village: "Dhoom Manikpur", qty: 45, askPrice: 23.20, status: "pending" },
+    { id: 10, name: "Devender Nagar", village: "Bhangel", qty: 30, askPrice: 23.50, status: "pending" }
+  ];
+
+  // Logistics & Handling fees per Kg
+  var qcCost = 0.80;
+  var freightCost = 1.20;
+  var bufferMargin = 0.50;
+
+  function recalculateClusterMetrics() {
+    var totalQtyQtl = 0;
+    var totalGrossValue = 0;
+
+    clusterFarmers.forEach(function(f) {
+      var qtyKg = f.qty * 100;
+      totalQtyQtl += f.qty;
+      totalGrossValue += (qtyKg * f.askPrice);
+    });
+
+    // Volume-Weighted Average Base Price
+    var weightedAvgPerKg = totalGrossValue / (totalQtyQtl * 100);
+    var wholesalerPricePerKg = weightedAvgPerKg + qcCost + freightCost + bufferMargin;
+
+    // Update Top Metric Cards
+    document.getElementById('metricTotalQty').textContent = totalQtyQtl + " Qtl (" + (totalQtyQtl * 100).toLocaleString('en-IN') + " Kg)";
+    document.getElementById('metricAvgRate').textContent = "₹ " + weightedAvgPerKg.toFixed(2) + " / kg";
+    document.getElementById('cBaseRate').textContent = "₹ " + weightedAvgPerKg.toFixed(2) + "/kg";
+    document.getElementById('metricWholesalerPrice').textContent = "₹ " + wholesalerPricePerKg.toFixed(2) + " / kg";
+
+    renderFarmerTable(weightedAvgPerKg);
+  }
+
+  function renderFarmerTable(approvedRate) {
+    var tbody = document.getElementById('farmerLotsTbody');
+    tbody.innerHTML = '';
+
+    clusterFarmers.forEach(function(farmer, idx) {
+      var tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid #f0f0f0';
+
+      var totalFarmerPayout = (farmer.qty * 100) * approvedRate;
+
+      var actionHtml = '';
+      if (farmer.status === 'approved') {
+        actionHtml = '<span style="background:#e8f5e9;color:#2e7d32;font-weight:700;padding:5px 12px;border-radius:12px;font-size:12.5px;">✓ Dispatch Approved</span>';
+      } else if (farmer.status === 'declined') {
+        actionHtml = '<span style="background:#ffebee;color:#c62828;font-weight:700;padding:5px 12px;border-radius:12px;font-size:12.5px;">✗ Lot Declined</span>';
+      } else {
+        actionHtml = `
+          <div style="display:inline-flex;gap:6px;">
+            <button onclick="setDecision(${farmer.id}, 'approved')" style="background:#2e7d32;color:#fff;border:none;padding:5px 12px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;">Approve</button>
+            <button onclick="setDecision(${farmer.id}, 'declined')" style="background:#d32f2f;color:#fff;border:none;padding:5px 10px;border-radius:8px;font-weight:700;font-size:12.5px;cursor:pointer;">Decline</button>
+          </div>
+        `;
+      }
+
+      tr.innerHTML = `
+        <td style="padding: 14px 18px; font-weight: 700; color: #222;">${farmer.name}</td>
+        <td style="padding: 14px 18px; color: #555;">${farmer.village}</td>
+        <td style="padding: 14px 18px; font-weight: 600;">${farmer.qty} Qtl (${farmer.qty * 100} Kg)</td>
+        <td style="padding: 14px 18px; color: #777;">₹ ${farmer.askPrice.toFixed(2)}/kg</td>
+        <td style="padding: 14px 18px; font-weight: 800; color: #1b5e20;">₹ ${approvedRate.toFixed(2)}/kg</td>
+        <td style="padding: 14px 18px; font-weight: 800; color: #1b5e20;">₹ ${Math.round(totalFarmerPayout).toLocaleString('en-IN')}</td>
+        <td style="padding: 14px 18px; text-align: center;">${actionHtml}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function setDecision(farmerId, newStatus) {
+    for (var i = 0; i < clusterFarmers.length; i++) {
+      if (clusterFarmers[i].id === farmerId) {
+        clusterFarmers[i].status = newStatus;
+        break;
+      }
+    }
+    recalculateClusterMetrics();
+  }
+
+  function approveAllLots() {
+    clusterFarmers.forEach(function(f) {
+      f.status = 'approved';
+    });
+    recalculateClusterMetrics();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    recalculateClusterMetrics();
+  });
+</script>
+{% endblock %}

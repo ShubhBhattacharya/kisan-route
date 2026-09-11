@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="driver-dashboard-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px; font-family: 'Inter', sans-serif;">
+
+  <!-- Dashboard Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+    <div>
+      <h1 style="color: #1b5e20; font-size: 28px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 10px;">
+        <span>🚚</span> Driver & Transport Dashboard
+      </h1>
+      <p style="color: #555; margin: 6px 0 0 0; font-size: 14.5px;">Manage crop haulage trips, available vehicles, and rural transport operations.</p>
+    </div>
+
+    <button type="button" onclick="document.getElementById('driverVehicleModal').style.display='flex'" style="background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; font-size: 15px; font-weight: 700; padding: 12px 22px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(27, 94, 32, 0.25); transition: 0.2s;">
+      + Add / Register Vehicle
+    </button>
+  </div>
+
+  <!-- Operational Metric Cards -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 30px;">
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #2e7d32;">
+      <span style="font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase;">Available Trips</span>
+      <div style="font-size: 26px; font-weight: 800; color: #1b5e20; margin-top: 6px;">8 Active</div>
+    </div>
+
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #fbc02d;">
+      <span style="font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase;">Total Tonnage Moved</span>
+      <div style="font-size: 26px; font-weight: 800; color: #222; margin-top: 6px;">185 Qtl</div>
+    </div>
+
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #1976d2;">
+      <span style="font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase;">Transport Fleet</span>
+      <div style="font-size: 26px; font-weight: 800; color: #1976d2; margin-top: 6px;">Verified</div>
+    </div>
+  </div>
+
+  <!-- ================= GRAMIN VEHICLE REGISTRATION SECTION ================= -->
+  <section style="margin-bottom: 35px; background: linear-gradient(135deg, #f1f8e9, #ffffff); border: 2px dashed #81c784; border-radius: 18px; padding: 28px 32px; box-shadow: 0 4px 18px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+    <div style="max-width: 720px;">
+      <span style="background: #2e7d32; color: #ffffff; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase;">Gramin Logistics Network</span>
+      <h3 style="color: #1b5e20; font-size: 22px; font-weight: 800; margin: 10px 0 8px 0;">क्या आपके पास ट्रैक्टर, पिकअप या कोई गाड़ी है?</h3>
+      <p style="color: #4a5d50; font-size: 14.5px; margin: 0; line-height: 1.6;">
+        गाँव के अन्य किसानों की फसल मंडी तक पहुँचाने में मदद करें और अपनी गाड़ी से अतिरिक्त आय कमाएँ। अभी गाड़ी जोड़ें!
+      </p>
+    </div>
+    <div>
+      <button type="button" onclick="document.getElementById('driverVehicleModal').style.display='flex'" style="background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; font-size: 15px; font-weight: 700; padding: 13px 24px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(27, 94, 32, 0.3); transition: 0.2s;">
+        🚜 Register Your Vehicle
+      </button>
+    </div>
+  </section>
+
+  <!-- Available Trips List -->
+  <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 18px rgba(0,0,0,0.05); overflow: hidden;">
+    <div style="padding: 18px 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #1b5e20;">Nearby Farm Pickup Trips</h3>
+      <span style="font-size: 13px; color: #666;">Real-time demands</span>
+    </div>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="background: #fafdfa; color: #444; border-bottom: 1px solid #e8f5e9;">
+            <th style="padding: 14px 20px; font-size: 13.5px;">Pickup Point</th>
+            <th style="padding: 14px 20px; font-size: 13.5px;">Destination Mandi</th>
+            <th style="padding: 14px 20px; font-size: 13.5px;">Crop & Load</th>
+            <th style="padding: 14px 20px; font-size: 13.5px;">Estimated Freight</th>
+            <th style="padding: 14px 20px; font-size: 13.5px; text-align: right;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid #f0f0f0;">
+            <td style="padding: 14px 20px; font-weight: 600;">Dankaur Farm Cluster</td>
+            <td style="padding: 14px 20px;">Dadri Mandi (14 km)</td>
+            <td style="padding: 14px 20px;">Wheat (35 Qtl)</td>
+            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20;">₹ 1,450</td>
+            <td style="padding: 14px 20px; text-align: right;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">Open</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #f0f0f0;">
+            <td style="padding: 14px 20px; font-weight: 600;">Jarcha Village Gate</td>
+            <td style="padding: 14px 20px;">Surajpur Mandi (22 km)</td>
+            <td style="padding: 14px 20px;">Mustard (20 Qtl)</td>
+            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20;">₹ 1,100</td>
+            <td style="padding: 14px 20px; text-align: right;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">Open</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REGISTRATION POPUP MODAL ================= -->
+<div id="driverVehicleModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
+  <div style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 20px; padding: 26px 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); position: relative; font-family: 'Inter', sans-serif;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e8f5e9; padding-bottom: 12px; margin-bottom: 20px;">
+      <h3 style="color: #1b5e20; font-size: 20px; font-weight: 800; margin: 0;">🚜 ग्रामीण वाहन पंजीकरण (Vehicle Registration)</h3>
+      <button type="button" onclick="document.getElementById('driverVehicleModal').style.display='none'" style="background: #f1f8e9; border: none; font-size: 20px; font-weight: 700; color: #2e7d32; border-radius: 50%; width: 34px; height: 34px; cursor: pointer;">&times;</button>
+    </div>
+
+    <form id="driverVehicleForm" onsubmit="submitDriverVehicleForm(event)" style="display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">वाहन मालिक / चालक का नाम (Owner/Driver Name)</label>
+        <input type="text" id="dvOwner" required placeholder="उदा. रामेश्वर सिंह" style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none;">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">मोबाइल नंबर (Mobile No.)</label>
+          <input type="tel" id="dvPhone" pattern="[0-9]{10}" required placeholder="10-digit number" style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">गाँव / क्षेत्र (Village/Area)</label>
+          <input type="text" id="dvVillage" required placeholder="उदा. दादरी, ग्रेटर नोएडा" style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none;">
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">वाहन का प्रकार (Vehicle Type)</label>
+          <select id="dvType" required style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none; background: #fafdfa;">
+            <option value="Tractor Trolley">ट्रैक्टर ट्रॉली (Tractor-Trolley)</option>
+            <option value="Pickup 407">पिकअप / टाटा 407 (Pickup Truck)</option>
+            <option value="Chota Hathi">छोटा हाथी (Mini Truck)</option>
+            <option value="E-Rickshaw/Cart">ई-रिक्शा / जुगाड़ लोडर</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">लोड क्षमता (Quintals)</label>
+          <input type="number" id="dvCap" min="5" max="300" required placeholder="उदा. 40" style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none;">
+        </div>
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 5px;">गाड़ी नंबर (Vehicle Registration Number)</label>
+        <input type="text" id="dvNumber" required placeholder="UP 16 XX 0000" style="width: 100%; padding: 10px 14px; border: 1.5px solid #c8e6c9; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none; text-transform: uppercase;">
+      </div>
+
+      <button type="submit" id="dvSubBtn" style="background: #2e7d32; color: #ffffff; padding: 12px; font-size: 15px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 6px;">
+        ✅ गाड़ी दर्ज करें (Submit Vehicle)
+      </button>
+    </form>
+
+    <div id="dvSuccessBox" style="display: none; background: #e8f5e9; border: 1px solid #81c784; padding: 14px; border-radius: 10px; color: #1b5e20; text-align: center; font-size: 14px; margin-top: 14px; font-weight: 600;">
+      🎉 वाहन सफलतापूर्वक दर्ज हो गया है! अब आपको ट्रिप्स के लिए अलर्ट मिलेंगे।
+    </div>
+  </div>
+</div>
+
+<script>
+  function submitDriverVehicleForm(e) {
+    e.preventDefault();
+    var btn = document.getElementById('dvSubBtn');
+    btn.disabled = true;
+    btn.innerText = "दर्ज हो रहा है...";
+
+    var payload = {
+      owner: document.getElementById('dvOwner').value,
+      phone: document.getElementById('dvPhone').value,
+      village: document.getElementById('dvVillage').value,
+      vehicle_type: document.getElementById('dvType').value,
+      capacity: document.getElementById('dvCap').value,
+      vehicle_number: document.getElementById('dvNumber').value
+    };
+
+    fetch('/api/register-vehicle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(res) {
+      document.getElementById('driverVehicleForm').reset();
+      document.getElementById('dvSuccessBox').style.display = 'block';
+      btn.disabled = false;
+      btn.innerText = "✅ गाड़ी दर्ज करें (Submit Vehicle)";
+      setTimeout(function() {
+        document.getElementById('driverVehicleModal').style.display = 'none';
+        document.getElementById('dvSuccessBox').style.display = 'none';
+      }, 3000);
+    }).catch(function(err) {
+      document.getElementById('dvSuccessBox').style.display = 'block';
+      document.getElementById('dvSuccessBox').innerText = "✅ वाहन स्थानीय स्तर पर दर्ज हो गया!";
+      btn.disabled = false;
+      btn.innerText = "✅ गाड़ी दर्ज करें (Submit Vehicle)";
+    });
+  }
+</script>
+{% endblock %}

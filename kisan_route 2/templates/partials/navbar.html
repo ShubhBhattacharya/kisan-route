@@ -1,0 +1,28 @@
+<header class="topbar">
+  <button id="menuToggle" class="dots-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <a class="brand" href="{{ url_for('main.home') }}">{{ t('site_name') }}</a>
+
+  <div class="topbar-right">
+
+    {% if session.get('user_id') %}
+      <span class="user-chip">{{ session.get('name') }}</span>
+      <a class="btn-ghost" href="{{ url_for(session.get('role') + '.logout') }}">Log out</a>
+    {% endif %}
+  </div>
+</header>
+
+<nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Choose your role">
+  <h2>{{ t('menu_title') }}</h2>
+  <ul>
+    <li><a href="{{ url_for('farmer.login') }}"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }}</a></li>
+    <li><a href="{{ url_for('cluster.login') }}"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }}</a></li>
+    <li><a href="{{ url_for('customer.login') }}"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }}</a></li>
+    <li><a href="{{ url_for('driver.login') }}"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }}</a></li>
+    <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
+    <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
+  </ul>
+</nav>
+<div id="menuOverlay" class="menu-overlay"></div>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card auth-card-wide">
+    <h1><span aria-hidden="true">🌾</span> Create your farmer account</h1>
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group"><label>Full name</label><input type="text" name="full_name" value="{{ form.get('full_name','') }}" required></div>
+        <div class="form-group"><label>Phone number</label><input type="tel" name="phone" value="{{ form.get('phone','') }}" required></div>
+        <div class="form-group full-width"><label>Full address</label><input type="text" name="address" value="{{ form.get('address','') }}" required></div>
+        <div class="form-group"><label>City</label><input type="text" name="city" value="{{ form.get('city','') }}" required></div>
+        <div class="form-group"><label>State</label><input type="text" name="state" value="{{ form.get('state','') }}" required></div>
+        <div class="form-group"><label>PIN code</label><input type="text" name="pincode" value="{{ form.get('pincode','') }}" required></div>
+        <div class="form-group"><label>Aadhaar number</label><input type="text" name="aadhaar" value="{{ form.get('aadhaar','') }}" placeholder="XXXX XXXX XXXX" required></div>
+        <div class="form-group">
+          <label>Crop type</label>
+          <select name="crop_type" required>
+            <option value="" disabled {% if not form.get('crop_type') %}selected{% endif %}>Select your main crop</option>
+            {% for c in crops %}<option value="{{ c }}" {% if c == form.get('crop_type') %}selected{% endif %}>{{ c }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group full-width"><label>Create password</label><input type="password" name="password" required></div>
+      </div>
+      <p class="form-note">We'll send an OTP to verify your phone (demo mode — the OTP is shown on screen instead of sent by SMS).</p>
+      <button class="btn btn-primary" type="submit">Sign up</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('farmer.login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}

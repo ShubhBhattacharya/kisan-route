@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1>Payment successful ✅</h1>
+  <div class="result-card">
+    <p>Transaction ID: <strong>{{ result.txn_id }}</strong></p>
+    <p>Amount paid: ₹{{ '%.2f'|format(result.amount) }} via {{ result.mode }}</p>
+    <a class="btn btn-primary" href="{{ url_for('customer.tracking') }}">Track my order</a>
+  </div>
+</section>
+{% endblock %}

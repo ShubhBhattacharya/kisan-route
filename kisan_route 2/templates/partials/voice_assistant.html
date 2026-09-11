@@ -1,0 +1,10 @@
+<div class="voice-assistant">
+  <button
+    id="voiceBtn"
+    class="voice-btn"
+    aria-label="{{ t('voice_title') }}"
+    aria-pressed="false"
+    data-voice-text="{{ t('voice_prompt_' + (session.get('role') or 'default')) }}"
+  >🎙️</button>
+  <div id="voiceCaption" class="voice-caption" hidden aria-live="polite"></div>
+</div>

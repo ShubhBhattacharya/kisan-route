@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card auth-card-wide">
+    <h1>Set up your driver profile</h1>
+    <form method="post" class="form-grid">
+      <div class="form-group">
+        <label>Driver type</label>
+        <select name="driver_type">
+          <option value="third_party">Third-party driver</option>
+          <option value="commercial">Commercial driver</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vehicle category</label>
+        <select name="vehicle_category">
+          <option value="truck">Truck</option>
+          <option value="car">Car</option>
+          <option value="van">Van</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Vehicle type / model</label><input type="text" name="vehicle_type" placeholder="e.g. Tata Ace" required></div>
+      <div class="form-group"><label>Load capacity (kg)</label><input type="number" min="0" name="capacity" required></div>
+      <button class="btn btn-primary" type="submit">Save profile &amp; continue</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

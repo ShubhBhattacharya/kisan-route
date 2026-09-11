@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="{{ current_lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ t('site_name') }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    /* Full Viewport Reset */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: static !important;
+      top: 0 !important;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Google Translate cleanup */
+    .goog-te-banner-frame.skiptranslate,
+    .goog-te-gadget-icon,
+    #goog-gt-tt,
+    body > .skiptranslate {
+      display: none !important;
+    }
+
+    /* --- CHATBOT DEFAULT CLOSED OVERRIDE --- */
+    .chat-window, 
+    .chatbot-window, 
+    .chatbot-container, 
+    #chatWindow,
+    [class*="chat-window"],
+    [class*="assistant-card"] {
+      display: none !important;
+    }
+    .chat-window.active, 
+    .chatbot-window.active, 
+    .chatbot-container.active,
+    #chatWindow.active {
+      display: flex !important;
+    }
+
+   /* --- WIDE LANDSCAPE OVERRIDE FOR PROBLEM CARD --- */
+    .problem-panel, 
+    aside.problem-panel,
+    .problem-section-wrapper {
+      width: 95% !important;
+      max-width: 1200px !important;
+      margin: 35px auto 25px auto !important;
+      box-sizing: border-box !important;
+      border-radius: 18px !important;
+      padding: 32px 40px !important;
+      background: #ffffff !important;
+      border-left: 6px solid #2e7d32 !important;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05) !important;
+    }
+    .problem-panel h2 {
+      color: #1b5e20 !important;
+      font-size: 24px !important;
+      font-weight: 800 !important;
+      margin-top: 0 !important;
+      margin-bottom: 12px !important;
+    }
+    .problem-panel p {
+      color: #3e4a42 !important;
+      font-size: 16.5px !important;
+      line-height: 1.8 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+    }
+
+    /* --- GLOBAL FULL-WIDTH CONTACT FOOTER --- */
+    .kr-global-footer {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      background: #14241a;
+      color: #d7e3dc;
+      padding: 48px 0 24px 0;
+      margin-top: 60px;
+      border-top: 3px solid #2e7d32;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, sans-serif;
+      z-index: 10;
+    }
+    .kr-footer-grid {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 36px;
+      box-sizing: border-box;
+    }
+    .kr-footer-grid h3 {
+      color: #fbc02d;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+    .kr-footer-grid p {
+      font-size: 14px;
+      margin: 8px 0;
+      color: #cfdcd5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.6;
+    }
+
+    /* Floating Language Pill */
+    .kr-lang-floating-btn {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #1b5e20, #2e7d32);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 6px 18px rgba(27, 94, 32, 0.35);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .kr-lang-floating-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(27, 94, 32, 0.45);
+    }
+
+    /* Language Modal */
+    .kr-lang-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
+    }
+    .kr-lang-modal-overlay.open { display: flex; }
+    .kr-lang-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    .kr-lang-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .kr-lang-btn {
+      background: #fafdfa;
+      border: 1.5px solid #dcedc8;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .kr-lang-btn span { font-size: 14px; font-weight: 700; color: #1b5e20; }
+    .kr-lang-btn small { font-size: 11px; color: #689f38; }
+    .kr-lang-btn:hover { background: #e8f5e9; border-color: #2e7d32; }
+  </style>
+</head>
+<body class="role-{{ session.get('role','guest') }}">
+
+<div id="google_translate_element" style="display:none;"></div>
+
+{% include 'partials/navbar.html' %}
+
+<div class="flash-container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</div>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ================= GLOBAL FULL FOOTER (ALL DASHBOARDS + HOME) ================= -->
+<footer class="kr-global-footer">
+  <div class="kr-footer-grid">
+    <div>
+      <h3>Kisan Platform</h3>
+      <p style="font-size: 14.5px; line-height: 1.7; color: #cfdcd5;">
+        Kisanon ko technology aur direct market access dekar aatmanirbhar banane ka sankalp.
+      </p>
+    </div>
+
+    <div>
+      <h3>Customer Care</h3>
+      <p><span>📞</span> <span><strong>Helpline:</strong> +91[cite: 36]1800-123-4567 (Toll-Free)</span></p>
+      <p><span>📱</span> <span><strong>WhatsApp Support:</strong> +91[cite: 36]98765 43210</span></p>
+      <p><span>⏰</span> <span><strong>Timing:</strong> 8:00 AM - 8:00 PM (All 7 Days)</span></p>
+    </div>
+
+    <div>
+      <h3>Sampark Karein</h3>
+      <p><span>📧</span> <span><strong>Email:</strong> <a href="mailto:support@kisanapp.com" style="color: #81c784; text-decoration: none;">support@kisanapp.com</a></span></p>
+      <p style="align-items: flex-start;">
+        <span style="margin-top: 2px;">📍</span>
+        <span><strong>Office:</strong> Krishi Bhawan Complex, Sector 18, Noida, Uttar Pradesh, India</span>
+      </p>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); width: 100%; max-width: 1200px; margin: 0 auto; padding-top: 18px; text-align: center; font-size: 13px; color: #8fa397;">
+    &copy; 2026 Kisan Platform. All Rights Reserved.
+  </div>
+</footer>
+
+{% include 'partials/chatbot.html' %}
+{% include 'partials/voice_assistant.html' %}
+
+<!-- Floating Language Button -->
+<button class="kr-lang-floating-btn" id="krLangTrigger" type="button" aria-label="Select Language">
+  <span style="font-size: 18px;">🌐</span>
+  <span>भाषा / Language</span>
+</button>
+
+<!-- 25+ Indian Languages Modal -->
+<div class="kr-lang-modal-overlay" id="krLangModal">
+  <div class="kr-lang-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; margin-bottom: 16px;">
+      <h3 style="color: #1b5e20; margin: 0; font-size: 18px; font-weight: 800;">🌐 अपनी भाषा चुनें (Select Language)</h3>
+      <button id="krLangClose" style="background: #f1f8e9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer;">&times;</button>
+    </div>
+    <div class="kr-lang-grid">
+      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>हिन्दी</span><small>Hindi</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('pa')"><span>ਪੰਜਾਬੀ</span><small>Punjabi</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('bn')"><span>বাংলা</span><small>Bengali</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('mr')"><span>मराठी</span><small>Marathi</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('gu')"><span>ગુજરાતી</span><small>Gujarati</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('te')"><span>తెలుగు</span><small>Telugu</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('ta')"><span>தமிழ்</span><small>Tamil</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('kn')"><span>ಕನ್ನಡ</span><small>Kannada</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('ml')"><span>മലയാളം</span><small>Malayalam</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('or')"><span>ଓଡ଼ିଆ</span><small>Odia</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('as')"><span>অসমীয়া</span><small>Assamese</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('bho')"><span>भोजपुरी</span><small>Bhojpuri</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('mai')"><span>मैथिली</span><small>Maithili</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>हरियाणवी</span><small>Haryanvi</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>मारवाड़ी</span><small>Marwari</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('ur')"><span>اردو</span><small>Urdu</small></button>
+      <button class="kr-lang-btn" onclick="changeAppLang('en')"><span>English</span><small>English</small></button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'hi,pa,bn,mr,gu,te,ta,kn,ml,or,as,bho,mai,ur,en',
+      autoDisplay: false
+    }, 'google_translate_element');
+  }
+
+  function changeAppLang(langCode) {
+    document.cookie = "googtrans=/en/" + langCode + "; path=/";
+    document.cookie = "googtrans=/en/" + langCode + "; domain=" + window.location.hostname + "; path=/";
+    var combo = document.querySelector('.goog-te-combo');
+    if (combo) {
+      combo.value = langCode;
+      combo.dispatchEvent(new Event('change'));
+    } else {
+      window.location.reload();
+    }
+    var modal = document.getElementById('krLangModal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var triggerBtn = document.getElementById('krLangTrigger');
+    var closeBtn = document.getElementById('krLangClose');
+    var modal = document.getElementById('krLangModal');
+    if (triggerBtn && modal) triggerBtn.addEventListener('click', function() { modal.classList.add('open'); });
+    if (closeBtn && modal) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+
+    var chatWindow = document.querySelector('.chat-window') || document.querySelector('.chatbot-window') || document.getElementById('chatWindow');
+    var chatTrigger = document.querySelector('.chat-trigger') || document.querySelector('.chatbot-trigger') || document.querySelector('.chat-icon') || document.querySelector('button[aria-label*="chat" i]');
+    var chatClose = document.querySelector('.chat-close') || document.querySelector('.close-chat') || (chatWindow ? chatWindow.querySelector('button') : null);
+
+    if (chatWindow) {
+      chatWindow.classList.remove('active', 'open', 'show');
+      chatWindow.style.display = 'none';
+
+      if (chatTrigger) {
+        chatTrigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var isVisible = chatWindow.style.display === 'flex' || chatWindow.classList.contains('active');
+          chatWindow.style.display = isVisible ? 'none' : 'flex';
+          chatWindow.classList.toggle('active', !isVisible);
+        });
+      }
+      if (chatClose) {
+        chatClose.addEventListener('click', function(e) {
+          e.stopPropagation();
+          chatWindow.style.display = 'none';
+          chatWindow.classList.remove('active');
+        });
+      }
+    }
+  });
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

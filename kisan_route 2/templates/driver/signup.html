@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card auth-card-wide">
+    <h1><span aria-hidden="true">🚚</span> Create your driver account</h1>
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group"><label>Full name</label><input type="text" name="full_name" value="{{ form.get('full_name','') }}" required></div>
+        <div class="form-group"><label>Phone number</label><input type="tel" name="phone" value="{{ form.get('phone','') }}" required></div>
+        <div class="form-group"><label>Identity proof number</label><input type="text" name="identity_proof" value="{{ form.get('identity_proof','') }}" placeholder="Aadhaar / Voter ID" required></div>
+        <div class="form-group"><label>Driving licence number</label><input type="text" name="license_number" value="{{ form.get('license_number','') }}" required></div>
+        <div class="form-group"><label>RC number</label><input type="text" name="rc_number" value="{{ form.get('rc_number','') }}" required></div>
+        <div class="form-group"><label>Vehicle number</label><input type="text" name="vehicle_number" value="{{ form.get('vehicle_number','') }}" placeholder="HR-51-AB-1234" required></div>
+        <div class="form-group full-width"><label>Create password</label><input type="password" name="password" required></div>
+      </div>
+      <button class="btn btn-primary" type="submit">Sign up</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('driver.login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}

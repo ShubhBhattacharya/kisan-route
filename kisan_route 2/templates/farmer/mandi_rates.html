@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">📊</span> Mandi Rate Detector</h1>
+  <form method="get" class="inline-form">
+    <label for="crop">Crop</label>
+    <select id="crop" name="crop" onchange="this.form.submit()">
+      {% for c in crops %}<option value="{{ c }}" {% if c == crop %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+  </form>
+
+  <table class="table">
+    <thead><tr><th>Mandi</th><th>Rate (₹ / quintal)</th></tr></thead>
+    <tbody>
+      {% for r in rates %}
+      <tr class="{% if r.region == best.region %}row-best{% endif %}">
+        <td>{{ r.region }}{% if r.region == best.region %} <span class="badge">Most profitable</span>{% endif %}</td>
+        <td>₹{{ r.rate }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

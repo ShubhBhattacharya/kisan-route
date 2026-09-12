@@ -1,9 +1,9 @@
 {
-  "id": "/?source=pwa",
+  "id": "/",
   "name": "Kisan Route - किसान मार्ग",
   "short_name": "Kisan Route",
   "description": "Agro-Logistics and Mandi Rates Platform for Farmers, Clusters, Wholesalers and Drivers",
-  "start_url": "/?source=pwa",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

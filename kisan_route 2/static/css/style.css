@@ -434,24 +434,42 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
   border-radius: var(--radius-sm); font-size: 0.82rem;
 }
 
-/* Navigation desktop group */
+/* Navigation Group: Always visible and scrollable */
 #leftNavGroup,
 .desktop-only-nav {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#leftNavGroup::-webkit-scrollbar {
+  display: none;
 }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 860px) {
+  .topbar {
+    padding: 8px 10px;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .topbar::-webkit-scrollbar {
+    display: none;
+  }
   #leftNavGroup,
   .desktop-only-nav {
-    display: none !important;
+    display: inline-flex !important;
+    gap: 6px;
+    flex-wrap: nowrap;
   }
-  .topbar {
-    justify-content: flex-start;
-    padding: 10px 14px;
+  #leftNavGroup a {
+    font-size: 13px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
   }
 }
 

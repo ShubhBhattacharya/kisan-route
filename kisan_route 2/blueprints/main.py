@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect
+from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app
 
 from translations.strings import LANGUAGES
 from utils.chatbot import get_prompts, get_response
@@ -36,3 +36,16 @@ def chatbot_ask():
     payload = request.get_json(silent=True) or {}
     message = payload.get("message", "")
     return jsonify({"reply": get_response(message)})
+
+
+@main_bp.route("/manifest.json")
+def manifest():
+    return send_from_directory(current_app.static_folder, "manifest.json", mimetype="application/manifest+json")
+
+
+@main_bp.route("/sw.js")
+def service_worker():
+    response = send_from_directory(current_app.static_folder, "sw.js", mimetype="application/javascript")
+    response.headers["Service-Worker-Allowed"] = "/"
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response

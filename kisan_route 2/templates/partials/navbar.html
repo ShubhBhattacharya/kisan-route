@@ -23,6 +23,11 @@
     <li><a href="{{ url_for('driver.login') }}"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }}</a></li>
     <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
     <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
+    <li style="margin-top: 14px; border-top: 1px solid #dcedc8; padding-top: 10px;">
+      <a href="javascript:void(0)" onclick="var b=document.getElementById('krPwaInstallBtn'); if(b) b.click(); else alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');" style="color: #1b5e20; font-weight: 700; background: #e8f5e9; border-radius: 8px;">
+        <span aria-hidden="true">📲</span> ऐप इंस्टॉल करें (Install App)
+      </a>
+    </li>
   </ul>
 </nav>
 <div id="menuOverlay" class="menu-overlay"></div>

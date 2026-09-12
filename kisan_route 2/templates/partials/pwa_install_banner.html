@@ -20,8 +20,8 @@
 ">
   <!-- App Icon Preview -->
   <img src="/static/images/icons/icon-192.png" alt="Kisan Route" style="
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     flex-shrink: 0;
@@ -29,17 +29,17 @@
 
   <!-- App Info -->
   <div style="flex: 1; min-width: 0;">
-    <div style="font-size: 14.5px; font-weight: 700; color: #1b5e20; line-height: 1.2;">
+    <div style="font-size: 14px; font-weight: 700; color: #1b5e20; line-height: 1.2;">
       🌾 Kisan Route ऐप
     </div>
-    <div style="font-size: 12px; color: #4a5d52; margin-top: 2px; line-height: 1.3;">
-      फ़ोन में इंस्टॉल करें (बिना Play Store)
+    <div style="font-size: 11.5px; color: #4a5d52; margin-top: 2px; line-height: 1.3;">
+      फ़ोन में इंस्टॉल करें (0 MB डेटा)
     </div>
   </div>
 
   <!-- Action Buttons -->
   <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-    <button id="krPwaInstallBtn" type="button" style="
+    <button id="krPwaInstallBtn" type="button" onclick="triggerKisanInstall()" style="
       background: linear-gradient(135deg, #1b5e20, #2e7d32);
       color: #ffffff;
       border: none;
@@ -73,45 +73,124 @@
   </div>
 </div>
 
-<!-- iOS Install Help Modal (Only shown if iOS user clicks install) -->
-<div id="krIosInstallModal" style="
+<!-- Friendly Mobile Install Guide Modal (For Vivo, Oppo, Realme, Samsung, Xiaomi & iOS) -->
+<div id="krInstallGuideModal" style="
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.72);
   backdrop-filter: blur(4px);
   z-index: 100000;
   align-items: center;
   justify-content: center;
   padding: 16px;
   font-family: 'Inter', -apple-system, sans-serif;
+  box-sizing: border-box;
 ">
   <div style="
     background: #ffffff;
-    max-width: 360px;
+    max-width: 400px;
     width: 100%;
     border-radius: 20px;
-    padding: 22px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    padding: 22px 20px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
     text-align: center;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
   ">
-    <div style="font-size: 34px; margin-bottom: 8px;">📲</div>
-    <h3 style="color: #1b5e20; margin: 0 0 10px 0; font-size: 18px;">iPhone पर ऐप कैसे जोड़ें:</h3>
-    <ol style="text-align: left; font-size: 14px; line-height: 1.7; color: #333; padding-left: 20px; margin: 0 0 18px 0;">
-      <li>नीचे सफारी में <strong>Share (⎋ / [↑])</strong> बटन दबाएं।</li>
-      <li>थोड़ा नीचे स्क्रॉल करके <strong>'Add to Home Screen' (+)</strong> चुनें।</li>
-      <li>ऊपर दाएं कोने में <strong>Add</strong> पर क्लिक करें।</li>
-    </ol>
-    <button id="krIosCloseBtn" type="button" style="
-      background: #2e7d32;
-      color: #ffffff;
+    <button onclick="closeInstallGuideModal()" style="
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: #f1f5f2;
       border: none;
-      border-radius: 12px;
-      padding: 10px 24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      color: #555;
+    ">&times;</button>
+
+    <img src="/static/images/icons/icon-192.png" alt="Kisan Route" style="
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(27,94,32,0.25);
+    " />
+
+    <h3 style="color: #1b5e20; margin: 0 0 6px 0; font-size: 19px; font-weight: 800;">
+      फ़ोन में Kisan Route जोड़ें
+    </h3>
+    <p style="font-size: 13px; color: #555; margin: 0 0 16px 0;">
+      अपने मोबाइल में इसे ऐप की तरह चलाने के 2 आसान तरीके:
+    </p>
+
+    <!-- Option 1: Chrome (Fastest & 1-Click) -->
+    <div style="
+      background: #e8f5e9;
+      border: 1.5px solid #a5d6a7;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+      margin-bottom: 12px;
+    ">
+      <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1b5e20; font-size: 14.5px;">
+        <span>⚡ तरीका 1: Google Chrome में खोलें</span>
+      </div>
+      <p style="font-size: 12.5px; color: #333; margin: 6px 0 10px 0; line-height: 1.4;">
+        Chrome में यह बिना किसी रुकावट के सीधे 1 क्लिक में इंस्टॉल हो जाता है।
+      </p>
+      <a id="krOpenChromeBtn" href="intent://kisan-route-8gv6.vercel.app/#Intent;scheme=https;package=com.android.chrome;end" style="
+        display: block;
+        text-align: center;
+        background: #2e7d32;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 9px 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        box-shadow: 0 3px 8px rgba(46,125,50,0.3);
+      ">
+        🌐 Google Chrome में खोलें (Direct Install)
+      </a>
+    </div>
+
+    <!-- Option 2: Current Browser Menu -->
+    <div style="
+      background: #fbfbf9;
+      border: 1.5px solid #e0ded0;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+      margin-bottom: 16px;
+    ">
+      <div style="font-weight: 700; color: #333; font-size: 14px; margin-bottom: 6px;">
+        📌 तरीका 2: इसी ब्राउज़र में जोड़ें:
+      </div>
+      <ol style="margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: #444;">
+        <li>स्क्रीन पर नीचे <strong>Menu (☰)</strong> या ऊपर <strong>(⋮)</strong> दबाएं।</li>
+        <li><strong>'Add to Home Screen'</strong> या <strong>'होम स्क्रीन पर जोड़ें'</strong> चुनें।</li>
+        <li>Add पर क्लिक करें — ऐप आपकी स्क्रीन पर आ जाएगी!</li>
+      </ol>
+    </div>
+
+    <button onclick="closeInstallGuideModal()" type="button" style="
+      background: #f1f5f2;
+      border: none;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 10px;
       font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
       width: 100%;
-    ">समझ गया (OK)</button>
+    ">
+      ठीक है, समझ गया (OK)
+    </button>
   </div>
 </div>
 
@@ -123,61 +202,72 @@
 </style>
 
 <script>
-(function() {
-  let deferredPrompt = null;
-  const banner = document.getElementById('krPwaInstallBanner');
-  const installBtn = document.getElementById('krPwaInstallBtn');
-  const dismissBtn = document.getElementById('krPwaDismissBtn');
-  const iosModal = document.getElementById('krIosInstallModal');
-  const iosClose = document.getElementById('krIosCloseBtn');
+let deferredPrompt = null;
 
-  // Check if already running in standalone PWA mode
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (isStandalone) {
-    return; // Already installed as an app, don't show install banner
+function closeInstallGuideModal() {
+  const modal = document.getElementById('krInstallGuideModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function triggerKisanInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    if (choice && choice.outcome === 'accepted') {
+      const banner = document.getElementById('krPwaInstallBanner');
+      if (banner) banner.style.display = 'none';
+    }
+    deferredPrompt = null;
+    return;
   }
 
-  // Check dismiss storage (hide for 3 days if user clicked cross)
+  // If deferredPrompt is not available (Realme/Vivo browser, iOS, or already standalone)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone) {
+    alert("Kisan Route ऐप आपके फ़ोन में पहले से इंस्टॉल है! 🌾");
+    return;
+  }
+
+  // Show friendly guide modal
+  const modal = document.getElementById('krInstallGuideModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+}
+
+(function() {
+  const banner = document.getElementById('krPwaInstallBanner');
+  const dismissBtn = document.getElementById('krPwaDismissBtn');
+
+  // Check standalone mode
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (isStandalone) {
+    return;
+  }
+
+  // Check dismiss storage (hide for 2 days)
   const dismissedTime = localStorage.getItem('kr_pwa_dismissed');
-  const isDismissedRecently = dismissedTime && (Date.now() - parseInt(dismissedTime, 10)) < 3 * 24 * 60 * 60 * 1000;
+  const isDismissedRecently = dismissedTime && (Date.now() - parseInt(dismissedTime, 10)) < 2 * 24 * 60 * 60 * 1000;
 
-  // Detect iOS Safari
-  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|Chrome/.test(navigator.userAgent);
-
-  // Chrome / Android PWA Install Event
+  // Listen for browser install prompt (Chrome/Edge/Samsung)
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     if (!isDismissedRecently && banner) {
       setTimeout(() => {
         banner.style.display = 'flex';
-      }, 1500);
+      }, 1000);
     }
   });
 
-  // Handle Install button click
-  if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          console.log('User installed Kisan Route PWA');
-          if (banner) banner.style.display = 'none';
-        }
-        deferredPrompt = null;
-      } else if (isIos && iosModal) {
-        // Show iOS instructions modal
-        iosModal.style.display = 'flex';
-      } else {
-        // Fallback: alert instructions
-        alert("ऐप को अपनी होम स्क्रीन पर जोड़ने के लिए ब्राउज़र मेनू (⋮) पर क्लिक करें और 'Add to Home Screen' या 'Install App' चुनें।");
-      }
-    });
+  // Show banner on mobile even if beforeinstallprompt hasn't fired yet
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile && !isDismissedRecently && banner) {
+    setTimeout(() => {
+      banner.style.display = 'flex';
+    }, 1500);
   }
 
-  // Dismiss button click
   if (dismissBtn) {
     dismissBtn.addEventListener('click', () => {
       if (banner) banner.style.display = 'none';
@@ -185,30 +275,15 @@
     });
   }
 
-  // iOS modal close
-  if (iosClose && iosModal) {
-    iosClose.addEventListener('click', () => {
-      iosModal.style.display = 'none';
-      if (banner) banner.style.display = 'none';
-    });
-  }
-
-  // Show banner on iOS Safari if not dismissed
-  if (isIos && isSafari && !isDismissedRecently && banner) {
-    setTimeout(() => {
-      banner.style.display = 'flex';
-    }, 2000);
-  }
-
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js', { scope: '/' })
         .then((reg) => {
-          console.log('Kisan Route Service Worker registered with scope:', reg.scope);
+          console.log('Kisan Route Service Worker registered:', reg.scope);
         })
         .catch((err) => {
-          console.log('Service Worker registration failed:', err);
+          console.log('SW registration error:', err);
         });
     });
   }

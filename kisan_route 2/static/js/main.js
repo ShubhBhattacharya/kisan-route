@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // 3. Inject Left-Side Navigation Group beside the brand logo
+  // 3. Inject Left-Side Navigation Group beside the brand logo (Desktop Only)
   if (brand && !document.getElementById('leftNavGroup')) {
     brand.style.marginRight = '12px';
 
     var navGroup = document.createElement('div');
     navGroup.id = 'leftNavGroup';
-    navGroup.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;';
+    navGroup.className = 'desktop-only-nav';
     
     navGroup.innerHTML = `
       <a href="/" class="btn-ghost"><span style="font-size: 14px;">🏠</span> Home</a>
@@ -37,22 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
 
     brand.after(navGroup);
-  }
-
-  // 4. Clean up redundant links from the 3-lines side menu
-  if (sideMenu) {
-    var sideLinks = sideMenu.querySelectorAll('a');
-    sideLinks.forEach(function (link) {
-      var href = link.getAttribute('href');
-      var text = link.textContent.trim().toLowerCase();
-      if (href === '/' || href === '/about' || text === 'home' || text === 'about' || text.includes('home')) {
-        if (link.parentElement && link.parentElement.tagName.toLowerCase() === 'li') {
-          link.parentElement.remove();
-        } else {
-          link.remove();
-        }
-      }
-    });
   }
 
   /* ---------------- Dynamic Blurred Image Background for Auth Pages ---------------- */

@@ -198,19 +198,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!query.trim()) return;
     appendMessage('user', query);
 
+    // Call backend Python AI API with offline fallback
+    fetch('/api/chatbot/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: query })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.reply) {
+        appendMessage('bot', data.reply);
+      } else {
+        fallbackReply(query);
+      }
+    })
+    .catch(function() {
+      fallbackReply(query);
+    });
+  }
+
+  function fallbackReply(query) {
     var lower = query.toLowerCase();
     var reply = "Kisan Route par aap mandi bhav, shared truck booking, aur fasal profit calculate kar sakte hain. Aapka prashn note kar liya gaya hai!";
-
     for (var key in botAnswers) {
       if (lower.indexOf(key) !== -1) {
         reply = botAnswers[key];
         break;
       }
     }
-
-    setTimeout(function() {
-      appendMessage('bot', reply);
-    }, 450);
+    appendMessage('bot', reply);
   }
 
   if (chatForm) {

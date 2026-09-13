@@ -29,10 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
     
     navGroup.innerHTML = `
       <a href="/" class="btn-ghost"><span style="font-size: 14px;">🏠</span> Home</a>
-      <a href="/farmer/login" class="btn-ghost"><span style="font-size: 14px;">🌾</span>Farmer</a>
-      <a href="/cluster/login" class="btn-ghost"><span style="font-size: 14px;">🌐</span>Cluster</a>
-      <a href="/driver/login" class="btn-ghost"><span style="font-size: 14px;">🚚</span>Driver</a>
-      <a href="/wholesaler/login" class="btn-ghost"><span style="font-size: 14px;">🛒</span>Wholesaler</a>
+      <a href="/farmer/login" class="btn-ghost"><span style="font-size: 14px;">🌾</span> Farmer</a>
+      <a href="/cluster/login" class="btn-ghost"><span style="font-size: 14px;">🤝</span> Cluster</a>
+      <a href="/customer/login" class="btn-ghost"><span style="font-size: 14px;">🛒</span> Customer</a>
+      <a href="/driver/login" class="btn-ghost"><span style="font-size: 14px;">🚚</span> Driver</a>
+      <a href="/wholesaler/login" class="btn-ghost"><span style="font-size: 14px;">🏬</span> Wholesaler</a>
       <a href="/about" class="btn-ghost"><span style="font-size: 14px;">ℹ️</span> About</a>
     `;
 
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
     var pageText = authSection.innerText.toLowerCase();
     var path = window.location.pathname.toLowerCase();
-    var bgImage = '/static/images/default_bg.jpg';
+    var bgImage = '/static/images/background.jpg';
 
     if (pageText.includes('farmer') || path.includes('cluster')) {
       bgImage = '/static/images/farmer_bg.jpg';

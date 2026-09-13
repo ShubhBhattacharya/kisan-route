@@ -3,9 +3,16 @@
     <span></span><span></span><span></span>
   </button>
 
-  <a class="brand" href="{{ url_for('main.home') }}">{{ t('site_name') }}</a>
+  <a class="brand" href="{{ url_for('main.home') }}">
+    <span class="kr-brand-emblem">🌾</span>
+    <span class="kr-brand-text">{{ t('site_name') }}</span>
+  </a>
 
   <div class="topbar-right">
+    <!-- Mobile App Quick Language Button -->
+    <button type="button" class="kr-app-topbar-lang" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" aria-label="Change Language">
+      <span>🌐</span>
+    </button>
 
     {% if session.get('user_id') %}
       <span class="user-chip">{{ session.get('name') }}</span>

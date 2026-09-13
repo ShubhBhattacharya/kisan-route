@@ -119,9 +119,69 @@
   </div>
 </section>
 
+<!-- ================= NATIVE APP ROLE SERVICES GRID ================= -->
+<div class="kr-app-services-container">
+  <div class="kr-app-section-header">
+    <span class="kr-app-section-badge">✨ डिजिटल कृषि सेवाएं</span>
+    <h2 class="kr-app-section-title">अपनी भूमिका चुनें (Select Service)</h2>
+  </div>
+
+  <div class="kr-app-services-grid">
+    <!-- Farmer Card -->
+    <a href="{{ url_for('farmer.login') }}" class="kr-app-card">
+      <div class="kr-app-card-icon" style="background: #e8f5e9; color: #1b5e20;">🌾</div>
+      <div class="kr-app-card-content">
+        <h3>किसान (Farmer)</h3>
+        <p>मंडी भाव, फसल जांच व मुनाफा कैलकुलेटर</p>
+      </div>
+      <span class="kr-app-card-arrow">›</span>
+    </a>
+
+    <!-- Cluster Card -->
+    <a href="{{ url_for('cluster.login') }}" class="kr-app-card">
+      <div class="kr-app-card-icon" style="background: #e1f5fe; color: #0277bd;">🤝</div>
+      <div class="kr-app-card-content">
+        <h3>किसान समूह (Cluster)</h3>
+        <p>सामूहिक बिक्री व लागत विभाजन</p>
+      </div>
+      <span class="kr-app-card-arrow">›</span>
+    </a>
+
+    <!-- Customer Card -->
+    <a href="{{ url_for('customer.login') }}" class="kr-app-card">
+      <div class="kr-app-card-icon" style="background: #fff3e0; color: #ef6c00;">🛒</div>
+      <div class="kr-app-card-content">
+        <h3>ग्राहक (Customer)</h3>
+        <p>खेत से सीधे ताज़ा फसल व ऑनलाइन आर्डर</p>
+      </div>
+      <span class="kr-app-card-arrow">›</span>
+    </a>
+
+    <!-- Driver Card -->
+    <a href="{{ url_for('driver.login') }}" class="kr-app-card">
+      <div class="kr-app-card-icon" style="background: #ede7f6; color: #512da8;">🚚</div>
+      <div class="kr-app-card-content">
+        <h3>चालक (Driver)</h3>
+        <p>नजदीकी लोड बुकिंग व रूट अनुकूलन</p>
+      </div>
+      <span class="kr-app-card-arrow">›</span>
+    </a>
+
+    <!-- Wholesaler Card -->
+    <a href="{{ url_for('wholesaler.login') }}" class="kr-app-card">
+      <div class="kr-app-card-icon" style="background: #fbe9e7; color: #d84315;">🏬</div>
+      <div class="kr-app-card-content">
+        <h3>थोक व्यापारी (Wholesaler)</h3>
+        <p>मंडी व्यापारी पोर्टल व सीधा मोलभाव</p>
+      </div>
+      <span class="kr-app-card-arrow">›</span>
+    </a>
+  </div>
+</div>
+
 <!-- Single Clean Problem Section -->
-<div style="max-width: 1200px !important; width: 95% !important; margin: 35px auto !important; background: #ffffff !important; border-radius: 16px !important; padding: 32px 40px !important; border: none !important; border-left: 6px solid #2e7d32 !important; box-shadow: 0 4px 20px rgba(0,0,0,0.06) !important; box-sizing: border-box !important; display: block !important;">
-  <h2 style="color: #1b5e20 !important; font-size: 24px !important; font-weight: 800 !important; margin: 0 0 12px 0 !important; border: none !important; background: none !important; padding: 0 !important;">{{ t('problem_title') }}</h2>
-  <p style="color: #3e4a42 !important; font-size: 16.5px !important; line-height: 1.8 !important; margin: 0 !important; border: none !important; background: none !important; padding: 0 !important;">{{ t('problem_text') }}</p>
+<div class="kr-problem-card">
+  <h2>{{ t('problem_title') }}</h2>
+  <p>{{ t('problem_text') }}</p>
 </div>
 {% endblock %}

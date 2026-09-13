@@ -517,3 +517,322 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
   .chatbot { right: 16px; bottom: 16px; }
   .chatbot-panel { width: 90vw; right: -4px; }
 }
+
+/* ============================================================
+   Native App vs Website UI System
+   ============================================================ */
+
+/* Brand Emblem & App Header */
+.kr-brand-emblem {
+  font-size: 1.35rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.kr-brand-text {
+  vertical-align: middle;
+}
+
+/* Quick App Language Trigger */
+.kr-app-topbar-lang {
+  display: none;
+  background: #e8f5e9;
+  border: 1.5px solid #c8e6c9;
+  color: #1b5e20;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.kr-app-topbar-lang:hover {
+  background: #c8e6c9;
+}
+.kr-app-topbar-lang:active {
+  transform: scale(0.92);
+}
+
+/* App Bottom Navigation Dock (Default Hidden on Desktop) */
+.kr-app-bottom-dock {
+  display: none;
+}
+
+/* ================= App Services Grid ================= */
+.kr-app-services-container {
+  max-width: 1200px;
+  width: 95%;
+  margin: 32px auto 16px auto;
+  box-sizing: border-box;
+}
+
+.kr-app-section-header {
+  margin-bottom: 16px;
+}
+
+.kr-app-section-badge {
+  display: inline-block;
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  border: 1px solid #c8e6c9;
+}
+
+.kr-app-section-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1F3A24;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.kr-app-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.kr-app-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  border: 1.5px solid #e8ede9;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+.kr-app-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(27, 94, 32, 0.12);
+  border-color: #a5d6a7;
+}
+
+.kr-app-card:active {
+  transform: scale(0.97);
+}
+
+.kr-app-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.kr-app-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.kr-app-card-content h3 {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #1F3A24;
+  margin: 0 0 4px 0;
+  line-height: 1.25;
+}
+
+.kr-app-card-content p {
+  font-size: 12px;
+  color: #5c6e63;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.kr-app-card-arrow {
+  font-size: 22px;
+  color: #9eaba3;
+  font-weight: 300;
+  transition: transform 0.2s ease;
+}
+
+.kr-app-card:hover .kr-app-card-arrow {
+  transform: translateX(3px);
+  color: #1b5e20;
+}
+
+/* Problem Card */
+.kr-problem-card {
+  max-width: 1200px;
+  width: 95%;
+  margin: 28px auto 35px auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 30px 36px;
+  border-left: 6px solid #2e7d32;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+}
+
+.kr-problem-card h2 {
+  color: #1b5e20;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.kr-problem-card p {
+  color: #3e4a42;
+  font-size: 15.5px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ================= Mobile & App Mode Specific Styles ================= */
+@media (max-width: 820px) {
+  .kr-app-topbar-lang {
+    display: flex;
+  }
+
+  .kr-app-bottom-dock {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.06);
+    z-index: 99990;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: content-box;
+  }
+
+  .kr-dock-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-decoration: none;
+    color: #617367;
+    font-size: 11px;
+    font-weight: 600;
+    flex: 1;
+    height: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    padding: 6px 0;
+  }
+
+  .kr-dock-icon {
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 0.18s ease;
+  }
+
+  .kr-dock-text {
+    line-height: 1.1;
+  }
+
+  .kr-dock-tab:active {
+    transform: scale(0.9);
+  }
+
+  .kr-dock-tab.active {
+    color: #1b5e20;
+    font-weight: 800;
+  }
+
+  .kr-dock-tab.active .kr-dock-icon {
+    transform: scale(1.15);
+  }
+
+  .kr-dock-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    width: 16px;
+    height: 3px;
+    background: #2e7d32;
+    border-radius: 3px;
+  }
+
+  /* Add padding at bottom of page so content never hides behind dock */
+  body {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .kr-global-footer {
+    padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Offset floating assistants above the bottom dock */
+  #krChatLauncher {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
+  }
+  .voice-assistant {
+    bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 68px !important;
+  }
+  .kr-lang-floating-btn {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 12px !important;
+  }
+  #krPwaInstallBanner {
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Mobile App Card Adjustments */
+  .kr-app-services-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .kr-app-card {
+    padding: 14px 16px;
+    border-radius: 16px;
+  }
+  .kr-problem-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+    margin: 20px auto;
+  }
+}
+
+/* ================= Specific Polish for Installed App Mode (PWA Standalone) ================= */
+body.kr-is-app {
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+body.kr-is-app .topbar {
+  border-bottom: 1.5px solid rgba(46, 125, 50, 0.15);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+body.kr-is-app #krPwaInstallBanner,
+body.kr-is-app [data-pwa-install] {
+  display: none !important;
+}
+
+body.kr-is-app .kr-dock-tab.active {
+  color: #1b5e20;
+}

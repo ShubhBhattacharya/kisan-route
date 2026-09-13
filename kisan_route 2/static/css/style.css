@@ -76,11 +76,33 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .dots-btn:hover { background: var(--surface-tint); }
 
 .brand {
-  font-family: var(--font-display); font-weight: 700; font-size: 1.25rem;
-  color: var(--green-900); text-decoration: none; margin-right: auto;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--green-900);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.kr-brand-emblem {
+  font-size: 20px;
+  line-height: 1;
+}
+.kr-brand-text {
+  white-space: nowrap;
 }
 
-.topbar-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
 .topbar-right select {
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   padding: 6px 10px; background: var(--surface); font-family: var(--font-body);
@@ -434,42 +456,45 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
   border-radius: var(--radius-sm); font-size: 0.82rem;
 }
 
-/* Navigation Group: Always visible and scrollable */
+/* Desktop Navigation Group (Visible on Desktop, hidden on Mobile) */
 #leftNavGroup,
 .desktop-only-nav {
-  display: inline-flex !important;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-#leftNavGroup::-webkit-scrollbar {
-  display: none;
+  flex-wrap: wrap;
+  margin-left: 14px;
 }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 860px) {
   .topbar {
-    padding: 8px 10px;
-    gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    padding: 10px 14px;
+    gap: 10px;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    justify-content: space-between;
   }
   .topbar::-webkit-scrollbar {
     display: none;
   }
+  /* On mobile: HIDE leftNavGroup so topbar is completely clean, spacious, and not cluttered */
   #leftNavGroup,
   .desktop-only-nav {
-    display: inline-flex !important;
-    gap: 6px;
-    flex-wrap: nowrap;
+    display: none !important;
   }
-  #leftNavGroup a {
-    font-size: 13px !important;
-    padding: 4px 8px !important;
+  .brand {
+    font-size: 1.15rem !important;
     white-space: nowrap !important;
+    flex-shrink: 0;
+  }
+  .kr-brand-text {
+    white-space: nowrap !important;
+  }
+  .topbar-right {
+    margin-left: auto;
+    gap: 8px;
+    flex-shrink: 0;
   }
 }
 

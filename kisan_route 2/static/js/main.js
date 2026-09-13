@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 3. Inject Left-Side Navigation Group beside the brand logo (Desktop Only)
   if (brand && !document.getElementById('leftNavGroup')) {
-    brand.style.marginRight = '12px';
-
     var navGroup = document.createElement('div');
     navGroup.id = 'leftNavGroup';
     navGroup.className = 'desktop-only-nav';

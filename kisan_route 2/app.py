@@ -77,8 +77,8 @@ def create_app():
     # Maintenance Mode Interceptor (Returns 503 if active, allows bypass for admin)
     @app.before_request
     def check_maintenance():
-        # Allow static files and PWA service worker
-        if request.path.startswith("/static") or request.path in ("/manifest.json", "/sw.js", "/favicon.ico"):
+        # Allow static files and PWA service worker / icons
+        if request.path.startswith("/static") or request.path in ("/manifest.json", "/sw.js", "/favicon.ico", "/icon-192.png", "/icon-512.png"):
             return None
 
         # Allow maintenance control routes

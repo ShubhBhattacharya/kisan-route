@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app, flash
 
 from translations.strings import LANGUAGES
@@ -135,7 +136,26 @@ def api_notifications():
 
 @main_bp.route("/manifest.json")
 def manifest():
+    public_dir = os.path.join(current_app.root_path, "public")
+    if os.path.exists(os.path.join(public_dir, "manifest.json")):
+        return send_from_directory(public_dir, "manifest.json", mimetype="application/manifest+json")
     return send_from_directory(current_app.static_folder, "manifest.json", mimetype="application/manifest+json")
+
+
+@main_bp.route("/icon-192.png")
+def icon_192():
+    public_dir = os.path.join(current_app.root_path, "public")
+    if os.path.exists(os.path.join(public_dir, "icon-192.png")):
+        return send_from_directory(public_dir, "icon-192.png", mimetype="image/png")
+    return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "icon-192.png", mimetype="image/png")
+
+
+@main_bp.route("/icon-512.png")
+def icon_512():
+    public_dir = os.path.join(current_app.root_path, "public")
+    if os.path.exists(os.path.join(public_dir, "icon-512.png")):
+        return send_from_directory(public_dir, "icon-512.png", mimetype="image/png")
+    return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "icon-512.png", mimetype="image/png")
 
 
 @main_bp.route("/sw.js")

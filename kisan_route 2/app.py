@@ -58,7 +58,25 @@ def create_app():
         def t(key):
             return translate(lang, key)
 
-        return dict(t=t, current_lang=lang, languages=LANGUAGES)
+        from utils.weather import get_agri_weather
+        return dict(
+            t=t,
+            current_lang=lang,
+            languages=LANGUAGES,
+            agri_weather=get_agri_weather()
+        )
+
+    # First-class Security Headers & Browser Hardening
+    @app.after_request
+    def set_security_headers(response):
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(self), camera=(self), microphone=(self)"
+        if not app.debug or os.environ.get("VERCEL"):
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        return response
 
     # Database create and auto-seed demo accounts
     with app.app_context():

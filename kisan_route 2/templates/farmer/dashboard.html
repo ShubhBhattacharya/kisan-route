@@ -5,6 +5,9 @@
   {% if crop_type %}
   <p class="dashboard-subtitle">Growing: <strong>{{ crop_type }}</strong></p>
   {% endif %}
+
+  {% include 'partials/weather_widget.html' %}
+
   <div class="dashboard-grid">
     <a class="feature-card" href="{{ url_for('farmer.crop_quality') }}">
       <span class="feature-icon" aria-hidden="true">📷</span>

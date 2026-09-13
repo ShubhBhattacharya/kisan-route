@@ -9,6 +9,12 @@
   </a>
 
   <div class="topbar-right">
+    <!-- Live Alerts / Notification Bell -->
+    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications">
+      <span>🔔</span>
+      <span class="kr-bell-badge">4</span>
+    </button>
+
     <!-- Mobile App Quick Language Button -->
     <button type="button" class="kr-app-topbar-lang" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" aria-label="Change Language">
       <span>🌐</span>

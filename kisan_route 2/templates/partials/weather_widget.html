@@ -1,0 +1,40 @@
+{% if agri_weather %}
+<div class="kr-weather-card">
+  <div class="kr-weather-header">
+    <div class="kr-weather-location">
+      <span style="font-size: 22px;">{{ agri_weather.icon }}</span>
+      <div>
+        <h3 style="margin: 0; font-size: 16px; color: #1b5e20; font-weight: 800;">लाइव कृषि मौसम व वर्षा पूर्वानुमान (Live Agri Weather)</h3>
+        <small style="color: #617366; font-size: 11.5px;">{{ agri_weather.location }} • ताज़ा अपडेट {{ agri_weather.updated_at }}</small>
+      </div>
+    </div>
+    <span class="kr-weather-badge">🌾 Open-Meteo Live API</span>
+  </div>
+
+  <div class="kr-weather-body">
+    <div class="kr-weather-stat">
+      <div class="kr-weather-stat-label">तापमान (Temp)</div>
+      <div class="kr-weather-stat-val">{{ agri_weather.temp }}°C</div>
+    </div>
+    <div class="kr-weather-stat">
+      <div class="kr-weather-stat-label">नमी (Humidity)</div>
+      <div class="kr-weather-stat-val">{{ agri_weather.humidity }}%</div>
+    </div>
+    <div class="kr-weather-stat">
+      <div class="kr-weather-stat-label">बारिश की संभावना (Rain)</div>
+      <div class="kr-weather-stat-val" style="color: {% if agri_weather.rain_prob >= 50 %}#c62828{% else %}#1b5e20{% endif %};">{{ agri_weather.rain_prob }}%</div>
+    </div>
+    <div class="kr-weather-stat">
+      <div class="kr-weather-stat-label">हवा की गति (Wind)</div>
+      <div class="kr-weather-stat-val">{{ agri_weather.wind_speed }} km/h</div>
+    </div>
+  </div>
+
+  <div class="kr-weather-advisory">
+    <span style="font-size: 20px; line-height: 1;">💡</span>
+    <div class="kr-weather-advisory-text">
+      <strong>किसान परामर्श (Agri Advisory):</strong> {{ agri_weather.advisory_hi }}
+    </div>
+  </div>
+</div>
+{% endif %}

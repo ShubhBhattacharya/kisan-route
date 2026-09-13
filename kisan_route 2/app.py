@@ -16,9 +16,17 @@ def create_app():
 
     # Vercel Serverless environment compatibility
     if os.environ.get("VERCEL"):
-        # Serverless environment me sirf /tmp writable hota hai
         app.config["UPLOAD_FOLDER"] = "/tmp/uploads"
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/kisanroute.db"
+        tmp_db = "/tmp/kisanroute.db"
+        app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{tmp_db}"
+        src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kisanroute.db")
+        if not os.path.exists(tmp_db) and os.path.exists(src_db):
+            import shutil
+            try:
+                shutil.copyfile(src_db, tmp_db)
+                print("Copied initial database to /tmp")
+            except Exception as e:
+                print("Database copy to /tmp skipped:", e)
 
     db.init_app(app)
 
@@ -52,12 +60,40 @@ def create_app():
 
         return dict(t=t, current_lang=lang, languages=LANGUAGES)
 
-    # Database create ko safe try-except me rakhein
+    # Database create and auto-seed demo accounts
     with app.app_context():
         try:
             db.create_all()
+            from models import User
+            from werkzeug.security import generate_password_hash
+
+            demo_accounts = [
+                ("customer", "Demo Customer", "9876543210", "123456"),
+                ("farmer", "Demo Farmer", "9876543210", "123456"),
+                ("driver", "Demo Driver", "9876543210", "123456"),
+                ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
+                ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
+            ]
+            for role, name, phone, pwd in demo_accounts:
+                if not User.query.filter_by(role=role, phone=phone).first():
+                    u = User(
+                        role=role,
+                        full_name=name,
+                        phone=phone,
+                        password_hash=generate_password_hash(pwd),
+                    )
+                    u.set_extra({
+                        "address": "Sector 18, Krishi Bhawan",
+                        "city": "Noida",
+                        "state": "Uttar Pradesh",
+                        "pincode": "201301",
+                        "crop_type": "Wheat",
+                        "profile_complete": True
+                    })
+                    db.session.add(u)
+            db.session.commit()
         except Exception as e:
-            print("Database creation handled:", e)
+            print("Database initialization/seed handled:", e)
 
     return app
 

@@ -1,12 +1,15 @@
-<!-- ================= REAL-TIME NOTIFICATIONS & ALERT DRAWER ================= -->
+<!-- ================= REAL-TIME NOTIFICATIONS & ALERT DRAWER (BILINGUAL) ================= -->
+{% set is_hi = (current_lang == 'hi') %}
 <div class="kr-notif-overlay" id="krNotifModal" style="display: none;">
   <div class="kr-notif-panel" role="dialog" aria-modal="true" aria-labelledby="krNotifTitle">
     <!-- Header -->
     <div class="kr-notif-header">
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 20px;">🔔</span>
-        <h3 id="krNotifTitle" style="margin: 0; font-size: 16.5px; font-weight: 800; color: #1b5e20;">
-          ताज़ा अलर्ट व सूचनाएं (Live Alerts)
+        <h3 id="krNotifTitle" style="margin: 0; font-size: 16.5px; font-weight: 800; color: #1b5e20;"
+            data-en="Live Alerts & Notifications"
+            data-hi="ताज़ा अलर्ट व सूचनाएं (Live Alerts)">
+          {% if is_hi %}ताज़ा अलर्ट व सूचनाएं (Live Alerts){% else %}Live Alerts & Notifications{% endif %}
         </h3>
       </div>
       <button type="button" class="kr-notif-close-btn" onclick="toggleKrNotifications()" aria-label="Close Notifications">&times;</button>
@@ -14,14 +17,20 @@
 
     <!-- Push Notification Permission Banner -->
     <div class="kr-push-banner" id="krPushBanner">
-      <div style="font-size: 13px; font-weight: 700; color: #1b5e20; margin-bottom: 4px;">
-        📲 मोबाइल नोटिफिकेशन प्राप्त करें
+      <div id="krPushBannerTitle" style="font-size: 13px; font-weight: 700; color: #1b5e20; margin-bottom: 4px;"
+           data-en="📲 Enable Mobile Push Alerts"
+           data-hi="📲 मोबाइल नोटिफिकेशन प्राप्त करें">
+        {% if is_hi %}📲 मोबाइल नोटिफिकेशन प्राप्त करें{% else %}📲 Enable Mobile Push Alerts{% endif %}
       </div>
-      <div style="font-size: 11.5px; color: #385e3c; margin-bottom: 8px; line-height: 1.4;">
-        मंडी भाव में उतार-चढ़ाव और आर्डर स्टेटस के त्वरित अलर्ट सीधे अपनी फ़ोन स्क्रीन पर पाएं।
+      <div id="krPushBannerBody" style="font-size: 11.5px; color: #385e3c; margin-bottom: 8px; line-height: 1.4;"
+           data-en="Get instant price movement and order status updates on your device."
+           data-hi="मंडी भाव में उतार-चढ़ाव और आर्डर स्टेटस के त्वरित अलर्ट सीधे अपनी फ़ोन स्क्रीन पर पाएं।">
+        {% if is_hi %}मंडी भाव में उतार-चढ़ाव और आर्डर स्टेटस के त्वरित अलर्ट सीधे अपनी फ़ोन स्क्रीन पर पाएं।{% else %}Get instant price movement and order status updates on your device.{% endif %}
       </div>
-      <button type="button" class="kr-enable-push-btn" onclick="enableNativeNotifications()">
-        ⚡ पुश अलर्ट चालू करें (Enable)
+      <button type="button" class="kr-enable-push-btn" id="krPushEnableBtn" onclick="enableNativeNotifications()"
+              data-en="⚡ Enable Push Alerts"
+              data-hi="⚡ पुश अलर्ट चालू करें (Enable)">
+        {% if is_hi %}⚡ पुश अलर्ट चालू करें (Enable){% else %}⚡ Enable Push Alerts{% endif %}
       </button>
     </div>
 
@@ -31,9 +40,15 @@
       <a href="{{ url_for('farmer.mandi_rates') }}" class="kr-notif-item">
         <div class="kr-notif-icon" style="background: #e8f5e9; color: #1b5e20;">📊</div>
         <div class="kr-notif-content">
-          <div class="kr-notif-item-title">मंडी भाव अपडेट</div>
-          <div class="kr-notif-item-body">पलवल व आज़ादपुर मंडी में गेहूं ₹2,250 और टमाटर ₹22/किलो पर पहुंचा।</div>
-          <div class="kr-notif-item-time">10 मिनट पहले</div>
+          <div class="kr-notif-item-title" data-en="Mandi Price Surge" data-hi="मंडी भाव अपडेट">
+            {% if is_hi %}मंडी भाव अपडेट{% else %}Mandi Price Surge{% endif %}
+          </div>
+          <div class="kr-notif-item-body" data-en="Wheat reached ₹2,250/qtl and Tomato at ₹22/kg in Palwal & Azadpur Mandis." data-hi="पलवल व आज़ादपुर मंडी में गेहूं ₹2,250 और टमाटर ₹22/किलो पर पहुंचा।">
+            {% if is_hi %}पलवल व आज़ादपुर मंडी में गेहूं ₹2,250 और टमाटर ₹22/किलो पर पहुंचा।{% else %}Wheat reached ₹2,250/qtl and Tomato at ₹22/kg in Palwal & Azadpur Mandis.{% endif %}
+          </div>
+          <div class="kr-notif-item-time" data-en="10 mins ago" data-hi="10 मिनट पहले">
+            {% if is_hi %}10 मिनट पहले{% else %}10 mins ago{% endif %}
+          </div>
         </div>
       </a>
 
@@ -41,9 +56,21 @@
       <a href="{{ url_for('farmer.dashboard') }}" class="kr-notif-item">
         <div class="kr-notif-icon" style="background: #fff9c4; color: #f57f17;">{{ agri_weather.icon if agri_weather else '🌤️' }}</div>
         <div class="kr-notif-content">
-          <div class="kr-notif-item-title">मौसम परामर्श ({{ agri_weather.temp if agri_weather else 31 }}°C)</div>
-          <div class="kr-notif-item-body">{{ agri_weather.advisory_hi if agri_weather else 'मौसम साफ है। फसल कटाई व परिवहन के लिए अनुकूल समय है।' }}</div>
-          <div class="kr-notif-item-time">ताज़ा अपडेट</div>
+          <div class="kr-notif-item-title" data-en="Agri Weather Advisory ({{ agri_weather.temp if agri_weather else 31 }}°C)" data-hi="मौसम परामर्श ({{ agri_weather.temp if agri_weather else 31 }}°C)">
+            {% if is_hi %}मौसम परामर्श ({{ agri_weather.temp if agri_weather else 31 }}°C){% else %}Agri Weather Advisory ({{ agri_weather.temp if agri_weather else 31 }}°C){% endif %}
+          </div>
+          <div class="kr-notif-item-body"
+               data-en="{{ agri_weather.advisory_en if (agri_weather and agri_weather.advisory_en) else 'Clear skies. Ideal conditions for harvesting, threshing and transit.' }}"
+               data-hi="{{ agri_weather.advisory_hi if (agri_weather and agri_weather.advisory_hi) else 'मौसम साफ है। फसल कटाई व परिवहन के लिए अनुकूल समय है।' }}">
+            {% if is_hi %}
+              {{ agri_weather.advisory_hi if agri_weather else 'मौसम साफ है। फसल कटाई व परिवहन के लिए अनुकूल समय है।' }}
+            {% else %}
+              {{ agri_weather.advisory_en if (agri_weather and agri_weather.advisory_en) else 'Clear skies. Ideal conditions for harvesting, threshing and transit.' }}
+            {% endif %}
+          </div>
+          <div class="kr-notif-item-time" data-en="Just now" data-hi="ताज़ा अपडेट">
+            {% if is_hi %}ताज़ा अपडेट{% else %}Just now{% endif %}
+          </div>
         </div>
       </a>
 
@@ -51,9 +78,15 @@
       <a href="{{ url_for('driver.dashboard') }}" class="kr-notif-item">
         <div class="kr-notif-icon" style="background: #ede7f6; color: #512da8;">🚚</div>
         <div class="kr-notif-content">
-          <div class="kr-notif-item-title">साझा ट्रक लोड उपलब्ध</div>
-          <div class="kr-notif-item-body">एनसीआर रूट पर 2 खाली कमर्शियल गाड़ियां उपलब्ध हैं। 40% तक भाड़ा बचाएं।</div>
-          <div class="kr-notif-item-time">35 मिनट पहले</div>
+          <div class="kr-notif-item-title" data-en="Shared Truck Load Available" data-hi="साझा ट्रक लोड उपलब्ध">
+            {% if is_hi %}साझा ट्रक लोड उपलब्ध{% else %}Shared Truck Load Available{% endif %}
+          </div>
+          <div class="kr-notif-item-body" data-en="2 commercial vehicles with shared capacity available on NCR route. Save up to 40% freight." data-hi="एनसीआर रूट पर 2 खाली कमर्शियल गाड़ियां उपलब्ध हैं। 40% तक भाड़ा बचाएं।">
+            {% if is_hi %}एनसीआर रूट पर 2 खाली कमर्शियल गाड़ियां उपलब्ध हैं। 40% तक भाड़ा बचाएं।{% else %}2 commercial vehicles with shared capacity available on NCR route. Save up to 40% freight.{% endif %}
+          </div>
+          <div class="kr-notif-item-time" data-en="35 mins ago" data-hi="35 मिनट पहले">
+            {% if is_hi %}35 मिनट पहले{% else %}35 mins ago{% endif %}
+          </div>
         </div>
       </a>
 
@@ -61,33 +94,74 @@
       <a href="{{ url_for('customer.dashboard') }}" class="kr-notif-item">
         <div class="kr-notif-icon" style="background: #fff3e0; color: #e65100;">🛒</div>
         <div class="kr-notif-content">
-          <div class="kr-notif-item-title">ताज़ा फसल आर्डर</div>
-          <div class="kr-notif-item-body">ग्राहक ने 50 किलो गेहूं का नया आर्डर बुक किया है।</div>
-          <div class="kr-notif-item-time">1 घंटा पहले</div>
+          <div class="kr-notif-item-title" data-en="Fresh Produce Order" data-hi="ताज़ा फसल आर्डर">
+            {% if is_hi %}ताज़ा फसल आर्डर{% else %}Fresh Produce Order{% endif %}
+          </div>
+          <div class="kr-notif-item-body" data-en="Buyer booked a new order for 50 kg farm wheat." data-hi="ग्राहक ने 50 किलो गेहूं का नया आर्डर बुक किया है।">
+            {% if is_hi %}ग्राहक ने 50 किलो गेहूं का नया आर्डर बुक किया है।{% else %}Buyer booked a new order for 50 kg farm wheat.{% endif %}
+          </div>
+          <div class="kr-notif-item-time" data-en="1 hour ago" data-hi="1 घंटा पहले">
+            {% if is_hi %}1 घंटा पहले{% else %}1 hour ago{% endif %}
+          </div>
         </div>
       </a>
     </div>
 
     <!-- Footer Action -->
     <div style="padding: 12px 16px; background: #f7f9f7; border-top: 1px solid #e0e0e0; text-align: center;">
-      <button type="button" onclick="sendTestNativeNotification()" style="background: none; border: none; color: #2e7d32; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline;">
-        🔔 टेस्ट नोटिफिकेशन भेजकर देखें (Test Alert)
+      <button type="button" id="krNotifTestBtn" onclick="sendTestNativeNotification()" style="background: none; border: none; color: #2e7d32; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: underline;"
+              data-en="🔔 Send Test Alert"
+              data-hi="🔔 टेस्ट नोटिफिकेशन भेजकर देखें (Test Alert)">
+        {% if is_hi %}🔔 टेस्ट नोटिफिकेशन भेजकर देखें (Test Alert){% else %}🔔 Send Test Alert{% endif %}
       </button>
     </div>
   </div>
 </div>
 
 <script>
+function getActiveLanguage() {
+  var match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
+  if (match) {
+    var val = decodeURIComponent(match[1]);
+    if (val.indexOf('/hi') !== -1) return 'hi';
+    if (val.indexOf('/en') !== -1) return 'en';
+  }
+  try {
+    var stored = localStorage.getItem('kr_user_lang');
+    if (stored) return stored;
+  } catch(e){}
+  var docLang = document.documentElement.lang || '';
+  if (docLang.toLowerCase().indexOf('hi') !== -1) return 'hi';
+  return "{{ current_lang }}";
+}
+
+function syncNotificationDrawerLanguage(lang) {
+  var activeLang = lang || getActiveLanguage();
+  var isHindi = (activeLang === 'hi');
+
+  var elements = document.querySelectorAll('#krNotifModal [data-en][data-hi]');
+  elements.forEach(function(el) {
+    var text = isHindi ? el.getAttribute('data-hi') : el.getAttribute('data-en');
+    if (text) el.textContent = text;
+  });
+}
+
 function toggleKrNotifications() {
   var modal = document.getElementById('krNotifModal');
   if (!modal) return;
   var isHidden = modal.style.display === 'none' || !modal.style.display;
-  modal.style.display = isHidden ? 'flex' : 'none';
+  if (isHidden) {
+    syncNotificationDrawerLanguage();
+    modal.style.display = 'flex';
+  } else {
+    modal.style.display = 'none';
+  }
 }
 
 function enableNativeNotifications() {
+  var isHindi = (getActiveLanguage() === 'hi');
   if (!('Notification' in window)) {
-    alert('आपके ब्राउज़र में नोटिफिकेशन सपोर्ट उपलब्ध नहीं है।');
+    alert(isHindi ? 'आपके ब्राउज़र में नोटिफिकेशन सपोर्ट उपलब्ध नहीं है।' : 'Notification support is not available in your browser.');
     return;
   }
 
@@ -95,20 +169,27 @@ function enableNativeNotifications() {
     if (permission === 'granted') {
       var banner = document.getElementById('krPushBanner');
       if (banner) {
-        banner.innerHTML = '<div style="font-size: 12.5px; font-weight: 700; color: #1b5e20;">✅ मोबाइल नोटिफिकेशन सफलतापूर्वक चालू हो गए हैं!</div>';
+        banner.innerHTML = isHindi
+          ? '<div style="font-size: 12.5px; font-weight: 700; color: #1b5e20;">✅ मोबाइल नोटिफिकेशन सफलतापूर्वक चालू हो गए हैं!</div>'
+          : '<div style="font-size: 12.5px; font-weight: 700; color: #1b5e20;">✅ Mobile push notifications enabled successfully!</div>';
       }
       sendTestNativeNotification();
     } else {
-      alert('नोटिफिकेशन की अनुमति अस्वीकार कर दी गई। आप ब्राउज़र सेटिंग्स से इसे चालू कर सकते हैं।');
+      alert(isHindi
+        ? 'नोटिफिकेशन की अनुमति अस्वीकार कर दी गई। आप ब्राउज़र सेटिंग्स से इसे चालू कर सकते हैं।'
+        : 'Notification permission was denied. You can enable it in your browser settings.');
     }
   });
 }
 
 function sendTestNativeNotification() {
+  var isHindi = (getActiveLanguage() === 'hi');
   if (!('Notification' in window)) return;
   if (Notification.permission === 'granted') {
-    new Notification('🌾 Kisan Route अलर्ट', {
-      body: 'ताज़ा मंडी भाव: पलवल मंडी में गेहूं ₹2,250/क्विंटल पहुंचा!',
+    new Notification(isHindi ? '🌾 Kisan Route अलर्ट' : '🌾 Kisan Route Alert', {
+      body: isHindi
+        ? 'ताज़ा मंडी भाव: पलवल मंडी में गेहूं ₹2,250/क्विंटल पहुंचा!'
+        : 'Live Mandi Update: Wheat reached ₹2,250/quintal in Palwal mandi!',
       icon: '/static/images/icons/icon-192.png',
       badge: '/static/images/icons/icon-192.png',
       vibrate: [200, 100, 200]
@@ -118,7 +199,6 @@ function sendTestNativeNotification() {
   }
 }
 
-// Close on backdrop click
 document.addEventListener('DOMContentLoaded', function() {
   var modal = document.getElementById('krNotifModal');
   if (modal) {
@@ -128,5 +208,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+  syncNotificationDrawerLanguage();
+});
+
+window.addEventListener('krLanguageChanged', function(e) {
+  syncNotificationDrawerLanguage(e.detail ? e.detail.lang : null);
 });
 </script>

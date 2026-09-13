@@ -217,7 +217,13 @@
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
-        <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+        <div class="flash flash-{{ category }}" role="status">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">{% if category == 'success' %}✅{% elif category == 'error' %}⚠️{% else %}ℹ️{% endif %}</span>
+            <span>{{ message }}</span>
+          </div>
+          <button type="button" class="kr-flash-close" onclick="this.closest('.flash').remove()" aria-label="Dismiss">&times;</button>
+        </div>
       {% endfor %}
     {% endif %}
   {% endwith %}
@@ -312,15 +318,18 @@
   function changeAppLang(langCode) {
     document.cookie = "googtrans=/en/" + langCode + "; path=/";
     document.cookie = "googtrans=/en/" + langCode + "; domain=" + window.location.hostname + "; path=/";
+    try { localStorage.setItem('kr_user_lang', langCode); } catch(e){}
     var combo = document.querySelector('.goog-te-combo');
     if (combo) {
       combo.value = langCode;
       combo.dispatchEvent(new Event('change'));
-    } else {
-      window.location.reload();
     }
+    window.dispatchEvent(new CustomEvent('krLanguageChanged', { detail: { lang: langCode } }));
     var modal = document.getElementById('krLangModal');
     if (modal) modal.classList.remove('open');
+    if (!combo) {
+      window.location.reload();
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -368,6 +377,21 @@
     document.body.classList.add('kr-is-app');
   }
 })();
+
+// Auto-dismiss login & action flash banners after 1.8 seconds (1-2s smooth fade)
+document.addEventListener('DOMContentLoaded', function() {
+  var flashes = document.querySelectorAll('.flash');
+  if (flashes.length > 0) {
+    setTimeout(function() {
+      flashes.forEach(function(flash) {
+        flash.classList.add('kr-flash-fade-out');
+        setTimeout(function() {
+          if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
+        }, 450);
+      });
+    }, 1800);
+  }
+});
 </script>
 
 {% include 'partials/kr_transition_loader.html' %}

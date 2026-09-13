@@ -59,11 +59,13 @@ def create_app():
             return translate(lang, key)
 
         from utils.weather import get_agri_weather
+        from utils.news import get_agri_news
         return dict(
             t=t,
             current_lang=lang,
             languages=LANGUAGES,
-            agri_weather=get_agri_weather()
+            agri_weather=get_agri_weather(),
+            agri_news=get_agri_news()
         )
 
     # First-class Security Headers & Browser Hardening

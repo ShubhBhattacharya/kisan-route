@@ -46,49 +46,90 @@ def api_weather():
     return jsonify(get_agri_weather(lat=lat, lon=lon))
 
 
+@main_bp.route("/api/news")
+def api_news():
+    from utils.news import get_agri_news
+    category = request.args.get("category")
+    return jsonify({"success": True, "news": get_agri_news(category=category)})
+
+
 @main_bp.route("/api/notifications")
 def api_notifications():
     from utils.weather import get_agri_weather
+    lang = request.args.get("lang") or session.get("lang", "en")
     w = get_agri_weather()
-    alerts = [
+    
+    alerts_data = [
         {
             "id": 1,
             "category": "mandi",
             "icon": "📊",
-            "title": "मंडी भाव में तेजी",
-            "body": "पलवल व आज़ादपुर मंडी में गेहूं ₹2,250 और टमाटर ₹22/किलो पर पहुंचा।",
-            "time": "10 मिनट पहले",
+            "title_hi": "मंडी भाव अपडेट",
+            "title_en": "Mandi Price Surge",
+            "body_hi": "पलवल व आज़ादपुर मंडी में गेहूं ₹2,250 और टमाटर ₹22/किलो पर पहुंचा।",
+            "body_en": "Wheat reached ₹2,250/qtl and Tomato at ₹22/kg in Palwal & Azadpur Mandis.",
+            "time_hi": "10 मिनट पहले",
+            "time_en": "10 mins ago",
             "url": "/farmer/mandi-rates"
         },
         {
             "id": 2,
             "category": "weather",
             "icon": w.get("icon", "🌦️"),
-            "title": "कृषि मौसम अलर्ट (" + str(w.get("temp", 31)) + "°C)",
-            "body": w.get("advisory_hi", "मौसम साफ है। फसल कटाई व परिवहन के लिए अनुकूल समय है।"),
-            "time": "अभी-अभी",
+            "title_hi": f"मौसम परामर्श ({w.get('temp', 31)}°C)",
+            "title_en": f"Agri Weather Advisory ({w.get('temp', 31)}°C)",
+            "body_hi": w.get("advisory_hi", "मौसम साफ है। फसल कटाई व परिवहन के लिए अनुकूल समय है।"),
+            "body_en": w.get("advisory_en", "Clear skies. Ideal conditions for harvesting and transit."),
+            "time_hi": "ताज़ा अपडेट",
+            "time_en": "Just now",
             "url": "/farmer/dashboard"
         },
         {
             "id": 3,
             "category": "logistics",
             "icon": "🚚",
-            "title": "साझा ट्रक लोड उपलब्ध",
-            "body": "एनसीआर रूट पर 2 खाली कमर्शियल गाड़ियां उपलब्ध हैं। 40% तक भाड़ा बचाएं।",
-            "time": "35 मिनट पहले",
+            "title_hi": "साझा ट्रक लोड उपलब्ध",
+            "title_en": "Shared Truck Load Available",
+            "body_hi": "एनसीआर रूट पर 2 खाली कमर्शियल गाड़ियां उपलब्ध हैं। 40% तक भाड़ा बचाएं।",
+            "body_en": "2 commercial vehicles with shared capacity available on NCR route. Save up to 40% freight.",
+            "time_hi": "35 मिनट पहले",
+            "time_en": "35 mins ago",
             "url": "/driver/dashboard"
         },
         {
             "id": 4,
             "category": "order",
             "icon": "🛒",
-            "title": "ताज़ा फसल आर्डर",
-            "body": "ग्राहक ने 50 किलो गेहूं का नया आर्डर बुक किया है।",
-            "time": "1 घंटा पहले",
+            "title_hi": "ताज़ा फसल आर्डर",
+            "title_en": "Fresh Produce Order",
+            "body_hi": "ग्राहक ने 50 किलो गेहूं का नया आर्डर बुक किया है।",
+            "body_en": "Buyer booked a new order for 50 kg farm wheat.",
+            "time_hi": "1 घंटा पहले",
+            "time_en": "1 hour ago",
             "url": "/customer/dashboard"
         }
     ]
-    return jsonify({"success": True, "count": len(alerts), "notifications": alerts})
+
+    is_hi = (lang == "hi")
+    alerts = []
+    for a in alerts_data:
+        alerts.append({
+            "id": a["id"],
+            "category": a["category"],
+            "icon": a["icon"],
+            "title": a["title_hi"] if is_hi else a["title_en"],
+            "body": a["body_hi"] if is_hi else a["body_en"],
+            "time": a["time_hi"] if is_hi else a["time_en"],
+            "title_hi": a["title_hi"],
+            "title_en": a["title_en"],
+            "body_hi": a["body_hi"],
+            "body_en": a["body_en"],
+            "time_hi": a["time_hi"],
+            "time_en": a["time_en"],
+            "url": a["url"]
+        })
+
+    return jsonify({"success": True, "count": len(alerts), "lang": lang, "notifications": alerts})
 
 
 @main_bp.route("/manifest.json")

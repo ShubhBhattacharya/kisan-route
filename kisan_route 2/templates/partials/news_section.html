@@ -1,0 +1,190 @@
+<!-- ================= AGRICULTURAL & FARMER NEWS SECTION ================= -->
+{% set is_hi = (current_lang == 'hi') %}
+<div class="kr-news-container" id="krNewsSection">
+  <!-- Section Header -->
+  <div class="kr-news-header">
+    <div class="kr-news-header-left">
+      <span class="kr-news-badge">📰 कृषि व किसान समाचार (Agri News)</span>
+      <h2 class="kr-news-title" data-en="Latest Agricultural & Farmer News" data-hi="सरकारी योजनाएं, MSP और कृषि समाचार">
+        {% if is_hi %}सरकारी योजनाएं, MSP और कृषि समाचार{% else %}Latest Agricultural & Farmer News{% endif %}
+      </h2>
+      <p class="kr-news-subtitle" data-en="Verified updates from PIB, Ministry of Agriculture, e-NAM and Krishi Vigyan Kendras." data-hi="कृषि मंत्रालय, e-NAM और सरकारी स्रोतों से किसानों के लिए प्रमाणित ताज़ा खबरें।">
+        {% if is_hi %}कृषि मंत्रालय, e-NAM और सरकारी स्रोतों से किसानों के लिए प्रमाणित ताज़ा खबरें।{% else %}Verified updates from PIB, Ministry of Agriculture, e-NAM and Krishi Vigyan Kendras.{% endif %}
+      </p>
+    </div>
+
+    <!-- Live Ticker Indicator -->
+    <div class="kr-news-ticker-pill">
+      <span class="kr-live-dot"></span>
+      <span data-en="Live News Feed" data-hi="लाइव कृषि बुलेटिन">{% if is_hi %}लाइव कृषि बुलेटिन{% else %}Live News Feed{% endif %}</span>
+    </div>
+  </div>
+
+  <!-- Category Filter Tabs -->
+  <div class="kr-news-filters">
+    <button type="button" class="kr-filter-btn active" onclick="filterAgriNews('all', this)" data-en="🌾 All Updates" data-hi="🌾 सभी समाचार">
+      {% if is_hi %}🌾 सभी समाचार{% else %}🌾 All Updates{% endif %}
+    </button>
+    <button type="button" class="kr-filter-btn" onclick="filterAgriNews('schemes', this)" data-en="🏛️ Govt Schemes & MSP" data-hi="🏛️ सरकारी योजनाएं व MSP">
+      {% if is_hi %}🏛️ सरकारी योजनाएं व MSP{% else %}🏛️ Govt Schemes & MSP{% endif %}
+    </button>
+    <button type="button" class="kr-filter-btn" onclick="filterAgriNews('mandi', this)" data-en="📊 Digital Mandi" data-hi="📊 डिजिटल मंडी">
+      {% if is_hi %}📊 डिजिटल मंडी{% else %}📊 Digital Mandi{% endif %}
+    </button>
+    <button type="button" class="kr-filter-btn" onclick="filterAgriNews('logistics', this)" data-en="🚚 Agri Logistics" data-hi="🚚 कृषि लॉजिस्टिक्स">
+      {% if is_hi %}🚚 कृषि लॉजिस्टिक्स{% else %}🚚 Agri Logistics{% endif %}
+    </button>
+    <button type="button" class="kr-filter-btn" onclick="filterAgriNews('tech', this)" data-en="💡 Agro-Tech & Drones" data-hi="💡 कृषि तकनीक व ड्रोन">
+      {% if is_hi %}💡 कृषि तकनीक व ड्रोन{% else %}💡 Agro-Tech & Drones{% endif %}
+    </button>
+    <button type="button" class="kr-filter-btn" onclick="filterAgriNews('weather', this)" data-en="🌧️ Weather & Sowing" data-hi="🌧️ मौसम व बुवाई">
+      {% if is_hi %}🌧️ मौसम व बुवाई{% else %}🌧️ Weather & Sowing{% endif %}
+    </button>
+  </div>
+
+  <!-- News Cards Grid -->
+  <div class="kr-news-grid" id="krNewsGrid">
+    {% if agri_news %}
+      {% for item in agri_news %}
+        <article class="kr-news-card" data-category="{{ item.category_slug }}" onclick="openNewsModal({{ item.id }})">
+          <div class="kr-news-card-top">
+            <span class="kr-news-tag">{{ item.icon }} <span class="kr-card-cat" data-en="{{ item.category_en }}" data-hi="{{ item.category_hi }}">{% if is_hi %}{{ item.category_hi }}{% else %}{{ item.category_en }}{% endif %}</span></span>
+            <span class="kr-news-badge-accent" data-en="{{ item.badge_en }}" data-hi="{{ item.badge_hi }}">{% if is_hi %}{{ item.badge_hi }}{% else %}{{ item.badge_en }}{% endif %}</span>
+          </div>
+
+          <h3 class="kr-news-card-title" data-en="{{ item.title_en }}" data-hi="{{ item.title_hi }}">
+            {% if is_hi %}{{ item.title_hi }}{% else %}{{ item.title_en }}{% endif %}
+          </h3>
+
+          <p class="kr-news-card-summary" data-en="{{ item.summary_en }}" data-hi="{{ item.summary_hi }}">
+            {% if is_hi %}{{ item.summary_hi }}{% else %}{{ item.summary_en }}{% endif %}
+          </p>
+
+          <div class="kr-news-card-footer">
+            <div class="kr-news-source">
+              <span>📢</span>
+              <span>{{ item.source }}</span>
+            </div>
+            <div class="kr-news-time" data-en="{{ item.time_en }}" data-hi="{{ item.time_hi }}">
+              {% if is_hi %}{{ item.time_hi }}{% else %}{{ item.time_en }}{% endif %}
+            </div>
+          </div>
+
+          <div class="kr-news-read-more">
+            <span data-en="Read Full Details →" data-hi="पूरा विवरण पढ़ें →">{% if is_hi %}पूरा विवरण पढ़ें →{% else %}Read Full Details →{% endif %}</span>
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+<!-- ================= NEWS READER MODAL ================= -->
+<div class="kr-news-modal-overlay" id="krNewsModalOverlay" style="display: none;">
+  <div class="kr-news-modal-card" role="dialog" aria-modal="true" aria-labelledby="krNewsModalTitle">
+    <div class="kr-news-modal-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="krNewsModalIcon" style="font-size: 24px;">📰</span>
+        <div>
+          <span id="krNewsModalCategory" class="kr-news-tag" style="display: inline-block; margin-bottom: 2px;">कृषि समाचार</span>
+          <div id="krNewsModalTime" style="font-size: 11px; color: #617366;">आज का अपडेट</div>
+        </div>
+      </div>
+      <button type="button" class="kr-news-modal-close" onclick="closeNewsModal()" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="kr-news-modal-body">
+      <h2 id="krNewsModalTitle" style="font-size: 18px; font-weight: 800; color: #1b5e20; margin: 0 0 12px 0; line-height: 1.3;"></h2>
+      
+      <div id="krNewsModalSummary" style="font-size: 14px; font-weight: 600; color: #2e4732; background: #e8f5e9; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; line-height: 1.5; border-left: 4px solid #2e7d32;"></div>
+
+      <div id="krNewsModalDetail" style="font-size: 14px; color: #3e4d41; line-height: 1.7; margin-bottom: 18px;"></div>
+
+      <div style="background: #f7fbf7; border: 1px dashed #c8e6c9; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div style="font-size: 12px; color: #435e47;">
+          <strong>स्रोत (Official Source):</strong> <span id="krNewsModalSource"></span>
+        </div>
+        <div style="font-size: 11.5px; color: #1b5e20; font-weight: 700;">
+          ✅ Kisan Route सत्यापित बुलेटिन
+        </div>
+      </div>
+    </div>
+
+    <div class="kr-news-modal-footer">
+      <button type="button" class="btn btn-primary" onclick="closeNewsModal()" style="padding: 8px 20px; font-size: 13.5px;">
+        ठीक है (Close)
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Agricultural News Data Repository for Instant Bilingual Modal View
+var AGRI_NEWS_DATA = {{ agri_news | tojson }};
+
+function filterAgriNews(category, btn) {
+  var cards = document.querySelectorAll('.kr-news-card');
+  var buttons = document.querySelectorAll('.kr-filter-btn');
+  buttons.forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  cards.forEach(function(card) {
+    if (category === 'all' || card.getAttribute('data-category') === category) {
+      card.style.display = 'flex';
+      card.style.animation = 'krCardFadeIn 0.3s ease forwards';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function openNewsModal(id) {
+  var item = AGRI_NEWS_DATA.find(function(n) { return n.id === id; });
+  if (!item) return;
+
+  var isHindi = (typeof getActiveLanguage === 'function' ? getActiveLanguage() : '{{ current_lang }}') === 'hi';
+
+  document.getElementById('krNewsModalIcon').textContent = item.icon || '📰';
+  document.getElementById('krNewsModalCategory').textContent = (item.icon ? item.icon + ' ' : '') + (isHindi ? item.category_hi : item.category_en);
+  document.getElementById('krNewsModalTime').textContent = isHindi ? item.time_hi : item.time_en;
+  document.getElementById('krNewsModalTitle').textContent = isHindi ? item.title_hi : item.title_en;
+  document.getElementById('krNewsModalSummary').textContent = isHindi ? item.summary_hi : item.summary_en;
+  document.getElementById('krNewsModalDetail').textContent = isHindi ? item.detail_hi : item.detail_en;
+  document.getElementById('krNewsModalSource').textContent = item.source || 'कृषि विभाग';
+
+  var modal = document.getElementById('krNewsModalOverlay');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+}
+
+function closeNewsModal() {
+  var modal = document.getElementById('krNewsModalOverlay');
+  if (modal) modal.style.display = 'none';
+}
+
+function syncNewsSectionLanguage(lang) {
+  var activeLang = lang || (typeof getActiveLanguage === 'function' ? getActiveLanguage() : '{{ current_lang }}');
+  var isHindi = (activeLang === 'hi');
+
+  var elements = document.querySelectorAll('#krNewsSection [data-en][data-hi]');
+  elements.forEach(function(el) {
+    var text = isHindi ? el.getAttribute('data-hi') : el.getAttribute('data-en');
+    if (text) el.textContent = text;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('krNewsModalOverlay');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeNewsModal();
+    });
+  }
+  syncNewsSectionLanguage();
+});
+
+window.addEventListener('krLanguageChanged', function(e) {
+  syncNewsSectionLanguage(e.detail ? e.detail.lang : null);
+});
+</script>

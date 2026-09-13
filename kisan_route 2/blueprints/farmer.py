@@ -168,7 +168,8 @@ def profit_calculator():
         crop = request.form.get("crop")
         quantity = float(request.form.get("quantity") or 0)
         transport_cost = float(request.form.get("transport_cost") or 0)
-        best = get_mandi_rates(crop)[0]
+        rates = get_mandi_rates(crop or "Wheat")
+        best = rates[0] if rates else {"region": "Nearby Mandi", "rate": 2200}
         revenue = best["rate"] * quantity
         breakdown = {
             "crop": crop,

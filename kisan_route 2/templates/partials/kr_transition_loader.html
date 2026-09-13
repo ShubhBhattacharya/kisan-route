@@ -497,12 +497,29 @@
   };
 
   // Intercept all Auth Login Forms to display animation for 2 seconds before redirecting
+  // Ensure overlay never gets stuck on browser back/forward navigation
+  window.addEventListener('pageshow', function() {
+    initElements();
+    if (overlay) overlay.style.display = 'none';
+  });
+
+  // Intercept all Auth Login Forms to display animation before redirecting
   document.addEventListener('DOMContentLoaded', function() {
     initElements();
 
     var authForms = document.querySelectorAll('.auth-card form');
     authForms.forEach(function(form) {
       form.addEventListener('submit', function(e) {
+        if (form.dataset.animating === 'true') {
+          // Allow actual form submit after animation finishes
+          return;
+        }
+
+        // Native HTML5 validation check: don't animate if required fields are missing
+        if (form.checkValidity && !form.checkValidity()) {
+          return;
+        }
+
         var isDemo = form.querySelector('input[name="demo_login"]');
         var roleName = 'डैशबोर्ड';
         var heading = document.querySelector('.auth-card h1');
@@ -510,17 +527,12 @@
           roleName = heading.textContent.replace('🌾', '').replace('login', '').trim();
         }
 
-        if (form.dataset.animating === 'true') {
-          // Allow actual form submit after animation finishes
-          return;
-        }
-
         e.preventDefault();
 
         window.triggerKisanTransition({
           title: '🌾 ' + roleName + ' में प्रवेश हो रहा है...',
           subtitle: 'सत्यापन पूर्ण! आपका सुरक्षित डैशबोर्ड तैयार किया जा रहा है',
-          duration: 2100, // 2.1 seconds running animation
+          duration: 1700, // 1.7s snappy animation
           onComplete: function() {
             form.dataset.animating = 'true';
             form.submit();
@@ -543,7 +555,7 @@
           window.triggerKisanTransition({
             title: '🌾 ' + name + ' की ओर प्रस्थान...',
             subtitle: 'Kisan Route: खेत से मंडी तक एक मार्ग',
-            duration: 1800, // 1.8s
+            duration: 750, // 0.75s snappy transition
             url: href
           });
         });

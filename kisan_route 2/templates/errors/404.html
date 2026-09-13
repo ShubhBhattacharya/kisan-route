@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+  <div style="max-width: 540px; width: 100%; background: #ffffff; border-radius: 20px; border: 2px solid #e8f0e9; padding: 36px 28px; text-align: center; box-shadow: 0 10px 30px rgba(27, 94, 32, 0.08);">
+    <div style="font-size: 64px; margin-bottom: 12px; line-height: 1;">🌾</div>
+    <div style="display: inline-block; background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin-bottom: 14px;">
+      त्रुटि 404 • Page Not Found
+    </div>
+    <h1 style="color: #1b5e20; font-size: 26px; font-weight: 800; margin-bottom: 12px;">
+      यह पृष्ठ उपलब्ध नहीं है
+    </h1>
+    <p style="color: #55695b; font-size: 14.5px; line-height: 1.6; margin-bottom: 26px;">
+      शायद यह लिंक पुराना है या पता गलत दर्ज हुआ है। आप किसान रूट के मुख्य पृष्ठ या डैशबोर्ड पर वापस जा सकते हैं।
+    </p>
+
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="{{ url_for('main.home') }}" class="btn btn-primary" style="padding: 10px 22px; font-size: 14px; border-radius: 24px;">
+        🏠 मुख्य पृष्ठ (Home)
+      </a>
+      <a href="{{ url_for('farmer.login') }}" class="btn btn-outline" style="padding: 10px 22px; font-size: 14px; border-radius: 24px;">
+        🌾 किसान पोर्टल
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

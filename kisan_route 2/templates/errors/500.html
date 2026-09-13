@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+  <div style="max-width: 540px; width: 100%; background: #ffffff; border-radius: 20px; border: 2px solid #ffcdd2; padding: 36px 28px; text-align: center; box-shadow: 0 10px 30px rgba(198, 40, 40, 0.08);">
+    <div style="font-size: 64px; margin-bottom: 12px; line-height: 1;">⚙️</div>
+    <div style="display: inline-block; background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin-bottom: 14px;">
+      त्रुटि 500 • Server Error
+    </div>
+    <h1 style="color: #b71c1c; font-size: 26px; font-weight: 800; margin-bottom: 12px;">
+      अस्थायी तकनीकी समस्या
+    </h1>
+    <p style="color: #55695b; font-size: 14.5px; line-height: 1.6; margin-bottom: 26px;">
+      सर्वर पर अस्थायी समस्या आई है। आपका डेटा सुरक्षित है। कृपया एक बार पेज को रिफ्रेश करें या कुछ समय बाद प्रयास करें।
+    </p>
+
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <button onclick="window.location.reload()" class="btn btn-primary" style="padding: 10px 22px; font-size: 14px; border-radius: 24px; cursor: pointer;">
+        🔄 पुनः प्रयास करें (Refresh)
+      </button>
+      <a href="{{ url_for('main.home') }}" class="btn btn-outline" style="padding: 10px 22px; font-size: 14px; border-radius: 24px;">
+        🏠 होम पेज
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

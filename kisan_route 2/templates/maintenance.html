@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisan Route - System Maintenance & Upgrades (503)</title>
+  <link rel="icon" href="/static/images/icons/icon-192.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1b5e20;
+      --primary-light: #2e7d32;
+      --accent: #fbc02d;
+      --bg: #0d2812;
+      --text: #ffffff;
+      --muted: #b7d5be;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top center, #1b4d24 0%, #0d2612 60%, #07150a 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 20px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Glow */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(76, 175, 80, 0.22) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .kr-maint-wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+      width: 100%;
+      text-align: center;
+      margin: auto;
+    }
+
+    /* Animated Agri Gear / Tractor Badge */
+    .kr-maint-badge-icon {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      border: 3px solid #fbc02d;
+      box-shadow: 0 0 30px rgba(251, 192, 45, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 46px;
+      position: relative;
+      animation: krFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes krFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    .kr-pulse-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff9c4;
+      margin-bottom: 20px;
+    }
+
+    .kr-live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fbc02d;
+      box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.8);
+      animation: krPulse 1.6s infinite;
+    }
+
+    @keyframes krPulse {
+      0% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0.8); }
+      70% { box-shadow: 0 0 0 10px rgba(251, 192, 45, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(251, 192, 45, 0); }
+    }
+
+    h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .kr-maint-sub {
+      font-size: clamp(15px, 2.5vw, 17px);
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 640px;
+      margin: 0 auto 28px;
+    }
+
+    /* Cards Grid */
+    .kr-maint-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .kr-maint-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .kr-maint-card-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .kr-maint-card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 3px;
+    }
+
+    .kr-maint-card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Actions */
+    .kr-maint-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .kr-btn {
+      padding: 12px 26px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .kr-btn-primary {
+      background: #fbc02d;
+      color: #1b4d24;
+      box-shadow: 0 4px 18px rgba(251, 192, 45, 0.4);
+    }
+
+    .kr-btn-primary:hover {
+      background: #fdd835;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(251, 192, 45, 0.55);
+    }
+
+    .kr-btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .kr-btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #ffffff;
+    }
+
+    /* Auto-Check Countdown */
+    .kr-countdown-box {
+      font-size: 13px;
+      color: #dcedc8;
+      margin-bottom: 12px;
+    }
+
+    /* Footer / Admin Bypass Trigger */
+    footer {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      text-align: center;
+      font-size: 12.5px;
+      color: #799a82;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 1100px;
+    }
+
+    .kr-admin-link {
+      color: #a5d6a7;
+      text-decoration: none;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .kr-admin-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Admin Bypass Modal */
+    .kr-bypass-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .kr-bypass-card {
+      background: #1b4d24;
+      border: 2px solid #a5d6a7;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    .kr-bypass-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid #a5d6a7;
+      background: #0d2812;
+      color: #ffffff;
+      font-size: 16px;
+      margin: 16px 0;
+      text-align: center;
+      letter-spacing: 2px;
+      outline: none;
+    }
+
+    .kr-bypass-input:focus {
+      border-color: #fbc02d;
+      box-shadow: 0 0 10px rgba(251, 192, 45, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div></div>
+
+  <main class="kr-maint-wrapper">
+    <!-- Animated Emblem -->
+    <div class="kr-maint-badge-icon">
+      🚜
+    </div>
+
+    <!-- Status Pill -->
+    <div class="kr-pulse-pill">
+      <span class="kr-live-dot"></span>
+      <span>सिस्टम मेंटेनेंस व अपग्रेड जारी (HTTP 503 Active)</span>
+    </div>
+
+    <h1>हम Kisan Route को और अधिक सुरक्षित व आधुनिक बना रहे हैं</h1>
+
+    <p class="kr-maint-sub">
+      सर्वर की गति, सुरक्षा व सुविधाओं को अपग्रेड किया जा रहा है। आपके सभी खाते, मंडी भाव और फसल डेटा 100% सुरक्षित हैं। सेवा शीघ्र पुनः प्रारंभ होगी।
+    </p>
+
+    <!-- Info Grid -->
+    <div class="kr-maint-grid">
+      <div class="kr-maint-card">
+        <span class="kr-maint-card-icon">🔒</span>
+        <div>
+          <div class="kr-maint-card-title">100% डेटा सुरक्षित</div>
+          <div class="kr-maint-card-desc">किसान समूह व ऑर्डर्स का सारा रिकॉर्ड क्लाउड पर सुरक्षित है।</div>
+        </div>
+      </div>
+
+      <div class="kr-maint-card">
+        <span class="kr-maint-card-icon">⚡</span>
+        <div>
+          <div class="kr-maint-card-title">हाई-स्पीड सर्वर</div>
+          <div class="kr-maint-card-desc">अपग्रेड के बाद ऐप 3x तेज़ और बिना किसी लैग के चलेगा।</div>
+        </div>
+      </div>
+
+      <div class="kr-maint-card">
+        <span class="kr-maint-card-icon">📞</span>
+        <div>
+          <div class="kr-maint-card-title">24x7 हेल्पलाइन</div>
+          <div class="kr-maint-card-desc">टोल-फ्री: 1800-123-4567 | WhatsApp: 9876543210</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown & Actions -->
+    <div class="kr-countdown-box">
+      <span>ऑटो-रिफ्रेश: </span><strong id="krCountdown">25</strong> सेकंड बाद स्वतः जांच होगी...
+    </div>
+
+    <div class="kr-maint-actions">
+      <button type="button" class="kr-btn kr-btn-primary" onclick="window.location.reload()">
+        <span>🔄</span> <span>पुनः जांचें (Check Now)</span>
+      </button>
+      <a href="https://wa.me/919876543210?text=Kisan%20Route%20Support%20Enquiry" target="_blank" class="kr-btn kr-btn-outline">
+        <span>💬</span> <span>WhatsApp सहायता</span>
+      </a>
+    </div>
+  </main>
+
+  <!-- Global Footer & Secret Admin Bypass -->
+  <footer>
+    <div>&copy; 2026 Kisan Route Platform. सर्वाधिकार सुरक्षित।</div>
+    <div>
+      <button type="button" class="kr-admin-link" onclick="openBypassModal()">
+        <span>⚙️</span> <span>Admin / Dev Bypass</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- Admin Bypass Modal -->
+  <div class="kr-bypass-overlay" id="krBypassModal">
+    <div class="kr-bypass-card">
+      <h3 style="color: #fbc02d; margin-bottom: 6px; font-size: 18px;">🔐 Admin / Dev Access</h3>
+      <p style="font-size: 13px; color: #b7d5be;">मेंटेनेंस के दौरान साइट की जांच करने के लिए PIN दर्ज करें (Demo: 123456):</p>
+      
+      <form action="/maintenance/bypass" method="POST">
+        <input type="password" name="pin" class="kr-bypass-input" placeholder="Admin PIN" required autofocus autocomplete="off">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button type="button" class="kr-btn kr-btn-outline" style="padding: 8px 18px; font-size: 13px;" onclick="closeBypassModal()">रद्द करें</button>
+          <button type="submit" class="kr-btn kr-btn-primary" style="padding: 8px 22px; font-size: 13px;">अनलॉक करें (Unlock)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Auto-refresh countdown
+    var count = 25;
+    var timerEl = document.getElementById('krCountdown');
+    var interval = setInterval(function() {
+      count--;
+      if (timerEl) timerEl.textContent = count;
+      if (count <= 0) {
+        clearInterval(interval);
+        window.location.reload();
+      }
+    }, 1000);
+
+    function openBypassModal() {
+      document.getElementById('krBypassModal').style.display = 'flex';
+    }
+
+    function closeBypassModal() {
+      document.getElementById('krBypassModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

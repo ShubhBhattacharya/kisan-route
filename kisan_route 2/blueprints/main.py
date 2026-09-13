@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app
+from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app, flash
 
 from translations.strings import LANGUAGES
 from utils.chatbot import get_prompts, get_response
@@ -143,4 +143,56 @@ def service_worker():
     response.headers["Service-Worker-Allowed"] = "/"
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return response
+
+
+# ================= MAINTENANCE MODE CONTROL API & BYPASS =================
+@main_bp.route("/maintenance/on")
+def maintenance_on():
+    from utils.maintenance import set_maintenance_mode, is_bypass_authorized
+    key = request.args.get("key", "")
+    if is_bypass_authorized(key):
+        set_maintenance_mode(True)
+        return jsonify({"success": True, "maintenance": True, "message": "Maintenance mode is now ACTIVE."})
+    return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+
+@main_bp.route("/maintenance/off")
+def maintenance_off():
+    from utils.maintenance import set_maintenance_mode, is_bypass_authorized
+    key = request.args.get("key", "")
+    if is_bypass_authorized(key):
+        set_maintenance_mode(False)
+        return jsonify({"success": True, "maintenance": False, "message": "Maintenance mode is now DEACTIVATED. Site is live."})
+    return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+
+@main_bp.route("/maintenance/status")
+def maintenance_status():
+    from utils.maintenance import is_maintenance_mode
+    return jsonify({
+        "success": True,
+        "maintenance_mode": is_maintenance_mode(),
+        "bypass_active": bool(session.get("maintenance_bypass"))
+    })
+
+
+@main_bp.route("/maintenance/bypass", methods=["GET", "POST"])
+def maintenance_bypass():
+    from utils.maintenance import is_bypass_authorized
+    if request.method == "POST":
+        pin = request.form.get("pin", "")
+        if is_bypass_authorized(pin):
+            session["maintenance_bypass"] = True
+            flash("Admin bypass activated! You can now access the full site during maintenance.", "info")
+            return redirect(url_for("main.home"))
+        flash("Invalid Admin PIN.", "error")
+        return redirect(url_for("main.home"))
+
+    key = request.args.get("key", "")
+    if is_bypass_authorized(key):
+        session["maintenance_bypass"] = True
+        flash("Admin bypass activated!", "info")
+        return redirect(url_for("main.home"))
+    return redirect(url_for("main.home"))
+
 

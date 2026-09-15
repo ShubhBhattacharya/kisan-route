@@ -88,6 +88,7 @@
 
     <!-- Quick Options -->
     <div id="krQuickChips" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+      <button type="button" class="kr-chip-btn" data-msg="App ka demo video dikhao" style="background: #ffebee; color: #c62828; border-color: #ef9a9a;">🎬 App Demo Video</button>
       <button type="button" class="kr-chip-btn" data-msg="Mandi rate kaise check karein?">📊 Mandi Rates</button>
       <button type="button" class="kr-chip-btn" data-msg="Transport kaise book karein?">🚚 Book Transport</button>
       <button type="button" class="kr-chip-btn" data-msg="Customer Care number kya hai?">📞 Helpline Support</button>
@@ -174,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Pre-defined intelligent response dictionary
   var botAnswers = {
+    "demo": "Kisan Route App ka poora working demo video dekhne ke liye yahan click karein: https://youtu.be/6VV3Q5Px_R8?feature=shared",
+    "video": "Kisan Route App working video link: https://youtu.be/6VV3Q5Px_R8?feature=shared",
+    "working": "Kisan Route App kaise kaam karta hai ye dekhne ke liye YouTube video dekhein: https://youtu.be/6VV3Q5Px_R8?feature=shared",
     "mandi": "Aap Mandi Rate Detector page (/farmer/mandi-rates) par jakar apne kshetra ke taaza daam dekh sakte hain.",
     "rate": "Faslon ke taaza daam check karne ke liye apne dashboard se Mandi Rates par click karein.",
     "transport": "Transport booking ke liye Shared Logistics section me jakar apna pickup point aur delivery mandi select karein.",
@@ -186,10 +190,63 @@ document.addEventListener('DOMContentLoaded', function() {
     var msgDiv = document.createElement('div');
     if (sender === 'user') {
       msgDiv.style.cssText = "align-self: flex-end; max-width: 80%; background: #2e7d32; color: #ffffff; padding: 8px 12px; border-radius: 14px 14px 2px 14px; font-size: 13px; line-height: 1.4; word-break: break-word;";
+      msgDiv.textContent = text;
     } else {
       msgDiv.style.cssText = "align-self: flex-start; max-width: 85%; background: #ffffff; border: 1px solid #e0e0e0; padding: 10px 14px; border-radius: 14px 14px 14px 2px; font-size: 13.5px; color: #222; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.03); word-break: break-word;";
+
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      if (urlRegex.test(text)) {
+        msgDiv.innerHTML = '';
+        var parts = text.split(urlRegex);
+        parts.forEach(function(part) {
+          if (part.match(urlRegex)) {
+            var a = document.createElement('a');
+            a.href = part;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = part;
+            a.style.color = '#1b5e20';
+            a.style.fontWeight = '700';
+            a.style.textDecoration = 'underline';
+            a.style.wordBreak = 'break-all';
+            msgDiv.appendChild(a);
+
+            if (part.indexOf('youtu') !== -1) {
+              var btnContainer = document.createElement('div');
+              btnContainer.style.marginTop = '8px';
+              var ytBtn = document.createElement('a');
+              ytBtn.href = part;
+              ytBtn.target = '_blank';
+              ytBtn.rel = 'noopener noreferrer';
+              ytBtn.textContent = '▶️ Watch App Demo on YouTube (वीडियो देखें)';
+              ytBtn.style.display = 'inline-block';
+              ytBtn.style.background = '#e53935';
+              ytBtn.style.color = '#ffffff';
+              ytBtn.style.padding = '6px 12px';
+              ytBtn.style.borderRadius = '8px';
+              ytBtn.style.fontSize = '12px';
+              ytBtn.style.fontWeight = '700';
+              ytBtn.style.textDecoration = 'none';
+              ytBtn.style.boxShadow = '0 2px 6px rgba(229,57,53,0.3)';
+              btnContainer.appendChild(ytBtn);
+              msgDiv.appendChild(btnContainer);
+            }
+          } else {
+            var lines = part.split('\n');
+            lines.forEach(function(line, idx) {
+              if (idx > 0) msgDiv.appendChild(document.createElement('br'));
+              msgDiv.appendChild(document.createTextNode(line));
+            });
+          }
+        });
+      } else {
+        var lines = text.split('\n');
+        lines.forEach(function(line, idx) {
+          if (idx > 0) msgDiv.appendChild(document.createElement('br'));
+          msgDiv.appendChild(document.createTextNode(line));
+        });
+      }
     }
-    msgDiv.textContent = text;
     chatBody.appendChild(msgDiv);
     chatBody.scrollTop = chatBody.scrollHeight;
   }
@@ -219,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function fallbackReply(query) {
     var lower = query.toLowerCase();
-    var reply = "Kisan Route par aap mandi bhav, shared truck booking, aur fasal profit calculate kar sakte hain. Aapka prashn note kar liya gaya hai!";
+    var reply = "Kisan Route par aap mandi bhav, shared truck booking, aur fasal profit calculate kar sakte hain. App ka working demo dekhne ke liye: https://youtu.be/6VV3Q5Px_R8?feature=shared";
     for (var key in botAnswers) {
       if (lower.indexOf(key) !== -1) {
         reply = botAnswers[key];

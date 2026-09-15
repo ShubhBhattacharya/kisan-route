@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 """Mock AI chatbot logic.
 
 Real intent-detection / LLM integration can replace `get_response` later.
 The Flask API in blueprints/main.py exposes this over /api/chatbot/*, and
-static/js/main.js calls that API — so the chatbot widget is genuinely
+static/js/main.js / templates/partials/chatbot.html calls that API — so the chatbot widget is genuinely
 served by Python, not hardcoded in the browser.
 """
+
+YT_DEMO_URL = "https://youtu.be/6VV3Q5Px_R8?feature=shared"
 
 ROLE_PROMPTS = {
     "farmer": [
@@ -12,35 +15,46 @@ ROLE_PROMPTS = {
         "Calculate my net profit",
         "Track my shipment",
         "Upload crop for quality check",
+        "Watch App Demo Video 🎬",
     ],
     "cluster": [
         "Find nearby farmers",
         "Create a selling group",
         "Split transport cost",
+        "Watch App Demo Video 🎬",
     ],
     "customer": [
         "Browse nearby crops",
         "Track my order",
         "Change payment method",
+        "Watch App Demo Video 🎬",
     ],
     "driver": [
         "Show nearby delivery requests",
         "Optimize my route",
         "Update shipment status",
+        "Watch App Demo Video 🎬",
     ],
     "wholesaler": [
         "Find farmer listings",
         "Negotiate a price",
         "Filter by crop type",
+        "Watch App Demo Video 🎬",
     ],
     "default": [
         "What is Kisan Route?",
+        "Watch App Demo Video 🎬",
         "How do I sign up?",
         "Contact support",
     ],
 }
 
 CANNED_RESPONSES = {
+    "Watch App Demo Video 🎬": (
+        "🎥 Kisan Route App Working Demo:\n"
+        "Aap niche diye gaye YouTube link par click karke poore app ki live working aur sabhi features ka demo video dekh sakte hain:\n"
+        f"{YT_DEMO_URL}"
+    ),
     "Check today's mandi rates": "Open your dashboard's Mandi Rate Detector to compare live rates across 7 nearby mandis and see the most profitable one.",
     "Calculate my net profit": "The Net Profit Calculator on your dashboard estimates revenue minus transport cost for your chosen crop and quantity.",
     "Track my shipment": "Shipment Tracking on your dashboard shows pickup, transit, mandi arrival, and delivery timestamps.",
@@ -57,14 +71,19 @@ CANNED_RESPONSES = {
     "Find farmer listings": "Your dashboard lists farmer crop listings sorted by distance from your mandi.",
     "Negotiate a price": "Open a listing and use Negotiate to send a price and quantity offer to the farmer.",
     "Filter by crop type": "Use the crop filter dropdown above the listings table to narrow results.",
-    "What is Kisan Route?": "Kisan Route connects farmers, farmer clusters, customers, drivers, and wholesalers so crops move at fair prices with shared logistics.",
+    "What is Kisan Route?": (
+        "🌾 Kisan Route kisan, cluster, customer, driver aur wholesaler ko direct jodkar behtar daam aur shared logistics pradan karta hai.\n"
+        "App ki working aur poora demo video dekhne ke liye yahan click karein:\n"
+        f"{YT_DEMO_URL}"
+    ),
     "How do I sign up?": "Open the menu (the three dots, top-left), choose your role, and use Sign Up.",
-    "Contact support": "This is a hackathon prototype, so live support isn't wired up yet — it's on the roadmap.",
+    "Contact support": "Hamari support team se judne ke liye Helpline: 1800-123-4567 ya WhatsApp: +91 98765-43210 par call karein.",
 }
 
 DEFAULT_REPLY = (
-    "I can help with mandi rates, profit calculation, shipment tracking, and more. "
-    "This is a demo assistant with pre-set answers — full AI integration is planned."
+    "Namaste! 🙏 Main Kisan Route Sahayak hoon. App ki working ka live demo video dekhne ke liye is link par click karein:\n"
+    f"{YT_DEMO_URL}\n\n"
+    "Aap mujhse mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
 )
 
 
@@ -76,13 +95,37 @@ def get_response(message: str) -> str:
     cleaned = (message or "").strip()
     if not cleaned:
         return DEFAULT_REPLY
-    
+
     # 1. Exact match check
     if cleaned in CANNED_RESPONSES:
         return CANNED_RESPONSES[cleaned]
 
     # 2. Intelligent keyword & intent detection (Hindi, Hinglish, English)
     lower = cleaned.lower()
+
+    # App demo, working of app, video, tutorial, or walkthrough query
+    if any(k in lower for k in [
+        "demo", "video", "yt", "youtube", "working", "kaise kaam", "kaise use", "how to use",
+        "how app works", "how it works", "tutorial", "walkthrough", "kaise chalaye", "kaisa dikhta",
+        "working of app", "app demo", "app ka demo", "video link", "live demo", "overview video"
+    ]):
+        return (
+            "🎥 Kisan Route App Working Demo Video:\n"
+            "Aap niche diye gaye YouTube link par click karke poore app ki live working aur features asani se dekh sakte hain:\n"
+            f"{YT_DEMO_URL}\n"
+            "Is video me Kisan, Grahak, Driver, Cluster aur Wholesale Mandi Trading ke sabhi features samjhaye gaye hain."
+        )
+
+    # General questions about the app or Kisan Route
+    if any(k in lower for k in [
+        "app", "application", "kisan route", "kisanroute", "kya hai", "about app", "bar",
+        "feature", "app kya", "ye app", "website", "concept"
+    ]):
+        return (
+            "🌾 Kisan Route (किसान मार्ग): Ek digital agricultural platform hai jo kisanon ko seedhe grahakon, mandiyon aur shared transport se jodta hai taaki sabhi ko fair price mile.\n"
+            "App ki poori working dekhne ke liye demo video link:\n"
+            f"{YT_DEMO_URL}"
+        )
 
     if any(k in lower for k in ["mandi", "rate", "bhav", "daam", "price", "bhaav"]):
         return "📊 Mandi Rates: Aap Mandi Rate Detector page (/farmer/mandi-rates) par jakar live 7 mandiyon ke taaza bhav compare kar sakte hain aur sabse jyada munafewali mandi chun sakte hain."
@@ -118,12 +161,14 @@ def get_response(message: str) -> str:
         return "📞 Helpline Support: Hamara toll-free helpline number 1800-123-4567 hai (Subah 8 se Shaam 8 baje). WhatsApp support: +91 98765-43210."
 
     if any(k in lower for k in ["login", "password", "demo", "account", "otp"]):
-        return "🔑 Demo Login: Sabhi roles ke liye Demo Phone: 9876543210 aur Password: 123456 hai. Aap direct '1-Click Demo Login' button bhi use kar sakte hain."
-
-    if any(k in lower for k in ["kisan route", "kya hai", "about", "bar", "feature"]):
-        return "🌾 Kisan Route: Ek digital agricultural supply-chain platform hai jo kisan, cluster, customer, driver aur wholesaler ko direct jodta hai taaki behtar daam mile."
+        return (
+            "🔑 Demo Login: Sabhi roles ke liye Demo Phone: 9876543210 aur Password: 123456 hai. "
+            "Aap direct '1-Click Demo Login' button bhi use kar sakte hain.\n"
+            f"App ka video demo dekhne ke liye: {YT_DEMO_URL}"
+        )
 
     return (
-        "Namaste! 🙏 Main Kisan Route Sahayak hoon. Aap mujhse mandi rates, transport booking, "
-        "profit calculation, fasal gunvatta jaanch, ya tracking ke baare me pooch sakte hain."
+        "Namaste! 🙏 Main Kisan Route Sahayak hoon. App ki live working dekhne ke liye YouTube demo video link:\n"
+        f"{YT_DEMO_URL}\n"
+        "Aap mujhse mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
     )

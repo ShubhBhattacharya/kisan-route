@@ -136,7 +136,59 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!chatbotMessages) return;
     var el = document.createElement('div');
     el.className = 'chat-msg ' + (who === 'user' ? 'chat-msg-user' : 'chat-msg-bot');
-    el.textContent = text;
+    
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    if (who === 'bot' && urlRegex.test(text)) {
+      el.innerHTML = '';
+      var parts = text.split(urlRegex);
+      parts.forEach(function(part) {
+        if (part.match(urlRegex)) {
+          var a = document.createElement('a');
+          a.href = part;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = part;
+          a.style.color = '#1b5e20';
+          a.style.fontWeight = '700';
+          a.style.textDecoration = 'underline';
+          a.style.wordBreak = 'break-all';
+          el.appendChild(a);
+
+          if (part.indexOf('youtu') !== -1) {
+            var btnContainer = document.createElement('div');
+            btnContainer.style.marginTop = '8px';
+            var ytBtn = document.createElement('a');
+            ytBtn.href = part;
+            ytBtn.target = '_blank';
+            ytBtn.rel = 'noopener noreferrer';
+            ytBtn.textContent = '▶️ Watch App Demo on YouTube (वीडियो देखें)';
+            ytBtn.style.display = 'inline-block';
+            ytBtn.style.background = '#e53935';
+            ytBtn.style.color = '#ffffff';
+            ytBtn.style.padding = '6px 12px';
+            ytBtn.style.borderRadius = '8px';
+            ytBtn.style.fontSize = '12px';
+            ytBtn.style.fontWeight = '700';
+            ytBtn.style.textDecoration = 'none';
+            ytBtn.style.boxShadow = '0 2px 6px rgba(229,57,53,0.3)';
+            btnContainer.appendChild(ytBtn);
+            el.appendChild(btnContainer);
+          }
+        } else {
+          var lines = part.split('\n');
+          lines.forEach(function(line, idx) {
+            if (idx > 0) el.appendChild(document.createElement('br'));
+            el.appendChild(document.createTextNode(line));
+          });
+        }
+      });
+    } else {
+      var lines = text.split('\n');
+      lines.forEach(function(line, idx) {
+        if (idx > 0) el.appendChild(document.createElement('br'));
+        el.appendChild(document.createTextNode(line));
+      });
+    }
     chatbotMessages.appendChild(el);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
   }

@@ -43,6 +43,7 @@ ROLE_PROMPTS = {
     ],
     "default": [
         "What is Kisan Route?",
+        "Customer Care number kya hai?",
         "Watch App Demo Video 🎬",
         "How do I sign up?",
         "Contact support",
@@ -77,13 +78,14 @@ CANNED_RESPONSES = {
         f"{YT_DEMO_URL}"
     ),
     "How do I sign up?": "Open the menu (the three dots, top-left), choose your role, and use Sign Up.",
-    "Contact support": "Hamari support team se judne ke liye Helpline: 1800-123-4567 ya WhatsApp: +91 98765-43210 par call karein.",
+    "Contact support": "📞 Helpline Support: Hamara toll-free helpline number 1800-123-4567 hai (Subah 8 se Shaam 8 baje). WhatsApp support: +91 98765-43210. Hamari customer care team aapki sahayata ke liye tatpar hai.",
+    "Customer Care number kya hai?": "📞 Helpline Support: Hamara toll-free helpline number 1800-123-4567 hai (Subah 8 se Shaam 8 baje). WhatsApp support: +91 98765-43210. Hamari customer care team aapki sahayata ke liye tatpar hai.",
 }
 
 DEFAULT_REPLY = (
     "Namaste! 🙏 Main Kisan Route Sahayak hoon. App ki working ka live demo video dekhne ke liye is link par click karein:\n"
     f"{YT_DEMO_URL}\n\n"
-    "Aap mujhse mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
+    "Aap mujhse helpline number, mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
 )
 
 
@@ -103,11 +105,18 @@ def get_response(message: str) -> str:
     # 2. Intelligent keyword & intent detection (Hindi, Hinglish, English)
     lower = cleaned.lower()
 
-    # App demo, working of app, video, tutorial, or walkthrough query
+    # --- A. HELPLINE & CUSTOMER CARE SUPPORT (Priority #1) ---
     if any(k in lower for k in [
-        "demo", "video", "yt", "youtube", "working", "kaise kaam", "kaise use", "how to use",
-        "how app works", "how it works", "tutorial", "walkthrough", "kaise chalaye", "kaisa dikhta",
-        "working of app", "app demo", "app ka demo", "video link", "live demo", "overview video"
+        "helpline", "customer care", "customercare", "support", "care number", "toll free",
+        "tollfree", "phone number", "contact", "call", "madad", "help line", "care", "sampark"
+    ]):
+        return "📞 Helpline Support: Hamara toll-free helpline number 1800-123-4567 hai (Subah 8 se Shaam 8 baje). WhatsApp support: +91 98765-43210. Hamari customer care team aapki sahayata ke liye 24x7 tatpar hai."
+
+    # --- B. DEMO VIDEO & WORKING OF APP QUERY ---
+    if any(k in lower for k in [
+        "demo video", "app demo", "video", "yt", "youtube", "working of app",
+        "kaise kaam karta", "kaise use", "how to use", "how app works", "tutorial",
+        "walkthrough", "video link", "live demo", "overview video", "kaisa dikhta hai"
     ]):
         return (
             "🎥 Kisan Route App Working Demo Video:\n"
@@ -116,17 +125,7 @@ def get_response(message: str) -> str:
             "Is video me Kisan, Grahak, Driver, Cluster aur Wholesale Mandi Trading ke sabhi features samjhaye gaye hain."
         )
 
-    # General questions about the app or Kisan Route
-    if any(k in lower for k in [
-        "app", "application", "kisan route", "kisanroute", "kya hai", "about app", "bar",
-        "feature", "app kya", "ye app", "website", "concept"
-    ]):
-        return (
-            "🌾 Kisan Route (किसान मार्ग): Ek digital agricultural platform hai jo kisanon ko seedhe grahakon, mandiyon aur shared transport se jodta hai taaki sabhi ko fair price mile.\n"
-            "App ki poori working dekhne ke liye demo video link:\n"
-            f"{YT_DEMO_URL}"
-        )
-
+    # --- C. SPECIFIC AGRI & DASHBOARD FEATURES ---
     if any(k in lower for k in ["mandi", "rate", "bhav", "daam", "price", "bhaav"]):
         return "📊 Mandi Rates: Aap Mandi Rate Detector page (/farmer/mandi-rates) par jakar live 7 mandiyon ke taaza bhav compare kar sakte hain aur sabse jyada munafewali mandi chun sakte hain."
 
@@ -157,18 +156,26 @@ def get_response(message: str) -> str:
     if any(k in lower for k in ["yojana", "scheme", "sarkar", "subsidy", "pm kisan", "credit card"]):
         return "📜 Sarkari Yojanayein: Sarkari Schemes portal (/farmer/schemes) par PM-Kisan Samman Nidhi, Fasal Bima aur Kisan Credit Card ki jaankari prapt kar sakte hain."
 
-    if any(k in lower for k in ["helpline", "support", "call", "contact", "phone", "number", "madad"]):
-        return "📞 Helpline Support: Hamara toll-free helpline number 1800-123-4567 hai (Subah 8 se Shaam 8 baje). WhatsApp support: +91 98765-43210."
-
-    if any(k in lower for k in ["login", "password", "demo", "account", "otp"]):
+    if any(k in lower for k in ["login", "password", "demo account", "otp"]):
         return (
             "🔑 Demo Login: Sabhi roles ke liye Demo Phone: 9876543210 aur Password: 123456 hai. "
             "Aap direct '1-Click Demo Login' button bhi use kar sakte hain.\n"
             f"App ka video demo dekhne ke liye: {YT_DEMO_URL}"
         )
 
+    # --- D. GENERAL QUESTIONS ABOUT KISAN ROUTE PLATFORM ---
+    if any(k in lower for k in [
+        "kisan route kya", "kisanroute kya", "what is kisan route", "ye app kya",
+        "app ke baare me", "about app", "about kisan route", "kisan route platform"
+    ]):
+        return (
+            "🌾 Kisan Route (किसान मार्ग): Ek digital agricultural platform hai jo kisanon ko seedhe grahakon, mandiyon aur shared transport se jodta hai taaki sabhi ko fair price mile.\n"
+            "App ki poori working dekhne ke liye demo video link:\n"
+            f"{YT_DEMO_URL}"
+        )
+
     return (
         "Namaste! 🙏 Main Kisan Route Sahayak hoon. App ki live working dekhne ke liye YouTube demo video link:\n"
         f"{YT_DEMO_URL}\n"
-        "Aap mujhse mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
+        "Aap mujhse helpline number, mandi rates, transport booking, profit calculation, ya tracking ke baare me bhi pooch sakte hain."
     )

@@ -290,7 +290,6 @@
 <!-- ================= HERO IMAGE CAROUSEL CONTROLLER SCRIPT ================= -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var heroSection = document.getElementById('krHeroSection');
   var slides = document.querySelectorAll('.kr-hero-slide');
   var dots = document.querySelectorAll('.kr-carousel-dot');
   var prevBtn = document.getElementById('krCarouselPrev');
@@ -301,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var currentIndex = 0;
   var slideCount = slides.length;
   var autoPlayInterval = null;
-  var AUTO_PLAY_DELAY = 3800; // Rotates every 3.8 seconds like Flipkart/Amazon
+  var AUTO_PLAY_DELAY = 5000; // Rotates automatically every 5.0 seconds
 
   function showSlide(index) {
     if (index < 0) {
@@ -345,18 +344,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function startAutoPlay() {
-    stopAutoPlay();
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
     autoPlayInterval = setInterval(nextSlide, AUTO_PLAY_DELAY);
   }
 
-  function stopAutoPlay() {
-    if (autoPlayInterval) {
-      clearInterval(autoPlayInterval);
-      autoPlayInterval = null;
-    }
-  }
-
-  // Next / Prev button listeners
+  // Next / Prev button listeners (advances and resets 5s timer)
   if (nextBtn) {
     nextBtn.addEventListener('click', function() {
       nextSlide();
@@ -371,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Clickable indicator dots
+  // Clickable indicator dots (jumps and resets 5s timer)
   dots.forEach(function(dot) {
     dot.addEventListener('click', function() {
       var idx = parseInt(this.getAttribute('data-index'), 10);
@@ -380,12 +372,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Pause on hover, resume on mouse leave
+  // Mobile Touch Swipe Support
+  var heroSection = document.getElementById('krHeroSection');
   if (heroSection) {
-    heroSection.addEventListener('mouseenter', stopAutoPlay);
-    heroSection.addEventListener('mouseleave', startAutoPlay);
-
-    // Touch Swipe Support for mobile devices
     var touchStartX = 0;
     var touchEndX = 0;
 
@@ -401,9 +390,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var diff = touchStartX - touchEndX;
         if (Math.abs(diff) > 40) {
           if (diff > 0) {
-            nextSlide(); // Swiped left -> show next
+            nextSlide();
           } else {
-            prevSlide(); // Swiped right -> show prev
+            prevSlide();
           }
           startAutoPlay();
         }
@@ -411,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { passive: true });
   }
 
-  // Start auto-play rotation on page load
+  // Start continuous 5-second rotation immediately
   startAutoPlay();
 });
 </script>

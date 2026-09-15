@@ -1,25 +1,547 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="dashboard">
-  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🏬</span></h1>
-  <form method="get" class="inline-form">
-    <label for="crop">Filter by crop</label>
-    <select id="crop" name="crop" onchange="this.form.submit()">
-      <option value="">All crops</option>
-      {% for c in crops %}<option value="{{ c }}" {% if c == selected_crop %}selected{% endif %}>{{ c }}</option>{% endfor %}
-    </select>
-  </form>
-  <table class="table">
-    <thead><tr><th>Farmer</th><th>Village</th><th>Crop</th><th>Qty (qtl)</th><th>Rate</th><th>Distance</th><th></th></tr></thead>
-    <tbody>
-    {% for f in listings %}
-      <tr>
-        <td>{{ f.name }}</td><td>{{ f.village }}</td><td>{{ f.crop }}</td><td>{{ f.quantity_qtl }}</td>
-        <td>₹{{ f.asking_rate }}</td><td>{{ f.distance_km }} km</td>
-        <td><a class="btn btn-small" href="{{ url_for('wholesaler.negotiate', name=f.name) }}">Negotiate</a></td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
-</section>
+<div class="wholesaler-dashboard-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px; font-family: 'Inter', sans-serif;">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 25px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <h1 style="color: #1b5e20; font-size: 28px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 10px;">
+          <span>🏬</span> Wholesaler Trading Portal
+        </h1>
+        <span style="background: #e8f5e9; color: #1b5e20; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 20px; border: 1px solid #81c784;">
+          थोक व्यापारी पोर्टल
+        </span>
+      </div>
+      <p style="color: #555; margin: 6px 0 0 0; font-size: 14.5px;">
+        Welcome, <strong>{{ session.get('name', 'Demo Wholesaler') }}</strong> · Direct farm-gate bulk crop procurement with zero middleman commissions.
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <a href="#calculatorSection" style="background: #ffffff; color: #1b5e20; border: 1.5px solid #2e7d32; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: 0.2s;">
+        <span>🧮</span> Landed Margin Calculator
+      </a>
+      <a href="#ordersSection" style="background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(27, 94, 32, 0.25); transition: 0.2s;">
+        <span>📋</span> My Bids & Deals ({{ bids|length }})
+      </a>
+    </div>
+  </div>
+
+  <!-- ================= 4 OPERATIONAL METRIC CARDS ================= -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 28px;">
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #2e7d32;">
+      <span style="font-size: 12.5px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Available Bulk Volume</span>
+      <div style="font-size: 26px; font-weight: 800; color: #1b5e20; margin-top: 6px;">
+        {{ metrics.total_qtl }} Qtl <span style="font-size: 15px; font-weight: 600; color: #555;">({{ metrics.total_lots }} Lots)</span>
+      </div>
+      <div style="font-size: 12px; color: #2e7d32; font-weight: 600; margin-top: 4px;">Direct from verified farm gates</div>
+    </div>
+
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #1976d2;">
+      <span style="font-size: 12.5px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Avg Farmer Asking Rate</span>
+      <div style="font-size: 26px; font-weight: 800; color: #1976d2; margin-top: 6px;">
+        ₹{{ "{:,.0f}".format(metrics.avg_asking) }} <span style="font-size: 14px; font-weight: 600; color: #555;">/ Qtl</span>
+      </div>
+      <div style="font-size: 12px; color: #666; margin-top: 4px;">Avg Mandi Rate: <strong>₹{{ "{:,.0f}".format(metrics.avg_mandi) }}/Qtl</strong></div>
+    </div>
+
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #fbc02d;">
+      <span style="font-size: 12.5px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Direct Procurement Margin</span>
+      <div style="font-size: 26px; font-weight: 800; color: #b78103; margin-top: 6px;">
+        +{{ metrics.est_savings_pct }}% Saved
+      </div>
+      <div style="font-size: 12px; color: #795548; font-weight: 600; margin-top: 4px;">Zero mandi cess & middleman cut</div>
+    </div>
+
+    <div style="background: #ffffff; padding: 20px; border-radius: 16px; border: 1px solid #e0e0e0; box-shadow: 0 4px 14px rgba(0,0,0,0.04); border-left: 4px solid #e65100;">
+      <span style="font-size: 12.5px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Active Bids & Deals</span>
+      <div style="font-size: 26px; font-weight: 800; color: #e65100; margin-top: 6px;">
+        {{ bids|length }} Registered
+      </div>
+      <div style="font-size: 12px; color: #e65100; font-weight: 600; margin-top: 4px;">Tracked in your active session</div>
+    </div>
+  </div>
+
+  <!-- ================= BIDS & PURCHASES SESSION TRACKER ================= -->
+  <section id="ordersSection" style="margin-bottom: 35px; background: #ffffff; border-radius: 18px; border: 1px solid #e0e0e0; box-shadow: 0 4px 18px rgba(0,0,0,0.04); overflow: hidden;">
+    <div style="padding: 18px 24px; background: #fbfbfb; border-bottom: 1px solid #ededed; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #1b5e20; display: flex; align-items: center; gap: 8px;">
+          <span>📋</span> My Active Bids & Confirmed Deals (मेरी बोलियां और सौदे)
+        </h3>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">
+          Real-time record of all farm offers and wholesale procurements placed during your session.
+        </p>
+      </div>
+      <span style="background: #e8f5e9; color: #1b5e20; font-size: 12.5px; font-weight: 700; padding: 4px 12px; border-radius: 14px;">
+        {{ bids|length }} Deals Active
+      </span>
+    </div>
+
+    {% if bids %}
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+        <thead>
+          <tr style="background: #f4f6f4; border-bottom: 1px solid #e0e0e0; color: #444; font-size: 13px; text-transform: uppercase;">
+            <th style="padding: 14px 20px;">Bid ID / Lot</th>
+            <th style="padding: 14px 16px;">Farmer & Crop</th>
+            <th style="padding: 14px 16px;">Offered Rate</th>
+            <th style="padding: 14px 16px;">Quantity</th>
+            <th style="padding: 14px 16px;">Total Deal Value</th>
+            <th style="padding: 14px 16px;">Est. Savings</th>
+            <th style="padding: 14px 16px;">Status</th>
+            <th style="padding: 14px 20px;">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bids %}
+          <tr style="border-bottom: 1px solid #f0f0f0; transition: background 0.15s;" onmouseover="this.style.background='#fafffa'" onmouseout="this.style.background='#ffffff'">
+            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20;">
+              <div>{{ b.bid_id }}</div>
+              <span style="font-size: 11.5px; color: #888; font-weight: 500;">{{ b.lot_id }}</span>
+            </td>
+            <td style="padding: 14px 16px;">
+              <div style="font-weight: 700; color: #222;">{{ b.farmer_name }}</div>
+              <div style="font-size: 12.5px; color: #555;">{{ b.crop }}</div>
+            </td>
+            <td style="padding: 14px 16px; font-weight: 700; color: #1b5e20;">
+              ₹{{ "{:,.2f}".format(b.offer_price) }}/Qtl
+            </td>
+            <td style="padding: 14px 16px; font-weight: 600; color: #333;">
+              {{ b.offer_qty }} Qtl
+            </td>
+            <td style="padding: 14px 16px; font-weight: 800; color: #222;">
+              ₹{{ "{:,.2f}".format(b.total_value) }}
+            </td>
+            <td style="padding: 14px 16px; font-weight: 700; color: #2e7d32;">
+              ₹{{ "{:,.2f}".format(b.savings_est) }}
+            </td>
+            <td style="padding: 14px 16px;">
+              {% if 'Confirmed' in b.status %}
+              <span style="background: #e8f5e9; color: #1b5e20; border: 1px solid #81c784; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                <span>✅</span> Confirmed
+              </span>
+              {% else %}
+              <span style="background: #fff8e1; color: #b78103; border: 1px solid #ffe082; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                <span>⏳</span> Offer Sent
+              </span>
+              {% endif %}
+            </td>
+            <td style="padding: 14px 20px; font-size: 12.5px; color: #777;">
+              {{ b.created_at }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div style="padding: 32px 20px; text-align: center;">
+      <div style="font-size: 36px; margin-bottom: 8px;">🌾</div>
+      <div style="font-size: 16px; font-weight: 700; color: #333;">No active bids placed yet</div>
+      <p style="font-size: 13.5px; color: #666; max-width: 500px; margin: 6px auto 16px auto;">
+        Browse the available bulk crop lots below and click <strong>"⚡ Place Bid"</strong> or <strong>"🤝 Buy at Asking Price"</strong> to directly purchase from farmers.
+      </p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- ================= SEARCH & FILTER CONTROLS ================= -->
+  <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e0e0e0; padding: 18px 24px; margin-bottom: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;">
+      
+      <!-- Crop Filter Pills -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+        <span style="font-size: 13px; font-weight: 700; color: #444; margin-right: 4px;">Filter Crop:</span>
+        <a href="{{ url_for('wholesaler.dashboard') }}" style="padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; {% if not selected_crop %}background: #1b5e20; color: #ffffff;{% else %}background: #f1f3f1; color: #444;{% endif %} transition: 0.2s;">
+          All Crops (सभी फसलें)
+        </a>
+        {% for c in crops %}
+        <a href="{{ url_for('wholesaler.dashboard', crop=c, q=search_query) }}" style="padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; {% if selected_crop == c %}background: #1b5e20; color: #ffffff;{% else %}background: #f1f3f1; color: #444;{% endif %} transition: 0.2s;">
+          {{ c }}
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- Live Search Box -->
+      <form method="get" action="{{ url_for('wholesaler.dashboard') }}" style="display: flex; gap: 8px; margin: 0; min-width: 280px; flex: 1; max-width: 420px;">
+        {% if selected_crop %}<input type="hidden" name="crop" value="{{ selected_crop }}">{% endif %}
+        <input type="text" name="q" value="{{ search_query or '' }}" placeholder="Search farmer, crop, village, or lot ID..." style="width: 100%; padding: 9px 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 13.5px; outline: none; transition: 0.2s;" onfocus="this.style.borderColor='#1b5e20'">
+        <button type="submit" style="background: #2e7d32; color: #ffffff; border: none; padding: 9px 16px; border-radius: 10px; font-weight: 700; font-size: 13.5px; cursor: pointer;">
+          Search
+        </button>
+        {% if search_query or selected_crop %}
+        <a href="{{ url_for('wholesaler.dashboard') }}" style="background: #e0e0e0; color: #444; padding: 9px 12px; border-radius: 10px; text-decoration: none; font-size: 13px; display: flex; align-items: center; justify-content: center;">
+          Clear
+        </a>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= BULK CROP LOTS SECTION ================= -->
+  <div style="margin-bottom: 35px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h2 style="font-size: 20px; font-weight: 800; color: #1b5e20; margin: 0; display: flex; align-items: center; gap: 8px;">
+        <span>🌾</span> Verified Farmer Lots Available (उपलब्ध थोक फसलें)
+      </h2>
+      <span style="font-size: 13px; color: #666;">Showing <strong>{{ listings|length }}</strong> lots</span>
+    </div>
+
+    {% if listings %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+      {% for f in listings %}
+      <div style="background: #ffffff; border-radius: 18px; border: 1px solid #e0e0e0; box-shadow: 0 4px 18px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.09)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 18px rgba(0,0,0,0.05)'">
+        
+        <!-- Card Header -->
+        <div style="padding: 16px 20px; background: linear-gradient(135deg, #f9fbf9, #f1f8e9); border-bottom: 1px solid #e8ede8; display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 26px;">{{ f.crop_icon }}</span>
+              <div>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #1b5e20;">{{ f.crop_hi }}</h3>
+                <span style="font-size: 12.5px; color: #555; font-weight: 600;">{{ f.crop }} · {{ f.id }}</span>
+              </div>
+            </div>
+          </div>
+          <span style="background: #2e7d32; color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; text-transform: uppercase;">
+            {{ f.quality_grade }}
+          </span>
+        </div>
+
+        <!-- Card Body -->
+        <div style="padding: 18px 20px; flex: 1;">
+          
+          <!-- Farmer Info -->
+          <div style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px dashed #eee;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: 700; font-size: 15px; color: #222;">👤 {{ f.name }}</div>
+                <div style="font-size: 13px; color: #666; margin-top: 2px;">📍 {{ f.village }} ({{ f.distance_km }} km)</div>
+              </div>
+              <span style="background: #e8f5e9; color: #2e7d32; font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;">
+                Harvest: {{ f.harvest_date }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Quantity & Quality Attributes -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; background: #fdfdfd; padding: 10px 12px; border-radius: 10px; border: 1px solid #f0f0f0;">
+            <div>
+              <span style="font-size: 11.5px; color: #777; font-weight: 600; text-transform: uppercase;">Available Volume</span>
+              <div style="font-size: 16px; font-weight: 800; color: #1b5e20;">
+                {{ f.quantity_qtl }} Qtl
+              </div>
+              <span style="font-size: 11px; color: #888;">({{ f.quantity_qtl * 100 }} Kg bulk)</span>
+            </div>
+            <div>
+              <span style="font-size: 11.5px; color: #777; font-weight: 600; text-transform: uppercase;">Moisture Index</span>
+              <div style="font-size: 16px; font-weight: 800; color: #333;">
+                {{ f.moisture }}
+              </div>
+              <span style="font-size: 11px; color: #2e7d32; font-weight: 600;">✓ Mandi Compliant</span>
+            </div>
+          </div>
+
+          <!-- Price & Benchmark Comparison -->
+          <div style="background: #f5fbf6; border: 1px solid #c8e6c9; border-radius: 12px; padding: 12px 14px; margin-bottom: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+              <span style="font-size: 12px; color: #444; font-weight: 600;">Farmer Asking Rate:</span>
+              <span style="font-size: 20px; font-weight: 900; color: #1b5e20;">₹{{ "{:,.0f}".format(f.asking_rate) }} <span style="font-size: 12px; font-weight: 600;">/ Qtl</span></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #666; border-top: 1px dashed #d1e7d4; padding-top: 6px;">
+              <span>APMC Mandi Rate: ₹{{ "{:,.0f}".format(f.mandi_rate) }}/Qtl</span>
+              <span style="color: #2e7d32; font-weight: 700; background: #e8f5e9; padding: 2px 6px; border-radius: 6px;">
+                Save ₹{{ "{:,.0f}".format(f.mandi_rate - f.asking_rate) }}/Qtl
+              </span>
+            </div>
+          </div>
+
+          <!-- Total Lot Valuation -->
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 18px; color: #555;">
+            <span>Total Lot Value (Asking):</span>
+            <strong style="color: #111; font-size: 15px;">₹{{ "{:,.2f}".format(f.asking_rate * f.quantity_qtl) }}</strong>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; gap: 8px;">
+              <!-- Place Bid Button (Opens Modal) -->
+              <button type="button" onclick="openBidModal('{{ f.id }}', '{{ f.name }}', '{{ f.crop }}', '{{ f.crop_hi }}', '{{ f.quantity_qtl }}', '{{ f.asking_rate }}', '{{ f.mandi_rate }}')" style="flex: 1; background: #ffffff; color: #1b5e20; border: 1.5px solid #2e7d32; font-size: 13.5px; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;" onmouseover="this.style.background='#e8f5e9'" onmouseout="this.style.background='#ffffff'">
+                <span>⚡</span> Place Bid
+              </button>
+
+              <!-- Instant Direct Buy Button -->
+              <form method="post" action="{{ url_for('wholesaler.accept_lot') }}" style="flex: 1; margin: 0;" onsubmit="return confirm('Confirm purchase of {{ f.quantity_qtl }} Qtl {{ f.crop }} from {{ f.name }} at ₹{{ f.asking_rate }}/Qtl?')">
+                <input type="hidden" name="lot_id" value="{{ f.id }}">
+                <input type="hidden" name="qty" value="{{ f.quantity_qtl }}">
+                <button type="submit" style="width: 100%; background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; border: none; font-size: 13.5px; font-weight: 700; padding: 10px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 10px rgba(27,94,32,0.25); transition: 0.2s;">
+                  <span>🤝</span> Buy Asking
+                </button>
+              </form>
+            </div>
+
+            <!-- Contact Farmer Call & WhatsApp -->
+            <div style="display: flex; gap: 8px;">
+              <a href="tel:{{ f.phone }}" style="flex: 1; background: #f5f5f5; color: #333; text-decoration: none; font-size: 12.5px; font-weight: 600; padding: 7px; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #ddd;">
+                <span>📞</span> Call Farmer
+              </a>
+              <a href="https://wa.me/{{ f.phone|replace(' ', '')|replace('+', '') }}?text=Hello%20{{ f.name }},%20I%20am%20interested%20in%20your%20{{ f.quantity_qtl }}%20Qtl%20lot%20of%20{{ f.crop }}%20on%20KisanRoute" target="_blank" rel="noopener noreferrer" style="flex: 1; background: #e8f5e9; color: #1b5e20; text-decoration: none; font-size: 12.5px; font-weight: 600; padding: 7px; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid #c8e6c9;">
+                <span>💬</span> WhatsApp
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="background: #ffffff; padding: 40px 20px; border-radius: 16px; border: 1px solid #e0e0e0; text-align: center;">
+      <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
+      <h3 style="font-size: 18px; font-weight: 800; color: #333; margin: 0 0 6px 0;">No matching crop lots found</h3>
+      <p style="font-size: 14px; color: #666; margin: 0 0 16px 0;">Try clearing your filters or searching for another crop like Wheat, Rice, Mustard or Potato.</p>
+      <a href="{{ url_for('wholesaler.dashboard') }}" style="background: #2e7d32; color: #ffffff; font-weight: 700; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 14px;">
+        View All Crop Lots
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ================= LANDED COST & FREIGHT CALCULATOR WIDGET ================= -->
+  <section id="calculatorSection" style="margin-bottom: 40px; background: linear-gradient(135deg, #f1f8e9, #ffffff); border: 2px dashed #81c784; border-radius: 20px; padding: 30px; box-shadow: 0 4px 18px rgba(0,0,0,0.04);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span style="background: #2e7d32; color: #ffffff; padding: 4px 14px; border-radius: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase;">
+          Procurement Intelligence
+        </span>
+        <h3 style="color: #1b5e20; font-size: 24px; font-weight: 800; margin: 10px 0 6px 0;">
+          🧮 Landed Cost & Wholesale Margin Calculator
+        </h3>
+        <p style="color: #4a5d50; font-size: 14px; margin: 0;">
+          Calculate true landed procurement cost including freight transportation and estimate your net margin before bidding.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div>
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #333; margin-bottom: 5px;">Farm Purchase Rate (₹/Qtl)</label>
+          <input type="number" id="calcFarmPrice" value="2250" oninput="runCalculator()" style="width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #a5d6a7; font-size: 14px; font-weight: 700; color: #1b5e20; outline: none;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #333; margin-bottom: 5px;">Lot Quantity (Qtl)</label>
+          <input type="number" id="calcLotQty" value="40" oninput="runCalculator()" style="width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #a5d6a7; font-size: 14px; font-weight: 700; color: #333; outline: none;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #333; margin-bottom: 5px;">Farm Distance (km)</label>
+          <input type="number" id="calcDistance" value="25" oninput="runCalculator()" style="width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #a5d6a7; font-size: 14px; font-weight: 700; color: #333; outline: none;">
+        </div>
+        <div>
+          <label style="display: block; font-size: 12.5px; font-weight: 700; color: #333; margin-bottom: 5px;">Mandi Resale Rate (₹/Qtl)</label>
+          <input type="number" id="calcMandiPrice" value="2400" oninput="runCalculator()" style="width: 100%; padding: 10px; border-radius: 10px; border: 1.5px solid #a5d6a7; font-size: 14px; font-weight: 700; color: #1976d2; outline: none;">
+        </div>
+      </div>
+
+      <!-- Calculation Output Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; background: #ffffff; padding: 18px 22px; border-radius: 14px; border: 1px solid #c8e6c9;">
+        <div>
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Est. Freight Cost</div>
+          <div id="outFreight" style="font-size: 18px; font-weight: 800; color: #555;">₹45.00 / Qtl</div>
+          <span style="font-size: 11px; color: #888;">Avg ₹1.80/km/Qtl</span>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: #666; font-weight: 600;">True Landed Cost</div>
+          <div id="outLanded" style="font-size: 18px; font-weight: 800; color: #1b5e20;">₹2,295.00 / Qtl</div>
+          <span style="font-size: 11px; color: #2e7d32;">Farm rate + haulage</span>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Net Profit Margin</div>
+          <div id="outMargin" style="font-size: 18px; font-weight: 800; color: #2e7d32;">+₹105.00 / Qtl</div>
+          <span style="font-size: 11px; color: #2e7d32;">Per Quintal</span>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: #666; font-weight: 600;">Projected Total Profit</div>
+          <div id="outTotalProfit" style="font-size: 20px; font-weight: 900; color: #1b5e20;">₹4,200.00</div>
+          <span style="font-size: 11px; color: #1b5e20; font-weight: 700;">On entire lot</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= IN-DASHBOARD BID / NEGOTIATION MODAL ================= -->
+<div id="wholesalerBidModal" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+  <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 520px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); overflow: hidden; animation: fadeInModal 0.2s ease-out;">
+    
+    <!-- Modal Header -->
+    <div style="background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h3 style="margin: 0; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+          <span>⚡</span> Place Offer to Farmer
+        </h3>
+        <p style="margin: 3px 0 0 0; font-size: 12.5px; opacity: 0.9;">Direct Farm-Gate Price Negotiation</p>
+      </div>
+      <button type="button" onclick="closeBidModal()" style="background: rgba(255,255,255,0.2); border: none; color: #ffffff; font-size: 20px; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+        &times;
+      </button>
+    </div>
+
+    <!-- Modal Form -->
+    <form method="post" action="{{ url_for('wholesaler.place_bid') }}" style="padding: 24px;">
+      <input type="hidden" id="modalLotId" name="lot_id">
+      <input type="hidden" id="modalFarmerName" name="farmer_name">
+      <input type="hidden" id="modalCrop" name="crop">
+      
+      <!-- Lot Summary Box -->
+      <div style="background: #f8faf8; border: 1px solid #e0e8e0; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span id="modalCropTitle" style="font-weight: 800; font-size: 16px; color: #1b5e20;">Wheat</span>
+          <span id="modalLotBadge" style="background: #e8f5e9; color: #2e7d32; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 6px;">LOT-101</span>
+        </div>
+        <div style="font-size: 13px; color: #555;">
+          Farmer: <strong id="modalFarmerText">Ram Singh</strong> · Available: <strong id="modalQtyText">40</strong> Qtl
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12.5px; border-top: 1px dashed #ddd; padding-top: 6px;">
+          <span>Farmer Asking: <strong id="modalAskingText" style="color: #1b5e20;">₹2,250/Qtl</strong></span>
+          <span>Mandi Benchmark: <strong id="modalMandiText" style="color: #1976d2;">₹2,380/Qtl</strong></span>
+        </div>
+      </div>
+
+      <!-- Inputs Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px;">
+            Your Offer (₹ / Qtl) *
+          </label>
+          <input type="number" step="0.5" id="modalOfferPrice" name="offer_price" required oninput="calcModalTotals()" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #c8e6c9; font-size: 15px; font-weight: 700; color: #1b5e20; outline: none; box-sizing: border-box;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px;">
+            Quantity Desired (Qtl) *
+          </label>
+          <input type="number" step="0.5" id="modalOfferQty" name="offer_qty" required oninput="calcModalTotals()" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #c8e6c9; font-size: 15px; font-weight: 700; color: #333; outline: none; box-sizing: border-box;">
+        </div>
+      </div>
+
+      <!-- Live Calculation Card -->
+      <div style="background: #e8f5e9; border: 1px solid #81c784; border-radius: 12px; padding: 12px 16px; margin-bottom: 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; color: #2e7d32; font-weight: 600;">Total Deal Value:</span>
+          <span id="modalTotalVal" style="font-size: 18px; font-weight: 900; color: #1b5e20;">₹0.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #388e3c; border-top: 1px dashed #a5d6a7; padding-top: 4px;">
+          <span>Estimated savings vs Mandi rate:</span>
+          <strong id="modalSavingsVal">₹0.00</strong>
+        </div>
+      </div>
+
+      <!-- Submit & Cancel Buttons -->
+      <div style="display: flex; gap: 10px;">
+        <button type="button" onclick="closeBidModal()" style="flex: 1; background: #f0f0f0; border: none; color: #555; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer;">
+          Cancel
+        </button>
+        <button type="submit" style="flex: 2; background: linear-gradient(135deg, #1b5e20, #2e7d32); border: none; color: #ffffff; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(27,94,32,0.3);">
+          Submit Offer to Farmer
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+// Modal Data Handling
+var currentLotMandiRate = 0;
+
+function openBidModal(lotId, farmerName, crop, cropHi, qty, askingRate, mandiRate) {
+  document.getElementById('modalLotId').value = lotId;
+  document.getElementById('modalFarmerName').value = farmerName;
+  document.getElementById('modalCrop').value = crop;
+  
+  document.getElementById('modalCropTitle').innerText = cropHi + ' (' + crop + ')';
+  document.getElementById('modalLotBadge').innerText = lotId;
+  document.getElementById('modalFarmerText').innerText = farmerName;
+  document.getElementById('modalQtyText').innerText = qty;
+  document.getElementById('modalAskingText').innerText = '₹' + Number(askingRate).toLocaleString('en-IN') + '/Qtl';
+  document.getElementById('modalMandiText').innerText = '₹' + Number(mandiRate).toLocaleString('en-IN') + '/Qtl';
+
+  document.getElementById('modalOfferPrice').value = askingRate;
+  document.getElementById('modalOfferQty').value = qty;
+  document.getElementById('modalOfferQty').max = qty;
+
+  currentLotMandiRate = Number(mandiRate) || Number(askingRate);
+  calcModalTotals();
+
+  var modal = document.getElementById('wholesalerBidModal');
+  modal.style.display = 'flex';
+}
+
+function closeBidModal() {
+  var modal = document.getElementById('wholesalerBidModal');
+  modal.style.display = 'none';
+}
+
+function calcModalTotals() {
+  var price = parseFloat(document.getElementById('modalOfferPrice').value) || 0;
+  var qty = parseFloat(document.getElementById('modalOfferQty').value) || 0;
+
+  var total = price * qty;
+  var benchmarkVal = currentLotMandiRate * qty;
+  var savings = Math.max(benchmarkVal - total, 0);
+
+  document.getElementById('modalTotalVal').innerText = '₹' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('modalSavingsVal').innerText = '₹' + savings.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+// Interactive Landed Cost Calculator
+function runCalculator() {
+  var farmPrice = parseFloat(document.getElementById('calcFarmPrice').value) || 0;
+  var qty = parseFloat(document.getElementById('calcLotQty').value) || 1;
+  var distance = parseFloat(document.getElementById('calcDistance').value) || 0;
+  var mandiPrice = parseFloat(document.getElementById('calcMandiPrice').value) || 0;
+
+  var freightPerQtl = distance * 1.8;
+  var landedCostPerQtl = farmPrice + freightPerQtl;
+  var marginPerQtl = mandiPrice - landedCostPerQtl;
+  var totalProfit = marginPerQtl * qty;
+
+  document.getElementById('outFreight').innerText = '₹' + freightPerQtl.toFixed(2) + ' / Qtl';
+  document.getElementById('outLanded').innerText = '₹' + landedCostPerQtl.toFixed(2) + ' / Qtl';
+  
+  var marginEl = document.getElementById('outMargin');
+  if (marginPerQtl >= 0) {
+    marginEl.innerText = '+₹' + marginPerQtl.toFixed(2) + ' / Qtl';
+    marginEl.style.color = '#2e7d32';
+  } else {
+    marginEl.innerText = '-₹' + Math.abs(marginPerQtl).toFixed(2) + ' / Qtl';
+    marginEl.style.color = '#d32f2f';
+  }
+
+  var totalProfitEl = document.getElementById('outTotalProfit');
+  if (totalProfit >= 0) {
+    totalProfitEl.innerText = '₹' + totalProfit.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    totalProfitEl.style.color = '#1b5e20';
+  } else {
+    totalProfitEl.innerText = '-₹' + Math.abs(totalProfit).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    totalProfitEl.style.color = '#d32f2f';
+  }
+}
+
+// Close modal if user clicks backdrop
+window.onclick = function(event) {
+  var modal = document.getElementById('wholesalerBidModal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
+  }
+};
+
+// Run initial calculator compute on load
+document.addEventListener('DOMContentLoaded', function() {
+  runCalculator();
+});
+</script>
 {% endblock %}

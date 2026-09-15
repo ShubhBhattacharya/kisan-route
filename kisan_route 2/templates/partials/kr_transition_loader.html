@@ -436,8 +436,32 @@
 }
 </style>
 
+<!-- Floating Scroll to Top Helper Button -->
+<button id="krScrollToTopBtn" type="button" aria-label="Scroll to top" style="
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #1b5e20;
+  border: 1.5px solid #a5d6a7;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  cursor: pointer;
+  z-index: 9999;
+  font-size: 18px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+" onmouseover="this.style.transform='translateY(-3px)'; this.style.background='#e8f5e9'" onmouseout="this.style.transform='none'; this.style.background='#ffffff'">
+  ↑
+</button>
+
 <script>
-// ================= GLOBAL KISAN TRANSITION CONTROLLER =================
+// ================= GLOBAL KISAN TRANSITION & POLISH CONTROLLER =================
 (function() {
   var overlay = null;
   var fillBar = null;
@@ -458,7 +482,7 @@
     options = options || {};
     var title = options.title || '🌾 खेत से सीधे मंडी की ओर...';
     var subtitle = options.subtitle || 'डैशबोर्ड लोड हो रहा है, कृपया प्रतीक्षा करें';
-    var duration = options.duration || 2200; // 2.2 seconds
+    var duration = options.duration || 900; // Snappy 900ms default
     var onComplete = options.onComplete || null;
 
     if (titleEl) titleEl.textContent = title;
@@ -474,7 +498,7 @@
       var elapsed = now - startTime;
       var progress = Math.min(elapsed / duration, 1);
       
-      // Easing progress bar (starts fast, finishes with satisfying snap)
+      // Easing progress bar (starts swift, snaps clean)
       var eased = 1 - Math.pow(1 - progress, 2);
       if (fillBar) fillBar.style.width = (eased * 100) + '%';
 
@@ -489,42 +513,38 @@
           } else {
             overlay.style.display = 'none';
           }
-        }, 150);
+        }, 120);
       }
     }
 
     requestAnimationFrame(step);
   };
 
-  // Intercept all Auth Login Forms to display animation for 2 seconds before redirecting
   // Ensure overlay never gets stuck on browser back/forward navigation
   window.addEventListener('pageshow', function() {
     initElements();
     if (overlay) overlay.style.display = 'none';
   });
 
-  // Intercept all Auth Login Forms to display animation before redirecting
   document.addEventListener('DOMContentLoaded', function() {
     initElements();
 
+    // 1. Intercept all Auth Login Forms to display animation for 1.7s before redirecting
     var authForms = document.querySelectorAll('.auth-card form');
     authForms.forEach(function(form) {
       form.addEventListener('submit', function(e) {
         if (form.dataset.animating === 'true') {
-          // Allow actual form submit after animation finishes
           return;
         }
 
-        // Native HTML5 validation check: don't animate if required fields are missing
         if (form.checkValidity && !form.checkValidity()) {
           return;
         }
 
-        var isDemo = form.querySelector('input[name="demo_login"]');
         var roleName = 'डैशबोर्ड';
         var heading = document.querySelector('.auth-card h1');
         if (heading) {
-          roleName = heading.textContent.replace('🌾', '').replace('login', '').trim();
+          roleName = heading.textContent.replace('🌾', '').replace('🏬', '').replace('🛒', '').replace('🚚', '').replace('login', '').trim();
         }
 
         e.preventDefault();
@@ -532,7 +552,7 @@
         window.triggerKisanTransition({
           title: '🌾 ' + roleName + ' में प्रवेश हो रहा है...',
           subtitle: 'सत्यापन पूर्ण! आपका सुरक्षित डैशबोर्ड तैयार किया जा रहा है',
-          duration: 1700, // 1.7s snappy animation
+          duration: 1700,
           onComplete: function() {
             form.dataset.animating = 'true';
             form.submit();
@@ -541,7 +561,7 @@
       });
     });
 
-    // Intercept Bottom Dock Tab Navigation for smooth dashboard switching
+    // 2. Intercept Bottom Dock Tab Navigation for smooth dashboard switching
     var dockTabs = document.querySelectorAll('.kr-dock-tab');
     dockTabs.forEach(function(tab) {
       var href = tab.getAttribute('href');
@@ -555,12 +575,99 @@
           window.triggerKisanTransition({
             title: '🌾 ' + name + ' की ओर प्रस्थान...',
             subtitle: 'Kisan Route: खेत से मंडी तक एक मार्ग',
-            duration: 750, // 0.75s snappy transition
+            duration: 800,
             url: href
           });
         });
       }
     });
+
+    // 3. Intercept All Multi-Dashboard & Cross-Portal Navigation Links
+    document.addEventListener('click', function(e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+      
+      var href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('whatsapp:')) return;
+
+      var destUrl;
+      try {
+        destUrl = new URL(a.href, window.location.origin);
+      } catch(err) {
+        return;
+      }
+      if (destUrl.origin !== window.location.origin) return;
+
+      // Skip if clicking same exact URL
+      if (destUrl.pathname === window.location.pathname && destUrl.search === window.location.search) return;
+
+      var destPath = destUrl.pathname.toLowerCase();
+      var curPath = window.location.pathname.toLowerCase();
+
+      // Check if navigating to a dashboard or switching between portals
+      var isDashboardTarget = destPath.indexOf('/dashboard') !== -1 ||
+                              destPath.indexOf('/mandi-rates') !== -1 ||
+                              destPath.indexOf('/profit-calculator') !== -1 ||
+                              destPath.indexOf('/crop-quality') !== -1 ||
+                              destPath.indexOf('/schemes') !== -1 ||
+                              destPath.indexOf('/insurance') !== -1;
+
+      var isPortalSwitch = (destPath.startsWith('/farmer') || destPath.startsWith('/wholesaler') || destPath.startsWith('/driver') || destPath.startsWith('/cluster') || destPath.startsWith('/customer')) &&
+                           (!curPath.startsWith(destPath.split('/')[1]));
+
+      if (isDashboardTarget || isPortalSwitch) {
+        // Don't trigger if clicked element is inside a modal or button marked skip
+        if (a.dataset.noTransition === 'true' || a.closest('.kr-bypass-overlay')) return;
+
+        e.preventDefault();
+
+        var title = '🌾 खेत से सीधे मंडी की ओर...';
+        var subtitle = 'Kisan Route: सुरक्षित ग्रामीण डिजिटल नेटवर्क';
+
+        if (destPath.indexOf('/farmer') !== -1) {
+          title = '🌾 किसान पोर्टल (Farmer Hub) लोड हो रहा है...';
+          subtitle = 'लाइव मंडी भाव, फसल गुणवत्ता व मुनाफा कैलकुलेटर';
+        } else if (destPath.indexOf('/wholesaler') !== -1) {
+          title = '🏬 थोक व्यापारी पोर्टल (Wholesaler Hub)...';
+          subtitle = 'थोक फसल लॉट्स व डायरेक्ट फार्म-गेट सौदे';
+        } else if (destPath.indexOf('/driver') !== -1) {
+          title = '🚚 ड्राइवर व ट्रांसपोर्ट नेटवर्क (Logistics)...';
+          subtitle = 'ग्रामीण वाहन व फसल परिवहन ट्रिप्स';
+        } else if (destPath.indexOf('/cluster') !== -1) {
+          title = '🤝 किसान क्लस्टर हब (Cluster Hub)...';
+          subtitle = 'सामूहिक बिक्री व साझा ट्रांसपोर्ट';
+        } else if (destPath.indexOf('/customer') !== -1) {
+          title = '🛒 ताज़ा फसल स्टोर (Customer Market)...';
+          subtitle = 'खेत से सीधी ताज़ा उपज की खरीदारी';
+        }
+
+        window.triggerKisanTransition({
+          title: title,
+          subtitle: subtitle,
+          duration: 850,
+          url: a.href
+        });
+      }
+    });
+
+    // 4. Floating Scroll to Top Button Interaction
+    var scrollBtn = document.getElementById('krScrollToTopBtn');
+    if (scrollBtn) {
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 320) {
+          scrollBtn.style.display = 'flex';
+        } else {
+          scrollBtn.style.display = 'none';
+        }
+      }, { passive: true });
+
+      scrollBtn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   });
 })();
 </script>

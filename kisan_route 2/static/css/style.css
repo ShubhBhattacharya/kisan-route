@@ -284,6 +284,66 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .feature-card { text-decoration: none; color: var(--ink); display: block; transition: transform 0.15s ease; }
 .feature-card:hover { transform: translateY(-2px); }
 .feature-icon { font-size: 1.6rem; }
+
+/* Next-Generation Feature Card Badges */
+.kr-feature-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feature-card:hover .kr-feature-badge {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.kr-feature-badge svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.kr-badge-emerald {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  border: 1.5px solid #a5d6a7;
+  color: #1b5e20;
+}
+
+.kr-badge-sky {
+  background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  border: 1.5px solid #7dd3fc;
+  color: #0284c7;
+}
+
+.kr-badge-amber {
+  background: linear-gradient(135deg, #fef9c3, #fef08a);
+  border: 1.5px solid #fde047;
+  color: #854d0e;
+}
+
+.kr-badge-purple {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  border: 1.5px solid #c4b5fd;
+  color: #6d28d9;
+}
+
+.kr-badge-pink {
+  background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  border: 1.5px solid #f472b6;
+  color: #be185d;
+}
+
+.kr-badge-teal {
+  background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+  border: 1.5px solid #5eead4;
+  color: #0f766e;
+}
 .price-tag { color: var(--gold-600); font-weight: 700; }
 
 .auth-section { display: flex; justify-content: center; padding-top: 24px; }
@@ -661,12 +721,13 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .kr-app-services-container {
   max-width: 1200px;
   width: 95%;
-  margin: 32px auto 16px auto;
+  margin: 48px auto 20px auto;
+  padding-top: 14px;
   box-sizing: border-box;
 }
 
 .kr-app-section-header {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .kr-app-section-badge {

@@ -270,37 +270,37 @@
 {% include 'partials/chatbot.html' %}
 {% include 'partials/voice_assistant.html' %}
 
-<!-- Floating Language Button -->
-<button class="kr-lang-floating-btn" id="krLangTrigger" type="button" aria-label="Select Language">
+<!-- Floating Language Button (Protected from translation so always readable) -->
+<button class="kr-lang-floating-btn notranslate skiptranslate" id="krLangTrigger" type="button" aria-label="Select Language" translate="no">
   <span style="font-size: 18px;">🌐</span>
   <span>भाषा / Language</span>
 </button>
 
-<!-- 25+ Indian Languages Modal -->
-<div class="kr-lang-modal-overlay" id="krLangModal">
-  <div class="kr-lang-card">
+<!-- 25+ Indian Languages Modal (Protected from translation so users can always switch back to English or any language) -->
+<div class="kr-lang-modal-overlay notranslate skiptranslate" id="krLangModal" translate="no">
+  <div class="kr-lang-card notranslate skiptranslate" translate="no">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; margin-bottom: 16px;">
-      <h3 style="color: #1b5e20; margin: 0; font-size: 18px; font-weight: 800;">🌐 अपनी भाषा चुनें (Select Language)</h3>
-      <button id="krLangClose" style="background: #f1f8e9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer;">&times;</button>
+      <h3 style="color: #1b5e20; margin: 0; font-size: 18px; font-weight: 800;" class="notranslate skiptranslate" translate="no">🌐 अपनी भाषा चुनें (Select Language)</h3>
+      <button id="krLangClose" class="notranslate" translate="no" style="background: #f1f8e9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer;">&times;</button>
     </div>
-    <div class="kr-lang-grid">
-      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>हिन्दी</span><small>Hindi</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('pa')"><span>ਪੰਜਾਬੀ</span><small>Punjabi</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('bn')"><span>বাংলা</span><small>Bengali</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('mr')"><span>मराठी</span><small>Marathi</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('gu')"><span>ગુજરાતી</span><small>Gujarati</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('te')"><span>తెలుగు</span><small>Telugu</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('ta')"><span>தமிழ்</span><small>Tamil</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('kn')"><span>ಕನ್ನಡ</span><small>Kannada</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('ml')"><span>മലയാളം</span><small>Malayalam</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('or')"><span>ଓଡ଼ିଆ</span><small>Odia</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('as')"><span>অসমীয়া</span><small>Assamese</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('bho')"><span>भोजपुरी</span><small>Bhojpuri</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('mai')"><span>मैथिली</span><small>Maithili</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>हरियाणवी</span><small>Haryanvi</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('hi')"><span>मारवाड़ी</span><small>Marwari</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('ur')"><span>اردو</span><small>Urdu</small></button>
-      <button class="kr-lang-btn" onclick="changeAppLang('en')"><span>English</span><small>English</small></button>
+    <div class="kr-lang-grid notranslate skiptranslate" translate="no">
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('hi')"><span class="notranslate" translate="no">हिन्दी</span><small class="notranslate" translate="no">Hindi</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('pa')"><span class="notranslate" translate="no">ਪੰਜਾਬੀ</span><small class="notranslate" translate="no">Punjabi</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('bn')"><span class="notranslate" translate="no">বাংলা</span><small class="notranslate" translate="no">Bengali</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('mr')"><span class="notranslate" translate="no">मराठी</span><small class="notranslate" translate="no">Marathi</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('gu')"><span class="notranslate" translate="no">ગુજરાતી</span><small class="notranslate" translate="no">Gujarati</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('te')"><span class="notranslate" translate="no">తెలుగు</span><small class="notranslate" translate="no">Telugu</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('ta')"><span class="notranslate" translate="no">தமிழ்</span><small class="notranslate" translate="no">Tamil</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('kn')"><span class="notranslate" translate="no">ಕನ್ನಡ</span><small class="notranslate" translate="no">Kannada</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('ml')"><span class="notranslate" translate="no">മലയാളം</span><small class="notranslate" translate="no">Malayalam</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('or')"><span class="notranslate" translate="no">ଓଡ଼ିଆ</span><small class="notranslate" translate="no">Odia</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('as')"><span class="notranslate" translate="no">অসমীয়া</span><small class="notranslate" translate="no">Assamese</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('bho')"><span class="notranslate" translate="no">भोजपुरी</span><small class="notranslate" translate="no">Bhojpuri</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('mai')"><span class="notranslate" translate="no">मैथिली</span><small class="notranslate" translate="no">Maithili</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('hi')"><span class="notranslate" translate="no">हरियाणवी</span><small class="notranslate" translate="no">Haryanvi</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('hi')"><span class="notranslate" translate="no">मारवाड़ी</span><small class="notranslate" translate="no">Marwari</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('ur')"><span class="notranslate" translate="no">اردو</span><small class="notranslate" translate="no">Urdu</small></button>
+      <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('en')"><span class="notranslate" translate="no">English</span><small class="notranslate" translate="no">English</small></button>
     </div>
   </div>
 </div>

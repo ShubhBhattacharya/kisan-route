@@ -4,8 +4,16 @@
 {% block content %}
 <!-- Blurry Background Wrapper for Home Page -->
 <div class="auth-bg-wrapper">
-  <div class="auth-bg-inner" style="background-image: url_for('static', filename='images/background.jpg');"></div>
+  <div class="auth-bg-inner" style="background-image: url('{{ url_for('static', filename='images/background.jpg') }}');"></div>
 </div>
+
+<style>
+@media (max-width: 768px) {
+  #krHeroSection {
+    min-height: 440px !important;
+  }
+}
+</style>
 
 <!-- ================= FLIPKART/AMAZON STYLE ROTATING HERO BANNER ================= -->
 <section class="hero kr-hero-carousel-container" id="krHeroSection" style="position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: center; justify-content: center; border-radius: 20px; margin: 15px auto; max-width: 1200px; width: 95%; isolation: isolate; background-color: #1b5e20; box-shadow: 0 10px 30px rgba(0,0,0,0.18);">
@@ -18,7 +26,10 @@
       background-image: url('{{ url_for('static', filename='images/hero_slide_1.png') }}');
       background-size: cover; background-position: center;
       transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 1; transform: scale(1);
+      opacity: 1; transform: translate3d(0,0,0) scale(1);
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     "></div>
 
     <!-- Slide 2: Golden Wheat Harvest Farmer at Sunset -->
@@ -27,7 +38,10 @@
       background-image: url('{{ url_for('static', filename='images/hero_slide_2.png') }}');
       background-size: cover; background-position: center;
       transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0; transform: scale(1.04);
+      opacity: 0; transform: translate3d(0,0,0) scale(1.04);
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     "></div>
 
     <!-- Slide 3: Farmers First Welfare Priority -->
@@ -36,7 +50,10 @@
       background-image: url('{{ url_for('static', filename='images/hero_slide_3.png') }}');
       background-size: cover; background-position: center;
       transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0; transform: scale(1.04);
+      opacity: 0; transform: translate3d(0,0,0) scale(1.04);
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     "></div>
 
     <!-- Slide 4: Lush Green Agriculture Landscape -->
@@ -45,7 +62,10 @@
       background-image: url('{{ url_for('static', filename='images/background.jpg') }}');
       background-size: cover; background-position: center;
       transition: opacity 0.85s cubic-bezier(0.4, 0, 0.2, 1), transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 0; transform: scale(1.04);
+      opacity: 0; transform: translate3d(0,0,0) scale(1.04);
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     "></div>
   </div>
 

@@ -241,7 +241,14 @@
   display: block;
 }
 
-/* ================= 60FPS SVG KEYFRAME ANIMATIONS ================= */
+/* ================= 60FPS SVG KEYFRAME ANIMATIONS (MOBILE ACCELERATED) ================= */
+
+/* Optimization: Pause all 13 SVG animations when overlay is inactive to free mobile CPU/GPU */
+.kr-transition-overlay:not(.kr-active) *,
+.kr-transition-overlay:not(.kr-active) *::before,
+.kr-transition-overlay:not(.kr-active) *::after {
+  animation-play-state: paused !important;
+}
 
 /* Ground Scrolling Speed */
 .kr-ground-tracks line {
@@ -489,6 +496,7 @@
     if (subEl) subEl.textContent = subtitle;
     if (fillBar) fillBar.style.width = '0%';
 
+    overlay.classList.add('kr-active');
     overlay.style.display = 'flex';
     overlay.setAttribute('aria-hidden', 'false');
 
@@ -511,7 +519,9 @@
           } else if (options.url) {
             window.location.href = options.url;
           } else {
+            overlay.classList.remove('kr-active');
             overlay.style.display = 'none';
+            overlay.setAttribute('aria-hidden', 'true');
           }
         }, 120);
       }
@@ -523,7 +533,11 @@
   // Ensure overlay never gets stuck on browser back/forward navigation
   window.addEventListener('pageshow', function() {
     initElements();
-    if (overlay) overlay.style.display = 'none';
+    if (overlay) {
+      overlay.classList.remove('kr-active');
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+    }
   });
 
   document.addEventListener('DOMContentLoaded', function() {

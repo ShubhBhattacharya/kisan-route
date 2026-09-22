@@ -165,26 +165,36 @@
       box-shadow: 0 8px 22px rgba(27, 94, 32, 0.45);
     }
 
-    /* Language Modal */
+    /* Language Modal (Topmost Overlay) */
     .kr-lang-modal-overlay {
       position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(4px);
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 99999999 !important;
       padding: 16px;
+      box-sizing: border-box;
     }
-    .kr-lang-modal-overlay.open { display: flex; }
+    .kr-lang-modal-overlay.open { 
+      display: flex !important; 
+    }
     .kr-lang-card {
       background: #ffffff;
       width: 100%;
       max-width: 600px;
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      border: 1.5px solid #a5d6a7;
+      position: relative;
+      z-index: 100000000 !important;
     }
     .kr-lang-grid {
       display: grid;
@@ -271,7 +281,7 @@
 {% include 'partials/voice_assistant.html' %}
 
 <!-- Floating Language Button (Protected from translation so always readable) -->
-<button class="kr-lang-floating-btn notranslate skiptranslate" id="krLangTrigger" type="button" aria-label="Select Language" translate="no">
+<button class="kr-lang-floating-btn notranslate skiptranslate" id="krLangTrigger" onclick="window.openKrLanguageModal(event)" type="button" aria-label="Select Language" translate="no">
   <span style="font-size: 18px;">🌐</span>
   <span>भाषा / Language</span>
 </button>
@@ -281,7 +291,7 @@
   <div class="kr-lang-card notranslate skiptranslate" translate="no">
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; margin-bottom: 16px;">
       <h3 style="color: #1b5e20; margin: 0; font-size: 18px; font-weight: 800;" class="notranslate skiptranslate" translate="no">🌐 अपनी भाषा चुनें (Select Language)</h3>
-      <button id="krLangClose" class="notranslate" translate="no" style="background: #f1f8e9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer;">&times;</button>
+      <button id="krLangClose" onclick="window.closeKrLanguageModal(event)" class="notranslate" translate="no" style="background: #f1f8e9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer;">&times;</button>
     </div>
     <div class="kr-lang-grid notranslate skiptranslate" translate="no">
       <button class="kr-lang-btn notranslate" translate="no" onclick="changeAppLang('hi')"><span class="notranslate" translate="no">हिन्दी</span><small class="notranslate" translate="no">Hindi</small></button>
@@ -317,6 +327,30 @@
     }, 'google_translate_element');
   }
 
+  window.openKrLanguageModal = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    var modal = document.getElementById('krLangModal');
+    if (modal) {
+      modal.style.setProperty('display', 'flex', 'important');
+      modal.classList.add('open');
+    }
+  };
+
+  window.closeKrLanguageModal = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    var modal = document.getElementById('krLangModal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.style.setProperty('display', 'none', 'important');
+    }
+  };
+
   function changeAppLang(langCode) {
     document.cookie = "googtrans=/en/" + langCode + "; path=/";
     document.cookie = "googtrans=/en/" + langCode + "; domain=" + window.location.hostname + "; path=/";
@@ -327,19 +361,35 @@
       combo.dispatchEvent(new Event('change'));
     }
     window.dispatchEvent(new CustomEvent('krLanguageChanged', { detail: { lang: langCode } }));
-    var modal = document.getElementById('krLangModal');
-    if (modal) modal.classList.remove('open');
+    window.closeKrLanguageModal();
     if (!combo) {
       window.location.reload();
     }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    var topbarBtn = document.getElementById('krTopbarLangBtn');
     var triggerBtn = document.getElementById('krLangTrigger');
     var closeBtn = document.getElementById('krLangClose');
     var modal = document.getElementById('krLangModal');
-    if (triggerBtn && modal) triggerBtn.addEventListener('click', function() { modal.classList.add('open'); });
-    if (closeBtn && modal) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+
+    if (topbarBtn) topbarBtn.addEventListener('click', window.openKrLanguageModal);
+    if (triggerBtn) triggerBtn.addEventListener('click', window.openKrLanguageModal);
+    if (closeBtn) closeBtn.addEventListener('click', window.closeKrLanguageModal);
+
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          window.closeKrLanguageModal(e);
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        window.closeKrLanguageModal();
+      }
+    });
 
     var chatWindow = document.querySelector('.chat-window') || document.querySelector('.chatbot-window') || document.getElementById('chatWindow');
     var chatTrigger = document.querySelector('.chat-trigger') || document.querySelector('.chatbot-trigger') || document.querySelector('.chat-icon') || document.querySelector('button[aria-label*="chat" i]');

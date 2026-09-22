@@ -26,7 +26,7 @@
     </button>
 
     <!-- Universal Language Selector Button (Visible on Desktop and Mobile) -->
-    <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
+    <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
       <span style="font-size: 15px;">🌐</span>
       <span class="kr-lang-btn-text">भाषा / Language</span>
     </button>
@@ -56,7 +56,7 @@
     <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
     <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
     <li>
-      <a href="javascript:void(0)" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" style="color: #1b5e20; font-weight: 700;">
+      <a href="javascript:void(0)" onclick="window.openKrLanguageModal(event)" style="color: #1b5e20; font-weight: 700;">
         <span aria-hidden="true">🌐</span> भाषा चुनें (Select Language)
       </a>
     </li>

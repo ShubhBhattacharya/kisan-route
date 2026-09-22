@@ -25,9 +25,10 @@
       <span class="kr-bell-badge">4</span>
     </button>
 
-    <!-- Mobile App Quick Language Button -->
-    <button type="button" class="kr-app-topbar-lang" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" aria-label="Change Language">
-      <span>🌐</span>
+    <!-- Universal Language Selector Button (Visible on Desktop and Mobile) -->
+    <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
+      <span style="font-size: 15px;">🌐</span>
+      <span class="kr-lang-btn-text">भाषा / Language</span>
     </button>
 
     {% if session.get('user_id') %}
@@ -54,6 +55,11 @@
     <li><a href="{{ url_for('driver.login') }}"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }}</a></li>
     <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
     <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
+    <li>
+      <a href="javascript:void(0)" onclick="var m=document.getElementById('krLangModal'); if(m) m.classList.add('open');" style="color: #1b5e20; font-weight: 700;">
+        <span aria-hidden="true">🌐</span> भाषा चुनें (Select Language)
+      </a>
+    </li>
     <li style="margin-top: 14px; border-top: 1px solid #dcedc8; padding-top: 10px;">
       <a href="javascript:void(0)" onclick="if(window.triggerKisanInstall){window.triggerKisanInstall();}else{alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');}" style="color: #1b5e20; font-weight: 700; background: #e8f5e9; border-radius: 8px;">
         <span aria-hidden="true">📲</span> ऐप इंस्टॉल करें (Install App)

@@ -9,20 +9,195 @@
 
 <style>
 #krHeroSection {
-  margin: 15px auto 48px auto !important;
+  margin: 15px auto 32px auto !important;
 }
+.kr-hero-text-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  pointer-events: auto;
+}
+.kr-hero-vision-badge {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.92), rgba(20, 83, 45, 0.95));
+  color: #fde047;
+  border: 1.5px solid rgba(253, 224, 71, 0.5);
+  border-radius: 9999px;
+  padding: 5px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.kr-hero-brand-title {
+  font-size: clamp(36px, 5.2vw, 64px);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  line-height: 1.05;
+  margin: 0 0 10px 0;
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.85), 0 2px 6px rgba(0, 0, 0, 0.95);
+  font-family: 'Fraunces', Georgia, serif;
+  white-space: nowrap;
+  text-align: center;
+}
+.kr-hero-catchy-tagline-box {
+  margin: 4px auto 14px auto;
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.92) 0%, rgba(4, 120, 87, 0.88) 100%);
+  border: 2px solid #facc15;
+  border-radius: 16px;
+  padding: 12px 24px;
+  max-width: 780px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 22px rgba(250, 204, 21, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: center;
+}
+.kr-tagline-main-line {
+  font-size: clamp(20px, 3.6vw, 32px);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+  line-height: 1.25;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.kr-tagline-gold {
+  color: #fde047;
+  text-decoration: underline;
+  text-decoration-color: rgba(250,204,21,0.65);
+  text-underline-offset: 4px;
+}
+.kr-quote-mark {
+  color: #facc15;
+  font-size: 1.15em;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+.kr-tagline-hindi-sub {
+  margin-top: 5px;
+  font-size: clamp(14px, 2.2vw, 18px);
+  font-weight: 700;
+  color: #d1fae5;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.kr-hero-badges-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 2px;
+}
+.kr-hero-badge-pill {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  padding: 4px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #a7f3d0;
+  backdrop-filter: blur(6px);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.kr-hero-badge-pill.gold {
+  color: #fde047;
+}
+
+/* Infinite Brand Tagline Marquee Strip */
+.kr-tagline-marquee-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, #064e3b 0%, #047857 50%, #064e3b 100%);
+  border-top: 2px solid #10b981;
+  border-bottom: 2px solid #10b981;
+  padding: 9px 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  margin-top: -12px;
+  margin-bottom: 30px;
+}
+.kr-tagline-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: krMarqueeSlide 30s linear infinite;
+}
+.kr-tagline-marquee-track:hover {
+  animation-play-state: paused;
+}
+.kr-marquee-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-right: 22px;
+}
+.kr-mq-tag {
+  background: #facc15;
+  color: #064e3b;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 9999px;
+  letter-spacing: 0.5px;
+}
+.kr-mq-headline {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+.kr-mq-hindi {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fde047;
+}
+.kr-mq-prop {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #d1fae5;
+}
+.kr-mq-sep {
+  color: #34d399;
+  font-size: 12px;
+  opacity: 0.7;
+}
+@keyframes krMarqueeSlide {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
 .kr-app-services-container {
-  margin-top: 48px !important;
+  margin-top: 24px !important;
   padding-top: 14px !important;
 }
 @media (max-width: 768px) {
   #krHeroSection {
     min-height: 440px !important;
-    margin: 12px auto 42px auto !important;
+    margin: 12px auto 28px auto !important;
   }
   .kr-app-services-container {
-    margin-top: 42px !important;
+    margin-top: 20px !important;
     padding-top: 14px !important;
+  }
+  .kr-hero-catchy-tagline-box {
+    padding: 10px 16px !important;
   }
 }
 </style>
@@ -32,7 +207,7 @@
 
   <!-- Carousel Slides Wrapper -->
   <div class="kr-carousel-track" id="krHeroCarouselTrack" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
-    <!-- Slide 1: Farmer with Bulls Plowing Field -->
+    <!-- Slide 1: Golden Sunrise Farm Harvest (Ab Har Kisan Apne Haq Ka Khayega) -->
     <div class="kr-hero-slide active" style="
       position: absolute; inset: 0; width: 100%; height: 100%;
       background-image: url('{{ url_for('static', filename='images/hero_slide_1.png') }}');
@@ -172,14 +347,14 @@
     &#8250;
   </button>
 
-  <!-- Hero Main Content (Locked Dead-Center) -->
+  <!-- Hero Main Content (Dynamic Synchronized Slide Transitions) -->
   <div class="hero-content" style="
     position: relative;
     z-index: 5;
     text-align: center;
     width: 100%;
-    max-width: 900px;
-    padding: 40px 20px 65px;
+    max-width: 950px;
+    padding: 30px 20px 65px;
     margin: 0 auto;
     pointer-events: none;
     display: flex;
@@ -187,54 +362,109 @@
     align-items: center;
     justify-content: center;
   ">
-    <p class="hero-eyebrow" style="
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #dcedc8;
-      margin: 0 0 14px 0;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      text-align: center;
-    ">
-      Farm to market, on one route
-    </p>
+    <!-- Text Slide 1: Flagship Tagline Centerpiece (Golden Sunrise Farm) -->
+    <div class="kr-hero-text-slide active" data-slide-text="0">
+      <div style="margin: 0 auto 10px auto;">
+        <span class="kr-hero-vision-badge">
+          <span>✨</span> KISANROUTE SANKALP 2026 <span>✨</span>
+        </span>
+      </div>
 
-    <!-- 3. Hero Section (Primary Visual Anchor Badge Pill) -->
-    <div style="margin: 0 auto 16px auto; pointer-events: auto;">
-      <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full px-4 py-1 text-sm font-semibold shadow-sm inline-flex items-center gap-2" style="background-color: #d1fae5; color: #065f46; border: 1.5px solid #6ee7b7; border-radius: 9999px; padding: 5px 18px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 7px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22); letter-spacing: 0.2px; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);">
-        <span style="font-size: 15px;">🌾</span>
-        <span>Ab har kisan apne haq ka khayega</span>
-      </span>
+      <h1 class="kr-hero-brand-title">{{ t('site_name') }}</h1>
+
+      <div class="kr-hero-catchy-tagline-box">
+        <div class="kr-tagline-main-line">
+          <span class="kr-quote-mark">“</span>Ab Har Kisan <span class="kr-tagline-gold">Apne Haq Ka Khayega</span><span class="kr-quote-mark">”</span>
+        </div>
+        <div class="kr-tagline-hindi-sub">
+          🌾 अब हर किसान अपने हक का खाएगा 🌾
+        </div>
+      </div>
+
+      <div class="kr-hero-badges-row">
+        <span class="kr-hero-badge-pill">🛡️ 0% बिचौलिया (Zero Commission)</span>
+        <span class="kr-hero-badge-pill gold">💰 100% सही दाम (Fair Price)</span>
+        <span class="kr-hero-badge-pill">⚡ सीधा खाता (Instant Pay)</span>
+      </div>
     </div>
 
-    <h1 style="
-      font-size: clamp(48px, 7vw, 84px);
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      color: #ffffff;
-      line-height: 1.1;
-      margin: 0 0 18px 0;
-      text-shadow: 0 4px 22px rgba(0, 0, 0, 0.75), 0 2px 5px rgba(0, 0, 0, 0.9);
-      font-family: 'Fraunces', Georgia, serif;
-      white-space: nowrap;
-      text-align: center;
-    ">
-      {{ t('site_name') }}
-    </h1>
+    <!-- Text Slide 2: Direct Mandi Kranti -->
+    <div class="kr-hero-text-slide" data-slide-text="1" style="display: none;">
+      <div style="margin: 0 auto 10px auto;">
+        <span class="kr-hero-vision-badge">
+          <span>🌾</span> DIRECT MANDI KRANTI
+        </span>
+      </div>
 
-    <p class="hero-tagline" style="
-      font-size: 19px;
-      line-height: 1.6;
-      font-weight: 500;
-      color: #f1f8e9;
-      max-width: 740px;
-      margin: 0 auto;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-      text-align: center;
-    ">
-      {{ t('hero_tagline') }}
-    </p>
+      <h1 class="kr-hero-brand-title">{{ t('site_name') }}</h1>
+
+      <div class="kr-hero-catchy-tagline-box">
+        <div class="kr-tagline-main-line">
+          <span class="kr-quote-mark">“</span>Khet Se Mandi Tak <span class="kr-tagline-gold">Sahi Daam Ka Vaada</span><span class="kr-quote-mark">”</span>
+        </div>
+        <div class="kr-tagline-hindi-sub">
+          🌾 अब हर किसान अपने हक का खाएगा 🌾
+        </div>
+      </div>
+
+      <div class="kr-hero-badges-row">
+        <span class="kr-hero-badge-pill">🏛️ Live Mandi Rates</span>
+        <span class="kr-hero-badge-pill gold">⚖️ Transparent Weight</span>
+        <span class="kr-hero-badge-pill">💵 Guaranteed Pricing</span>
+      </div>
+    </div>
+
+    <!-- Text Slide 3: Farm Logistics & Fair Transit -->
+    <div class="kr-hero-text-slide" data-slide-text="2" style="display: none;">
+      <div style="margin: 0 auto 10px auto;">
+        <span class="kr-hero-vision-badge">
+          <span>🚚</span> ON-DEMAND FARM LOGISTICS
+        </span>
+      </div>
+
+      <h1 class="kr-hero-brand-title">{{ t('site_name') }}</h1>
+
+      <div class="kr-hero-catchy-tagline-box">
+        <div class="kr-tagline-main-line">
+          <span class="kr-quote-mark">“</span>Kisaan Ka Haq, <span class="kr-tagline-gold">Kisaan Ke Haath</span><span class="kr-quote-mark">”</span>
+        </div>
+        <div class="kr-tagline-hindi-sub">
+          🌾 अब हर किसान अपने हक का खाएगा 🌾
+        </div>
+      </div>
+
+      <div class="kr-hero-badges-row">
+        <span class="kr-hero-badge-pill">🚚 Farm-Gate Pickup</span>
+        <span class="kr-hero-badge-pill gold">📍 Live GPS Route Map</span>
+        <span class="kr-hero-badge-pill">🤝 Fast Fair Transit</span>
+      </div>
+    </div>
+
+    <!-- Text Slide 4: Aatmanirbhar Krishi Revolution -->
+    <div class="kr-hero-text-slide" data-slide-text="3" style="display: none;">
+      <div style="margin: 0 auto 10px auto;">
+        <span class="kr-hero-vision-badge">
+          <span>🇮🇳</span> AATMANIRBHAR KISAN
+        </span>
+      </div>
+
+      <h1 class="kr-hero-brand-title">{{ t('site_name') }}</h1>
+
+      <div class="kr-hero-catchy-tagline-box">
+        <div class="kr-tagline-main-line">
+          <span class="kr-quote-mark">“</span>Ab Har Kisan <span class="kr-tagline-gold">Apne Haq Ka Khayega</span><span class="kr-quote-mark">”</span>
+        </div>
+        <div class="kr-tagline-hindi-sub">
+          🌾 आत्मनिर्भर भारत, समृद्ध किसान 🌾
+        </div>
+      </div>
+
+      <div class="kr-hero-badges-row">
+        <span class="kr-hero-badge-pill">🌾 Direct Farmer Network</span>
+        <span class="kr-hero-badge-pill gold">💰 100% Middleman Free</span>
+        <span class="kr-hero-badge-pill">⚡ Direct Account Credit</span>
+      </div>
+    </div>
   </div>
 
   <!-- Carousel Indicators (Pills / Dots at Bottom) -->
@@ -254,6 +484,42 @@
   </div>
 
 </section>
+
+<!-- ================= INFINITE BRAND TAGLINE MARQUEE ================= -->
+<div class="kr-tagline-marquee-wrap">
+  <div class="kr-tagline-marquee-track">
+    <div class="kr-marquee-group">
+      <span class="kr-mq-tag">🌾 KISANROUTE</span>
+      <span class="kr-mq-headline">“Ab Har Kisan Apne Haq Ka Khayega”</span>
+      <span class="kr-mq-hindi">(अब हर किसान अपने हक का खाएगा)</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">🛡️ 0% Middlemen — Direct Farm to Market</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-headline">“Ab Har Kisan Apne Haq Ka Khayega”</span>
+      <span class="kr-mq-hindi">(अब हर किसान अपने हक का खाएगा)</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">💰 100% Transparent Mandi Rates</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">⚡ Instant UPI & Direct Bank Settlement</span>
+      <span class="kr-mq-sep">✦</span>
+    </div>
+    <div class="kr-marquee-group" aria-hidden="true">
+      <span class="kr-mq-tag">🌾 KISANROUTE</span>
+      <span class="kr-mq-headline">“Ab Har Kisan Apne Haq Ka Khayega”</span>
+      <span class="kr-mq-hindi">(अब हर किसान अपने हक का खाएगा)</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">🛡️ 0% Middlemen — Direct Farm to Market</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-headline">“Ab Har Kisan Apne Haq Ka Khayega”</span>
+      <span class="kr-mq-hindi">(अब हर किसान अपने हक का खाएगा)</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">💰 100% Transparent Mandi Rates</span>
+      <span class="kr-mq-sep">✦</span>
+      <span class="kr-mq-prop">⚡ Instant UPI & Direct Bank Settlement</span>
+      <span class="kr-mq-sep">✦</span>
+    </div>
+  </div>
+</div>
 
 <!-- ================= NATIVE APP ROLE SERVICES GRID ================= -->
 <div class="kr-app-services-container">
@@ -373,6 +639,27 @@ document.addEventListener('DOMContentLoaded', function() {
         dot.classList.remove('active');
       }
     });
+
+    // Synchronized Dynamic Text Slide Transitions
+    var textSlides = document.querySelectorAll('.kr-hero-text-slide');
+    if (textSlides.length > 0) {
+      textSlides.forEach(function(ts, i) {
+        if (i === currentIndex) {
+          ts.style.display = 'flex';
+          ts.style.opacity = '0';
+          ts.style.transform = 'translateY(14px) scale(0.97)';
+          requestAnimationFrame(function() {
+            ts.style.transition = 'opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
+            ts.style.opacity = '1';
+            ts.style.transform = 'translateY(0) scale(1)';
+          });
+          ts.classList.add('active');
+        } else {
+          ts.style.display = 'none';
+          ts.classList.remove('active');
+        }
+      });
+    }
   }
 
   function nextSlide() {

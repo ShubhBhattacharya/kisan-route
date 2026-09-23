@@ -1,3 +1,9 @@
+<!-- 1. Top Announcement Bar (Sticky Ribbon) -->
+<div class="kr-top-announcement-bar bg-emerald-800 text-white text-xs md:text-sm font-medium py-1.5 px-3 text-center tracking-wide" style="background-color: #065f46; color: #ffffff; font-size: clamp(11.5px, 2.2vw, 13px); font-weight: 600; padding: 6px 12px; text-align: center; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.12); position: relative; z-index: 1001; font-family: 'Inter', -apple-system, sans-serif;">
+  <span style="font-size: 14px;">🌾</span>
+  <span><strong>KisanRoute Mission:</strong> Ab har kisan apne haq ka khayega | Direct from farm to market</span>
+</div>
+
 <header class="topbar">
   <div style="display: flex; align-items: center; gap: 8px;">
     <!-- Universal Back Button (shown on all inner pages, dashboards and forms) -->
@@ -13,9 +19,15 @@
     </button>
   </div>
 
-  <a class="brand" href="{{ url_for('main.home') }}">
+  <!-- 2. Navbar Brand Identity with Core Tagline -->
+  <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
     <span class="kr-brand-emblem">🌾</span>
-    <span class="kr-brand-text">{{ t('site_name') }}</span>
+    <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.15;">
+      <span class="kr-brand-text">{{ t('site_name') }}</span>
+      <span class="kr-brand-subtext text-emerald-700 text-[11px] font-medium tracking-tight" style="color: #2e7d32; font-size: 11px; font-weight: 600; opacity: 0.92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 210px;">
+        Ab har kisan apne haq ka khayega
+      </span>
+    </div>
   </a>
 
   <div class="topbar-right">
@@ -117,6 +129,17 @@
   .kr-topbar-back-btn {
     padding: 6px 9px;
     font-size: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .kr-brand-subtext {
+    max-width: 135px !important;
+    font-size: 9.5px !important;
+  }
+}
+@media (max-width: 360px) {
+  .kr-brand-subtext {
+    display: none !important;
   }
 }
 </style>

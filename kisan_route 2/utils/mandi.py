@@ -7,6 +7,10 @@ sorted best-first) so templates don't need to change.
 import random
 
 REGIONS = [
+    "Azadpur Mandi (Delhi)",
+    "Narela Mandi (Delhi)",
+    "Ghazipur Mandi (Delhi)",
+    "Dadri Mandi",
     "Faridabad Mandi",
     "Ghaziabad Mandi",
     "Sonipat Mandi",

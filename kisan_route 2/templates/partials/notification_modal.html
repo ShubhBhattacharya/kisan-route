@@ -146,6 +146,16 @@ function syncNotificationDrawerLanguage(lang) {
   });
 }
 
+function markKrNotificationsAsRead() {
+  try {
+    localStorage.setItem('kr_notif_seen', 'true');
+  } catch(e) {}
+  var badges = document.querySelectorAll('.kr-bell-badge, #krBellBadge');
+  badges.forEach(function(badge) {
+    badge.style.display = 'none';
+  });
+}
+
 function toggleKrNotifications() {
   var modal = document.getElementById('krNotifModal');
   if (!modal) return;
@@ -153,6 +163,7 @@ function toggleKrNotifications() {
   if (isHidden) {
     syncNotificationDrawerLanguage();
     modal.style.display = 'flex';
+    markKrNotificationsAsRead();
   } else {
     modal.style.display = 'none';
   }
@@ -200,6 +211,14 @@ function sendTestNativeNotification() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (localStorage.getItem('kr_notif_seen') === 'true') {
+      var badges = document.querySelectorAll('.kr-bell-badge, #krBellBadge');
+      badges.forEach(function(badge) {
+        badge.style.display = 'none';
+      });
+    }
+  } catch(e) {}
   var modal = document.getElementById('krNotifModal');
   if (modal) {
     modal.addEventListener('click', function(e) {

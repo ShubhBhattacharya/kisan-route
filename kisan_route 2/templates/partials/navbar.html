@@ -22,8 +22,18 @@
     <!-- Live Alerts / Notification Bell -->
     <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications">
       <span>🔔</span>
-      <span class="kr-bell-badge">4</span>
+      <span class="kr-bell-badge" id="krBellBadge">4</span>
     </button>
+    <script>
+      (function() {
+        try {
+          if (localStorage.getItem('kr_notif_seen') === 'true') {
+            var b = document.getElementById('krBellBadge');
+            if (b) b.style.display = 'none';
+          }
+        } catch(e) {}
+      })();
+    </script>
 
     <!-- Universal Language Selector Button (Visible on Desktop and Mobile) -->
     <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">

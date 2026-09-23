@@ -6,7 +6,7 @@
     <form method="post">
       <div class="form-grid">
         <div class="form-group"><label>Full name</label><input type="text" name="full_name" value="{{ form.get('full_name','') }}" required></div>
-        <div class="form-group"><label>Phone number</label><input type="tel" name="phone" value="{{ form.get('phone','') }}" required></div>
+        <div class="form-group"><label>Phone number</label><input type="tel" name="phone" value="{{ form.get('phone','') }}" placeholder="e.g. 9876543210" maxlength="10" minlength="10" pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required></div>
         <div class="form-group"><label>Business name</label><input type="text" name="business_name" value="{{ form.get('business_name','') }}" required></div>
         <div class="form-group"><label>Mandi location</label><input type="text" name="mandi_location" value="{{ form.get('mandi_location','') }}" required></div>
         <div class="form-group"><label>Create password</label><input type="password" name="password" required></div>

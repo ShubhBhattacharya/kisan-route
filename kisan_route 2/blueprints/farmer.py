@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 
 from extensions import db
 from models import User
-from utils.auth import login_required
+from utils.auth import login_required, clean_phone, is_valid_phone
 from utils.crop_quality import analyze_crop_image
 from utils.mandi import get_mandi_rates, list_crops
 from utils.otp import generate_otp, verify_otp as check_otp
@@ -25,6 +25,10 @@ def signup():
         data = {f: request.form.get(f, "").strip() for f in SIGNUP_FIELDS}
         if not data["full_name"] or not data["phone"] or not data["crop_type"] or not data["password"]:
             flash("Please fill in all required fields.", "error")
+            return render_template("farmer/signup.html", form=data, crops=list_crops())
+        data["phone"] = clean_phone(data["phone"])
+        if not is_valid_phone(data["phone"]):
+            flash("Invalid phone number. Please enter a valid 10-digit mobile number.", "error")
             return render_template("farmer/signup.html", form=data, crops=list_crops())
         if User.query.filter_by(role=ROLE, phone=data["phone"]).first():
             flash("An account with this phone number already exists. Please log in.", "error")
@@ -86,8 +90,17 @@ def login():
         phone = request.form.get("phone", "").strip()
         password = request.form.get("password", "")
 
+        cleaned_phone = clean_phone(phone)
+        if not is_valid_phone(cleaned_phone):
+            flash("Invalid phone number. Please enter a valid 10-digit mobile number.", "error")
+            return render_template("farmer/login.html")
+
+        if not password:
+            flash("Please enter your password.", "error")
+            return render_template("farmer/login.html")
+
         # 2. Regular Login
-        user = User.query.filter_by(role=ROLE, phone=phone).first()
+        user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
             if check_password_hash(user.password_hash, password) or password == "123456":
                 session["user_id"] = user.id
@@ -98,12 +111,12 @@ def login():
                 flash("Incorrect password. Please try again or use 1-Click Demo.", "error")
                 return render_template("farmer/login.html")
 
-        # 3. Auto-Create Fallback if not signed up yet
-        if phone and len(phone) >= 4 and password:
+        # 3. Auto-Create Fallback if not signed up yet (only with valid 10-digit number)
+        if len(cleaned_phone) == 10 and cleaned_phone.isdigit() and password:
             user = User(
                 role=ROLE,
-                full_name=f"Farmer ({phone[-4:]})",
-                phone=phone,
+                full_name=f"Farmer ({cleaned_phone[-4:]})",
+                phone=cleaned_phone,
                 password_hash=generate_password_hash(password),
             )
             user.set_extra({"address": "Village Center", "city": "Nearby Mandi", "state": "India", "pincode": "110001", "crop_type": "Wheat"})

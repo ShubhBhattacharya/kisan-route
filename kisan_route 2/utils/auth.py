@@ -19,3 +19,21 @@ def login_required(role: str):
             return view_func(*args, **kwargs)
         return wrapped
     return decorator
+
+
+def clean_phone(phone: str) -> str:
+    """Normalize phone input by stripping whitespace, hyphens, and parentheses."""
+    if not phone:
+        return ""
+    import re
+    return re.sub(r"[\s\-\(\)\+]", "", str(phone).strip())
+
+
+def is_valid_phone(phone: str) -> bool:
+    """Validate phone number: must be non-empty and exactly 10 numeric digits."""
+    if not phone:
+        return False
+    cleaned = clean_phone(phone)
+    import re
+    return bool(re.match(r"^\d{10}$", cleaned))
+

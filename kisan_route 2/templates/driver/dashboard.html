@@ -68,19 +68,41 @@
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom: 1px solid #f0f0f0;">
-            <td style="padding: 14px 20px; font-weight: 600;">Dankaur Farm Cluster</td>
-            <td style="padding: 14px 20px;">Dadri Mandi (14 km)</td>
+          <tr style="border-bottom: 1px solid #f0f0f0; transition: background 0.2s ease;">
+            <td style="padding: 14px 20px; font-weight: 600;">
+              <div>Dankaur Farm Cluster</div>
+              <small style="color: #666; font-size: 11.5px;">Gate No. 2 • Farmer: Rameshwar Sharma</small>
+            </td>
+            <td style="padding: 14px 20px;">
+              <div>Dadri Mandi (14 km)</div>
+              <small style="color: #2e7d32; font-size: 11.5px;">Est. 25 mins transit</small>
+            </td>
             <td style="padding: 14px 20px;">Wheat (35 Qtl)</td>
-            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20;">₹ 1,450</td>
-            <td style="padding: 14px 20px; text-align: right;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">Open</span></td>
+            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20; font-size: 16px;">₹ 1,450</td>
+            <td style="padding: 14px 20px; text-align: right;" id="statusCell-TRIP-101">
+              <button type="button" class="kr-trip-open-btn" id="btn-TRIP-101" onclick="krOpenRideModal('TRIP-101')" aria-label="Open ride request for Dankaur Farm Cluster">
+                <span class="kr-live-dot"></span>
+                <span>Open</span>
+              </button>
+            </td>
           </tr>
-          <tr style="border-bottom: 1px solid #f0f0f0;">
-            <td style="padding: 14px 20px; font-weight: 600;">Jarcha Village Gate</td>
-            <td style="padding: 14px 20px;">Surajpur Mandi (22 km)</td>
+          <tr style="border-bottom: 1px solid #f0f0f0; transition: background 0.2s ease;">
+            <td style="padding: 14px 20px; font-weight: 600;">
+              <div>Jarcha Village Gate</div>
+              <small style="color: #666; font-size: 11.5px;">Near Bus Stand • Farmer: Harish Chand</small>
+            </td>
+            <td style="padding: 14px 20px;">
+              <div>Surajpur Mandi (22 km)</div>
+              <small style="color: #2e7d32; font-size: 11.5px;">Est. 35 mins transit</small>
+            </td>
             <td style="padding: 14px 20px;">Mustard (20 Qtl)</td>
-            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20;">₹ 1,100</td>
-            <td style="padding: 14px 20px; text-align: right;"><span style="background: #e8f5e9; color: #2e7d32; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;">Open</span></td>
+            <td style="padding: 14px 20px; font-weight: 700; color: #1b5e20; font-size: 16px;">₹ 1,100</td>
+            <td style="padding: 14px 20px; text-align: right;" id="statusCell-TRIP-102">
+              <button type="button" class="kr-trip-open-btn" id="btn-TRIP-102" onclick="krOpenRideModal('TRIP-102')" aria-label="Open ride request for Jarcha Village Gate">
+                <span class="kr-live-dot"></span>
+                <span>Open</span>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -181,5 +203,433 @@
       btn.innerText = "✅ गाड़ी दर्ज करें (Submit Vehicle)";
     });
   }
+</script>
+
+<!-- ================= RAPIDO STYLE RIDE ACCEPT / REJECT MODAL ================= -->
+<div id="krRideModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 9999999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+  <div id="krRideModalCard" style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); overflow: hidden; border: 1.5px solid #a5d6a7; position: relative; font-family: 'Inter', sans-serif;">
+    
+    <!-- Timer Header -->
+    <div style="background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; padding: 16px 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 20px; animation: krBeaconPulse 1.2s infinite;">🚨</span>
+          <div>
+            <h4 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: 0.2px;">नया फार्म पिकअप अनुरोध (New Pickup Request)</h4>
+            <span style="font-size: 11.5px; opacity: 0.9;">Rapido / Uber स्टाइल इंस्टेंट ट्रिप आवंटन</span>
+          </div>
+        </div>
+        <button type="button" onclick="krCloseRideModal()" aria-label="Close" style="background: rgba(255,255,255,0.2); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <!-- 60-Sec Countdown Timer Banner -->
+      <div id="krTimerBox" style="margin-top: 14px; background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;">
+          <span>⏱️</span>
+          <span>स्वीकार करने का समय (Time to Accept):</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span id="krTimerText" style="font-size: 18px; font-weight: 900; color: #ffeb3b; font-family: monospace;">60s</span>
+        </div>
+      </div>
+      <!-- Timer progress bar -->
+      <div id="krTimerBarWrap" style="width: 100%; height: 5px; background: rgba(255,255,255,0.25); border-radius: 4px; margin-top: 8px; overflow: hidden;">
+        <div id="krTimerBar" style="width: 100%; height: 100%; background: #ffeb3b; transition: width 1s linear, background-color 0.3s ease;"></div>
+      </div>
+    </div>
+
+    <!-- Modal Body Content -->
+    <div style="padding: 20px; max-height: 75vh; overflow-y: auto;">
+      
+      <!-- Guaranteed Earnings Banner -->
+      <div style="background: #e8f5e9; border: 1.5px solid #81c784; border-radius: 16px; padding: 14px 18px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 12px; color: #385e3c; font-weight: 700; text-transform: uppercase;">गारंटीड भाड़ा (Guaranteed Freight)</div>
+          <div id="krTripFare" style="font-size: 28px; font-weight: 900; color: #1b5e20;">₹ 1,450</div>
+        </div>
+        <div style="text-align: right;">
+          <span style="background: #2e7d32; color: #ffffff; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">💵 नकद / UPI</span>
+          <div style="font-size: 11px; color: #4a5d50; margin-top: 4px;">मंडी गेट पर तुरंत भुगतान</div>
+        </div>
+      </div>
+
+      <!-- Route Visual Timeline -->
+      <div style="background: #fafdfa; border: 1px solid #e0e0e0; border-radius: 16px; padding: 16px; margin-bottom: 18px;">
+        <!-- Pickup -->
+        <div style="display: flex; gap: 12px; align-items: flex-start; position: relative;">
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 16px; height: 16px; border-radius: 50%; background: #2e7d32; border: 3px solid #c8e6c9;"></div>
+            <div style="width: 2px; height: 44px; background: #c8e6c9; margin: 3px 0;"></div>
+          </div>
+          <div style="flex: 1;">
+            <div style="font-size: 11px; color: #2e7d32; font-weight: 800; text-transform: uppercase;">🟢 पिकअप पॉइंट (Farm Pickup Point)</div>
+            <div id="krTripPickup" style="font-size: 15px; font-weight: 800; color: #222;">Dankaur Farm Cluster</div>
+            <div id="krTripLandmark" style="font-size: 12px; color: #666;">गेट नं. 2, सहकारी समिति के पास</div>
+            <div style="margin-top: 4px; font-size: 12px; color: #1b5e20; font-weight: 600;">
+              👨‍🌾 <span id="krTripFarmer">रामेश्वर शर्मा</span> • 📞 <a id="krTripPhoneLink" href="tel:+919876543210" style="color: #1b5e20; text-decoration: underline;"><span id="krTripPhone">+91 98765 43210</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Destination -->
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <div style="width: 16px; height: 16px; border-radius: 50%; background: #d32f2f; border: 3px solid #ffcdd2;"></div>
+          <div style="flex: 1;">
+            <div style="font-size: 11px; color: #d32f2f; font-weight: 800; text-transform: uppercase;">🔴 गंतव्य मंडी (Destination Mandi)</div>
+            <div id="krTripDrop" style="font-size: 15px; font-weight: 800; color: #222;">Dadri Mandi (दादरी मंडी)</div>
+            <div id="krTripDistance" style="font-size: 12px; color: #666;">दूरी: 14 km • अनुमानित समय: 25 मिनट</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Crop & Cargo Details -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div style="background: #f1f8e9; padding: 12px; border-radius: 12px; border: 1px solid #c8e6c9;">
+          <div style="font-size: 11px; color: #555; font-weight: 700;">फसल व भार (Crop & Weight)</div>
+          <div id="krTripCrop" style="font-size: 14px; font-weight: 800; color: #1b5e20; margin-top: 2px;">Wheat (35 Qtl)</div>
+          <div id="krTripWeight" style="font-size: 11.5px; color: #4a5d50;">3,500 किलोग्राम (70 बोरियां)</div>
+        </div>
+        <div style="background: #f1f8e9; padding: 12px; border-radius: 12px; border: 1px solid #c8e6c9;">
+          <div style="font-size: 11px; color: #555; font-weight: 700;">वाहन आवश्यकता (Vehicle)</div>
+          <div style="font-size: 14px; font-weight: 800; color: #1b5e20; margin-top: 2px;">Tractor / Tata Ace / 407</div>
+          <div style="font-size: 11.5px; color: #4a5d50;">माल लोडिंग के लिए तैयार</div>
+        </div>
+      </div>
+
+      <!-- State 1: Before Acceptance (Accept / Reject with 60s timer) -->
+      <div id="krRidePreAcceptActions" style="display: flex; gap: 12px;">
+        <button type="button" id="krRejectBtn" onclick="krRejectRide()" style="flex: 1; background: #ffffff; color: #d32f2f; border: 2px solid #ef9a9a; padding: 13px; font-size: 14px; font-weight: 800; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;">
+          ❌ Reject (अस्वीकार)
+        </button>
+        <button type="button" id="krAcceptBtn" onclick="krAcceptRide()" style="flex: 2; background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; border: none; padding: 13px; font-size: 15px; font-weight: 800; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 16px rgba(46,125,50,0.35); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span>✅ Accept Ride (स्वीकार करें)</span>
+        </button>
+      </div>
+
+      <!-- State 2: Active In-Progress Ride Controller (After Acceptance) -->
+      <div id="krRideActiveControls" style="display: none;">
+        <!-- Security OTP Pin Box -->
+        <div style="background: #fff8e1; border: 1.5px dashed #ffa000; border-radius: 16px; padding: 14px 18px; margin-bottom: 16px; text-align: center;">
+          <span style="font-size: 11.5px; color: #f57f17; font-weight: 800; text-transform: uppercase;">किसान सत्यापन सुरक्षा कोड (Farmer Pickup OTP)</span>
+          <div id="krTripOtp" style="font-size: 32px; font-weight: 900; letter-spacing: 6px; color: #e65100; margin: 4px 0; font-family: monospace;">4821</div>
+          <span style="font-size: 11.5px; color: #6d4c41;">माल लोड करने से पहले किसान को यह 4-डिजिट कोड दिखाएं</span>
+        </div>
+
+        <!-- Live Ride Status Banner -->
+        <div id="krActiveRideStatusText" style="background: #e8f5e9; color: #1b5e20; font-weight: 800; font-size: 14px; padding: 10px 16px; border-radius: 12px; text-align: center; margin-bottom: 16px; border: 1px solid #81c784;">
+          🚗 ट्रिप सक्रिय: किसान के खेत की ओर रवाना (En Route to Farm)
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button type="button" id="krStartTripBtn" onclick="krStartTrip()" style="width: 100%; background: linear-gradient(135deg, #0288d1, #01579b); color: #ffffff; border: none; padding: 13px; font-size: 15px; font-weight: 800; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(2,136,209,0.3);">
+            🚀 Start Ride / Mandi Navigation (मंडी के लिए यात्रा शुरू करें)
+          </button>
+          
+          <button type="button" id="krCompleteTripBtn" onclick="krCompleteTrip()" style="display: none; width: 100%; background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; border: none; padding: 13px; font-size: 15px; font-weight: 800; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(46,125,50,0.3);">
+            ✅ Complete Trip & Collect Fare (ट्रिप समाप्त करें)
+          </button>
+
+          <button type="button" id="krCancelRideBtn" onclick="krCancelActiveRide()" style="width: 100%; background: #ffebee; color: #c62828; border: 1.5px solid #ef9a9a; padding: 11px; font-size: 13.5px; font-weight: 700; border-radius: 12px; cursor: pointer;">
+            ❌ Cancel Ride (राइड रद्द करें)
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Floating Toast Notification -->
+<div id="krToast" style="display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10000000; background: #1b5e20; color: #ffffff; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.35); align-items: center; gap: 8px;"></div>
+
+<!-- Styles for Ride Management -->
+<style>
+.kr-trip-open-btn {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1.5px solid #81c784;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(46,125,50,0.15);
+}
+.kr-trip-open-btn:hover {
+  background: #1b5e20 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27,94,32,0.35) !important;
+}
+.kr-trip-accepted-btn {
+  background: linear-gradient(135deg, #0288d1, #01579b);
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(2,136,209,0.3);
+  animation: krPulseSoft 2s infinite;
+}
+.kr-live-dot {
+  width: 8px;
+  height: 8px;
+  background: #2e7d32;
+  border-radius: 50%;
+  display: inline-block;
+  animation: krPulseSoft 1.5s infinite;
+}
+.kr-trip-open-btn:hover .kr-live-dot {
+  background: #ffffff;
+}
+@keyframes krPulseSoft {
+  0% { transform: scale(0.95); opacity: 0.85; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.85; }
+}
+@keyframes krBeaconPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+@keyframes krBellShake {
+  0% { transform: rotate(-10deg); }
+  100% { transform: rotate(10deg); }
+}
+</style>
+
+<!-- Ride Acceptance & Controller Script -->
+<script>
+var KR_TRIPS_DATA = {
+  'TRIP-101': {
+    id: 'TRIP-101',
+    pickup: 'Dankaur Farm Cluster',
+    landmark: 'गेट नं. 2, सहकारी समिति के पास, दनकौर',
+    drop: 'Dadri Mandi (दादरी अनाज मंडी)',
+    distance: '14 km • अनुमानित समय: 25 मिनट',
+    crop: 'Wheat / गेहूं (Sharbati A+)',
+    weight: '35 क्विंटल (3,500 kg) • 70 बोरियां',
+    fare: '₹ 1,450',
+    farmer: 'रामेश्वर शर्मा (Rameshwar Sharma)',
+    phone: '+91 98765 43210',
+    otp: '4821',
+    status: 'open'
+  },
+  'TRIP-102': {
+    id: 'TRIP-102',
+    pickup: 'Jarcha Village Gate',
+    landmark: 'जारचा मुख्य गेट, बस स्टैंड के पास',
+    drop: 'Surajpur Mandi (सूरजपुर मंडी)',
+    distance: '22 km • अनुमानित समय: 35 मिनट',
+    crop: 'Mustard / सरसों (Pusa Bold)',
+    weight: '20 क्विंटल (2,000 kg) • 40 बोरियां',
+    fare: '₹ 1,100',
+    farmer: 'हरीश चंद (Harish Chand)',
+    phone: '+91 98123 45678',
+    otp: '7193',
+    status: 'open'
+  }
+};
+
+var currentActiveTripId = null;
+var krTimerInterval = null;
+var krRemainingSeconds = 60;
+
+function krOpenRideModal(tripId) {
+  var trip = KR_TRIPS_DATA[tripId];
+  if (!trip) return;
+  currentActiveTripId = tripId;
+
+  // Populate Details
+  document.getElementById('krTripFare').innerText = trip.fare;
+  document.getElementById('krTripPickup').innerText = trip.pickup;
+  document.getElementById('krTripLandmark').innerText = trip.landmark;
+  document.getElementById('krTripFarmer').innerText = trip.farmer;
+  document.getElementById('krTripPhone').innerText = trip.phone;
+  document.getElementById('krTripPhoneLink').href = 'tel:' + trip.phone;
+  document.getElementById('krTripDrop').innerText = trip.drop;
+  document.getElementById('krTripDistance').innerText = 'दूरी: ' + trip.distance;
+  document.getElementById('krTripCrop').innerText = trip.crop;
+  document.getElementById('krTripWeight').innerText = trip.weight;
+  document.getElementById('krTripOtp').innerText = trip.otp;
+
+  var overlay = document.getElementById('krRideModalOverlay');
+  overlay.style.display = 'flex';
+
+  if (trip.status === 'open') {
+    // Show Pre-accept state with 60s timer
+    document.getElementById('krTimerBox').style.display = 'flex';
+    document.getElementById('krTimerBarWrap').style.display = 'block';
+    document.getElementById('krRidePreAcceptActions').style.display = 'flex';
+    document.getElementById('krRideActiveControls').style.display = 'none';
+    krStartCountdown();
+  } else if (trip.status === 'accepted' || trip.status === 'started') {
+    // Active ride state
+    document.getElementById('krTimerBox').style.display = 'none';
+    document.getElementById('krTimerBarWrap').style.display = 'none';
+    document.getElementById('krRidePreAcceptActions').style.display = 'none';
+    document.getElementById('krRideActiveControls').style.display = 'block';
+    if (trip.status === 'started') {
+      document.getElementById('krStartTripBtn').style.display = 'none';
+      document.getElementById('krCompleteTripBtn').style.display = 'block';
+      document.getElementById('krActiveRideStatusText').innerText = '🛣️ मंडी की ओर यात्रा प्रगति पर है (Transit to Mandi)';
+      document.getElementById('krActiveRideStatusText').style.background = '#e3f2fd';
+      document.getElementById('krActiveRideStatusText').style.color = '#0d47a1';
+    } else {
+      document.getElementById('krStartTripBtn').style.display = 'block';
+      document.getElementById('krCompleteTripBtn').style.display = 'none';
+      document.getElementById('krActiveRideStatusText').innerText = '🚗 राइड स्वीकृत: किसान के खेत की ओर रवाना (En Route to Farm)';
+      document.getElementById('krActiveRideStatusText').style.background = '#e8f5e9';
+      document.getElementById('krActiveRideStatusText').style.color = '#1b5e20';
+    }
+  }
+}
+
+function krStartCountdown() {
+  if (krTimerInterval) clearInterval(krTimerInterval);
+  krRemainingSeconds = 60;
+  updateTimerUI();
+
+  krTimerInterval = setInterval(function() {
+    krRemainingSeconds--;
+    updateTimerUI();
+    if (krRemainingSeconds <= 0) {
+      clearInterval(krTimerInterval);
+      krCloseRideModal();
+      showKrToast('⏱️ 60 सेकंड समाप्त! राइड अनुरोध स्वतः रद्द हो गया (Request Timed Out)', 'warning');
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  var textEl = document.getElementById('krTimerText');
+  var barEl = document.getElementById('krTimerBar');
+  if (textEl) textEl.innerText = krRemainingSeconds + 's';
+  if (barEl) {
+    barEl.style.width = (krRemainingSeconds / 60 * 100) + '%';
+    if (krRemainingSeconds <= 15) {
+      barEl.style.backgroundColor = '#ef5350';
+      if (textEl) textEl.style.color = '#ff5252';
+    } else {
+      barEl.style.backgroundColor = '#ffeb3b';
+      if (textEl) textEl.style.color = '#ffeb3b';
+    }
+  }
+}
+
+function krAcceptRide() {
+  if (krTimerInterval) clearInterval(krTimerInterval);
+  var trip = KR_TRIPS_DATA[currentActiveTripId];
+  if (!trip) return;
+  trip.status = 'accepted';
+
+  // Switch modal view to Active Controls
+  document.getElementById('krTimerBox').style.display = 'none';
+  document.getElementById('krTimerBarWrap').style.display = 'none';
+  document.getElementById('krRidePreAcceptActions').style.display = 'none';
+  document.getElementById('krRideActiveControls').style.display = 'block';
+
+  document.getElementById('krStartTripBtn').style.display = 'block';
+  document.getElementById('krCompleteTripBtn').style.display = 'none';
+  document.getElementById('krActiveRideStatusText').innerText = '🚗 राइड स्वीकृत! किसान के खेत की ओर रवाना (En Route to Farm)';
+  document.getElementById('krActiveRideStatusText').style.background = '#e8f5e9';
+  document.getElementById('krActiveRideStatusText').style.color = '#1b5e20';
+
+  // Update Table cell
+  var cell = document.getElementById('statusCell-' + currentActiveTripId);
+  if (cell) {
+    cell.innerHTML = '<button type="button" class="kr-trip-accepted-btn" onclick="krOpenRideModal(\'' + currentActiveTripId + '\')"><span>🚗 Active (सक्रिय)</span></button>';
+  }
+
+  showKrToast('🎉 राइड स्वीकार कर ली गई! OTP किसान को दिखाकर ट्रिप शुरू करें।', 'success');
+}
+
+function krStartTrip() {
+  var trip = KR_TRIPS_DATA[currentActiveTripId];
+  if (!trip) return;
+  trip.status = 'started';
+
+  document.getElementById('krStartTripBtn').style.display = 'none';
+  document.getElementById('krCompleteTripBtn').style.display = 'block';
+  document.getElementById('krActiveRideStatusText').innerText = '🛣️ मंडी की ओर यात्रा शुरू हो चुकी है (Transit in Progress to Mandi)';
+  document.getElementById('krActiveRideStatusText').style.background = '#e3f2fd';
+  document.getElementById('krActiveRideStatusText').style.color = '#0d47a1';
+
+  showKrToast('🚀 यात्रा शुरू हुई! सुरक्षित रूप से मंडी पहुंचे।', 'info');
+}
+
+function krCompleteTrip() {
+  var trip = KR_TRIPS_DATA[currentActiveTripId];
+  if (!trip) return;
+  trip.status = 'completed';
+
+  var cell = document.getElementById('statusCell-' + currentActiveTripId);
+  if (cell) {
+    cell.innerHTML = '<span style="background: #e8f5e9; color: #1b5e20; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">✅ ' + trip.fare + ' प्राप्त</span>';
+  }
+
+  krCloseRideModal();
+  showKrToast('🎉 बधाई! ट्रिप सफलतापूर्वक पूरी हुई और ' + trip.fare + ' भाड़ा प्राप्त हुआ!', 'success');
+}
+
+function krRejectRide() {
+  if (krTimerInterval) clearInterval(krTimerInterval);
+  krCloseRideModal();
+  showKrToast('❌ राइड अनुरोध अस्वीकार किया गया (Ride Declined)', 'info');
+}
+
+function krCancelActiveRide() {
+  if (!confirm('क्या आप वाकई इस राइड को रद्द करना चाहते हैं? (Are you sure you want to cancel?)')) return;
+  if (krTimerInterval) clearInterval(krTimerInterval);
+  var trip = KR_TRIPS_DATA[currentActiveTripId];
+  if (trip) {
+    trip.status = 'open';
+  }
+
+  var cell = document.getElementById('statusCell-' + currentActiveTripId);
+  if (cell) {
+    cell.innerHTML = '<button type="button" class="kr-trip-open-btn" id="btn-' + currentActiveTripId + '" onclick="krOpenRideModal(\'' + currentActiveTripId + '\')"><span class="kr-live-dot"></span><span>Open</span></button>';
+  }
+
+  krCloseRideModal();
+  showKrToast('⚠️ राइड रद्द कर दी गई (Ride Cancelled)', 'warning');
+}
+
+function krCloseRideModal() {
+  if (krTimerInterval) clearInterval(krTimerInterval);
+  var overlay = document.getElementById('krRideModalOverlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function showKrToast(msg, type) {
+  var t = document.getElementById('krToast');
+  if (!t) return;
+  t.innerText = msg;
+  t.style.display = 'inline-flex';
+  t.style.background = (type === 'success') ? '#1b5e20' : (type === 'warning' ? '#e65100' : (type === 'info' ? '#01579b' : '#263238'));
+  setTimeout(function() {
+    t.style.display = 'none';
+  }, 4000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var overlay = document.getElementById('krRideModalOverlay');
+  if (overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        krCloseRideModal();
+      }
+    });
+  }
+});
 </script>
 {% endblock %}

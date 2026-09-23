@@ -1,611 +1,697 @@
-<!-- ================= KISAN & BULL FIELD RUNNING ANIMATION LOADER ================= -->
-<div id="krTransitionOverlay" class="kr-transition-overlay" style="display: none;" aria-hidden="true">
-  <div class="kr-transition-box">
-    
-    <!-- SVG Scene: Farmer & Bull Running in Lush Field -->
-    <div class="kr-scene-wrapper">
-      <svg class="kr-field-svg" viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- Sky Gradient -->
-          <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#fff9c4" />
-            <stop offset="40%" stop-color="#fffde7" />
-            <stop offset="100%" stop-color="#e8f5e9" />
-          </linearGradient>
-
-          <!-- Field Gradient -->
-          <linearGradient id="fieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#43a047" />
-            <stop offset="50%" stop-color="#2e7d32" />
-            <stop offset="100%" stop-color="#1b5e20" />
-          </linearGradient>
-
-          <!-- Sun Glow Gradient -->
-          <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#ffb300" stop-opacity="0.9" />
-            <stop offset="60%" stop-color="#fdd835" stop-opacity="0.4" />
-            <stop offset="100%" stop-color="#fff59d" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-
-        <!-- Sky Background -->
-        <rect x="0" y="0" width="520" height="280" rx="20" fill="url(#skyGrad)" />
-
-        <!-- Morning Sun with Rays -->
-        <circle cx="430" cy="70" r="45" fill="url(#sunGlow)" />
-        <circle cx="430" cy="70" r="24" fill="#ffb300" />
-
-        <!-- Drifting Clouds -->
-        <g class="kr-clouds">
-          <!-- Cloud 1 -->
-          <path d="M 60 55 q 15 -18 35 -10 q 15 -15 35 0 q 20 5 15 22 q 10 15 -5 22 q -15 8 -35 4 q -20 12 -35 -4 q -15 -8 -10 -22 z" fill="#ffffff" opacity="0.85" />
-          <!-- Cloud 2 -->
-          <path d="M 270 40 q 12 -14 28 -8 q 12 -12 28 0 q 16 4 12 18 q 8 12 -4 18 q -12 6 -28 3 q -16 10 -28 -3 q -12 -6 -8 -18 z" fill="#ffffff" opacity="0.75" />
-        </g>
-
-        <!-- Distant Green Hills -->
-        <path d="M 0 165 Q 120 135 240 160 T 480 150 Q 510 155 520 160 L 520 280 L 0 280 Z" fill="#81c784" opacity="0.6" />
-        <path d="M 0 180 Q 140 155 280 178 T 520 170 L 520 280 L 0 280 Z" fill="#66bb6a" opacity="0.7" />
-
-        <!-- Lush Ground / Soil -->
-        <rect x="0" y="195" width="520" height="85" fill="url(#fieldGrad)" />
-
-        <!-- Moving Furrows / Soil Lines (Fast scrolling ground effect) -->
-        <g class="kr-ground-tracks">
-          <line x1="-100" y1="215" x2="620" y2="215" stroke="#1b5e20" stroke-width="2" stroke-dasharray="14 10" />
-          <line x1="-100" y1="230" x2="620" y2="230" stroke="#33691e" stroke-width="2.5" stroke-dasharray="20 12" />
-          <line x1="-100" y1="250" x2="620" y2="250" stroke="#1b5e20" stroke-width="3" stroke-dasharray="24 14" />
-        </g>
-
-        <!-- Swaying Wheat Crops Along Field Edge -->
-        <g class="kr-wheat-strip">
-          <path d="M 20 195 Q 25 175 18 160 M 20 195 Q 28 178 32 165 M 40 195 Q 45 172 40 158 M 70 195 Q 78 170 72 155 M 480 195 Q 485 175 478 160 M 500 195 Q 508 172 502 158" stroke="#fbc02d" stroke-width="2" fill="none" stroke-linecap="round" />
-        </g>
-
-        <!-- Puffed Dust Behind Running Hooves -->
-        <g class="kr-dust-group">
-          <circle cx="215" cy="225" r="7" fill="#c8e6c9" opacity="0.8" class="kr-dust kr-dust-1" />
-          <circle cx="205" cy="228" r="5" fill="#e8f5e9" opacity="0.9" class="kr-dust kr-dust-2" />
-          <circle cx="150" cy="226" r="6" fill="#c8e6c9" opacity="0.7" class="kr-dust kr-dust-3" />
-          <circle cx="138" cy="230" r="4.5" fill="#e8f5e9" opacity="0.8" class="kr-dust kr-dust-4" />
-        </g>
-
-        <!-- ================= RUNNING BULL (बैल) ================= -->
-        <g class="kr-bull-runner">
-          <!-- Bull Body Shadow -->
-          <ellipse cx="300" cy="228" rx="65" ry="10" fill="rgba(0,0,0,0.18)" />
-
-          <!-- Traditional Plow / Hal Connected to Bull -->
-          <path d="M 205 185 L 180 220 L 160 226 L 195 220 Z" fill="#5d4037" />
-          <line x1="205" y1="185" x2="260" y2="175" stroke="#8d6e63" stroke-width="2.5" />
-
-          <!-- Back Left Leg -->
-          <g class="kr-leg kr-leg-bl">
-            <path d="M 252 178 L 244 204 L 238 226" stroke="#d7ccc8" stroke-width="7" stroke-linecap="round" fill="none" />
-            <ellipse cx="237" cy="226" rx="4" ry="2.5" fill="#212121" />
-          </g>
-
-          <!-- Back Right Leg -->
-          <g class="kr-leg kr-leg-br">
-            <path d="M 264 178 L 270 202 L 278 225" stroke="#f5f5f5" stroke-width="7.5" stroke-linecap="round" fill="none" />
-            <ellipse cx="279" cy="225" rx="4" ry="2.5" fill="#212121" />
-          </g>
-
-          <!-- Bull Muscular Torso & Flank -->
-          <ellipse cx="305" cy="172" rx="46" ry="26" fill="#f5f5f5" />
-          <ellipse cx="280" cy="174" rx="28" ry="22" fill="#eeeeee" />
-
-          <!-- Zebu Hump (भारतीय बैल का विशिष्ट कूबड़) -->
-          <ellipse cx="332" cy="144" rx="14" ry="16" fill="#e0e0e0" />
-
-          <!-- Tail (Flicking) -->
-          <g class="kr-bull-tail">
-            <path d="M 260 166 Q 242 172 238 190 Q 235 204 233 212" stroke="#eeeeee" stroke-width="3" fill="none" stroke-linecap="round" />
-            <ellipse cx="233" cy="214" rx="3.5" ry="6" fill="#212121" />
-          </g>
-
-          <!-- Front Left Leg -->
-          <g class="kr-leg kr-leg-fl">
-            <path d="M 330 180 L 322 205 L 314 225" stroke="#d7ccc8" stroke-width="7" stroke-linecap="round" fill="none" />
-            <ellipse cx="313" cy="225" rx="4" ry="2.5" fill="#212121" />
-          </g>
-
-          <!-- Front Right Leg -->
-          <g class="kr-leg kr-leg-fr">
-            <path d="M 344 180 L 356 202 L 368 224" stroke="#f5f5f5" stroke-width="7.5" stroke-linecap="round" fill="none" />
-            <ellipse cx="369" cy="224" rx="4" ry="2.5" fill="#212121" />
-          </g>
-
-          <!-- Bull Neck & Head Group -->
-          <g class="kr-bull-head">
-            <path d="M 334 165 Q 352 150 365 152 Q 380 156 388 168 Q 375 182 350 180 Z" fill="#f5f5f5" />
-            <!-- Muzzle & Snout -->
-            <ellipse cx="388" cy="170" rx="9" ry="7" fill="#b0bec5" />
-            <circle cx="389" cy="170" r="1.8" fill="#263238" />
-            <!-- Eye -->
-            <circle cx="372" cy="160" r="2.5" fill="#212121" />
-            <circle cx="372.5" cy="159.5" r="0.8" fill="#ffffff" />
-            <!-- Ears -->
-            <path d="M 358 152 Q 350 142 344 148 Q 350 156 358 155 Z" fill="#cfd8dc" />
-            <!-- Indian Curved Horns (तीखे घुमावदार सींग) -->
-            <path d="M 364 150 Q 370 128 360 118 Q 354 125 360 148 Z" fill="#37474f" />
-            <path d="M 368 151 Q 380 130 374 120 Q 368 126 364 149 Z" fill="#263238" />
-            <!-- Red Bell Collar / Garland on Bull Neck -->
-            <path d="M 345 160 Q 355 178 368 174" stroke="#d32f2f" stroke-width="4" fill="none" />
-            <circle cx="358" cy="174" r="3.5" fill="#fbc02d" />
-          </g>
-        </g>
-
-        <!-- ================= RUNNING FARMER (किसान) ================= -->
-        <g class="kr-farmer-runner">
-          <!-- Farmer Shadow -->
-          <ellipse cx="175" cy="228" rx="22" ry="6" fill="rgba(0,0,0,0.18)" />
-
-          <!-- Reins (रास / रस्सी) from Farmer Hands to Bull Snout -->
-          <path d="M 198 162 Q 275 142 380 168" stroke="#5d4037" stroke-width="1.8" stroke-dasharray="3 1" fill="none" />
-
-          <!-- Farmer Back Leg (Running) -->
-          <g class="kr-farmer-leg-back">
-            <path d="M 166 182 L 150 204 L 138 218" stroke="#ffffff" stroke-width="6" stroke-linecap="round" fill="none" />
-            <ellipse cx="137" cy="218" rx="4" ry="2.5" fill="#4e342e" />
-          </g>
-
-          <!-- Farmer Front Leg (Running) -->
-          <g class="kr-farmer-leg-front">
-            <path d="M 174 182 L 184 204 L 196 220" stroke="#f5f5f5" stroke-width="6" stroke-linecap="round" fill="none" />
-            <ellipse cx="197" cy="220" rx="4" ry="2.5" fill="#4e342e" />
-          </g>
-
-          <!-- Farmer Torso (White Kurta) -->
-          <path d="M 162 148 L 180 148 L 176 184 L 162 184 Z" fill="#ffffff" />
-          <!-- Kurta Collar -->
-          <line x1="171" y1="148" x2="171" y2="162" stroke="#e0e0e0" stroke-width="1.5" />
-
-          <!-- Farmer Arms Holding Reins -->
-          <path d="M 168 152 L 188 160 L 200 162" stroke="#ffb74d" stroke-width="5" stroke-linecap="round" fill="none" />
-
-          <!-- Farmer Head & Face -->
-          <circle cx="172" cy="136" r="9" fill="#ffb74d" />
-          <!-- Saffron Indian Pagdi (केसरिया पगड़ी) -->
-          <path d="M 162 134 Q 172 120 185 128 Q 188 136 182 140 Q 170 142 162 134 Z" fill="#f57c00" />
-          <path d="M 165 128 Q 175 116 182 122" stroke="#e65100" stroke-width="2.5" fill="none" />
-          <!-- Pagdi Shamla (छोर) -->
-          <path d="M 162 132 L 154 144 L 158 146 Z" fill="#ef6c00" />
-          <!-- Farmer Smile / Moustache -->
-          <path d="M 174 138 Q 178 141 180 138" stroke="#3e2723" stroke-width="1.5" fill="none" />
-        </g>
-      </svg>
-    </div>
-
-    <!-- Status & Dynamic Progress -->
-    <div class="kr-loader-text-wrap">
-      <div class="kr-loader-badge">
-        <span class="kr-loader-pulse-dot"></span>
-        <span>KISAN ROUTE FAST TRANSITION</span>
-      </div>
-      <h3 class="kr-loader-title" id="krLoaderMsg">🌾 खेत से सीधे मंडी की ओर...</h3>
-      <p class="kr-loader-subtitle" id="krLoaderSub">डैशबोर्ड से जुड़ रहे हैं, कृपया प्रतीक्षा करें</p>
-    </div>
-
-    <!-- Progress Bar with Shimmer -->
-    <div class="kr-progress-track">
-      <div class="kr-progress-fill" id="krProgressFill"></div>
-    </div>
+<!-- ================= CINEMATIC GREEN FULL-SCREEN PAGE TRANSITION OVERLAY ================= -->
+<div id="krTransitionOverlay" class="kr-cinematic-overlay" aria-hidden="true" style="display: none;">
+  
+  <!-- Subtle Glowing Ambient Floating Particles (Gold & Wheat Spikes) -->
+  <div class="kr-ambient-particles">
+    <span class="kr-p kr-p1">✨</span>
+    <span class="kr-p kr-p2">🌾</span>
+    <span class="kr-p kr-p3">✨</span>
+    <span class="kr-p kr-p4">🌾</span>
+    <span class="kr-p kr-p5">✨</span>
+    <span class="kr-p kr-p6">🌾</span>
+    <span class="kr-p kr-p7">✨</span>
+    <span class="kr-p kr-p8">🌾</span>
   </div>
+
+  <!-- Top Navigation Control Bar (Brand Logo + Quick Skip Button) -->
+  <div class="kr-overlay-topbar">
+    <div class="kr-overlay-brand">
+      <span class="kr-overlay-emblem">🌾</span>
+      <div style="display: flex; flex-direction: column; line-height: 1.1;">
+        <span class="kr-overlay-brand-name">KisanRoute</span>
+        <span class="kr-overlay-sub">MISSION 2026</span>
+      </div>
+      <span class="kr-overlay-pill">TRANSITION</span>
+    </div>
+
+    <!-- Quick Skip Button for Instant Navigation -->
+    <button type="button" class="kr-skip-transition-btn" id="krSkipTransitionBtn" aria-label="Skip transition" title="Skip animation (सीधे जाएं)">
+      <span>Skip (छोड़ें)</span>
+      <span class="kr-skip-arrow">›</span>
+    </button>
+  </div>
+
+  <!-- Central Split-Screen Presentation Container -->
+  <div class="kr-split-container">
+    
+    <!-- ================= LEFT SIDE: Kinetic Typography ================= -->
+    <div class="kr-split-left">
+      
+      <!-- Destination Mission Pill Badge -->
+      <div class="kr-kinetic-badge">
+        <span class="kr-pulse-indicator"></span>
+        <span class="kr-dest-label" id="krTransitionDestLabel">खेत से सीधे मंडी की ओर...</span>
+      </div>
+
+      <!-- Kinetic Tagline (Staggered Word-by-Word Sequential Reveal) -->
+      <div class="kr-kinetic-tagline">
+        <span class="kr-word w-ab">Ab</span>
+        <span class="kr-word w-har">Har</span>
+        <span class="kr-word w-kisan">Kisan</span>
+        <span class="kr-word w-haq">Apne Haq Ka</span>
+        <span class="kr-word w-khayega">Khayega!</span>
+      </div>
+
+      <!-- Hindi Vernacular High-Recall Subtitle -->
+      <div class="kr-kinetic-hindi">
+        <span class="kr-h-icon">🌾</span>
+        <span>अब हर किसान अपने हक का खाएगा</span>
+        <span class="kr-h-icon">🌾</span>
+      </div>
+
+      <!-- Three Core Value Proposition Chips -->
+      <div class="kr-kinetic-chips">
+        <span class="kr-k-chip">🛡️ 0% बिचौलिया</span>
+        <span class="kr-k-chip gold">💰 100% सही दाम</span>
+        <span class="kr-k-chip">⚡ सीधा बैंक खाता</span>
+      </div>
+
+      <!-- Progress Loading Indicator Line -->
+      <div class="kr-kinetic-progress-wrap">
+        <div class="kr-kinetic-progress-bar" id="krTransitionProgressBar"></div>
+      </div>
+      <div class="kr-kinetic-status-text" id="krTransitionStatusText">
+        सुरक्षित डिजिटल कृषि नेटवर्क से जुड़ रहे हैं...
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT SIDE: Empowered Farmer Artwork ================= -->
+    <div class="kr-split-right">
+      <div class="kr-artwork-frame">
+        <img 
+          src="{{ url_for('static', filename='images/empowered_kisan_cash.jpg') }}" 
+          alt="Empowered Happy Indian Farmer with Cash Notes" 
+          class="kr-artwork-img"
+          id="krTransitionArtworkImg"
+        />
+        
+        <!-- Elegant Golden Caption Badge on Artwork -->
+        <div class="kr-artwork-caption">
+          <div class="kr-cap-icon">💰</div>
+          <div class="kr-cap-text">
+            <strong>सच्ची कमाई • पूरा सम्मान</strong>
+            <small>Fair Price & Instant Profit</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
+<!-- Floating Scroll to Top Button -->
+<button type="button" class="kr-scroll-to-top" id="krScrollToTopBtn" aria-label="Scroll to top" title="Scroll to top" style="display: none;">
+  <span>↑</span>
+</button>
+
+<!-- ================= CINEMATIC TRANSITION CSS STYLES ================= -->
 <style>
-/* ================= TRANSITION LOADER OVERLAY STYLES ================= */
-.kr-transition-overlay {
+/* Full-screen Overlay Container */
+.kr-cinematic-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(10, 25, 15, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 9999999;
+  z-index: 999999;
+  background: radial-gradient(circle at 60% 40%, #133821 0%, #071f12 70%, #030f08 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 32px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  opacity: 1;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.kr-cinematic-overlay.kr-fade-out {
+  opacity: 0 !important;
+  transform: scale(1.025) !important;
+  pointer-events: none !important;
+}
+
+/* Ambient Floating Particles */
+.kr-ambient-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+.kr-p {
+  position: absolute;
+  font-size: 18px;
+  opacity: 0.25;
+  animation: krParticleFloat 6s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.4));
+}
+.kr-p1 { top: 12%; left: 8%; animation-delay: 0s; font-size: 20px; }
+.kr-p2 { top: 75%; left: 14%; animation-delay: 1.2s; font-size: 24px; }
+.kr-p3 { top: 25%; left: 45%; animation-delay: 2.1s; font-size: 16px; }
+.kr-p4 { top: 82%; left: 52%; animation-delay: 0.7s; font-size: 22px; }
+.kr-p5 { top: 18%; right: 12%; animation-delay: 1.8s; font-size: 19px; }
+.kr-p6 { top: 68%; right: 8%; animation-delay: 2.5s; font-size: 25px; }
+.kr-p7 { top: 48%; left: 28%; animation-delay: 3.1s; font-size: 17px; }
+.kr-p8 { top: 38%; right: 35%; animation-delay: 1.5s; font-size: 21px; }
+
+@keyframes krParticleFloat {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0.2; }
+  50% { transform: translateY(-24px) scale(1.15) rotate(15deg); opacity: 0.55; }
+}
+
+/* Topbar in Overlay */
+.kr-overlay-topbar {
+  position: relative;
+  z-index: 10;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 16px;
-  box-sizing: border-box;
-  animation: krFadeIn 0.25s ease-out forwards;
+  justify-content: space-between;
+}
+.kr-overlay-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.kr-overlay-emblem {
+  font-size: 28px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+.kr-overlay-brand-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+.kr-overlay-sub {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #86efac;
+  letter-spacing: 1.2px;
+}
+.kr-overlay-pill {
+  background: rgba(250, 204, 21, 0.18);
+  border: 1px solid #facc15;
+  color: #fde047;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2.5px 9px;
+  border-radius: 9999px;
+  letter-spacing: 0.8px;
+  margin-left: 6px;
 }
 
-.kr-transition-box {
-  width: 100%;
-  max-width: 460px;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-  border: 2px solid #81c784;
-  text-align: center;
-  animation: krPopUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  overflow: hidden;
-}
-
-.kr-scene-wrapper {
-  width: 100%;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  border: 1px solid #c8e6c9;
-}
-
-.kr-field-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ================= 60FPS SVG KEYFRAME ANIMATIONS (MOBILE ACCELERATED) ================= */
-
-/* Optimization: Pause all 13 SVG animations when overlay is inactive to free mobile CPU/GPU */
-.kr-transition-overlay:not(.kr-active) *,
-.kr-transition-overlay:not(.kr-active) *::before,
-.kr-transition-overlay:not(.kr-active) *::after {
-  animation-play-state: paused !important;
-}
-
-/* Ground Scrolling Speed */
-.kr-ground-tracks line {
-  animation: krGroundScroll 0.35s linear infinite;
-}
-@keyframes krGroundScroll {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: -34; }
-}
-
-/* Drifting Clouds */
-.kr-clouds {
-  animation: krCloudDrift 4s linear infinite alternate;
-}
-@keyframes krCloudDrift {
-  from { transform: translateX(-15px); }
-  to { transform: translateX(15px); }
-}
-
-/* Swaying Wheat */
-.kr-wheat-strip {
-  transform-origin: bottom center;
-  animation: krWheatSway 0.4s ease-in-out infinite alternate;
-}
-@keyframes krWheatSway {
-  0% { transform: skewX(-4deg); }
-  100% { transform: skewX(6deg); }
-}
-
-/* Running Bull Gallop (Body Bobbing) */
-.kr-bull-runner {
-  animation: krBullBob 0.38s ease-in-out infinite alternate;
-  transform-origin: center bottom;
-}
-@keyframes krBullBob {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-7px) rotate(-1.5deg); }
-  100% { transform: translateY(2px) rotate(1.5deg); }
-}
-
-/* Bull Legs Galloping Cycle */
-.kr-leg-fl {
-  transform-origin: 330px 180px;
-  animation: krGallopFrontLeft 0.38s ease-in-out infinite alternate;
-}
-.kr-leg-fr {
-  transform-origin: 344px 180px;
-  animation: krGallopFrontRight 0.38s ease-in-out infinite alternate;
-}
-.kr-leg-bl {
-  transform-origin: 252px 178px;
-  animation: krGallopBackLeft 0.38s ease-in-out infinite alternate;
-}
-.kr-leg-br {
-  transform-origin: 264px 178px;
-  animation: krGallopBackRight 0.38s ease-in-out infinite alternate;
-}
-
-@keyframes krGallopFrontLeft {
-  0% { transform: rotate(26deg); }
-  100% { transform: rotate(-30deg); }
-}
-@keyframes krGallopFrontRight {
-  0% { transform: rotate(-28deg); }
-  100% { transform: rotate(26deg); }
-}
-@keyframes krGallopBackLeft {
-  0% { transform: rotate(-32deg); }
-  100% { transform: rotate(24deg); }
-}
-@keyframes krGallopBackRight {
-  0% { transform: rotate(22deg); }
-  100% { transform: rotate(-34deg); }
-}
-
-/* Tail Flick */
-.kr-bull-tail {
-  transform-origin: 260px 166px;
-  animation: krTailFlick 0.38s ease-in-out infinite alternate;
-}
-@keyframes krTailFlick {
-  0% { transform: rotate(-15deg); }
-  100% { transform: rotate(20deg); }
-}
-
-/* Farmer Running Legs & Body */
-.kr-farmer-runner {
-  animation: krFarmerBob 0.38s ease-in-out infinite alternate;
-  transform-origin: center bottom;
-}
-@keyframes krFarmerBob {
-  0% { transform: translateY(-5px); }
-  100% { transform: translateY(2px); }
-}
-
-.kr-farmer-leg-front {
-  transform-origin: 174px 182px;
-  animation: krFarmerFrontLeg 0.38s ease-in-out infinite alternate;
-}
-.kr-farmer-leg-back {
-  transform-origin: 166px 182px;
-  animation: krFarmerBackLeg 0.38s ease-in-out infinite alternate;
-}
-@keyframes krFarmerFrontLeg {
-  0% { transform: rotate(-25deg); }
-  100% { transform: rotate(30deg); }
-}
-@keyframes krFarmerBackLeg {
-  0% { transform: rotate(30deg); }
-  100% { transform: rotate(-25deg); }
-}
-
-/* Dust Puffs Behind Running Hooves */
-.kr-dust-1 { animation: krDustPuff 0.38s ease-out infinite; }
-.kr-dust-2 { animation: krDustPuff 0.38s ease-out infinite 0.12s; }
-.kr-dust-3 { animation: krDustPuff 0.38s ease-out infinite 0.22s; }
-.kr-dust-4 { animation: krDustPuff 0.38s ease-out infinite 0.30s; }
-@keyframes krDustPuff {
-  0% { transform: scale(0.3) translate(0, 0); opacity: 0.9; }
-  50% { opacity: 0.6; }
-  100% { transform: scale(2.2) translate(-20px, -8px); opacity: 0; }
-}
-
-/* ================= LOADER TEXT & PROGRESS BAR ================= */
-.kr-loader-text-wrap {
-  margin-top: 14px;
-}
-.kr-loader-badge {
+/* Skip Button */
+.kr-skip-transition-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #e8f5e9;
-  border: 1px solid #a5d6a7;
-  color: #1b5e20;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  outline: none;
 }
-.kr-loader-pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #2e7d32;
-  animation: krDotPulse 1.2s infinite;
+.kr-skip-transition-btn:hover {
+  background: rgba(250, 204, 21, 0.22);
+  border-color: #facc15;
+  color: #fde047;
+  transform: translateX(2px);
 }
-@keyframes krDotPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.4; }
+.kr-skip-arrow {
+  font-size: 16px;
+  line-height: 1;
 }
 
-.kr-loader-title {
-  margin: 8px 0 2px;
-  font-size: 16.5px;
-  font-weight: 800;
-  color: #1b5e20;
-}
-.kr-loader-subtitle {
-  margin: 0;
-  font-size: 12.5px;
-  color: #4a5e4d;
-}
-
-.kr-progress-track {
+/* Split-Screen Main Container */
+.kr-split-container {
+  position: relative;
+  z-index: 10;
   width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 48px;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+/* LEFT SIDE: Typography */
+.kr-split-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Destination Badge */
+.kr-kinetic-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1.5px solid #10b981;
+  border-radius: 9999px;
+  padding: 5px 16px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(6px);
+}
+.kr-pulse-indicator {
+  width: 8px;
   height: 8px;
-  background: #e8f5e9;
-  border-radius: 10px;
-  margin-top: 14px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  animation: krPulseIndicator 1.4s infinite;
+}
+@keyframes krPulseIndicator {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+.kr-dest-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #a7f3d0;
+  letter-spacing: 0.3px;
+}
+
+/* Kinetic Tagline Words */
+.kr-kinetic-tagline {
+  font-size: clamp(34px, 4.6vw, 62px);
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 4px;
+}
+
+.kr-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(22px) scale(0.9);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+}
+
+/* Staggered Timings as requested */
+.w-ab {
+  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+.w-har {
+  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+.w-kisan {
+  color: #fde047;
+  text-shadow: 0 0 28px rgba(250, 204, 21, 0.75), 0 2px 6px rgba(0,0,0,0.8);
+  animation: krWordRevealGold 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+.w-haq {
+  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
+}
+.w-khayega {
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-color: #facc15;
+  text-underline-offset: 6px;
+  animation: krWordRevealImpact 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+}
+
+@keyframes krWordReveal {
+  0% { opacity: 0; transform: translateY(22px) scale(0.9); filter: blur(4px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes krWordRevealGold {
+  0% { opacity: 0; transform: translateY(24px) scale(0.85); filter: blur(5px); }
+  60% { transform: translateY(-4px) scale(1.12); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes krWordRevealImpact {
+  0% { opacity: 0; transform: translateY(26px) scale(0.85); filter: blur(6px); }
+  60% { transform: translateY(-3px) scale(1.1); text-shadow: 0 0 35px #10b981; }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); text-shadow: 0 0 24px rgba(16, 185, 129, 0.6), 0 2px 6px rgba(0,0,0,0.8); }
+}
+
+/* Hindi Subtitle */
+.kr-kinetic-hindi {
+  font-size: clamp(17px, 2.2vw, 24px);
+  font-weight: 700;
+  color: #d1fae5;
+  letter-spacing: 0.5px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: krFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.7s forwards;
+}
+.kr-h-icon {
+  font-size: 20px;
+}
+
+/* Three Core Value Proposition Chips */
+.kr-kinetic-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: krFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.9s forwards;
+}
+.kr-k-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #a7f3d0;
+  backdrop-filter: blur(6px);
+}
+.kr-k-chip.gold {
+  color: #fde047;
+  border-color: rgba(250, 204, 21, 0.35);
+  background: rgba(250, 204, 21, 0.12);
+}
+
+/* Progress Bar */
+.kr-kinetic-progress-wrap {
+  width: 100%;
+  max-width: 440px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
   overflow: hidden;
-  border: 1px solid #c8e6c9;
+  margin-bottom: 10px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+}
+.kr-kinetic-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #facc15 100%);
+  border-radius: 9999px;
+  box-shadow: 0 0 12px #facc15;
+  animation: krProgressFill 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+@keyframes krProgressFill {
+  0% { width: 0%; }
+  40% { width: 45%; }
+  75% { width: 85%; }
+  100% { width: 100%; }
+}
+
+.kr-kinetic-status-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #86efac;
+  letter-spacing: 0.2px;
+  opacity: 0.85;
+}
+
+@keyframes krFadeUp {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= RIGHT SIDE: Visual Art / Graphic ================= */
+.kr-split-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
+.kr-artwork-frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 2.5px solid rgba(250, 204, 21, 0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 35px rgba(16, 185, 129, 0.28);
+  background: #064e3b;
+}
 
-.kr-progress-fill {
+/* Ken Burns Slow Zoom-In Effect */
+.kr-artwork-img {
+  width: 100%;
   height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #43a047, #2e7d32, #ffb300);
-  border-radius: 10px;
-  transition: width 0.15s linear;
-  box-shadow: 0 0 10px rgba(46, 125, 50, 0.6);
+  object-fit: cover;
+  display: block;
+  transform: scale(1);
+  animation: krKenBurns 4.5s ease-out forwards;
+  will-change: transform;
+}
+@keyframes krKenBurns {
+  0% { transform: scale(1) translate3d(0, 0, 0); }
+  100% { transform: scale(1.12) translate3d(0, -6px, 0); }
 }
 
-@keyframes krPopUp {
-  0% { transform: scale(0.85); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+/* Caption on Artwork */
+.kr-artwork-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: rgba(6, 78, 59, 0.88);
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  border-radius: 14px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
-@keyframes krFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.kr-cap-icon {
+  font-size: 26px;
+  flex-shrink: 0;
 }
-</style>
+.kr-cap-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.kr-cap-text strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fde047;
+}
+.kr-cap-text small {
+  font-size: 11.5px;
+  color: #ecfdf5;
+  font-weight: 600;
+}
 
-<!-- Floating Scroll to Top Helper Button -->
-<button id="krScrollToTopBtn" type="button" aria-label="Scroll to top" style="
-  display: none;
+/* ================= MOBILE RESPONSIVE STACKED LAYOUT ================= */
+@media (max-width: 860px) {
+  .kr-cinematic-overlay {
+    padding: 18px 20px;
+    overflow-y: auto;
+  }
+  .kr-split-container {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin: auto 0;
+  }
+  .kr-split-right {
+    order: 1;
+    margin-bottom: 0;
+  }
+  .kr-artwork-frame {
+    max-width: 250px;
+    aspect-ratio: 1.1 / 1;
+    border-radius: 18px;
+  }
+  .kr-split-left {
+    order: 2;
+    align-items: center;
+    text-align: center;
+  }
+  .kr-kinetic-tagline {
+    justify-content: center;
+    font-size: clamp(28px, 6vw, 38px);
+    column-gap: 8px;
+    margin-bottom: 8px;
+  }
+  .kr-kinetic-badge {
+    margin-bottom: 12px;
+  }
+  .kr-kinetic-hindi {
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .kr-kinetic-chips {
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .kr-k-chip {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+  .kr-kinetic-progress-wrap {
+    max-width: 320px;
+  }
+}
+
+/* Scroll To Top Button */
+.kr-scroll-to-top {
   position: fixed;
   bottom: 24px;
-  left: 24px;
+  right: 24px;
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #ffffff;
-  color: #1b5e20;
-  border: 1.5px solid #a5d6a7;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-  cursor: pointer;
-  z-index: 9999;
-  font-size: 18px;
+  background: #1b5e20;
+  color: #ffffff;
+  border: 2px solid #81c784;
+  font-size: 20px;
+  font-weight: 900;
+  display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  transition: all 0.25s ease;
   outline: none;
-" onmouseover="this.style.transform='translateY(-3px)'; this.style.background='#e8f5e9'" onmouseout="this.style.transform='none'; this.style.background='#ffffff'">
-  ↑
-</button>
+}
+.kr-scroll-to-top:hover {
+  background: #2e7d32;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+</style>
 
+<!-- ================= CINEMATIC TRANSITION CONTROLLER SCRIPT ================= -->
 <script>
-// ================= GLOBAL KISAN TRANSITION & POLISH CONTROLLER =================
 (function() {
-  var overlay = null;
-  var fillBar = null;
-  var titleEl = null;
-  var subEl = null;
+  var transitionTimer = null;
+  var isTransitionActive = false;
+  var targetDestination = null;
 
-  function initElements() {
-    overlay = document.getElementById('krTransitionOverlay');
-    fillBar = document.getElementById('krProgressFill');
-    titleEl = document.getElementById('krLoaderMsg');
-    subEl = document.getElementById('krLoaderSub');
-  }
+  // Global Trigger Function
+  window.triggerKisanTransition = function(opts) {
+    if (isTransitionActive) return;
+    
+    opts = opts || {};
+    var url = opts.url || '/';
+    var title = opts.title || 'खेत से सीधे मंडी की ओर...';
+    var duration = opts.duration || 2600; // 2.6 seconds full experience
 
-  window.triggerKisanTransition = function(options) {
-    initElements();
-    if (!overlay) return;
+    var overlay = document.getElementById('krTransitionOverlay');
+    var destLabel = document.getElementById('krTransitionDestLabel');
+    var progressBar = document.getElementById('krTransitionProgressBar');
+    var artworkImg = document.getElementById('krTransitionArtworkImg');
 
-    options = options || {};
-    var title = options.title || '🌾 खेत से सीधे मंडी की ओर...';
-    var subtitle = options.subtitle || 'डैशबोर्ड लोड हो रहा है, कृपया प्रतीक्षा करें';
-    var duration = options.duration || 900; // Snappy 900ms default
-    var onComplete = options.onComplete || null;
+    if (!overlay) {
+      window.location.href = url;
+      return;
+    }
 
-    if (titleEl) titleEl.textContent = title;
-    if (subEl) subEl.textContent = subtitle;
-    if (fillBar) fillBar.style.width = '0%';
+    isTransitionActive = true;
+    targetDestination = url;
 
-    overlay.classList.add('kr-active');
+    // Set dynamic destination
+    if (destLabel) destLabel.textContent = title;
+
+    // Reset animations
+    overlay.classList.remove('kr-fade-out');
     overlay.style.display = 'flex';
     overlay.setAttribute('aria-hidden', 'false');
 
-    var startTime = performance.now();
-
-    function step(now) {
-      var elapsed = now - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      
-      // Easing progress bar (starts swift, snaps clean)
-      var eased = 1 - Math.pow(1 - progress, 2);
-      if (fillBar) fillBar.style.width = (eased * 100) + '%';
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        setTimeout(function() {
-          if (typeof onComplete === 'function') {
-            onComplete();
-          } else if (options.url) {
-            window.location.href = options.url;
-          } else {
-            overlay.classList.remove('kr-active');
-            overlay.style.display = 'none';
-            overlay.setAttribute('aria-hidden', 'true');
-          }
-        }, 120);
-      }
+    if (progressBar) {
+      progressBar.style.animation = 'none';
+      void progressBar.offsetWidth; // trigger reflow
+      progressBar.style.animation = 'krProgressFill ' + (duration / 1000).toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1) forwards';
     }
 
-    requestAnimationFrame(step);
+    if (artworkImg) {
+      artworkImg.style.animation = 'none';
+      void artworkImg.offsetWidth;
+      artworkImg.style.animation = 'krKenBurns 4.5s ease-out forwards';
+    }
+
+    // Trigger words animation reset
+    var words = overlay.querySelectorAll('.kr-word, .kr-kinetic-hindi, .kr-kinetic-chips');
+    words.forEach(function(el) {
+      var prevAnimation = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = prevAnimation;
+    });
+
+    // Schedule Exit Transition at (duration - 400ms) for smooth fade out
+    if (transitionTimer) clearTimeout(transitionTimer);
+    transitionTimer = setTimeout(function() {
+      executeExitNavigation(url);
+    }, duration);
   };
 
-  // Ensure overlay never gets stuck on browser back/forward navigation
-  window.addEventListener('pageshow', function() {
-    initElements();
+  // Smooth Exit and Navigation
+  function executeExitNavigation(url) {
+    var overlay = document.getElementById('krTransitionOverlay');
     if (overlay) {
-      overlay.classList.remove('kr-active');
-      overlay.style.display = 'none';
-      overlay.setAttribute('aria-hidden', 'true');
+      overlay.classList.add('kr-fade-out');
     }
-  });
+    setTimeout(function() {
+      if (url) {
+        window.location.href = url;
+      }
+    }, 380);
+  }
 
   document.addEventListener('DOMContentLoaded', function() {
-    initElements();
-
-    // 1. Intercept all Auth Login Forms to display animation for 1.7s before redirecting
-    var authForms = document.querySelectorAll('.auth-card form');
-    authForms.forEach(function(form) {
-      form.addEventListener('submit', function(e) {
-        if (form.dataset.animating === 'true') {
-          return;
-        }
-
-        if (form.checkValidity && !form.checkValidity()) {
-          return;
-        }
-
-        var roleName = 'डैशबोर्ड';
-        var heading = document.querySelector('.auth-card h1');
-        if (heading) {
-          roleName = heading.textContent.replace('🌾', '').replace('🏬', '').replace('🛒', '').replace('🚚', '').replace('login', '').trim();
-        }
-
+    // 1. Skip Button Handler
+    var skipBtn = document.getElementById('krSkipTransitionBtn');
+    if (skipBtn) {
+      skipBtn.addEventListener('click', function(e) {
         e.preventDefault();
-
-        window.triggerKisanTransition({
-          title: '🌾 ' + roleName + ' में प्रवेश हो रहा है...',
-          subtitle: 'सत्यापन पूर्ण! आपका सुरक्षित डैशबोर्ड तैयार किया जा रहा है',
-          duration: 1700,
-          onComplete: function() {
-            form.dataset.animating = 'true';
-            form.submit();
-          }
-        });
+        e.stopPropagation();
+        if (transitionTimer) clearTimeout(transitionTimer);
+        executeExitNavigation(targetDestination || '/');
       });
-    });
+    }
 
-    // 2. Intercept Bottom Dock Tab Navigation for smooth dashboard switching
-    var dockTabs = document.querySelectorAll('.kr-dock-tab');
-    dockTabs.forEach(function(tab) {
-      var href = tab.getAttribute('href');
-      if (href && href !== '#' && href !== 'javascript:void(0)') {
-        tab.addEventListener('click', function(e) {
-          if (tab.classList.contains('active')) return;
-          e.preventDefault();
-          var tabText = tab.querySelector('.kr-dock-text');
-          var name = tabText ? tabText.textContent.trim() : 'पेज';
-          
-          window.triggerKisanTransition({
-            title: '🌾 ' + name + ' की ओर प्रस्थान...',
-            subtitle: 'Kisan Route: खेत से मंडी तक एक मार्ग',
-            duration: 800,
-            url: href
-          });
-        });
-      }
-    });
-
-    // 3. Intercept All Multi-Dashboard & Cross-Portal Navigation Links
+    // 2. Intercept Internal Navigation Links & Dashboard Switches
     document.addEventListener('click', function(e) {
       var a = e.target.closest('a');
       if (!a) return;
 
+      // Ignore modifier clicks (open in new tab/window)
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
       if (a.target === '_blank' || a.hasAttribute('download')) return;
       
       var href = a.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('whatsapp:')) return;
+      if (!href || href === '#' || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('whatsapp:')) return;
 
       var destUrl;
       try {
@@ -619,55 +705,55 @@
       if (destUrl.pathname === window.location.pathname && destUrl.search === window.location.search) return;
 
       var destPath = destUrl.pathname.toLowerCase();
-      var curPath = window.location.pathname.toLowerCase();
 
-      // Check if navigating to a dashboard or switching between portals
+      // Check if navigating to key portals, dashboards, or main tabs
       var isDashboardTarget = destPath.indexOf('/dashboard') !== -1 ||
                               destPath.indexOf('/mandi-rates') !== -1 ||
                               destPath.indexOf('/profit-calculator') !== -1 ||
                               destPath.indexOf('/crop-quality') !== -1 ||
                               destPath.indexOf('/schemes') !== -1 ||
-                              destPath.indexOf('/insurance') !== -1;
+                              destPath.indexOf('/insurance') !== -1 ||
+                              destPath.indexOf('/tracking') !== -1;
 
-      var isPortalSwitch = (destPath.startsWith('/farmer') || destPath.startsWith('/wholesaler') || destPath.startsWith('/driver') || destPath.startsWith('/cluster') || destPath.startsWith('/customer')) &&
-                           (!curPath.startsWith(destPath.split('/')[1]));
+      var isPortalSwitch = destPath.startsWith('/farmer') ||
+                           destPath.startsWith('/wholesaler') ||
+                           destPath.startsWith('/driver') ||
+                           destPath.startsWith('/cluster') ||
+                           destPath.startsWith('/customer') ||
+                           destPath === '/about' ||
+                           (destPath === '/' && window.location.pathname !== '/');
 
       if (isDashboardTarget || isPortalSwitch) {
-        // Don't trigger if clicked element is inside a modal or button marked skip
         if (a.dataset.noTransition === 'true' || a.closest('.kr-bypass-overlay')) return;
 
         e.preventDefault();
 
         var title = '🌾 खेत से सीधे मंडी की ओर...';
-        var subtitle = 'Kisan Route: सुरक्षित ग्रामीण डिजिटल नेटवर्क';
-
         if (destPath.indexOf('/farmer') !== -1) {
-          title = '🌾 किसान पोर्टल (Farmer Hub) लोड हो रहा है...';
-          subtitle = 'लाइव मंडी भाव, फसल गुणवत्ता व मुनाफा कैलकुलेटर';
+          title = '🌾 किसान पोर्टल (Farmer Hub) की ओर...';
         } else if (destPath.indexOf('/wholesaler') !== -1) {
           title = '🏬 थोक व्यापारी पोर्टल (Wholesaler Hub)...';
-          subtitle = 'थोक फसल लॉट्स व डायरेक्ट फार्म-गेट सौदे';
         } else if (destPath.indexOf('/driver') !== -1) {
           title = '🚚 ड्राइवर व ट्रांसपोर्ट नेटवर्क (Logistics)...';
-          subtitle = 'ग्रामीण वाहन व फसल परिवहन ट्रिप्स';
         } else if (destPath.indexOf('/cluster') !== -1) {
           title = '🤝 किसान क्लस्टर हब (Cluster Hub)...';
-          subtitle = 'सामूहिक बिक्री व साझा ट्रांसपोर्ट';
         } else if (destPath.indexOf('/customer') !== -1) {
-          title = '🛒 ताज़ा फसल स्टोर (Customer Market)...';
-          subtitle = 'खेत से सीधी ताज़ा उपज की खरीदारी';
+          title = '🛒 ताज़ा फसल स्टोर (Customer Hub)...';
+        } else if (destPath === '/about') {
+          title = 'ℹ️ KisanRoute मिशन व विजन...';
+        } else if (destPath === '/') {
+          title = '🏠 KisanRoute मुख्य पृष्ठ...';
         }
 
         window.triggerKisanTransition({
           title: title,
-          subtitle: subtitle,
-          duration: 850,
+          duration: 2600,
           url: a.href
         });
       }
     });
 
-    // 4. Floating Scroll to Top Button Interaction
+    // 3. Floating Scroll to Top Button Interaction
     var scrollBtn = document.getElementById('krScrollToTopBtn');
     if (scrollBtn) {
       window.addEventListener('scroll', function() {

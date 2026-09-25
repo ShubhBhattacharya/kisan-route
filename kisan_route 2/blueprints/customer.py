@@ -102,24 +102,9 @@ def login():
                 flash("Incorrect password. Please try again or use 1-Click Demo.", "error")
                 return render_template("customer/login.html")
 
-        # 3. If user doesn't exist yet, auto-create customer account on the fly!
-        if len(cleaned_phone) == 10 and cleaned_phone.isdigit() and password:
-            user = User(
-                role=ROLE,
-                full_name=f"Customer ({cleaned_phone[-4:]})",
-                phone=cleaned_phone,
-                password_hash=generate_password_hash(password),
-            )
-            user.set_extra({"address": "Main Market", "city": "Local Area", "state": "India", "pincode": "110001"})
-            db.session.add(user)
-            db.session.commit()
-            session["user_id"] = user.id
-            session["role"] = ROLE
-            session["name"] = user.full_name
-            flash("Welcome! Customer account created and logged in.", "success")
-            return redirect(url_for("customer.dashboard"))
-
-        flash("Please enter valid phone number and password.", "error")
+        # 3. Account not found error (User must sign up first)
+        flash("Account nahi mila! Kripya pehle naya account banayein (Sign Up karein) ya 1-Click Demo use karein.", "error")
+        return render_template("customer/login.html")
     return render_template("customer/login.html")
 
 

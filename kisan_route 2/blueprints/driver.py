@@ -90,7 +90,7 @@ def login():
             flash("Please enter your password.", "error")
             return render_template("driver/login.html")
 
-        # 2. Regular Login
+        # 2. Regular Login Check
         user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
             if check_password_hash(user.password_hash, password) or password == "123456":
@@ -104,30 +104,9 @@ def login():
                 flash("Incorrect password. Please try again or use 1-Click Demo.", "error")
                 return render_template("driver/login.html")
 
-        # 3. Auto-Create Fallback
-        if len(cleaned_phone) == 10 and cleaned_phone.isdigit() and password:
-            user = User(
-                role=ROLE,
-                full_name=f"Driver ({cleaned_phone[-4:]})",
-                phone=cleaned_phone,
-                password_hash=generate_password_hash(password),
-            )
-            user.set_extra({
-                "driver_type": "independent",
-                "vehicle_type": "Mahindra Bolero Maxi Truck",
-                "capacity": "1200 kg",
-                "vehicle_category": "Pickup",
-                "profile_complete": True
-            })
-            db.session.add(user)
-            db.session.commit()
-            session["user_id"] = user.id
-            session["role"] = ROLE
-            session["name"] = user.full_name
-            flash("Welcome! Driver account created and logged in.", "success")
-            return redirect(url_for("driver.dashboard"))
-
-        flash("Please enter valid phone number and password.", "error")
+        # 3. Account not found error (User must sign up first)
+        flash("Account nahi mila! Kripya pehle naya account banayein (Sign Up karein) ya 1-Click Demo use karein.", "error")
+        return render_template("driver/login.html")
     return render_template("driver/login.html")
 
 

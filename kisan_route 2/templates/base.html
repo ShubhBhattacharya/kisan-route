@@ -164,6 +164,11 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 22px rgba(27, 94, 32, 0.45);
     }
+    @media (max-width: 820px) {
+      .kr-lang-floating-btn {
+        display: none !important;
+      }
+    }
 
     /* Language Modal (Topmost Overlay) */
     .kr-lang-modal-overlay {
@@ -477,18 +482,31 @@
   }
 })();
 
-// Auto-dismiss login & action flash banners after 1.8 seconds (1-2s smooth fade)
+// Auto-dismiss flash banners: success messages fade after 2.8s, errors stay for 8s or until closed
 document.addEventListener('DOMContentLoaded', function() {
-  var flashes = document.querySelectorAll('.flash');
-  if (flashes.length > 0) {
+  var successFlashes = document.querySelectorAll('.flash:not(.flash-error):not(.flash-danger)');
+  var errorFlashes = document.querySelectorAll('.flash-error, .flash-danger');
+
+  if (successFlashes.length > 0) {
     setTimeout(function() {
-      flashes.forEach(function(flash) {
+      successFlashes.forEach(function(flash) {
         flash.classList.add('kr-flash-fade-out');
         setTimeout(function() {
           if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
         }, 450);
       });
-    }, 1800);
+    }, 2800);
+  }
+
+  if (errorFlashes.length > 0) {
+    setTimeout(function() {
+      errorFlashes.forEach(function(flash) {
+        flash.classList.add('kr-flash-fade-out');
+        setTimeout(function() {
+          if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
+        }, 450);
+      });
+    }, 8000);
   }
 });
 </script>

@@ -576,15 +576,22 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .chatbot-note { font-size: 0.7rem; color: var(--muted); padding: 0 14px 12px; margin: 0; }
 
 /* ---------------- Voice assistant ---------------- */
-.voice-assistant { position: fixed; right: 88px; bottom: 20px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.voice-assistant { position: fixed; right: 88px; bottom: 24px; z-index: 99996 !important; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .voice-btn {
-  width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border);
-  background: var(--surface); font-size: 1.2rem; cursor: pointer; box-shadow: var(--shadow-card);
+  width: 48px; height: 48px; border-radius: 50%; border: 2px solid #81c784;
+  background: #ffffff; font-size: 1.25rem; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
 }
-.voice-btn[aria-pressed="true"] { background: var(--gold-600); color: #fff; }
+.voice-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+.voice-btn[aria-pressed="true"] { background: var(--gold-600); color: #fff; border-color: #f59e0b; }
 .voice-caption {
-  max-width: 220px; background: var(--green-900); color: #fff; padding: 10px 12px;
-  border-radius: var(--radius-sm); font-size: 0.82rem;
+  max-width: 220px; background: #064e3b; color: #fff; padding: 10px 14px;
+  border-radius: 12px; font-size: 0.82rem; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* Desktop Navigation Group (Visible on Desktop, hidden on Mobile) */
@@ -632,13 +639,13 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 @media (max-width: 640px) {
   .topbar { padding: 8px 12px; }
   .brand { font-size: 1.15rem; }
-  main { padding: 12px 10px 48px; }
-  .hero { min-height: 400px; }
+  main { padding: 10px 10px 84px !important; }
+  .hero { min-height: 350px !important; }
   #krEmblemContainer {
-    width: 54px !important;
-    height: 54px !important;
-    top: 12px !important;
-    right: 12px !important;
+    width: 50px !important;
+    height: 50px !important;
+    top: 10px !important;
+    right: 10px !important;
   }
   .problem-panel,
   aside.problem-panel,
@@ -646,32 +653,48 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
     width: 100% !important;
     padding: 20px 16px !important;
   }
+  .kr-top-announcement-bar {
+    padding: 5px 8px !important;
+    gap: 6px !important;
+  }
+  .kr-top-announcement-bar .kr-announcement-hide-mobile {
+    display: none !important;
+  }
   .kr-lang-floating-btn {
-    bottom: 16px !important;
-    left: 12px !important;
-    padding: 8px 14px !important;
-    font-size: 12.5px !important;
+    display: none !important;
   }
   #krChatLauncher {
-    bottom: 16px !important;
+    position: fixed !important;
     right: 14px !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px) !important;
+    z-index: 99996 !important;
   }
   #krChatToggleBtn {
-    width: 50px !important;
-    height: 50px !important;
-    font-size: 22px !important;
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 20px !important;
   }
   .voice-assistant {
-    right: 72px !important;
-    bottom: 18px !important;
+    position: fixed !important;
+    right: 68px !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px) !important;
+    z-index: 99996 !important;
   }
   .voice-btn {
-    width: 44px !important;
-    height: 44px !important;
-    font-size: 1.1rem !important;
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 1.2rem !important;
+    border: 2px solid #81c784 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22) !important;
   }
-  .chatbot { right: 16px; bottom: 16px; }
-  .chatbot-panel { width: 90vw; right: -4px; }
+  .chatbot { right: 14px; bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px); }
+  .chatbot-panel { width: 92vw; right: -4px; }
+  #krPwaInstallBanner {
+    top: 56px !important;
+    bottom: auto !important;
+    z-index: 99995 !important;
+  }
 }
 
 /* ============================================================
@@ -962,19 +985,24 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 
   /* Offset floating assistants above the bottom dock */
   #krChatLauncher {
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    position: fixed !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px) !important;
     right: 14px !important;
+    z-index: 99996 !important;
   }
   .voice-assistant {
-    bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+    position: fixed !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px) !important;
     right: 68px !important;
+    z-index: 99996 !important;
   }
   .kr-lang-floating-btn {
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 12px !important;
+    display: none !important;
   }
   #krPwaInstallBanner {
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+    top: 56px !important;
+    bottom: auto !important;
+    z-index: 99995 !important;
   }
 
   /* Mobile App Card Adjustments */

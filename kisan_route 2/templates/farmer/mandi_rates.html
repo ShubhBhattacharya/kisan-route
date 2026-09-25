@@ -9,16 +9,18 @@
     </select>
   </form>
 
-  <table class="table">
-    <thead><tr><th>Mandi</th><th>Rate (₹ / quintal)</th></tr></thead>
-    <tbody>
-      {% for r in rates %}
-      <tr class="{% if r.region == best.region %}row-best{% endif %}">
-        <td>{{ r.region }}{% if r.region == best.region %} <span class="badge">Most profitable</span>{% endif %}</td>
-        <td>₹{{ r.rate }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table">
+      <thead><tr><th>Mandi</th><th>Rate (₹ / quintal)</th></tr></thead>
+      <tbody>
+        {% for r in rates %}
+        <tr class="{% if r.region == best.region %}row-best{% endif %}">
+          <td>{{ r.region }}{% if r.region == best.region %} <span class="badge">Most profitable</span>{% endif %}</td>
+          <td>₹{{ r.rate }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </section>
 {% endblock %}

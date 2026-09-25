@@ -520,8 +520,33 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .btn-primary:hover { background: var(--green-600); }
 .btn-small { padding: 6px 12px; font-size: 0.85rem; background: var(--surface-tint); color: var(--green-900); border: 1px solid var(--border); }
 
+/* ---------------- Feature Pages & Layout ---------------- */
+.feature-page {
+  max-width: 1000px;
+  margin: 20px auto 48px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+.feature-page h1 {
+  color: var(--green-900);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* ---------------- Tables ---------------- */
-.table { width: 100%; border-collapse: collapse; margin: 16px 0; background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); }
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.table { width: 100%; border-collapse: collapse; margin: 0; background: var(--surface); border-radius: var(--radius-md); overflow: hidden; }
 .table th, .table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
 .table th { background: var(--surface-tint); color: var(--green-900); font-size: 0.85rem; text-transform: none; }
 .row-best { background: var(--info-bg); }
@@ -688,12 +713,32 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
     background: #ffffff !important;
     box-shadow: 0 4px 14px rgba(0,0,0,0.22) !important;
   }
-  .chatbot { right: 14px; bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px); }
-  .chatbot-panel { width: 92vw; right: -4px; }
-  #krPwaInstallBanner {
-    top: 56px !important;
-    bottom: auto !important;
-    z-index: 99995 !important;
+  /* Enforce 16px font-size to prevent iOS Safari auto-zoom on input focus */
+  input, select, textarea,
+  .form-group input, .form-group select,
+  .inline-form input, .inline-form select,
+  .auth-card input {
+    font-size: 16px !important;
+  }
+  /* Momentum smooth scrolling on iOS and Android */
+  .kr-news-filters,
+  .table-responsive,
+  div[style*="overflow-x: auto"] {
+    -webkit-overflow-scrolling: touch !important;
+  }
+  /* Mobile Bottom-Sheet Dialog for Kisan Assistant */
+  #krChatContainer {
+    position: fixed !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 68px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    height: 72vh !important;
+    max-height: 520px !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35) !important;
   }
 }
 

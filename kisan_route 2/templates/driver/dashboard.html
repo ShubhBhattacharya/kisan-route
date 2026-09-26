@@ -560,6 +560,221 @@ var currentActiveTripId = null;
 var krTimerInterval = null;
 var krRemainingSeconds = 60;
 
+// Device GPS & OpenRouteService Dynamic Integration
+var KR_ORS_KEY = "{{ ors_key }}";
+var krGeoWatchId = null;
+var krDriverCurrentGps = null;
+var krLastRoutedGps = null;
+
+// Registry of Regional Mandis for nearest mandi discovery
+var KR_ALL_MANDIS = [
+  { name: 'Dadri Mandi (दादरी अनाज मंडी)', coords: [28.5524, 77.5542] },
+  { name: 'Azadpur Mandi (आज़ादपुर थोक मंडी, दिल्ली)', coords: [28.7180, 77.1734] },
+  { name: 'Narela Mandi (नरेला अनाज मंडी, दिल्ली)', coords: [28.8524, 77.0910] },
+  { name: 'Ghazipur Mandi (गाजीपुर सब्जी व फल मंडी)', coords: [28.6253, 77.3295] },
+  { name: 'Surajpur Mandi (सूरजपुर मंडी, ग्रेटर नोएडा)', coords: [28.5280, 77.4930] },
+  { name: 'Faridabad Mandi (फरीदाबाद अनाज मंडी)', coords: [28.4180, 77.3075] },
+  { name: 'Sonipat Mandi (सोनीपत मंडी, हरियाणा)', coords: [28.9945, 77.0259] },
+  { name: 'Meerut Mandi (मेरठ नवीन मंडी, यूपी)', coords: [28.9815, 77.7180] },
+  { name: 'Palwal Mandi (पलवल अनाज मंडी)', coords: [28.1411, 77.3274] },
+  { name: 'Hapur Mandi (हापुड़ गल्ला मंडी, यूपी)', coords: [28.7306, 77.7760] }
+];
+
+function krGetDistanceMeters(lat1, lon1, lat2, lon2) {
+  var R = 6371000;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLon = (lon2 - lon1) * Math.PI / 180;
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon/2) * Math.sin(dLon/2);
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+}
+
+function krFindNearestMandi(lat, lon) {
+  var best = KR_ALL_MANDIS[0];
+  var minDist = Infinity;
+  for (var i = 0; i < KR_ALL_MANDIS.length; i++) {
+    var d = krGetDistanceMeters(lat, lon, KR_ALL_MANDIS[i].coords[0], KR_ALL_MANDIS[i].coords[1]);
+    if (d < minDist) {
+      minDist = d;
+      best = KR_ALL_MANDIS[i];
+    }
+  }
+  return best;
+}
+
+function krStartDeviceGpsTracking(trip) {
+  if (!navigator.geolocation) {
+    console.log("Device geolocation is not supported");
+    return;
+  }
+
+  if (krGeoWatchId !== null) {
+    navigator.geolocation.clearWatch(krGeoWatchId);
+    krGeoWatchId = null;
+  }
+
+  var options = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 3000
+  };
+
+  krGeoWatchId = navigator.geolocation.watchPosition(
+    function(pos) {
+      var lat = pos.coords.latitude;
+      var lon = pos.coords.longitude;
+      var speed = pos.coords.speed;
+      krDriverCurrentGps = [lat, lon];
+
+      // Replace hardcoded coordinates with driver's real-time device GPS
+      trip.pickupCoords = [lat, lon];
+
+      // Dynamically select nearest Mandi from driver's GPS location
+      var nearestMandi = krFindNearestMandi(lat, lon);
+      trip.drop = nearestMandi.name;
+      trip.dropCoords = nearestMandi.coords;
+
+      // Update pickup & destination text in modal
+      var pickupEl = document.getElementById('krTripPickup');
+      if (pickupEl) {
+        pickupEl.innerHTML = '📍 वर्तमान लोकेशन (Live Device GPS)<br><small style="color: #2e7d32; font-weight: 700;">' + lat.toFixed(4) + '° N, ' + lon.toFixed(4) + '° E</small>';
+      }
+      var landmarkEl = document.getElementById('krTripLandmark');
+      if (landmarkEl) {
+        landmarkEl.innerText = 'वास्तविक डिवाइस GPS से ऑटो-डिटेक्टेड';
+      }
+      var dropEl = document.getElementById('krTripDrop');
+      if (dropEl) {
+        dropEl.innerText = nearestMandi.name;
+      }
+
+      var speedBadge = document.getElementById('krSpeedBadge');
+      if (speedBadge) {
+        if (speed !== null && !isNaN(speed) && speed > 0) {
+          speedBadge.innerText = Math.round(speed * 3.6) + ' km/h';
+        } else {
+          speedBadge.innerText = 'GPS Live';
+        }
+      }
+
+      // Update map markers if Leaflet map is initialized
+      if (krVehicleMarker && krMap) {
+        krVehicleMarker.setLatLng([lat, lon]);
+      }
+      if (krPickupMarker && krMap) {
+        krPickupMarker.setLatLng([lat, lon]);
+      }
+      if (krDropMarker && krMap) {
+        krDropMarker.setLatLng(nearestMandi.coords);
+      }
+
+      // Dynamically call OpenRouteService API from current GPS position to nearest Mandi
+      if (!krLastRoutedGps || krGetDistanceMeters(lat, lon, krLastRoutedGps[0], krLastRoutedGps[1]) > 40) {
+        krLastRoutedGps = [lat, lon];
+        krFetchOrsRouteFromCurrentGps(trip, [lat, lon], nearestMandi.coords);
+      }
+    },
+    function(err) {
+      console.warn("GPS tracking note (fallback active):", err.message);
+    },
+    options
+  );
+}
+
+function krStopDeviceGpsTracking() {
+  if (krGeoWatchId !== null) {
+    navigator.geolocation.clearWatch(krGeoWatchId);
+    krGeoWatchId = null;
+  }
+}
+
+function krFetchOrsRouteFromCurrentGps(trip, startCoords, endCoords) {
+  var startStr = startCoords[1] + ',' + startCoords[0];
+  var endStr = endCoords[1] + ',' + endCoords[0];
+
+  var orsUrl = 'https://api.openrouteservice.org/v2/directions/driving-car?api_key=' + encodeURIComponent(KR_ORS_KEY) + '&start=' + startStr + '&end=' + endStr;
+
+  fetch(orsUrl)
+    .then(function(res) {
+      if (!res.ok) throw new Error("ORS API returned " + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      if (data && data.features && data.features.length > 0) {
+        var feat = data.features[0];
+        var summary = feat.properties.summary || {};
+        var distKm = (summary.distance / 1000).toFixed(1);
+        var etaMin = Math.round(summary.duration / 60);
+        var coords = feat.geometry.coordinates || [];
+
+        trip.distance = distKm + ' km • ' + etaMin + ' मिनट';
+        var tripDistEl = document.getElementById('krTripDistance');
+        if (tripDistEl) tripDistEl.innerText = 'दूरी: ' + trip.distance;
+
+        var navDistEl = document.getElementById('krNavDistance');
+        var navEtaEl = document.getElementById('krNavEta');
+        if (navDistEl) navDistEl.innerText = distKm + ' km';
+        if (navEtaEl) navEtaEl.innerText = etaMin + ' min';
+
+        var segments = feat.properties.segments || [];
+        if (segments.length > 0 && segments[0].steps && segments[0].steps.length > 0) {
+          var step0 = segments[0].steps[0];
+          var step1 = segments[0].steps[1] || step0;
+          var instEl = document.getElementById('krNavInstruction');
+          var subEl = document.getElementById('krNavSubInstruction');
+          if (instEl) instEl.innerText = step0.instruction || 'मंडी की तरफ आगे बढ़ें';
+          if (subEl) subEl.innerText = step1.instruction ? ('अगला मोड़: ' + step1.instruction) : (trip.drop + ' की ओर');
+        }
+
+        if (coords.length > 0 && krMap) {
+          var latlngs = coords.map(function(c) { return [c[1], c[0]]; });
+          if (krRoutePolyline) {
+            krRoutePolyline.setLatLngs(latlngs);
+          } else {
+            krRoutePolyline = L.polyline(latlngs, { color: '#1976d2', weight: 5, opacity: 0.95, lineJoin: 'round' }).addTo(krMap);
+          }
+          if (krGlowPolyline) {
+            krGlowPolyline.setLatLngs(latlngs);
+          } else {
+            krGlowPolyline = L.polyline(latlngs, { color: '#0d47a1', weight: 8, opacity: 0.35, lineJoin: 'round' }).addTo(krMap);
+          }
+          krMap.fitBounds(krRoutePolyline.getBounds(), { padding: [35, 35] });
+        }
+
+        var gmapsBtn = document.getElementById('krGoogleMapsExternalBtn');
+        if (gmapsBtn) {
+          gmapsBtn.href = 'https://www.google.com/maps/dir/?api=1&origin=' + startCoords[0] + ',' + startCoords[1] + '&destination=' + endCoords[0] + ',' + endCoords[1] + '&travelmode=driving';
+        }
+      }
+    })
+    .catch(function(err) {
+      // Fallback: proxy endpoint
+      fetch('/driver/api/live-route', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          start_lat: startCoords[0],
+          start_lon: startCoords[1],
+          end_lat: endCoords[0],
+          end_lon: endCoords[1]
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(resData) {
+        if (resData && resData.success && resData.geometry && krMap) {
+          var latlngs = resData.geometry.map(function(c) { return [c[1], c[0]]; });
+          if (krRoutePolyline) krRoutePolyline.setLatLngs(latlngs);
+          if (krGlowPolyline) krGlowPolyline.setLatLngs(latlngs);
+          krMap.fitBounds(krRoutePolyline.getBounds(), { padding: [35, 35] });
+          if (document.getElementById('krNavDistance')) document.getElementById('krNavDistance').innerText = resData.distance_km + ' km';
+          if (document.getElementById('krNavEta')) document.getElementById('krNavEta').innerText = resData.eta_minutes + ' min';
+        }
+      })
+      .catch(function(e) {});
+    });
+}
+
 // Leaflet Map & Navigation Sim State
 var krMap = null;
 var krVehicleMarker = null;
@@ -574,6 +789,9 @@ function krOpenRideModal(tripId) {
   var trip = KR_TRIPS_DATA[tripId];
   if (!trip) return;
   currentActiveTripId = tripId;
+
+  // Immediately activate real-time GPS tracking to override hardcoded coordinates
+  krStartDeviceGpsTracking(trip);
 
   // Populate Base Details
   document.getElementById('krTripFare').innerText = trip.fare;
@@ -591,6 +809,7 @@ function krOpenRideModal(tripId) {
 
   var overlay = document.getElementById('krRideModalOverlay');
   overlay.style.display = 'flex';
+
 
   if (trip.status === 'open') {
     // Show Pre-accept state with 60s timer
@@ -739,6 +958,9 @@ function krInitDriverMap(trip) {
     krMap = null;
   }
 
+  if (krDriverCurrentGps) {
+    trip.pickupCoords = krDriverCurrentGps;
+  }
   var centerCoords = trip.pickupCoords;
   krMap = L.map('krDriverMap', {
     zoomControl: false,
@@ -818,6 +1040,9 @@ function krInitDriverMap(trip) {
     gmapsBtn.href = 'https://www.google.com/maps/dir/?api=1&origin=' + trip.pickupCoords[0] + ',' + trip.pickupCoords[1] + '&destination=' + trip.dropCoords[0] + ',' + trip.dropCoords[1] + '&travelmode=driving';
   }
 
+  // Dynamically trigger OpenRouteService route from current GPS to Mandi
+  krFetchOrsRouteFromCurrentGps(trip, trip.pickupCoords, trip.dropCoords);
+
   // Start live truck animation along route waypoints
   krStartTruckSimulation(trip);
 }
@@ -847,7 +1072,7 @@ function krStartTruckSimulation(trip) {
     }
 
     var wp = trip.waypoints[krCurrentWaypointIdx];
-    if (krVehicleMarker) {
+    if (krVehicleMarker && !krDriverCurrentGps) {
       krVehicleMarker.setLatLng(wp.coords);
     }
     updateNavigationHUD(trip, krCurrentWaypointIdx);
@@ -873,6 +1098,7 @@ function krRecenterMap() {
 
 function krCompleteTrip() {
   if (krNavSimInterval) clearInterval(krNavSimInterval);
+  krStopDeviceGpsTracking();
   var trip = KR_TRIPS_DATA[currentActiveTripId];
   if (!trip) return;
   trip.status = 'completed';
@@ -888,6 +1114,7 @@ function krCompleteTrip() {
 
 function krRejectRide() {
   if (krTimerInterval) clearInterval(krTimerInterval);
+  krStopDeviceGpsTracking();
   krCloseRideModal();
   showKrToast('❌ राइड अनुरोध अस्वीकार किया गया (Ride Declined)', 'info');
 }
@@ -896,6 +1123,7 @@ function krCancelActiveRide() {
   if (!confirm('क्या आप वाकई इस राइड को रद्द करना चाहते हैं? (Are you sure you want to cancel?)')) return;
   if (krTimerInterval) clearInterval(krTimerInterval);
   if (krNavSimInterval) clearInterval(krNavSimInterval);
+  krStopDeviceGpsTracking();
   
   var trip = KR_TRIPS_DATA[currentActiveTripId];
   if (trip) {
@@ -914,6 +1142,7 @@ function krCancelActiveRide() {
 function krCloseRideModal() {
   if (krTimerInterval) clearInterval(krTimerInterval);
   if (krNavSimInterval) clearInterval(krNavSimInterval);
+  krStopDeviceGpsTracking();
   var overlay = document.getElementById('krRideModalOverlay');
   if (overlay) overlay.style.display = 'none';
 }

@@ -1,9 +1,12 @@
 import datetime
+import json
+import urllib.request
 
-from flask import (Blueprint, flash, redirect, render_template, request,
+from flask import (Blueprint, flash, jsonify, redirect, render_template, request,
                     session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from config import Config
 from extensions import db
 from models import User
 from utils.auth import login_required, clean_phone, is_valid_phone
@@ -141,7 +144,48 @@ def profile_setup():
 @driver_bp.route("/dashboard")
 @login_required(ROLE)
 def dashboard():
-    return render_template("driver/dashboard.html", requests=REQUESTS)
+    return render_template(
+        "driver/dashboard.html",
+        requests=REQUESTS,
+        ors_key=getattr(Config, "OPENROUTESERVICE_KEY", "")
+    )
+
+
+@driver_bp.route("/api/live-route", methods=["POST"])
+@login_required(ROLE)
+def api_live_route():
+    data = request.get_json(silent=True) or {}
+    start_lat = data.get("start_lat")
+    start_lon = data.get("start_lon")
+    end_lat = data.get("end_lat")
+    end_lon = data.get("end_lon")
+
+    if start_lat is not None and start_lon is not None and end_lat is not None and end_lon is not None:
+        key = getattr(Config, "OPENROUTESERVICE_KEY", "")
+        if key:
+            try:
+                url = f"https://api.openrouteservice.org/v2/directions/driving-car?api_key={key}&start={start_lon},{start_lat}&end={end_lon},{end_lat}"
+                req = urllib.request.Request(url, headers={"User-Agent": "KisanRoute/1.0"})
+                with urllib.request.urlopen(req, timeout=4.5) as resp:
+                    if resp.status == 200:
+                        ors_data = json.loads(resp.read().decode())
+                        feat = ors_data["features"][0]
+                        summary = feat["properties"]["summary"]
+                        geometry = feat["geometry"]["coordinates"]
+                        dist_km = round(summary["distance"] / 1000, 1)
+                        eta_min = int(round(summary["duration"] / 60))
+                        steps = feat["properties"]["segments"][0].get("steps", [])
+                        return jsonify({
+                            "success": True,
+                            "distance_km": dist_km,
+                            "eta_minutes": eta_min,
+                            "geometry": geometry,
+                            "steps": steps
+                        })
+            except Exception as e:
+                pass
+
+    return jsonify({"success": False, "message": "Live route unavailable, using local fallback"})
 
 
 @driver_bp.route("/accept/<int:request_id>")

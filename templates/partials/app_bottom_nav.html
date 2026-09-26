@@ -1,0 +1,40 @@
+<!-- ================= NATIVE MOBILE APP BOTTOM NAVIGATION DOCK ================= -->
+<nav class="kr-app-bottom-dock" id="krAppBottomDock" aria-label="App Navigation">
+  <a href="{{ url_for('main.home') }}" class="kr-dock-tab {% if request.path == '/' %}active{% endif %}">
+    <span class="kr-dock-icon">🏠</span>
+    <span class="kr-dock-text">Home</span>
+  </a>
+
+  <a href="{% if session.get('role') == 'farmer' %}{{ url_for('farmer.dashboard') }}{% else %}{{ url_for('farmer.login') }}{% endif %}" class="kr-dock-tab {% if '/farmer' in request.path and 'mandi' not in request.path %}active{% endif %}">
+    <span class="kr-dock-icon">🌾</span>
+    <span class="kr-dock-text">Farmer</span>
+  </a>
+
+  <a href="{{ url_for('farmer.mandi_rates') }}" class="kr-dock-tab {% if 'mandi' in request.path %}active{% endif %}">
+    <span class="kr-dock-icon">📊</span>
+    <span class="kr-dock-text">Mandi</span>
+  </a>
+
+  <a href="{% if session.get('role') == 'customer' %}{{ url_for('customer.dashboard') }}{% else %}{{ url_for('customer.login') }}{% endif %}" class="kr-dock-tab {% if '/customer' in request.path %}active{% endif %}">
+    <span class="kr-dock-icon">🛒</span>
+    <span class="kr-dock-text">Customer</span>
+  </a>
+
+  <button type="button" class="kr-dock-tab" id="krDockMenuBtn" aria-label="Open full menu">
+    <span class="kr-dock-icon">☰</span>
+    <span class="kr-dock-text">Menu</span>
+  </button>
+</nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var dockMenuBtn = document.getElementById('krDockMenuBtn');
+  var menuToggle = document.getElementById('menuToggle');
+  if (dockMenuBtn && menuToggle) {
+    dockMenuBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      menuToggle.click();
+    });
+  }
+});
+</script>

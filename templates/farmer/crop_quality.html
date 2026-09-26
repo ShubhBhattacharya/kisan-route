@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">📷</span> Crop Quality Check</h1>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    <div class="form-group">
+      <label for="crop_image">Upload a photo of your crop</label>
+      <input type="file" id="crop_image" name="crop_image" accept="image/*" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Analyze quality</button>
+  </form>
+
+  {% if result %}
+  <div class="result-card">
+    {% if image_url %}<img src="{{ image_url }}" alt="Uploaded crop photo" class="result-image">{% endif %}
+    <h2>Grade: {{ result.grade }}</h2>
+    <p>Confidence: {{ result.confidence }}%</p>
+    <p class="form-note">Placeholder grading for the prototype — a real computer-vision model will replace this later.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

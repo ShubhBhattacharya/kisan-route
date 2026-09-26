@@ -1,0 +1,179 @@
+<!-- 1. Top Announcement Bar (Sticky Catchy Ribbon) -->
+<div class="kr-top-announcement-bar" style="background: linear-gradient(90deg, #064e3b 0%, #047857 50%, #064e3b 100%); color: #ffffff; padding: 7px 14px; text-align: center; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 2px solid #10b981; position: relative; z-index: 1001; font-family: 'Inter', -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+  <span style="background: #facc15; color: #064e3b; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); flex-shrink: 0;">
+    <span>🌾</span> SANKALP
+  </span>
+  <span style="font-size: clamp(12px, 2.2vw, 13.5px); font-weight: 600; letter-spacing: 0.2px;">
+    <strong style="color: #ffffff;">Mission:</strong>
+    <span style="color: #fef08a; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">“Ab Har Kisan Apne Haq Ka Khayega”</span>
+    <span class="kr-announcement-hide-mobile" style="color: #a7f3d0; font-weight: 700; opacity: 0.95;">(अब हर किसान अपने हक का खाएगा)</span>
+    <span class="kr-announcement-hide-mobile" style="color: rgba(255,255,255,0.4); margin: 0 6px;">|</span>
+    <span class="kr-announcement-hide-mobile" style="color: #ffffff; opacity: 0.95; font-weight: 600;">0% Middlemen • Direct Farm to Market</span>
+  </span>
+</div>
+
+<header class="topbar">
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <!-- Universal Back Button (shown on all inner pages, dashboards and forms) -->
+    {% if request.path != '/' %}
+    <button type="button" class="kr-topbar-back-btn" onclick="handleKrBackNavigation()" aria-label="Go back" title="Go back (पीछे जाएं)">
+      <span class="kr-back-arrow">←</span>
+      <span class="kr-back-label">Back</span>
+    </button>
+    {% endif %}
+
+    <button id="menuToggle" class="dots-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- 2. Navbar Brand Identity with Core Tagline -->
+  <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+    <span class="kr-brand-emblem">🌾</span>
+    <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.15;">
+      <span class="kr-brand-text">{{ t('site_name') }}</span>
+      <span class="kr-brand-subtext" style="color: #1b5e20; font-size: 11px; font-weight: 800; background: #ecfdf5; border: 1px solid #86efac; border-radius: 999px; padding: 1.5px 8px; margin-top: 2px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;">
+        <span style="color: #16a34a; font-size: 8px;">●</span> “Ab har kisan apne haq ka khayega”
+      </span>
+    </div>
+  </a>
+
+  <div class="topbar-right">
+    <!-- Live Alerts / Notification Bell -->
+    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications">
+      <span>🔔</span>
+      <span class="kr-bell-badge" id="krBellBadge">4</span>
+    </button>
+    <script>
+      (function() {
+        try {
+          if (localStorage.getItem('kr_notif_seen') === 'true') {
+            var b = document.getElementById('krBellBadge');
+            if (b) b.style.display = 'none';
+          }
+        } catch(e) {}
+      })();
+    </script>
+
+    <!-- Universal Language Selector Button (Visible on Desktop and Mobile) -->
+    <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
+      <span style="font-size: 15px;">🌐</span>
+      <span class="kr-lang-btn-text">भाषा / Language</span>
+    </button>
+
+    {% if session.get('user_id') %}
+      <span class="user-chip">{{ session.get('name') }}</span>
+      <a class="btn-ghost" href="{{ url_for(session.get('role') + '.logout') }}">Log out</a>
+    {% else %}
+      <button type="button" class="kr-topbar-otp-btn" onclick="openKrLoginModal()" title="Mobile OTP Login (ओटीपी लॉगिन)" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(16,185,129,0.3);">
+        <span>📲</span>
+        <span class="kr-otp-btn-label">OTP Login</span>
+      </button>
+    {% endif %}
+  </div>
+</header>
+
+<nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Choose your role">
+  <h2>{{ t('menu_title') }}</h2>
+  <ul>
+    {% if not session.get('user_id') %}
+    <li style="margin-bottom: 6px;">
+      <a href="javascript:void(0)" onclick="openKrLoginModal(); if(document.getElementById('menuToggle')) document.getElementById('menuToggle').click();" style="color: #ffffff; background: linear-gradient(135deg, #10b981, #059669); font-weight: 800; border-radius: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+        <span aria-hidden="true">📲</span> मोबाइल OTP लॉगिन (SMS OTP)
+      </a>
+    </li>
+    {% endif %}
+    {% if request.path != '/' %}
+    <li>
+      <a href="javascript:void(0)" onclick="handleKrBackNavigation()" style="color: #1b5e20; font-weight: 700; background: #f1f8e9; border-radius: 8px;">
+        <span aria-hidden="true">←</span> पीछे जाएं (Go Back)
+      </a>
+    </li>
+    {% endif %}
+    <li><a href="{{ url_for('main.home') }}"><span aria-hidden="true">🏠</span> Home</a></li>
+    <li><a href="{{ url_for('farmer.login') }}"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }}</a></li>
+    <li><a href="{{ url_for('cluster.login') }}"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }}</a></li>
+    <li><a href="{{ url_for('customer.login') }}"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }}</a></li>
+    <li><a href="{{ url_for('driver.login') }}"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }}</a></li>
+    <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
+    <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
+    <li>
+      <a href="javascript:void(0)" onclick="window.openKrLanguageModal(event)" style="color: #1b5e20; font-weight: 700;">
+        <span aria-hidden="true">🌐</span> भाषा चुनें (Select Language)
+      </a>
+    </li>
+    <li style="margin-top: 14px; border-top: 1px solid #dcedc8; padding-top: 10px;">
+      <a href="javascript:void(0)" onclick="if(window.triggerKisanInstall){window.triggerKisanInstall();}else{alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');}" style="color: #1b5e20; font-weight: 700; background: #e8f5e9; border-radius: 8px;">
+        <span aria-hidden="true">📲</span> ऐप इंस्टॉल करें (Install App)
+      </a>
+    </li>
+  </ul>
+</nav>
+<div id="menuOverlay" class="menu-overlay"></div>
+
+<style>
+.kr-topbar-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f8e9;
+  color: #1b5e20;
+  border: 1.5px solid #a5d6a7;
+  padding: 6px 13px;
+  border-radius: 20px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(27, 94, 32, 0.08);
+}
+.kr-topbar-back-btn:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+}
+.kr-topbar-back-btn:active {
+  transform: scale(0.95);
+}
+.kr-topbar-back-btn .kr-back-arrow {
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+}
+@media (max-width: 500px) {
+  .kr-topbar-back-btn {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .kr-brand-subtext {
+    max-width: 135px !important;
+    font-size: 9.5px !important;
+  }
+}
+@media (max-width: 360px) {
+  .kr-brand-subtext {
+    display: none !important;
+  }
+}
+</style>
+
+<script>
+function handleKrBackNavigation() {
+  if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    window.history.back();
+  } else {
+    {% if session.get('role') %}
+      window.location.href = "{{ url_for(session.get('role') + '.dashboard') }}";
+    {% else %}
+      window.location.href = "{{ url_for('main.home') }}";
+    {% endif %}
+  }
+}
+</script>

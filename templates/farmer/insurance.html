@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="feature-page">
+  <h1><span aria-hidden="true">🛡️</span> Crop Protection</h1>
+  <div class="dashboard-grid">
+    {% for p in plans %}
+    <div class="card">
+      <h2>{{ p.name }}</h2>
+      <p>{{ p.covers }}</p>
+      <p class="price-tag">{{ p.premium }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <p class="form-note">Demo plans for the prototype, not real insurance products.</p>
+</section>
+{% endblock %}

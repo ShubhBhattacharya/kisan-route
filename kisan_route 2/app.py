@@ -81,8 +81,15 @@ def create_app():
             current_lang=lang,
             languages=LANGUAGES,
             agri_weather=get_agri_weather(),
-            agri_news=get_agri_news()
+            agri_news=get_agri_news(),
+            firebase_config={
+                "apiKey": getattr(Config, "VITE_FIREBASE_API_KEY", "") or os.environ.get("VITE_FIREBASE_API_KEY", ""),
+                "authDomain": getattr(Config, "VITE_FIREBASE_AUTH_DOMAIN", "") or os.environ.get("VITE_FIREBASE_AUTH_DOMAIN", ""),
+                "projectId": getattr(Config, "VITE_FIREBASE_PROJECT_ID", "") or os.environ.get("VITE_FIREBASE_PROJECT_ID", ""),
+                "appId": getattr(Config, "VITE_FIREBASE_APP_ID", "") or os.environ.get("VITE_FIREBASE_APP_ID", ""),
+            }
         )
+
 
     # Maintenance Mode Interceptor (Returns 503 if active, allows bypass for admin)
     @app.before_request

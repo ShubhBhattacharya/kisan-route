@@ -55,6 +55,12 @@ class Config:
     OPENROUTESERVICE_KEY = os.environ.get("OPENROUTESERVICE_KEY") or os.environ.get("ORS_API_KEY") or _ORS_SEC
     os.environ.setdefault("OPENROUTESERVICE_KEY", OPENROUTESERVICE_KEY)
 
+    # Firebase Phone Authentication (SMS OTP)
+    VITE_FIREBASE_API_KEY = os.environ.get("VITE_FIREBASE_API_KEY") or os.environ.get("FIREBASE_API_KEY", "")
+    VITE_FIREBASE_AUTH_DOMAIN = os.environ.get("VITE_FIREBASE_AUTH_DOMAIN") or os.environ.get("FIREBASE_AUTH_DOMAIN", "")
+    VITE_FIREBASE_PROJECT_ID = os.environ.get("VITE_FIREBASE_PROJECT_ID") or os.environ.get("FIREBASE_PROJECT_ID", "")
+    VITE_FIREBASE_APP_ID = os.environ.get("VITE_FIREBASE_APP_ID") or os.environ.get("FIREBASE_APP_ID", "")
+
     # Bank-grade session and cookie security
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"

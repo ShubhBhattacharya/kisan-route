@@ -184,6 +184,37 @@ class SupabaseClient:
             logger.warning(f"Supabase RPC error on '{func_name}': {e}")
             return None
 
+    def upsert(
+        self,
+        table: str,
+        data: Dict[str, Any],
+        on_conflict: str = "phone",
+        use_secret: bool = True,
+    ) -> Optional[Dict[str, Any]]:
+        """Upsert (insert or merge on conflict) a row into a Supabase SQL table."""
+        if not self.is_configured():
+            return None
+
+        endpoint = f"{self.url}/rest/v1/{table}?on_conflict={on_conflict}"
+        payload = json.dumps(data).encode("utf-8")
+        headers = self._get_headers(use_secret=use_secret)
+        headers["Prefer"] = "resolution=merge-duplicates,return=representation"
+
+        try:
+            req = urllib.request.Request(
+                endpoint,
+                data=payload,
+                headers=headers,
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=5.0) as resp:
+                res_data = json.loads(resp.read().decode("utf-8"))
+                return res_data[0] if isinstance(res_data, list) and res_data else res_data
+        except Exception as e:
+            logger.debug(f"Supabase upsert note on '{table}': {e}")
+            return None
+
+
 
 # Global singleton instance
 supabase = SupabaseClient()

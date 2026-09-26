@@ -1,0 +1,550 @@
+<!-- ================= FIREBASE PHONE AUTH (SMS OTP) MODAL ================= -->
+<div class="kr-auth-modal-overlay" id="krLoginModalOverlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="krAuthModalTitle">
+  <div class="kr-auth-modal-card">
+    <!-- Header -->
+    <div class="kr-auth-modal-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 24px;">📲</span>
+        <div>
+          <h3 id="krAuthModalTitle" style="margin: 0; font-size: 17px; font-weight: 800; color: #1b5e20;">
+            Mobile OTP Login (मोबाइल ओटीपी)
+          </h3>
+          <span style="font-size: 11.5px; color: #64748b; font-weight: 600;">Secure SMS Authentication via Firebase</span>
+        </div>
+      </div>
+      <button type="button" class="kr-auth-modal-close" onclick="closeKrLoginModal()" aria-label="Close modal">&times;</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="kr-auth-modal-body">
+      <!-- Role Selection Tabs -->
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 6px;">
+          Select Role / भूमिका चुनें:
+        </label>
+        <div class="kr-role-selector" id="krRoleSelector">
+          <button type="button" class="kr-role-chip active" data-role="farmer" onclick="selectKrAuthRole('farmer')">🌾 किसान (Farmer)</button>
+          <button type="button" class="kr-role-chip" data-role="driver" onclick="selectKrAuthRole('driver')">🚚 चालक (Driver)</button>
+          <button type="button" class="kr-role-chip" data-role="cluster" onclick="selectKrAuthRole('cluster')">🤝 समूह (Cluster)</button>
+          <button type="button" class="kr-role-chip" data-role="customer" onclick="selectKrAuthRole('customer')">🛒 खरीदार (Buyer)</button>
+          <button type="button" class="kr-role-chip" data-role="wholesaler" onclick="selectKrAuthRole('wholesaler')">🏬 आढ़ती (Wholesaler)</button>
+        </div>
+      </div>
+
+      <!-- Alert / Status Notice -->
+      <div id="krAuthNotice" style="display: none; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; margin-bottom: 14px; line-height: 1.4;"></div>
+
+      <!-- STEP 1: Phone Number Input -->
+      <div id="krAuthStepPhone">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="krAuthPhoneInput" style="display: block; font-size: 12.5px; font-weight: 700; color: #1f2937; margin-bottom: 5px;">
+            Mobile Number / मोबाइल नंबर:
+          </label>
+          <div style="display: flex; align-items: center; border: 1.5px solid #cbd5e1; border-radius: 10px; background: #ffffff; overflow: hidden; transition: border-color 0.2s;" id="krPhoneInputBox">
+            <span style="background: #f1f5f9; padding: 10px 12px; font-size: 14px; font-weight: 700; color: #334155; border-right: 1px solid #cbd5e1; display: inline-flex; align-items: center; gap: 4px;">
+              <span>🇮🇳</span> +91
+            </span>
+            <input type="tel" id="krAuthPhoneInput" placeholder="9876543210" maxlength="10" inputmode="numeric"
+                   style="border: none; outline: none; padding: 10px 14px; font-size: 15px; font-weight: 600; width: 100%; letter-spacing: 0.5px;"
+                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); handleKrPhoneInput(this);"
+                   onkeydown="if(event.key==='Enter'){sendKrPhoneOtp();}" />
+          </div>
+          <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">
+            10-digit Indian phone number (10 अंकों का मोबाइल नंबर दर्ज करें)
+          </span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label for="krAuthNameInput" style="display: block; font-size: 12.5px; font-weight: 700; color: #1f2937; margin-bottom: 5px;">
+            Full Name / पूरा नाम <span style="font-size: 11px; font-weight: normal; color: #64748b;">(Optional / वैकल्पिक)</span>:
+          </label>
+          <input type="text" id="krAuthNameInput" placeholder="e.g. Ramesh Kumar"
+                 style="width: 100%; box-sizing: border-box; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none;" />
+        </div>
+
+        <!-- Invisible reCAPTCHA container -->
+        <div id="recaptcha-container" style="margin-bottom: 8px;"></div>
+
+        <!-- Submit Button -->
+        <button type="button" id="krSendOtpBtn" onclick="sendKrPhoneOtp()"
+                style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: all 0.2s;">
+          <span id="krSendOtpIcon">📲</span>
+          <span id="krSendOtpText">Send SMS OTP (ओटीपी भेजें)</span>
+        </button>
+      </div>
+
+      <!-- STEP 2: OTP Verification Input -->
+      <div id="krAuthStepOtp" style="display: none;">
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 11.5px; color: #166534; font-weight: 600;">OTP sent to / भेजा गया:</div>
+            <div id="krDisplayTargetPhone" style="font-size: 14.5px; font-weight: 800; color: #14532d;">+91 9876543210</div>
+          </div>
+          <button type="button" onclick="switchKrAuthStep('phone')" style="background: #ffffff; border: 1px solid #86efac; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #15803d; cursor: pointer;">
+            ✏️ Change
+          </button>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label for="krAuthOtpInput" style="display: block; font-size: 12.5px; font-weight: 700; color: #1f2937; margin-bottom: 6px; text-align: center;">
+            Enter 6-Digit OTP / 6 अंकों का ओटीपी दर्ज करें:
+          </label>
+          <input type="text" id="krAuthOtpInput" placeholder="••••••" maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                 style="width: 100%; box-sizing: border-box; border: 2px solid #10b981; border-radius: 12px; padding: 12px; font-size: 22px; font-weight: 800; letter-spacing: 8px; text-align: center; outline: none; background: #fafafa;"
+                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6); if(this.value.length===6){verifyKrPhoneOtp();}"
+                 onkeydown="if(event.key==='Enter'){verifyKrPhoneOtp();}" />
+        </div>
+
+        <button type="button" id="krVerifyOtpBtn" onclick="verifyKrPhoneOtp()"
+                style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #ffffff; border: none; padding: 12px; border-radius: 10px; font-size: 14.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(16,185,129,0.3); transition: all 0.2s;">
+          <span id="krVerifyIcon">✅</span>
+          <span id="krVerifyText">Verify & Login (लॉगिन करें)</span>
+        </button>
+
+        <div style="margin-top: 12px; text-align: center; font-size: 12px; color: #64748b;">
+          <span id="krResendTimerText">Resend OTP in <strong id="krCountdownNum">30</strong>s</span>
+          <button type="button" id="krResendOtpBtn" onclick="resendKrPhoneOtp()" style="display: none; background: none; border: none; color: #10b981; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; font-size: 12px;">
+            Resend OTP (पुनः भेजें)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: #64748b; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+      <span>🔒 Encrypted SMS Verification</span>
+      <span style="display: inline-flex; align-items: center; gap: 4px;">
+        <span>⚡</span> Supabase Connected
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Stylesheet -->
+<style>
+.kr-auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: krFadeIn 0.2s ease;
+}
+.kr-auth-modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: krScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kr-auth-modal-header {
+  padding: 16px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.kr-auth-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.kr-auth-modal-close:hover {
+  color: #1e293b;
+}
+.kr-auth-modal-body {
+  padding: 20px;
+}
+.kr-role-selector {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.kr-role-chip {
+  background: #f1f5f9;
+  border: 1.5px solid #e2e8f0;
+  color: #475569;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.kr-role-chip.active {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #065f46;
+  box-shadow: 0 2px 6px rgba(16,185,129,0.2);
+}
+@keyframes krFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes krScaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+
+<!-- Firebase SDK Scripts (Compat for Browser & reCAPTCHA) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+// Expose server-injected Firebase configuration
+window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | tojson | safe }};
+
+// KisanRoute Firebase Phone Auth Controller
+(function() {
+  var selectedRole = 'farmer';
+  var recaptchaVerifier = null;
+  var confirmationResult = null;
+  var countdownTimer = null;
+  var firebaseInitialized = false;
+
+  // Initialize Firebase App
+  function initFirebase() {
+    if (firebaseInitialized) return true;
+    try {
+      var cfg = window.krFirebaseConfig || window.__FIREBASE_CONFIG__;
+      if (!cfg || !cfg.apiKey || cfg.apiKey === 'your_firebase_api_key') {
+        return false;
+      }
+      if (!firebase.apps.length) {
+        firebase.initializeApp(cfg);
+      }
+      firebaseInitialized = true;
+      return true;
+    } catch (e) {
+      console.warn('[Firebase] Init note:', e);
+      return false;
+    }
+  }
+
+  // Setup invisible reCAPTCHA verifier
+  function initRecaptcha() {
+    if (recaptchaVerifier) return;
+    try {
+      if (!initFirebase()) return;
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible',
+        'callback': function(response) {
+          // reCAPTCHA solved, will proceed with signInWithPhoneNumber
+        },
+        'expired-callback': function() {
+          showNotice('reCAPTCHA expired. Please try sending OTP again.', 'error');
+          resetRecaptcha();
+        }
+      });
+      recaptchaVerifier.render().catch(function(err) {
+        console.warn('[Firebase] reCAPTCHA render note:', err);
+      });
+    } catch (e) {
+      console.warn('[Firebase] RecaptchaVerifier setup note:', e);
+    }
+  }
+
+  function resetRecaptcha() {
+    if (recaptchaVerifier) {
+      try {
+        recaptchaVerifier.clear();
+      } catch(e) {}
+      recaptchaVerifier = null;
+    }
+  }
+
+  // Role Selection
+  window.selectKrAuthRole = function(role) {
+    selectedRole = role || 'farmer';
+    var chips = document.querySelectorAll('.kr-role-chip');
+    chips.forEach(function(chip) {
+      if (chip.getAttribute('data-role') === role) {
+        chip.classList.add('active');
+      } else {
+        chip.classList.remove('active');
+      }
+    });
+  };
+
+  // Open & Close Modal
+  window.openKrLoginModal = function(defaultRole) {
+    if (defaultRole) {
+      window.selectKrAuthRole(defaultRole);
+    }
+    var overlay = document.getElementById('krLoginModalOverlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+      hideNotice();
+      switchKrAuthStep('phone');
+      setTimeout(function() {
+        var phoneInput = document.getElementById('krAuthPhoneInput');
+        if (phoneInput) phoneInput.focus();
+        initRecaptcha();
+      }, 100);
+    }
+  };
+
+  window.closeKrLoginModal = function() {
+    var overlay = document.getElementById('krLoginModalOverlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+      if (countdownTimer) clearInterval(countdownTimer);
+    }
+  };
+
+  // Switch between Step 1 (phone) and Step 2 (otp)
+  window.switchKrAuthStep = function(step) {
+    var stepPhone = document.getElementById('krAuthStepPhone');
+    var stepOtp = document.getElementById('krAuthStepOtp');
+    if (step === 'otp') {
+      if (stepPhone) stepPhone.style.display = 'none';
+      if (stepOtp) stepOtp.style.display = 'block';
+      setTimeout(function() {
+        var otpInput = document.getElementById('krAuthOtpInput');
+        if (otpInput) {
+          otpInput.value = '';
+          otpInput.focus();
+        }
+      }, 100);
+      startCountdown(30);
+    } else {
+      if (stepPhone) stepPhone.style.display = 'block';
+      if (stepOtp) stepOtp.style.display = 'none';
+      if (countdownTimer) clearInterval(countdownTimer);
+    }
+  };
+
+  window.handleKrPhoneInput = function(input) {
+    var box = document.getElementById('krPhoneInputBox');
+    if (input.value.length === 10) {
+      if (box) box.style.borderColor = '#10b981';
+    } else {
+      if (box) box.style.borderColor = '#cbd5e1';
+    }
+  };
+
+  function showNotice(msg, type) {
+    var el = document.getElementById('krAuthNotice');
+    if (!el) return;
+    el.style.display = 'block';
+    if (type === 'error') {
+      el.style.background = '#fef2f2';
+      el.style.color = '#991b1b';
+      el.style.border = '1px solid #fecaca';
+      el.innerHTML = '⚠️ ' + msg;
+    } else if (type === 'success') {
+      el.style.background = '#f0fdf4';
+      el.style.color = '#166534';
+      el.style.border = '1px solid #bbf7d0';
+      el.innerHTML = '✅ ' + msg;
+    } else {
+      el.style.background = '#eff6ff';
+      el.style.color = '#1e40af';
+      el.style.border = '1px solid #bfdbfe';
+      el.innerHTML = 'ℹ️ ' + msg;
+    }
+  }
+
+  function hideNotice() {
+    var el = document.getElementById('krAuthNotice');
+    if (el) el.style.display = 'none';
+  }
+
+  function startCountdown(seconds) {
+    if (countdownTimer) clearInterval(countdownTimer);
+    var remaining = seconds;
+    var timerText = document.getElementById('krResendTimerText');
+    var countdownNum = document.getElementById('krCountdownNum');
+    var resendBtn = document.getElementById('krResendOtpBtn');
+
+    if (timerText) timerText.style.display = 'inline';
+    if (resendBtn) resendBtn.style.display = 'none';
+    if (countdownNum) countdownNum.innerText = remaining;
+
+    countdownTimer = setInterval(function() {
+      remaining--;
+      if (countdownNum) countdownNum.innerText = remaining;
+      if (remaining <= 0) {
+        clearInterval(countdownTimer);
+        if (timerText) timerText.style.display = 'none';
+        if (resendBtn) resendBtn.style.display = 'inline';
+      }
+    }, 1000);
+  }
+
+  // STEP 1: Send OTP via Firebase signInWithPhoneNumber
+  window.sendKrPhoneOtp = async function() {
+    var phoneInput = document.getElementById('krAuthPhoneInput');
+    var rawPhone = phoneInput ? phoneInput.value.trim() : '';
+
+    if (!rawPhone || rawPhone.length !== 10 || !/^\d{10}$/.test(rawPhone)) {
+      showNotice('Please enter a valid 10-digit Indian mobile number (कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें).', 'error');
+      if (phoneInput) phoneInput.focus();
+      return;
+    }
+
+    var btn = document.getElementById('krSendOtpBtn');
+    var btnText = document.getElementById('krSendOtpText');
+    var btnIcon = document.getElementById('krSendOtpIcon');
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerText = 'Sending OTP via SMS...';
+    if (btnIcon) btnIcon.innerText = '⏳';
+    hideNotice();
+
+    var fullPhoneNumber = '+91' + rawPhone;
+    var displayEl = document.getElementById('krDisplayTargetPhone');
+    if (displayEl) displayEl.innerText = '+91 ' + rawPhone.slice(0, 5) + ' ' + rawPhone.slice(5);
+
+    var hasFirebase = initFirebase();
+    if (!hasFirebase) {
+      // Firebase keys missing in .env
+      showNotice(
+        'Firebase configuration not found. Please set VITE_FIREBASE_API_KEY in your environment, or use the 1-Click Demo login.',
+        'error'
+      );
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.innerText = 'Send SMS OTP (ओटीपी भेजें)';
+      if (btnIcon) btnIcon.innerText = '📲';
+      return;
+    }
+
+    try {
+      if (!recaptchaVerifier) {
+        initRecaptcha();
+      }
+
+      var authInstance = firebase.auth();
+      var confirmation = await authInstance.signInWithPhoneNumber(fullPhoneNumber, recaptchaVerifier);
+      confirmationResult = confirmation;
+      window.confirmationResult = confirmation;
+
+      showNotice('SMS OTP sent successfully to ' + fullPhoneNumber, 'success');
+      switchKrAuthStep('otp');
+    } catch (err) {
+      console.error('[Firebase Phone Auth] Error:', err);
+      resetRecaptcha();
+      var errorMsg = err.message || 'Failed to send OTP.';
+      if (err.code === 'auth/invalid-phone-number') {
+        errorMsg = 'Invalid phone number format.';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMsg = 'Too many requests. Please wait a few minutes before trying again.';
+      } else if (err.code === 'auth/quota-exceeded') {
+        errorMsg = 'SMS quota exceeded for today. Please use demo login.';
+      } else if (err.code === 'auth/captcha-check-failed') {
+        errorMsg = 'reCAPTCHA verification failed. Please try again.';
+      }
+      showNotice(errorMsg, 'error');
+    } finally {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.innerText = 'Send SMS OTP (ओटीपी भेजें)';
+      if (btnIcon) btnIcon.innerText = '📲';
+    }
+  };
+
+  // STEP 2: Resend OTP
+  window.resendKrPhoneOtp = function() {
+    resetRecaptcha();
+    window.sendKrPhoneOtp();
+  };
+
+  // STEP 2: Verify OTP and Sync with Supabase & Flask Session
+  window.verifyKrPhoneOtp = async function() {
+    var otpInput = document.getElementById('krAuthOtpInput');
+    var otp = otpInput ? otpInput.value.trim() : '';
+
+    if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+      showNotice('Please enter the 6-digit OTP received via SMS (कृपया 6 अंकों का ओटीपी दर्ज करें).', 'error');
+      if (otpInput) otpInput.focus();
+      return;
+    }
+
+    if (!confirmationResult && !window.confirmationResult) {
+      showNotice('Session expired. Please request a new OTP.', 'error');
+      switchKrAuthStep('phone');
+      return;
+    }
+
+    var cr = confirmationResult || window.confirmationResult;
+    var btn = document.getElementById('krVerifyOtpBtn');
+    var btnText = document.getElementById('krVerifyText');
+    var btnIcon = document.getElementById('krVerifyIcon');
+
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerText = 'Verifying & Syncing...';
+    if (btnIcon) btnIcon.innerText = '⏳';
+    hideNotice();
+
+    try {
+      // 1. Confirm OTP with Firebase
+      var credentialResult = await cr.confirm(otp);
+      var user = credentialResult.user;
+      var idToken = await user.getIdToken();
+
+      var phoneInput = document.getElementById('krAuthPhoneInput');
+      var nameInput = document.getElementById('krAuthNameInput');
+      var rawPhone = phoneInput ? phoneInput.value.trim() : '';
+      var fullName = nameInput ? nameInput.value.trim() : '';
+
+      showNotice('OTP verified! Syncing profile with Supabase and creating session...', 'info');
+
+      // 2. Sync to Backend & Supabase
+      var response = await fetch('/api/auth/firebase-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          phone: user.phoneNumber || ('+91' + rawPhone),
+          uid: user.uid,
+          role: selectedRole,
+          id_token: idToken,
+          full_name: fullName
+        })
+      });
+
+      var data = await response.json();
+
+      if (data.success) {
+        showNotice('✅ ' + (data.message || 'Login successful! Redirecting...'), 'success');
+        if (btnText) btnText.innerText = 'Logged in! Redirecting...';
+        if (btnIcon) btnIcon.innerText = '🚀';
+
+        setTimeout(function() {
+          window.location.href = data.redirect_url || '/';
+        }, 600);
+      } else {
+        showNotice(data.error || 'Server authentication failed.', 'error');
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.innerText = 'Verify & Login (लॉगिन करें)';
+        if (btnIcon) btnIcon.innerText = '✅';
+      }
+    } catch (err) {
+      console.error('[Firebase Phone Auth] Confirm Error:', err);
+      var errorMsg = err.message || 'Invalid or expired OTP.';
+      if (err.code === 'auth/invalid-verification-code') {
+        errorMsg = 'Incorrect OTP entered. Please re-check the SMS code.';
+      } else if (err.code === 'auth/code-expired') {
+        errorMsg = 'OTP has expired. Please click Resend OTP to receive a new one.';
+      }
+      showNotice(errorMsg, 'error');
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.innerText = 'Verify & Login (लॉगिन करें)';
+      if (btnIcon) btnIcon.innerText = '✅';
+      if (otpInput) otpInput.focus();
+    }
+  };
+})();
+</script>

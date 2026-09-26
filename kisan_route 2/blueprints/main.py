@@ -1,8 +1,13 @@
 import os
+from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app, flash
+from werkzeug.security import generate_password_hash
 
+from models import db, User
 from translations.strings import LANGUAGES
+from utils.auth import clean_phone
 from utils.chatbot import get_prompts, get_response
+from utils.supabase_client import supabase
 
 main_bp = Blueprint("main", __name__)
 
@@ -226,5 +231,127 @@ def maintenance_bypass():
         flash("Admin bypass activated!", "info")
         return redirect(url_for("main.home"))
     return redirect(url_for("main.home"))
+
+
+@main_bp.route("/api/auth/firebase-login", methods=["POST"])
+def firebase_login():
+    """Authenticate or register user via Firebase Phone Auth (SMS OTP),
+    sync/upsert the record into Supabase users and profiles tables,
+    and establish the Flask session across the platform.
+    """
+    payload = request.get_json(silent=True) or {}
+    phone_raw = payload.get("phone", "")
+    uid = payload.get("uid", "")
+    role = (payload.get("role") or "farmer").lower().strip()
+    id_token = payload.get("id_token", "")
+    full_name = (payload.get("full_name") or "").strip()
+
+    valid_roles = {"farmer", "driver", "cluster", "customer", "wholesaler"}
+    if role not in valid_roles:
+        role = "farmer"
+
+    if not phone_raw or not uid:
+        return jsonify({"success": False, "error": "Phone number and Firebase UID are required."}), 400
+
+    # Normalize phone: extract last 10 digits
+    cleaned = clean_phone(phone_raw)
+    phone_10 = cleaned[-10:] if len(cleaned) >= 10 else cleaned
+    if len(phone_10) != 10 or not phone_10.isdigit():
+        return jsonify({"success": False, "error": "Invalid Indian phone number format. 10 numeric digits required."}), 400
+
+    formatted_phone = f"+91{phone_10}"
+
+    # 1. Lookup or create local SQLite User
+    user = User.query.filter_by(role=role, phone=phone_10).first()
+    if not user:
+        user = User.query.filter_by(role=role, phone=formatted_phone).first()
+
+    if not user:
+        display_name = full_name or f"{role.title()} {phone_10[-4:]}"
+        user = User(
+            role=role,
+            full_name=display_name,
+            phone=phone_10,
+            password_hash=generate_password_hash(f"firebase_{uid}_{phone_10}"),
+        )
+        user.set_extra({
+            "firebase_uid": uid,
+            "auth_provider": "firebase_phone",
+            "full_phone": formatted_phone,
+            "verified_at": datetime.utcnow().isoformat()
+        })
+        db.session.add(user)
+        db.session.commit()
+    else:
+        extra = user.get_extra()
+        extra["firebase_uid"] = uid
+        extra["auth_provider"] = "firebase_phone"
+        extra["full_phone"] = formatted_phone
+        extra["last_firebase_login"] = datetime.utcnow().isoformat()
+        user.set_extra(extra)
+        if full_name and (user.full_name.startswith("Farmer") or user.full_name.startswith("Driver") or user.full_name.startswith("Cluster")):
+            user.full_name = full_name
+        db.session.commit()
+
+    # 2. Establish user session across the platform
+    session["user_id"] = user.id
+    session["role"] = user.role
+    session["name"] = user.full_name
+    session["phone"] = user.phone
+    session["firebase_uid"] = uid
+    session.permanent = True
+
+    # 3. Supabase Sync: Upsert user record into 'users' and 'profiles'
+    supabase_record = {
+        "phone": formatted_phone,
+        "role": role,
+        "full_name": user.full_name,
+        "firebase_uid": uid,
+        "auth_provider": "firebase_phone",
+        "updated_at": datetime.utcnow().isoformat()
+    }
+
+    supabase_sync_status = "skipped_not_configured"
+    if supabase.is_configured():
+        try:
+            # Sync to 'users' table
+            supabase.upsert("users", supabase_record, on_conflict="phone")
+            # Sync to 'profiles' table
+            profile_data = {
+                "id": uid,
+                "phone": formatted_phone,
+                "role": role,
+                "full_name": user.full_name,
+                "updated_at": datetime.utcnow().isoformat()
+            }
+            supabase.upsert("profiles", profile_data, on_conflict="phone")
+            supabase_sync_status = "synced"
+        except Exception as e:
+            supabase_sync_status = f"error: {str(e)}"
+
+    # 4. Determine redirect URL
+    redirect_map = {
+        "farmer": url_for("farmer.dashboard"),
+        "driver": url_for("driver.dashboard"),
+        "cluster": url_for("cluster.dashboard"),
+        "customer": url_for("customer.dashboard"),
+        "wholesaler": url_for("wholesaler.dashboard"),
+    }
+    target_url = redirect_map.get(role, url_for("main.home"))
+
+    return jsonify({
+        "success": True,
+        "message": f"Welcome back, {user.full_name}! Phone authentication successful.",
+        "user": {
+            "id": user.id,
+            "role": user.role,
+            "name": user.full_name,
+            "phone": formatted_phone,
+            "uid": uid
+        },
+        "supabase_sync": supabase_sync_status,
+        "redirect_url": target_url
+    })
+
 
 

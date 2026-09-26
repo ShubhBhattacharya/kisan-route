@@ -23,16 +23,26 @@ def create_app():
     # Vercel Serverless environment compatibility
     if os.environ.get("VERCEL"):
         app.config["UPLOAD_FOLDER"] = "/tmp/uploads"
-        tmp_db = "/tmp/kisanroute.db"
-        app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{tmp_db}"
-        src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kisanroute.db")
-        if not os.path.exists(tmp_db) and os.path.exists(src_db):
-            import shutil
-            try:
-                shutil.copyfile(src_db, tmp_db)
-                print("Copied initial database to /tmp")
-            except Exception as e:
-                print("Database copy to /tmp skipped:", e)
+        remote_db = (
+            os.environ.get("SUPABASE_DB_URL")
+            or os.environ.get("KISAN_ROUTE_DATABASE_URL")
+            or os.environ.get("DATABASE_URL")
+        )
+        if remote_db:
+            if remote_db.startswith("postgres://"):
+                remote_db = remote_db.replace("postgres://", "postgresql://", 1)
+            app.config["SQLALCHEMY_DATABASE_URI"] = remote_db
+        else:
+            tmp_db = "/tmp/kisanroute.db"
+            app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{tmp_db}"
+            src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kisanroute.db")
+            if not os.path.exists(tmp_db) and os.path.exists(src_db):
+                import shutil
+                try:
+                    shutil.copyfile(src_db, tmp_db)
+                    print("Copied initial database to /tmp")
+                except Exception as e:
+                    print("Database copy to /tmp skipped:", e)
 
     db.init_app(app)
 

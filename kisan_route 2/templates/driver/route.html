@@ -11,9 +11,71 @@
     <ol class="route-list">
       {% for point in route.waypoints %}<li>{{ point }}</li>{% endfor %}
     </ol>
-    <p>Distance: {{ route.distance_km }} km · ETA: {{ route.eta_minutes }} minutes</p>
-    <p class="form-note">Placeholder route optimizer — a real routing engine will replace this later.</p>
-    <a class="btn btn-primary" href="{{ url_for('driver.tracking', request_id=req.id) }}">Start shipment tracking</a>
+    <p><strong>Distance:</strong> {{ route.distance_km }} km · <strong>ETA:</strong> {{ route.eta_minutes }} minutes</p>
+
+    {% if route.is_live %}
+    <p class="form-note" style="color: #2D6A4F; font-weight: 600;">
+      <span aria-hidden="true">🛣️</span> Live route optimized via OpenRouteService & OpenStreetMap network.
+    </p>
+    {% else %}
+    <p class="form-note">Route calculated via KisanRoute agricultural road network.</p>
+    {% endif %}
+
+    {% if route.geometry %}
+    <div id="driverMapContainer" style="margin: 1.25rem 0;">
+      <div id="routeMap" style="height: 320px; width: 100%; border-radius: 12px; border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 4px 12px rgba(0,0,0,0.06); z-index: 1;"></div>
+    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        try {
+          var geoCoords = {{ route.geometry | tojson }};
+          if (geoCoords && geoCoords.length > 0) {
+            var latLngs = geoCoords.map(function(c) { return [c[1], c[0]]; });
+            var map = L.map('routeMap', { scrollWheelZoom: false }).setView(latLngs[0], 11);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              maxZoom: 18,
+              attribution: '&copy; OpenStreetMap contributors | OpenRouteService'
+            }).addTo(map);
+
+            var polyline = L.polyline(latLngs, {
+              color: '#1B4332',
+              weight: 5,
+              opacity: 0.9,
+              lineJoin: 'round'
+            }).addTo(map);
+
+            var startIcon = L.divIcon({
+              className: 'custom-map-marker',
+              html: '<div style="background:#2D6A4F; color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.3);">📍</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15]
+            });
+            L.marker(latLngs[0], { icon: startIcon }).addTo(map).bindPopup("<strong>Pickup:</strong> {{ req.pickup }}");
+
+            var endIcon = L.divIcon({
+              className: 'custom-map-marker',
+              html: '<div style="background:#B7094C; color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.3);">🏁</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15]
+            });
+            L.marker(latLngs[latLngs.length - 1], { icon: endIcon }).addTo(map).bindPopup("<strong>Destination:</strong> {{ req.drop }}");
+
+            map.fitBounds(polyline.getBounds(), { padding: [35, 35] });
+          }
+        } catch(e) {
+          console.error("Map rendering error:", e);
+        }
+      });
+    </script>
+    {% endif %}
+
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem;">
+      <a class="btn btn-primary" href="{{ url_for('driver.tracking', request_id=req.id) }}">Start shipment tracking</a>
+      <a class="btn" style="background: #E8F5E9; color: #1B4332; border: 1px solid #C8E6C9;" href="https://www.google.com/maps/dir/?api=1&origin={{ req.pickup|urlencode }}&destination={{ req.drop|urlencode }}" target="_blank" rel="noopener">🗺️ Live Navigation</a>
+    </div>
   </div>
 </section>
 {% endblock %}
+

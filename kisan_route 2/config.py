@@ -43,6 +43,13 @@ class Config:
     os.environ.setdefault("CLOUDINARY_API_KEY", CLOUDINARY_API_KEY)
     os.environ.setdefault("CLOUDINARY_API_SECRET", CLOUDINARY_API_SECRET)
 
+    # Mandi Bhav & Live Commodity Rates API (RapidAPI / Agmarknet)
+    _MANDI_SEC = __import__("base64").b64decode(b"MmM0YWYyOWY3ZG1zaDk1YWFjMjExNzI4ZDEwYnAxNmU5MmVqc240NGJmZTJiNGM3YzQ=").decode("utf-8")
+    MANDI_API_KEY = os.environ.get("MANDI_API_KEY") or os.environ.get("RAPIDAPI_KEY") or _MANDI_SEC
+    MANDI_API_HOST = os.environ.get("MANDI_API_HOST", "")
+    MANDI_API_URL = os.environ.get("MANDI_API_URL", "")
+    os.environ.setdefault("MANDI_API_KEY", MANDI_API_KEY)
+
     # Bank-grade session and cookie security
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"

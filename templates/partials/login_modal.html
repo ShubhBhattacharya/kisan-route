@@ -332,17 +332,25 @@
     var rawPhone = phoneInput ? phoneInput.value.trim() : '';
     var fullName = nameInput ? nameInput.value.trim() : '';
 
-    if (!rawPhone || rawPhone.length !== 10 || !/^\d{10}$/.test(rawPhone)) {
-      showNotice('Please enter a valid 10-digit Indian mobile number (कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें).', 'error');
+    // 1. Clean and normalize phone number:
+    // Strip non-numeric characters, country code, leading zeros, and +91
+    var digits = String(rawPhone || '').replace(/\D/g, '').replace(/^0+/, '');
+    if (digits.length === 12 && digits.startsWith('91')) {
+      digits = digits.slice(2);
+    }
+    var cleanPhone = digits.length >= 10 ? digits.slice(-10) : digits;
+
+    if (!cleanPhone || cleanPhone.length !== 10 || !/^\d{10}$/.test(cleanPhone)) {
+      showNotice('Please enter a valid 10-digit mobile number (e.g. 8700257488).', 'error');
       if (phoneInput) phoneInput.focus();
       return;
     }
 
-    // 1. Generate random 6-digit OTP
+    // 2. Generate random 6-digit OTP
     var generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // 2. Temporarily store OTP and phone in state
-    authState.phone = rawPhone;
+    // 3. Temporarily store OTP and clean 10-digit phone in state
+    authState.phone = cleanPhone;
     authState.fullName = fullName;
     authState.generatedOtp = generatedOtp;
 
@@ -355,10 +363,10 @@
     hideNotice();
 
     var displayEl = document.getElementById('krDisplayTargetPhone');
-    if (displayEl) displayEl.innerText = '+91 ' + rawPhone.slice(0, 5) + ' ' + rawPhone.slice(5);
+    if (displayEl) displayEl.innerText = '+91 ' + cleanPhone.slice(0, 5) + ' ' + cleanPhone.slice(5);
 
     try {
-      // 3. Call serverless /api/send-otp endpoint with phone & otp
+      // 4. Call serverless /api/send-otp endpoint with strictly 10-digit phone & otp
       var response = await fetch('/api/send-otp', {
         method: 'POST',
         headers: {
@@ -366,7 +374,7 @@
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
-          phone: rawPhone,
+          phone: cleanPhone,
           otp: generatedOtp
         })
       });
@@ -374,7 +382,7 @@
       var data = await response.json();
 
       if (data.success) {
-        showNotice('SMS OTP sent successfully to +91 ' + rawPhone, 'success');
+        showNotice('SMS OTP sent successfully to +91 ' + cleanPhone, 'success');
         switchKrAuthStep('otp');
       } else {
         // Handle error from Fast2SMS

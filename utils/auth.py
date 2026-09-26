@@ -22,11 +22,19 @@ def login_required(role: str):
 
 
 def clean_phone(phone: str) -> str:
-    """Normalize phone input by stripping whitespace, hyphens, and parentheses."""
+    """Normalize Indian phone input:
+    - Strip all non-numeric characters (+, -, spaces, parentheses)
+    - Remove leading zeros
+    - Strip country code '91' if 12 digits
+    - Return strictly the 10-digit phone number (e.g. 8700257488)
+    """
     if not phone:
         return ""
     import re
-    return re.sub(r"[\s\-\(\)\+]", "", str(phone).strip())
+    digits = re.sub(r"\D", "", str(phone).strip()).lstrip("0")
+    if len(digits) == 12 and digits.startswith("91"):
+        digits = digits[2:]
+    return digits[-10:] if len(digits) >= 10 else digits
 
 
 def is_valid_phone(phone: str) -> bool:
@@ -35,5 +43,5 @@ def is_valid_phone(phone: str) -> bool:
         return False
     cleaned = clean_phone(phone)
     import re
-    return bool(re.match(r"^\d{10}$", cleaned))
+    return bool(re.match(r"^[6-9]\d{9}$", cleaned) or (len(cleaned) == 10 and cleaned.isdigit()))
 

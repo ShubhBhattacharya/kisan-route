@@ -31,28 +31,32 @@ module.exports = async function handler(req, res) {
     }
     body = body || {};
 
-    const phone = body.phone;
-    const otp = body.otp;
+    const rawPhone = body.phone;
+    const rawOtp = body.otp;
 
-    if (!phone || !otp) {
+    if (!rawPhone || !rawOtp) {
       return res.status(400).json({
         success: false,
         message: 'Both phone and otp parameters are required.'
       });
     }
 
-    // Clean phone: keep only numeric digits and take the last 10 digits
-    const cleanedDigits = String(phone).replace(/\D/g, '');
-    const cleanPhone = cleanedDigits.length >= 10 ? cleanedDigits.slice(-10) : cleanedDigits;
+    // 1. Format phone number cleanly:
+    // Strip non-numeric characters, country code, leading zeros, and "+91"
+    let digits = String(rawPhone).replace(/\D/g, '').replace(/^0+/, '');
+    if (digits.length === 12 && digits.startsWith('91')) {
+      digits = digits.slice(2);
+    }
+    const cleanPhone = digits.length >= 10 ? digits.slice(-10) : digits;
 
-    if (cleanPhone.length !== 10) {
+    if (cleanPhone.length !== 10 || !/^\d{10}$/.test(cleanPhone)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid phone number. Must be a valid 10-digit Indian mobile number.'
+        message: 'Invalid phone number format. Strictly a 10-digit Indian mobile number is required (e.g. 8700257488).'
       });
     }
 
-    const cleanOtp = String(otp).trim();
+    const cleanOtp = String(rawOtp).trim();
     if (!/^\d{4,6}$/.test(cleanOtp)) {
       return res.status(400).json({
         success: false,
@@ -60,45 +64,111 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const apiKey = process.env.FAST2SMS_API_KEY || process.env.SMS_API_KEY;
+    const apiKey = (process.env.FAST2SMS_API_KEY || process.env.SMS_API_KEY || '').trim();
     if (!apiKey) {
+      console.error('[Fast2SMS] Missing FAST2SMS_API_KEY in server environment.');
       return res.status(500).json({
         success: false,
-        message: 'FAST2SMS_API_KEY is not configured in the server environment variables.'
+        message: 'FAST2SMS_API_KEY is not configured in server environment variables.'
       });
     }
 
-    // Fast2SMS Quick OTP API via GET request
+    // 2. Fast2SMS bulkV2 OTP route with proper encoding
     const fast2smsUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${encodeURIComponent(apiKey)}&variables_values=${encodeURIComponent(cleanOtp)}&route=otp&numbers=${encodeURIComponent(cleanPhone)}`;
 
-    const response = await fetch(fast2smsUrl, {
-      method: 'GET',
-      headers: {
-        'cache-control': 'no-cache'
+    console.log(`[Fast2SMS] Attempting OTP dispatch to ${cleanPhone}...`);
+
+    let responseData = null;
+    let isSuccess = false;
+
+    // Strategy A: Standard GET request to Fast2SMS bulkV2
+    try {
+      const getRes = await fetch(fast2smsUrl, {
+        method: 'GET',
+        headers: {
+          'authorization': apiKey,
+          'cache-control': 'no-cache',
+          'User-Agent': 'KisanRoute/1.0'
+        }
+      });
+
+      const getRawText = await getRes.text();
+      console.log(`[Fast2SMS GET Response] Status: ${getRes.status}, Body: ${getRawText}`);
+
+      try {
+        responseData = JSON.parse(getRawText);
+      } catch (parseErr) {
+        responseData = { return: false, message: getRawText };
       }
-    });
 
-    const data = await response.json();
+      if (responseData && responseData.return === true) {
+        isSuccess = true;
+      }
+    } catch (getErr) {
+      console.error('[Fast2SMS GET Network Error]:', getErr);
+    }
 
-    if (data && data.return === true) {
+    // Strategy B: POST request fallback if GET failed
+    if (!isSuccess) {
+      try {
+        console.log('[Fast2SMS] GET did not succeed, trying POST method fallback...');
+        const postRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+          method: 'POST',
+          headers: {
+            'authorization': apiKey,
+            'Content-Type': 'application/json',
+            'cache-control': 'no-cache',
+            'User-Agent': 'KisanRoute/1.0'
+          },
+          body: JSON.stringify({
+            route: 'otp',
+            variables_values: cleanOtp,
+            numbers: cleanPhone
+          })
+        });
+
+        const postRawText = await postRes.text();
+        console.log(`[Fast2SMS POST Response] Status: ${postRes.status}, Body: ${postRawText}`);
+
+        try {
+          const postData = JSON.parse(postRawText);
+          if (postData && postData.return === true) {
+            responseData = postData;
+            isSuccess = true;
+          } else if (postData) {
+            responseData = postData;
+          }
+        } catch (postParseErr) {
+          if (!responseData) responseData = { return: false, message: postRawText };
+        }
+      } catch (postErr) {
+        console.error('[Fast2SMS POST Network Error]:', postErr);
+      }
+    }
+
+    // Evaluate response
+    if (isSuccess && responseData && responseData.return === true) {
       return res.status(200).json({
         success: true,
         message: 'OTP sent successfully via Fast2SMS.',
-        request_id: data.request_id || null
+        request_id: responseData.request_id || null
       });
     } else {
       let errMsg = 'Failed to send OTP via Fast2SMS.';
-      if (data && data.message) {
-        errMsg = Array.isArray(data.message) ? data.message.join(', ') : String(data.message);
+      if (responseData && responseData.message) {
+        errMsg = Array.isArray(responseData.message)
+          ? responseData.message.join(', ')
+          : String(responseData.message);
       }
+      console.error('[Fast2SMS Final Failure Body]:', JSON.stringify(responseData));
       return res.status(400).json({
         success: false,
         message: errMsg,
-        fast2sms_response: data
+        fast2sms_response: responseData
       });
     }
   } catch (error) {
-    console.error('Error in send-otp handler:', error);
+    console.error('[Fast2SMS Handler Exception]:', error);
     return res.status(500).json({
       success: false,
       message: error.message || 'Internal server error while dispatching SMS OTP.'

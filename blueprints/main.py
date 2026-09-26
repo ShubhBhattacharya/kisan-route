@@ -272,10 +272,13 @@ def send_otp():
     import urllib.parse
     import urllib.request
 
+    message_text = f"Your KisanRoute verification code is: {otp}"
     params = urllib.parse.urlencode({
         "authorization": api_key,
-        "variables_values": otp,
-        "route": "otp",
+        "route": "q",
+        "message": message_text,
+        "language": "english",
+        "flash": "0",
         "numbers": phone_10
     })
     get_url = f"https://www.fast2sms.com/dev/bulkV2?{params}"
@@ -295,7 +298,7 @@ def send_otp():
             if data and data.get("return") is True:
                 return jsonify({
                     "success": True,
-                    "message": "OTP sent successfully via Fast2SMS.",
+                    "message": "OTP sent successfully via Fast2SMS Quick SMS.",
                     "request_id": data.get("request_id")
                 })
             else:
@@ -311,8 +314,10 @@ def send_otp():
         # Try POST method fallback with JSON body
         try:
             post_body = json.dumps({
-                "route": "otp",
-                "variables_values": otp,
+                "route": "q",
+                "message": message_text,
+                "language": "english",
+                "flash": 0,
                 "numbers": phone_10
             }).encode("utf-8")
 

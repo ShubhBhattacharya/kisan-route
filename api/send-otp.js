@@ -1,4 +1,4 @@
-// api/send-otp.js - Vercel Serverless Function for Fast2SMS Quick OTP
+// api/send-otp.js - Vercel Serverless Function for Fast2SMS Quick SMS (route=q)
 module.exports = async function handler(req, res) {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -41,8 +41,8 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 1. Format phone number cleanly:
-    // Strip non-numeric characters, country code, leading zeros, and "+91"
+    // 1. Ensure cleanPhone is strictly 10 digits:
+    // Strip non-numeric characters, country code, leading zeros, and +91
     let digits = String(rawPhone).replace(/\D/g, '').replace(/^0+/, '');
     if (digits.length === 12 && digits.startsWith('91')) {
       digits = digits.slice(2);
@@ -56,8 +56,8 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    const cleanOtp = String(rawOtp).trim();
-    if (!/^\d{4,6}$/.test(cleanOtp)) {
+    const otp = String(rawOtp).trim();
+    if (!/^\d{4,6}$/.test(otp)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid OTP format. Must be 4 to 6 numeric digits.'
@@ -73,15 +73,16 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 2. Fast2SMS bulkV2 OTP route with proper encoding
-    const fast2smsUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${encodeURIComponent(apiKey)}&variables_values=${encodeURIComponent(cleanOtp)}&route=otp&numbers=${encodeURIComponent(cleanPhone)}`;
+    // 2. Fast2SMS Quick SMS Route (route=q):
+    const messageText = `Your KisanRoute verification code is: ${otp}`;
+    const fast2smsUrl = `https://www.fast2sms.com/dev/bulkV2?authorization=${encodeURIComponent(apiKey)}&route=q&message=${encodeURIComponent(messageText)}&language=english&flash=0&numbers=${encodeURIComponent(cleanPhone)}`;
 
-    console.log(`[Fast2SMS] Attempting OTP dispatch to ${cleanPhone}...`);
+    console.log(`[Fast2SMS] Sending Quick SMS (route=q) to ${cleanPhone}...`);
 
     let responseData = null;
     let isSuccess = false;
 
-    // Strategy A: Standard GET request to Fast2SMS bulkV2
+    // Strategy A: Standard GET request to Fast2SMS bulkV2 route=q
     try {
       const getRes = await fetch(fast2smsUrl, {
         method: 'GET',
@@ -93,7 +94,7 @@ module.exports = async function handler(req, res) {
       });
 
       const getRawText = await getRes.text();
-      console.log(`[Fast2SMS GET Response] Status: ${getRes.status}, Body: ${getRawText}`);
+      console.log(`[Fast2SMS Response] Status: ${getRes.status}, Body: ${getRawText}`);
 
       try {
         responseData = JSON.parse(getRawText);
@@ -111,7 +112,7 @@ module.exports = async function handler(req, res) {
     // Strategy B: POST request fallback if GET failed
     if (!isSuccess) {
       try {
-        console.log('[Fast2SMS] GET did not succeed, trying POST method fallback...');
+        console.log('[Fast2SMS] Trying POST fallback for route=q...');
         const postRes = await fetch('https://www.fast2sms.com/dev/bulkV2', {
           method: 'POST',
           headers: {
@@ -121,8 +122,10 @@ module.exports = async function handler(req, res) {
             'User-Agent': 'KisanRoute/1.0'
           },
           body: JSON.stringify({
-            route: 'otp',
-            variables_values: cleanOtp,
+            route: 'q',
+            message: messageText,
+            language: 'english',
+            flash: 0,
             numbers: cleanPhone
           })
         });
@@ -146,11 +149,11 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Evaluate response
+    // 3. If Fast2SMS responds with return: true, respond with { success: true }
     if (isSuccess && responseData && responseData.return === true) {
       return res.status(200).json({
         success: true,
-        message: 'OTP sent successfully via Fast2SMS.',
+        message: 'OTP sent successfully via Fast2SMS Quick SMS.',
         request_id: responseData.request_id || null
       });
     } else {

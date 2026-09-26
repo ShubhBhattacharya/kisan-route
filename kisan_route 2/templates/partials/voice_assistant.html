@@ -1,10 +1,27 @@
-<div class="voice-assistant">
+<div class="voice-assistant" id="krVoiceAssistantRoot">
+  <div id="voiceCaption" class="voice-caption" hidden aria-live="polite">
+    <div class="kr-voice-header">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span class="kr-live-dot" id="krVoiceLiveDot"></span>
+        <strong id="krVoiceHeaderTitle">KisanRoute AI Voice</strong>
+      </div>
+      <button class="kr-voice-close-btn" id="krVoiceCloseBtn" type="button" aria-label="Close voice assistant">&times;</button>
+    </div>
+    <div class="kr-voice-wave" id="krVoiceWave" style="display: none;">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="kr-voice-live-text" id="krVoiceContent">
+      🎙️ बोलिए, मैं सुन रहा हूँ... (Listening...)
+    </div>
+    <div id="krVoiceActionWrap" style="display: none;"></div>
+  </div>
+
   <button
     id="voiceBtn"
     class="voice-btn"
+    type="button"
     aria-label="{{ t('voice_title') }}"
     aria-pressed="false"
-    data-voice-text="{{ t('voice_prompt_' + (session.get('role') or 'default')) }}"
+    title="KisanRoute AI Voice Assistant (बोलकर पूछें)"
   >🎙️</button>
-  <div id="voiceCaption" class="voice-caption" hidden aria-live="polite"></div>
 </div>

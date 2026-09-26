@@ -233,41 +233,318 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  /* ---------------- Voice Assistant ---------------- */
-  var voiceBtn = document.getElementById('voiceBtn');
-  var voiceCaption = document.getElementById('voiceCaption');
-  if (voiceBtn) {
-    var speaking = false;
-    voiceBtn.addEventListener('click', function () {
-      var text = voiceBtn.getAttribute('data-voice-text') || 'Welcome to Kisan Route.';
+  /* ---------------- Intelligent AI Voice Assistant ---------------- */
+  (function initKisanVoiceAssistant() {
+    var voiceBtn = document.getElementById('voiceBtn');
+    var voiceCaption = document.getElementById('voiceCaption');
+    var headerTitle = document.getElementById('krVoiceHeaderTitle');
+    var liveDot = document.getElementById('krVoiceLiveDot');
+    var waveBox = document.getElementById('krVoiceWave');
+    var contentBox = document.getElementById('krVoiceContent');
+    var actionWrap = document.getElementById('krVoiceActionWrap');
+    var closeBtn = document.getElementById('krVoiceCloseBtn');
 
-      if (speaking) {
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-        speaking = false;
+    if (!voiceBtn) return;
+
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = null;
+    var isListening = false;
+    var isSpeaking = false;
+    var navTimeout = null;
+
+    // Preload speech synthesis voices (fixes Chrome voice loading delay)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = function () {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    }
+
+    function setVisualState(state, text) {
+      if (!voiceCaption) return;
+
+      if (state === 'hidden') {
+        voiceCaption.setAttribute('hidden', '');
         voiceBtn.setAttribute('aria-pressed', 'false');
-        if (voiceCaption) voiceCaption.setAttribute('hidden', '');
+        voiceBtn.classList.remove('kr-voice-listening', 'kr-voice-speaking');
+        if (waveBox) waveBox.style.display = 'none';
+        if (actionWrap) actionWrap.style.display = 'none';
         return;
       }
 
-      if (voiceCaption) {
-        voiceCaption.textContent = text;
-        voiceCaption.removeAttribute('hidden');
+      voiceCaption.removeAttribute('hidden');
+
+      if (state === 'listening') {
+        voiceBtn.setAttribute('aria-pressed', 'true');
+        voiceBtn.classList.add('kr-voice-listening');
+        voiceBtn.classList.remove('kr-voice-speaking');
+        if (headerTitle) headerTitle.textContent = 'Listening / सुन रहे हैं...';
+        if (liveDot) liveDot.style.background = '#ef4444';
+        if (waveBox) waveBox.style.display = 'flex';
+        if (contentBox) contentBox.textContent = text || '🎙️ बोलिए, मैं सुन रहा हूँ... (Listening...)';
+        if (actionWrap) actionWrap.style.display = 'none';
+      } else if (state === 'thinking') {
+        voiceBtn.classList.remove('kr-voice-listening', 'kr-voice-speaking');
+        if (headerTitle) headerTitle.textContent = 'Thinking / उत्तर तैयार कर रहे हैं...';
+        if (liveDot) liveDot.style.background = '#f59e0b';
+        if (waveBox) waveBox.style.display = 'none';
+        if (contentBox) contentBox.textContent = text || '⏳ सोच रहे हैं...';
+      } else if (state === 'speaking') {
+        voiceBtn.setAttribute('aria-pressed', 'true');
+        voiceBtn.classList.add('kr-voice-speaking');
+        voiceBtn.classList.remove('kr-voice-listening');
+        if (headerTitle) headerTitle.textContent = 'KisanRoute AI Voice';
+        if (liveDot) liveDot.style.background = '#10b981';
+        if (waveBox) waveBox.style.display = 'flex';
+        if (contentBox && text) contentBox.textContent = text;
+      } else if (state === 'idle') {
+        voiceBtn.setAttribute('aria-pressed', 'false');
+        voiceBtn.classList.remove('kr-voice-listening', 'kr-voice-speaking');
+        if (headerTitle) headerTitle.textContent = 'KisanRoute Voice';
+        if (liveDot) liveDot.style.background = '#2e7d32';
+        if (waveBox) waveBox.style.display = 'none';
+        if (contentBox && text) contentBox.textContent = text;
       }
-      voiceBtn.setAttribute('aria-pressed', 'true');
+    }
+
+    function stopAll() {
+      if (recognition && isListening) {
+        try { recognition.abort(); } catch (e) {}
+      }
+      isListening = false;
 
       if ('speechSynthesis' in window) {
-        var utter = new SpeechSynthesisUtterance(text);
-        utter.rate = 1;
-        utter.onend = function () {
-          speaking = false;
-          voiceBtn.setAttribute('aria-pressed', 'false');
-        };
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utter);
-        speaking = true;
-      } else {
-        speaking = false;
+        try { window.speechSynthesis.cancel(); } catch (e) {}
       }
+      isSpeaking = false;
+      if (navTimeout) { clearTimeout(navTimeout); navTimeout = null; }
+      setVisualState('hidden');
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        stopAll();
+      });
+    }
+
+    function executeVoiceAction(action) {
+      if (!action || !action.url) return;
+      if (action.type === 'navigate') {
+        if (typeof window.triggerKisanTransition === 'function') {
+          window.triggerKisanTransition({ url: action.url, label: action.label || 'डैशबोर्ड' });
+        } else {
+          window.location.href = action.url;
+        }
+      }
+    }
+
+    function speakReply(replyData) {
+      var spokenText = replyData.spoken_reply || replyData.reply || '';
+      var displayReply = replyData.reply || spokenText;
+      var lang = replyData.lang || 'hi-IN';
+      var action = replyData.action || null;
+
+      setVisualState('speaking', displayReply);
+
+      if (action && actionWrap) {
+        actionWrap.innerHTML = '<a href="' + action.url + '" class="kr-voice-action-pill" id="krVoiceActionLink">' + (action.label || 'पेज खोलें') + ' &rarr;</a>';
+        actionWrap.style.display = 'block';
+        var actionLink = document.getElementById('krVoiceActionLink');
+        if (actionLink) {
+          actionLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            stopAll();
+            executeVoiceAction(action);
+          });
+        }
+      }
+
+      if (!('speechSynthesis' in window) || !spokenText) {
+        isSpeaking = false;
+        if (action) {
+          setTimeout(function () { executeVoiceAction(action); }, 1500);
+        } else {
+          setTimeout(function () { setVisualState('idle'); }, 4000);
+        }
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      var utter = new SpeechSynthesisUtterance(spokenText);
+      utter.lang = lang;
+      utter.rate = 0.95;
+      utter.pitch = 1.0;
+
+      // Voice selection
+      var voices = window.speechSynthesis.getVoices() || [];
+      var chosenVoice = null;
+
+      for (var i = 0; i < voices.length; i++) {
+        var v = voices[i];
+        var vLang = (v.lang || '').toLowerCase();
+        if (lang === 'hi-IN' && (vLang === 'hi-in' || vLang.startsWith('hi'))) {
+          chosenVoice = v;
+          break;
+        } else if (lang === 'en-IN' && (vLang === 'en-in' || vLang.startsWith('en'))) {
+          chosenVoice = v;
+          if (vLang === 'en-in') break;
+        }
+      }
+      if (chosenVoice) utter.voice = chosenVoice;
+
+      isSpeaking = true;
+
+      // Fallback timer if onend doesn't trigger on mobile browsers
+      var safetyMs = Math.max(3000, spokenText.length * 85);
+      if (action) {
+        navTimeout = setTimeout(function () {
+          if (isSpeaking) {
+            isSpeaking = false;
+            executeVoiceAction(action);
+          }
+        }, safetyMs + 800);
+      } else {
+        navTimeout = setTimeout(function () {
+          if (isSpeaking) {
+            isSpeaking = false;
+            setVisualState('idle');
+          }
+        }, safetyMs + 2000);
+      }
+
+      utter.onend = function () {
+        isSpeaking = false;
+        if (navTimeout) { clearTimeout(navTimeout); navTimeout = null; }
+        if (action) {
+          setTimeout(function () { executeVoiceAction(action); }, 500);
+        } else {
+          setTimeout(function () { setVisualState('idle'); }, 2500);
+        }
+      };
+
+      utter.onerror = function () {
+        isSpeaking = false;
+        if (navTimeout) { clearTimeout(navTimeout); navTimeout = null; }
+        if (action) {
+          executeVoiceAction(action);
+        } else {
+          setVisualState('idle');
+        }
+      };
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    function processVoiceQuery(queryText) {
+      setVisualState('thinking', '🔍 "' + queryText + '"');
+
+      fetch('/api/voice/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: queryText })
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Voice server response error: ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        speakReply(data);
+      })
+      .catch(function (err) {
+        console.error('Kisan Voice error:', err);
+        var fallbackReply = {
+          reply: 'माफ़ कीजिए, सर्वर से कनेक्ट करने में समस्या हुई। कृपया दोबारा प्रयास करें।',
+          spoken_reply: 'माफ़ कीजिए, सर्वर से कनेक्ट करने में समस्या हुई।',
+          lang: 'hi-IN'
+        };
+        speakReply(fallbackReply);
+      });
+    }
+
+    function startListening() {
+      if (!SpeechRecognition) {
+        setVisualState('idle', 'आपके ब्राउज़र में वॉइस इनपुट सपोर्ट नहीं है। कृपया Google Chrome या Safari का उपयोग करें।');
+        return;
+      }
+
+      try {
+        if (recognition) {
+          try { recognition.abort(); } catch (e) {}
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.lang = 'hi-IN'; // hi-IN captures both Hindi, Hinglish, and English in India
+        recognition.interimResults = true;
+        recognition.continuous = false;
+        recognition.maxAlternatives = 1;
+
+        var finalTranscript = '';
+
+        recognition.onstart = function () {
+          isListening = true;
+          setVisualState('listening', '🎙️ बोलिए, मैं सुन रहा हूँ... (Listening...)');
+        };
+
+        recognition.onresult = function (event) {
+          var interim = '';
+          for (var i = event.resultIndex; i < event.results.length; ++i) {
+            var trans = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += trans;
+            } else {
+              interim += trans;
+            }
+          }
+          var liveDisplay = finalTranscript || interim || '🎙️ बोलिए...';
+          if (contentBox) contentBox.textContent = liveDisplay;
+        };
+
+        recognition.onerror = function (event) {
+          isListening = false;
+          console.warn('SpeechRecognition error:', event.error);
+          var msg = 'बोलने में कोई समस्या आई। कृपया दोबारा माइक दबाकर बोलें।';
+          if (event.error === 'not-allowed') {
+            msg = 'माइक्रोफ़ोन एक्सेस अस्वीकृत है। कृपया ब्राउज़र में माइक परमिशन Allow करें।';
+          } else if (event.error === 'no-speech') {
+            msg = 'आपकी आवाज़ सुनाई नहीं दी। कृपया माइक दबाकर दोबारा बोलें।';
+          }
+          setVisualState('idle', msg);
+        };
+
+        recognition.onend = function () {
+          isListening = false;
+          var query = (finalTranscript || '').trim();
+          if (query) {
+            processVoiceQuery(query);
+          } else {
+            setTimeout(function () {
+              if (!isSpeaking && !isListening) {
+                setVisualState('hidden');
+              }
+            }, 3000);
+          }
+        };
+
+        recognition.start();
+      } catch (err) {
+        console.error('Failed to start speech recognition:', err);
+        setVisualState('idle', 'माइक शुरू नहीं हो सका। कृपया परमिशन चेक करें।');
+      }
+    }
+
+    voiceBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      if (isListening || isSpeaking) {
+        stopAll();
+        return;
+      }
+
+      startListening();
     });
-  }
+  })();
 });

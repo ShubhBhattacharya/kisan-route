@@ -40,6 +40,17 @@ def chatbot_ask():
     return jsonify({"reply": get_response(message)})
 
 
+@main_bp.route("/api/voice/process", methods=["POST"])
+def api_voice_process():
+    from utils.voice import process_voice_query
+    payload = request.get_json(silent=True) or {}
+    query = payload.get("query", "").strip()
+    lang = payload.get("lang", "hi-IN")
+    role = session.get("role") or payload.get("role") or "default"
+    result = process_voice_query(query, lang_hint=lang, role=role)
+    return jsonify(result)
+
+
 @main_bp.route("/api/weather")
 def api_weather():
     from utils.weather import get_agri_weather

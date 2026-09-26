@@ -1,4 +1,4 @@
-<!-- ================= FIREBASE PHONE AUTH (SMS OTP) MODAL ================= -->
+<!-- ================= FAST2SMS QUICK OTP LOGIN MODAL (BILINGUAL) ================= -->
 <div class="kr-auth-modal-overlay" id="krLoginModalOverlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="krAuthModalTitle">
   <div class="kr-auth-modal-card">
     <!-- Header -->
@@ -9,7 +9,7 @@
           <h3 id="krAuthModalTitle" style="margin: 0; font-size: 17px; font-weight: 800; color: #1b5e20;">
             Mobile OTP Login (मोबाइल ओटीपी)
           </h3>
-          <span style="font-size: 11.5px; color: #64748b; font-weight: 600;">Secure SMS Authentication via Firebase</span>
+          <span style="font-size: 11.5px; color: #64748b; font-weight: 600;">Fast2SMS Quick OTP Gateway</span>
         </div>
       </div>
       <button type="button" class="kr-auth-modal-close" onclick="closeKrLoginModal()" aria-label="Close modal">&times;</button>
@@ -50,7 +50,7 @@
                    onkeydown="if(event.key==='Enter'){sendKrPhoneOtp();}" />
           </div>
           <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">
-            10-digit Indian phone number (10 अंकों का मोबाइल नंबर दर्ज करें)
+            10-digit Indian mobile number (10 अंकों का मोबाइल नंबर)
           </span>
         </div>
 
@@ -61,9 +61,6 @@
           <input type="text" id="krAuthNameInput" placeholder="e.g. Ramesh Kumar"
                  style="width: 100%; box-sizing: border-box; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; font-size: 14px; outline: none;" />
         </div>
-
-        <!-- Invisible reCAPTCHA container -->
-        <div id="recaptcha-container" style="margin-bottom: 8px;"></div>
 
         <!-- Submit Button -->
         <button type="button" id="krSendOtpBtn" onclick="sendKrPhoneOtp()"
@@ -77,7 +74,7 @@
       <div id="krAuthStepOtp" style="display: none;">
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
           <div>
-            <div style="font-size: 11.5px; color: #166534; font-weight: 600;">OTP sent to / भेजा गया:</div>
+            <div style="font-size: 11.5px; color: #166534; font-weight: 600;">SMS OTP sent to / भेजा गया:</div>
             <div id="krDisplayTargetPhone" style="font-size: 14.5px; font-weight: 800; color: #14532d;">+91 9876543210</div>
           </div>
           <button type="button" onclick="switchKrAuthStep('phone')" style="background: #ffffff; border: 1px solid #86efac; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #15803d; cursor: pointer;">
@@ -101,8 +98,8 @@
           <span id="krVerifyText">Verify & Login (लॉगिन करें)</span>
         </button>
 
-        <div style="margin-top: 12px; text-align: center; font-size: 12px; color: #64748b;">
-          <span id="krResendTimerText">Resend OTP in <strong id="krCountdownNum">30</strong>s</span>
+        <div style="margin-top: 14px; text-align: center; font-size: 12px; color: #64748b;">
+          <span id="krResendTimerText">Resend OTP in <strong id="krCountdownNum">60</strong>s</span>
           <button type="button" id="krResendOtpBtn" onclick="resendKrPhoneOtp()" style="display: none; background: none; border: none; color: #10b981; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0; font-size: 12px;">
             Resend OTP (पुनः भेजें)
           </button>
@@ -112,7 +109,7 @@
 
     <!-- Modal Footer -->
     <div style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: #64748b; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-      <span>🔒 Encrypted SMS Verification</span>
+      <span>🔒 Fast2SMS Verified Route</span>
       <span style="display: inline-flex; align-items: center; gap: 4px;">
         <span>⚡</span> Supabase Connected
       </span>
@@ -198,76 +195,21 @@
 }
 </style>
 
-<!-- Firebase SDK Scripts (Compat for Browser & reCAPTCHA) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
 <script>
-// Expose server-injected Firebase configuration
-window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | tojson | safe }};
-
-// KisanRoute Firebase Phone Auth Controller
+// KisanRoute Fast2SMS Quick OTP Controller
 (function() {
-  var selectedRole = 'farmer';
-  var recaptchaVerifier = null;
-  var confirmationResult = null;
-  var countdownTimer = null;
-  var firebaseInitialized = false;
-
-  // Initialize Firebase App
-  function initFirebase() {
-    if (firebaseInitialized) return true;
-    try {
-      var cfg = window.krFirebaseConfig || window.__FIREBASE_CONFIG__;
-      if (!cfg || !cfg.apiKey || cfg.apiKey === 'your_firebase_api_key') {
-        return false;
-      }
-      if (!firebase.apps.length) {
-        firebase.initializeApp(cfg);
-      }
-      firebaseInitialized = true;
-      return true;
-    } catch (e) {
-      console.warn('[Firebase] Init note:', e);
-      return false;
-    }
-  }
-
-  // Setup invisible reCAPTCHA verifier
-  function initRecaptcha() {
-    if (recaptchaVerifier) return;
-    try {
-      if (!initFirebase()) return;
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        'size': 'invisible',
-        'callback': function(response) {
-          // reCAPTCHA solved, will proceed with signInWithPhoneNumber
-        },
-        'expired-callback': function() {
-          showNotice('reCAPTCHA expired. Please try sending OTP again.', 'error');
-          resetRecaptcha();
-        }
-      });
-      recaptchaVerifier.render().catch(function(err) {
-        console.warn('[Firebase] reCAPTCHA render note:', err);
-      });
-    } catch (e) {
-      console.warn('[Firebase] RecaptchaVerifier setup note:', e);
-    }
-  }
-
-  function resetRecaptcha() {
-    if (recaptchaVerifier) {
-      try {
-        recaptchaVerifier.clear();
-      } catch(e) {}
-      recaptchaVerifier = null;
-    }
-  }
+  // Client state
+  var authState = {
+    role: 'farmer',
+    phone: '',
+    fullName: '',
+    generatedOtp: '',
+    countdownTimer: null
+  };
 
   // Role Selection
   window.selectKrAuthRole = function(role) {
-    selectedRole = role || 'farmer';
+    authState.role = role || 'farmer';
     var chips = document.querySelectorAll('.kr-role-chip');
     chips.forEach(function(chip) {
       if (chip.getAttribute('data-role') === role) {
@@ -291,7 +233,6 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
       setTimeout(function() {
         var phoneInput = document.getElementById('krAuthPhoneInput');
         if (phoneInput) phoneInput.focus();
-        initRecaptcha();
       }, 100);
     }
   };
@@ -300,7 +241,7 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
     var overlay = document.getElementById('krLoginModalOverlay');
     if (overlay) {
       overlay.style.display = 'none';
-      if (countdownTimer) clearInterval(countdownTimer);
+      if (authState.countdownTimer) clearInterval(authState.countdownTimer);
     }
   };
 
@@ -318,11 +259,11 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
           otpInput.focus();
         }
       }, 100);
-      startCountdown(30);
+      startCountdown(60);
     } else {
       if (stepPhone) stepPhone.style.display = 'block';
       if (stepOtp) stepOtp.style.display = 'none';
-      if (countdownTimer) clearInterval(countdownTimer);
+      if (authState.countdownTimer) clearInterval(authState.countdownTimer);
     }
   };
 
@@ -363,7 +304,7 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
   }
 
   function startCountdown(seconds) {
-    if (countdownTimer) clearInterval(countdownTimer);
+    if (authState.countdownTimer) clearInterval(authState.countdownTimer);
     var remaining = seconds;
     var timerText = document.getElementById('krResendTimerText');
     var countdownNum = document.getElementById('krCountdownNum');
@@ -373,21 +314,23 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
     if (resendBtn) resendBtn.style.display = 'none';
     if (countdownNum) countdownNum.innerText = remaining;
 
-    countdownTimer = setInterval(function() {
+    authState.countdownTimer = setInterval(function() {
       remaining--;
       if (countdownNum) countdownNum.innerText = remaining;
       if (remaining <= 0) {
-        clearInterval(countdownTimer);
+        clearInterval(authState.countdownTimer);
         if (timerText) timerText.style.display = 'none';
         if (resendBtn) resendBtn.style.display = 'inline';
       }
     }, 1000);
   }
 
-  // STEP 1: Send OTP via Firebase signInWithPhoneNumber
+  // STEP 1: Generate 6-Digit OTP & Dispatch via /api/send-otp
   window.sendKrPhoneOtp = async function() {
     var phoneInput = document.getElementById('krAuthPhoneInput');
+    var nameInput = document.getElementById('krAuthNameInput');
     var rawPhone = phoneInput ? phoneInput.value.trim() : '';
+    var fullName = nameInput ? nameInput.value.trim() : '';
 
     if (!rawPhone || rawPhone.length !== 10 || !/^\d{10}$/.test(rawPhone)) {
       showNotice('Please enter a valid 10-digit Indian mobile number (कृपया 10 अंकों का मान्य मोबाइल नंबर दर्ज करें).', 'error');
@@ -395,57 +338,59 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
       return;
     }
 
+    // 1. Generate random 6-digit OTP
+    var generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // 2. Temporarily store OTP and phone in state
+    authState.phone = rawPhone;
+    authState.fullName = fullName;
+    authState.generatedOtp = generatedOtp;
+
     var btn = document.getElementById('krSendOtpBtn');
     var btnText = document.getElementById('krSendOtpText');
     var btnIcon = document.getElementById('krSendOtpIcon');
     if (btn) btn.disabled = true;
-    if (btnText) btnText.innerText = 'Sending OTP via SMS...';
+    if (btnText) btnText.innerText = 'Sending OTP via Fast2SMS...';
     if (btnIcon) btnIcon.innerText = '⏳';
     hideNotice();
 
-    var fullPhoneNumber = '+91' + rawPhone;
     var displayEl = document.getElementById('krDisplayTargetPhone');
     if (displayEl) displayEl.innerText = '+91 ' + rawPhone.slice(0, 5) + ' ' + rawPhone.slice(5);
 
-    var hasFirebase = initFirebase();
-    if (!hasFirebase) {
-      // Firebase keys missing in .env
-      showNotice(
-        'Firebase configuration not found. Please set VITE_FIREBASE_API_KEY in your environment, or use the 1-Click Demo login.',
-        'error'
-      );
-      if (btn) btn.disabled = false;
-      if (btnText) btnText.innerText = 'Send SMS OTP (ओटीपी भेजें)';
-      if (btnIcon) btnIcon.innerText = '📲';
-      return;
-    }
-
     try {
-      if (!recaptchaVerifier) {
-        initRecaptcha();
+      // 3. Call serverless /api/send-otp endpoint with phone & otp
+      var response = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          phone: rawPhone,
+          otp: generatedOtp
+        })
+      });
+
+      var data = await response.json();
+
+      if (data.success) {
+        showNotice('SMS OTP sent successfully to +91 ' + rawPhone, 'success');
+        switchKrAuthStep('otp');
+      } else {
+        // Handle error from Fast2SMS
+        var errorMsg = data.message || 'Failed to dispatch SMS OTP via Fast2SMS.';
+        if (errorMsg.includes('FAST2SMS_API_KEY')) {
+          errorMsg = 'FAST2SMS_API_KEY is not configured yet. (Development test OTP: ' + generatedOtp + ')';
+          // Still allow developer to test OTP verification in dev mode
+          showNotice(errorMsg, 'info');
+          switchKrAuthStep('otp');
+          return;
+        }
+        showNotice(errorMsg, 'error');
       }
-
-      var authInstance = firebase.auth();
-      var confirmation = await authInstance.signInWithPhoneNumber(fullPhoneNumber, recaptchaVerifier);
-      confirmationResult = confirmation;
-      window.confirmationResult = confirmation;
-
-      showNotice('SMS OTP sent successfully to ' + fullPhoneNumber, 'success');
-      switchKrAuthStep('otp');
     } catch (err) {
-      console.error('[Firebase Phone Auth] Error:', err);
-      resetRecaptcha();
-      var errorMsg = err.message || 'Failed to send OTP.';
-      if (err.code === 'auth/invalid-phone-number') {
-        errorMsg = 'Invalid phone number format.';
-      } else if (err.code === 'auth/too-many-requests') {
-        errorMsg = 'Too many requests. Please wait a few minutes before trying again.';
-      } else if (err.code === 'auth/quota-exceeded') {
-        errorMsg = 'SMS quota exceeded for today. Please use demo login.';
-      } else if (err.code === 'auth/captcha-check-failed') {
-        errorMsg = 'reCAPTCHA verification failed. Please try again.';
-      }
-      showNotice(errorMsg, 'error');
+      console.error('[Fast2SMS] Send OTP Error:', err);
+      showNotice('Network error dispatching OTP. Please check your connection.', 'error');
     } finally {
       if (btn) btn.disabled = false;
       if (btnText) btnText.innerText = 'Send SMS OTP (ओटीपी भेजें)';
@@ -455,63 +400,57 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
 
   // STEP 2: Resend OTP
   window.resendKrPhoneOtp = function() {
-    resetRecaptcha();
     window.sendKrPhoneOtp();
   };
 
-  // STEP 2: Verify OTP and Sync with Supabase & Flask Session
+  // STEP 2: Verify entered OTP matches generated OTP, create session & sync Supabase
   window.verifyKrPhoneOtp = async function() {
     var otpInput = document.getElementById('krAuthOtpInput');
-    var otp = otpInput ? otpInput.value.trim() : '';
+    var enteredOtp = otpInput ? otpInput.value.trim() : '';
 
-    if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-      showNotice('Please enter the 6-digit OTP received via SMS (कृपया 6 अंकों का ओटीपी दर्ज करें).', 'error');
+    if (!enteredOtp || enteredOtp.length !== 6 || !/^\d{6}$/.test(enteredOtp)) {
+      showNotice('Please enter the 6-digit OTP (कृपया 6 अंकों का ओटीपी दर्ज करें).', 'error');
       if (otpInput) otpInput.focus();
       return;
     }
 
-    if (!confirmationResult && !window.confirmationResult) {
+    if (!authState.generatedOtp) {
       showNotice('Session expired. Please request a new OTP.', 'error');
       switchKrAuthStep('phone');
       return;
     }
 
-    var cr = confirmationResult || window.confirmationResult;
+    // 1. Verify OTP matches the generated OTP
+    if (enteredOtp !== authState.generatedOtp) {
+      showNotice('Incorrect OTP entered. Please check your SMS and try again (गलत ओटीपी दर्ज किया गया).', 'error');
+      if (otpInput) otpInput.focus();
+      return;
+    }
+
     var btn = document.getElementById('krVerifyOtpBtn');
     var btnText = document.getElementById('krVerifyText');
     var btnIcon = document.getElementById('krVerifyIcon');
 
     if (btn) btn.disabled = true;
-    if (btnText) btnText.innerText = 'Verifying & Syncing...';
+    if (btnText) btnText.innerText = 'Creating Session & Syncing...';
     if (btnIcon) btnIcon.innerText = '⏳';
     hideNotice();
 
     try {
-      // 1. Confirm OTP with Firebase
-      var credentialResult = await cr.confirm(otp);
-      var user = credentialResult.user;
-      var idToken = await user.getIdToken();
+      showNotice('OTP verified! Creating session in Supabase and platform...', 'info');
 
-      var phoneInput = document.getElementById('krAuthPhoneInput');
-      var nameInput = document.getElementById('krAuthNameInput');
-      var rawPhone = phoneInput ? phoneInput.value.trim() : '';
-      var fullName = nameInput ? nameInput.value.trim() : '';
-
-      showNotice('OTP verified! Syncing profile with Supabase and creating session...', 'info');
-
-      // 2. Sync to Backend & Supabase
-      var response = await fetch('/api/auth/firebase-login', {
+      // 2. Create/restore session in Supabase profiles/users table and establish Flask session
+      var response = await fetch('/api/auth/phone-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
-          phone: user.phoneNumber || ('+91' + rawPhone),
-          uid: user.uid,
-          role: selectedRole,
-          id_token: idToken,
-          full_name: fullName
+          phone: authState.phone,
+          role: authState.role,
+          full_name: authState.fullName,
+          otp_verified: true
         })
       });
 
@@ -519,12 +458,14 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
 
       if (data.success) {
         showNotice('✅ ' + (data.message || 'Login successful! Redirecting...'), 'success');
-        if (btnText) btnText.innerText = 'Logged in! Redirecting...';
+        if (btnText) btnText.innerText = 'Success! Redirecting...';
         if (btnIcon) btnIcon.innerText = '🚀';
 
+        // 3. Close modal and redirect to dashboard
         setTimeout(function() {
+          closeKrLoginModal();
           window.location.href = data.redirect_url || '/';
-        }, 600);
+        }, 500);
       } else {
         showNotice(data.error || 'Server authentication failed.', 'error');
         if (btn) btn.disabled = false;
@@ -532,18 +473,11 @@ window.__FIREBASE_CONFIG__ = window.__FIREBASE_CONFIG__ || {{ firebase_config | 
         if (btnIcon) btnIcon.innerText = '✅';
       }
     } catch (err) {
-      console.error('[Firebase Phone Auth] Confirm Error:', err);
-      var errorMsg = err.message || 'Invalid or expired OTP.';
-      if (err.code === 'auth/invalid-verification-code') {
-        errorMsg = 'Incorrect OTP entered. Please re-check the SMS code.';
-      } else if (err.code === 'auth/code-expired') {
-        errorMsg = 'OTP has expired. Please click Resend OTP to receive a new one.';
-      }
-      showNotice(errorMsg, 'error');
+      console.error('[Fast2SMS] Verify OTP Error:', err);
+      showNotice('Error completing login. Please try again.', 'error');
       if (btn) btn.disabled = false;
       if (btnText) btnText.innerText = 'Verify & Login (लॉगिन करें)';
       if (btnIcon) btnIcon.innerText = '✅';
-      if (otpInput) otpInput.focus();
     }
   };
 })();

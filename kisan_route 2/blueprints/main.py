@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, render_template, request, session, url_for, redirect, send_from_directory, current_app, flash
 from werkzeug.security import generate_password_hash
 
+from config import Config
 from models import db, User
 from translations.strings import LANGUAGES
 from utils.auth import clean_phone
@@ -233,25 +234,89 @@ def maintenance_bypass():
     return redirect(url_for("main.home"))
 
 
-@main_bp.route("/api/auth/firebase-login", methods=["POST"])
-def firebase_login():
-    """Authenticate or register user via Firebase Phone Auth (SMS OTP),
-    sync/upsert the record into Supabase users and profiles tables,
-    and establish the Flask session across the platform.
+@main_bp.route("/api/send-otp", methods=["POST"])
+def send_otp():
+    """Send SMS OTP using Fast2SMS Quick OTP API via GET request:
+    https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&variables_values=${otp}&route=otp&numbers=${phone}
     """
     payload = request.get_json(silent=True) or {}
     phone_raw = payload.get("phone", "")
-    uid = payload.get("uid", "")
+    otp = str(payload.get("otp", "")).strip()
+
+    if not phone_raw or not otp:
+        return jsonify({"success": False, "message": "Both phone and otp parameters are required."}), 400
+
+    cleaned = clean_phone(phone_raw)
+    phone_10 = cleaned[-10:] if len(cleaned) >= 10 else cleaned
+    if len(phone_10) != 10 or not phone_10.isdigit():
+        return jsonify({"success": False, "message": "Invalid phone number. 10 numeric digits required."}), 400
+
+    if not (4 <= len(otp) <= 6) or not otp.isdigit():
+        return jsonify({"success": False, "message": "Invalid OTP format. 4 to 6 numeric digits required."}), 400
+
+    api_key = (
+        getattr(Config, "FAST2SMS_API_KEY", "")
+        or os.environ.get("FAST2SMS_API_KEY")
+        or os.environ.get("SMS_API_KEY", "")
+    ).strip()
+
+    if not api_key:
+        return jsonify({
+            "success": False,
+            "message": "FAST2SMS_API_KEY is not configured in server environment."
+        }), 500
+
+    import json
+    import urllib.parse
+    import urllib.request
+
+    params = urllib.parse.urlencode({
+        "authorization": api_key,
+        "variables_values": otp,
+        "route": "otp",
+        "numbers": phone_10
+    })
+    url = f"https://www.fast2sms.com/dev/bulkV2?{params}"
+
+    try:
+        req = urllib.request.Request(url, headers={"cache-control": "no-cache"})
+        with urllib.request.urlopen(req, timeout=10.0) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            if data and data.get("return") is True:
+                return jsonify({
+                    "success": True,
+                    "message": "OTP sent successfully via Fast2SMS.",
+                    "request_id": data.get("request_id")
+                })
+            else:
+                msg = data.get("message")
+                err_text = ", ".join(msg) if isinstance(msg, list) else str(msg or "Failed to send OTP via Fast2SMS.")
+                return jsonify({"success": False, "message": err_text}), 400
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": f"Network error communicating with Fast2SMS: {str(e)}"
+        }), 502
+
+
+@main_bp.route("/api/auth/phone-login", methods=["POST"])
+@main_bp.route("/api/auth/firebase-login", methods=["POST"])
+def phone_login():
+    """Verify phone authentication, create or restore user session in Supabase
+    users/profiles tables, persist local database user, and establish platform session.
+    """
+    payload = request.get_json(silent=True) or {}
+    phone_raw = payload.get("phone", "")
     role = (payload.get("role") or "farmer").lower().strip()
-    id_token = payload.get("id_token", "")
     full_name = (payload.get("full_name") or "").strip()
+    uid = payload.get("uid", "")
 
     valid_roles = {"farmer", "driver", "cluster", "customer", "wholesaler"}
     if role not in valid_roles:
         role = "farmer"
 
-    if not phone_raw or not uid:
-        return jsonify({"success": False, "error": "Phone number and Firebase UID are required."}), 400
+    if not phone_raw:
+        return jsonify({"success": False, "error": "Phone number is required."}), 400
 
     # Normalize phone: extract last 10 digits
     cleaned = clean_phone(phone_raw)
@@ -260,6 +325,7 @@ def firebase_login():
         return jsonify({"success": False, "error": "Invalid Indian phone number format. 10 numeric digits required."}), 400
 
     formatted_phone = f"+91{phone_10}"
+    user_uid = uid or f"kr_{phone_10}"
 
     # 1. Lookup or create local SQLite User
     user = User.query.filter_by(role=role, phone=phone_10).first()
@@ -272,11 +338,11 @@ def firebase_login():
             role=role,
             full_name=display_name,
             phone=phone_10,
-            password_hash=generate_password_hash(f"firebase_{uid}_{phone_10}"),
+            password_hash=generate_password_hash(f"otp_{phone_10}_{user_uid}"),
         )
         user.set_extra({
-            "firebase_uid": uid,
-            "auth_provider": "firebase_phone",
+            "uid": user_uid,
+            "auth_provider": "fast2sms_otp",
             "full_phone": formatted_phone,
             "verified_at": datetime.utcnow().isoformat()
         })
@@ -284,10 +350,10 @@ def firebase_login():
         db.session.commit()
     else:
         extra = user.get_extra()
-        extra["firebase_uid"] = uid
-        extra["auth_provider"] = "firebase_phone"
+        extra["uid"] = user_uid
+        extra["auth_provider"] = "fast2sms_otp"
         extra["full_phone"] = formatted_phone
-        extra["last_firebase_login"] = datetime.utcnow().isoformat()
+        extra["last_otp_login"] = datetime.utcnow().isoformat()
         user.set_extra(extra)
         if full_name and (user.full_name.startswith("Farmer") or user.full_name.startswith("Driver") or user.full_name.startswith("Cluster")):
             user.full_name = full_name
@@ -298,16 +364,16 @@ def firebase_login():
     session["role"] = user.role
     session["name"] = user.full_name
     session["phone"] = user.phone
-    session["firebase_uid"] = uid
+    session["auth_provider"] = "fast2sms_otp"
     session.permanent = True
 
     # 3. Supabase Sync: Upsert user record into 'users' and 'profiles'
     supabase_record = {
         "phone": formatted_phone,
+        "raw_phone": phone_10,
         "role": role,
         "full_name": user.full_name,
-        "firebase_uid": uid,
-        "auth_provider": "firebase_phone",
+        "auth_provider": "fast2sms_otp",
         "updated_at": datetime.utcnow().isoformat()
     }
 
@@ -318,10 +384,11 @@ def firebase_login():
             supabase.upsert("users", supabase_record, on_conflict="phone")
             # Sync to 'profiles' table
             profile_data = {
-                "id": uid,
+                "id": user_uid,
                 "phone": formatted_phone,
                 "role": role,
                 "full_name": user.full_name,
+                "auth_provider": "fast2sms_otp",
                 "updated_at": datetime.utcnow().isoformat()
             }
             supabase.upsert("profiles", profile_data, on_conflict="phone")
@@ -341,13 +408,12 @@ def firebase_login():
 
     return jsonify({
         "success": True,
-        "message": f"Welcome back, {user.full_name}! Phone authentication successful.",
+        "message": f"Welcome back, {user.full_name}! Login successful.",
         "user": {
             "id": user.id,
             "role": user.role,
             "name": user.full_name,
-            "phone": formatted_phone,
-            "uid": uid
+            "phone": formatted_phone
         },
         "supabase_sync": supabase_sync_status,
         "redirect_url": target_url

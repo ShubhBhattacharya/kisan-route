@@ -12,6 +12,7 @@ from utils.auth import login_required, clean_phone, is_valid_phone
 from utils.crop_quality import analyze_crop_image
 from utils.mandi import get_mandi_rates, list_crops
 from utils.otp import generate_otp, verify_otp as check_otp
+from utils.storage import upload_image_to_cloud
 
 farmer_bp = Blueprint("farmer", __name__, template_folder="../templates/farmer")
 ROLE = "farmer"
@@ -139,11 +140,16 @@ def crop_quality():
         file = request.files.get("crop_image")
         if file and file.filename:
             filename = secure_filename(file.filename)
-            upload_dir = current_app.config["UPLOAD_FOLDER"]
-            os.makedirs(upload_dir, exist_ok=True)
-            file.save(os.path.join(upload_dir, filename))
+            # 1. Upload to Cloudinary Permanent Cloud Storage
+            success, cloud_url = upload_image_to_cloud(file, folder="kisanroute/crops", filename=filename)
+            if success:
+                image_url = cloud_url
+            else:
+                upload_dir = current_app.config["UPLOAD_FOLDER"]
+                os.makedirs(upload_dir, exist_ok=True)
+                file.save(os.path.join(upload_dir, filename))
+                image_url = url_for("static", filename=f"uploads/{filename}")
             result = analyze_crop_image(filename)
-            image_url = url_for("static", filename=f"uploads/{filename}")
         else:
             flash("Please choose an image to upload.", "error")
     return render_template("farmer/crop_quality.html", result=result, image_url=image_url)

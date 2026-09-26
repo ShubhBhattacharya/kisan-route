@@ -7,6 +7,7 @@ from models import User
 from utils.auth import login_required, clean_phone, is_valid_phone
 from utils.crop_quality import analyze_crop_image
 from utils.otp import generate_otp, verify_otp as check_otp
+from utils.storage import upload_image_to_cloud
 
 cluster_bp = Blueprint("cluster", __name__, template_folder="../templates/cluster")
 ROLE = "cluster"
@@ -153,14 +154,17 @@ def add_to_group(name):
 @cluster_bp.route("/crop-quality", methods=["GET", "POST"])
 @login_required(ROLE)
 def crop_quality():
-    result = None
+    result, image_url = None, None
     if request.method == "POST":
         file = request.files.get("crop_image")
         if file and file.filename:
+            success, cloud_url = upload_image_to_cloud(file, folder="kisanroute/cluster_crops", filename=file.filename)
+            if success:
+                image_url = cloud_url
             result = analyze_crop_image(file.filename)
         else:
             flash("Please choose an image to upload.", "error")
-    return render_template("cluster/crop_quality.html", result=result)
+    return render_template("cluster/crop_quality.html", result=result, image_url=image_url)
 
 
 @cluster_bp.route("/split-calculator", methods=["GET", "POST"])

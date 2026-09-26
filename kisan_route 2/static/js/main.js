@@ -267,6 +267,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (state === 'hidden') {
         voiceCaption.setAttribute('hidden', '');
+        voiceCaption.style.display = 'none';
+        voiceCaption.classList.add('kr-hidden');
         voiceBtn.setAttribute('aria-pressed', 'false');
         voiceBtn.classList.remove('kr-voice-listening', 'kr-voice-speaking');
         if (waveBox) waveBox.style.display = 'none';
@@ -275,6 +277,8 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       voiceCaption.removeAttribute('hidden');
+      voiceCaption.style.display = 'flex';
+      voiceCaption.classList.remove('kr-hidden');
 
       if (state === 'listening') {
         voiceBtn.setAttribute('aria-pressed', 'true');
@@ -324,11 +328,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (closeBtn) {
-      closeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
+      function handleClose(e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         stopAll();
-      });
+      }
+      closeBtn.addEventListener('click', handleClose);
+      closeBtn.addEventListener('touchend', handleClose);
     }
+
+    // Dismiss voice dialogue when clicking outside
+    document.addEventListener('click', function (e) {
+      if (!voiceCaption || voiceCaption.hasAttribute('hidden') || voiceCaption.style.display === 'none') {
+        return;
+      }
+      var root = document.getElementById('krVoiceAssistantRoot');
+      if (root && !root.contains(e.target)) {
+        stopAll();
+      }
+    });
+
+    // Dismiss voice dialogue on Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && voiceCaption && !voiceCaption.hasAttribute('hidden') && voiceCaption.style.display !== 'none') {
+        stopAll();
+      }
+    });
 
     function executeVoiceAction(action) {
       if (!action || !action.url) return;

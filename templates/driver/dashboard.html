@@ -209,7 +209,7 @@
 </script>
 
 <!-- ================= RAPIDO STYLE RIDE ACCEPT / REJECT & LEAFLET MAP MODAL ================= -->
-<div id="krRideModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+<div id="krRideModalOverlay" style="display: none; pointer-events: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
   <div id="krRideModalCard" style="background: #ffffff; width: 100%; max-width: 520px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45); overflow: hidden; border: 1.5px solid #a5d6a7; position: relative; font-family: 'Inter', sans-serif;">
     
     <!-- Modal Header -->
@@ -809,6 +809,7 @@ function krOpenRideModal(tripId) {
 
   var overlay = document.getElementById('krRideModalOverlay');
   overlay.style.display = 'flex';
+  overlay.style.pointerEvents = 'auto';
 
 
   if (trip.status === 'open') {
@@ -1144,8 +1145,18 @@ function krCloseRideModal() {
   if (krNavSimInterval) clearInterval(krNavSimInterval);
   krStopDeviceGpsTracking();
   var overlay = document.getElementById('krRideModalOverlay');
-  if (overlay) overlay.style.display = 'none';
+  if (overlay) {
+    overlay.style.display = 'none';
+    overlay.style.pointerEvents = 'none';
+  }
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+  document.body.style.pointerEvents = 'auto';
+  document.documentElement.style.pointerEvents = 'auto';
 }
+
+window.addEventListener('pageshow', krCloseRideModal);
+window.addEventListener('popstate', krCloseRideModal);
 
 function showKrToast(msg, type) {
   var t = document.getElementById('krToast');

@@ -33,6 +33,10 @@
           var geoCoords = {{ route.geometry | tojson }};
           if (geoCoords && geoCoords.length > 0) {
             var latLngs = geoCoords.map(function(c) { return [c[1], c[0]]; });
+            var mapContainer = document.getElementById('routeMap');
+            if (mapContainer && mapContainer._leaflet_id) {
+              mapContainer._leaflet_id = null;
+            }
             var map = L.map('routeMap', { scrollWheelZoom: false }).setView(latLngs[0], 11);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
               maxZoom: 18,

@@ -1,5 +1,5 @@
 <!-- ================= CINEMATIC GREEN FULL-SCREEN PAGE TRANSITION OVERLAY ================= -->
-<div id="krTransitionOverlay" class="kr-cinematic-overlay" aria-hidden="true" style="display: none;">
+<div id="krTransitionOverlay" class="kr-cinematic-overlay" aria-hidden="true" style="display: none !important; pointer-events: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;">
   
   <!-- Subtle Glowing Ambient Floating Particles (Gold & Wheat Spikes) -->
   <div class="kr-ambient-particles">
@@ -109,29 +109,35 @@
 <!-- ================= CINEMATIC TRANSITION CSS STYLES ================= -->
 <style>
 /* Full-screen Overlay Container */
-.kr-cinematic-overlay {
+.kr-cinematic-overlay,
+#krTransitionOverlay {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 999999;
+  z-index: -9999 !important;
   background: radial-gradient(circle at 60% 40%, #133821 0%, #071f12 70%, #030f08 100%);
-  display: flex;
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
   flex-direction: column;
   justify-content: space-between;
   padding: 24px 32px;
   box-sizing: border-box;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  opacity: 1;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
 .kr-cinematic-overlay.kr-fade-out {
+  display: none !important;
   opacity: 0 !important;
+  visibility: hidden !important;
   transform: scale(1.025) !important;
   pointer-events: none !important;
+  z-index: -9999 !important;
 }
 
 /* Ambient Floating Particles */
@@ -603,97 +609,61 @@
 <!-- ================= CINEMATIC TRANSITION CONTROLLER SCRIPT ================= -->
 <script>
 (function() {
-  var transitionTimer = null;
-  var isTransitionActive = false;
-  var targetDestination = null;
-
-  // Global Trigger Function
+  // Direct instant navigation — bypasses intermediate banner overlay completely
   window.triggerKisanTransition = function(opts) {
-    if (isTransitionActive) return;
-    
-    opts = opts || {};
-    var url = opts.url || '/';
-    var title = opts.title || 'खेत से सीधे मंडी की ओर...';
-    var duration = opts.duration || 2600; // 2.6 seconds full experience
-
-    var overlay = document.getElementById('krTransitionOverlay');
-    var destLabel = document.getElementById('krTransitionDestLabel');
-    var progressBar = document.getElementById('krTransitionProgressBar');
-    var artworkImg = document.getElementById('krTransitionArtworkImg');
-
-    if (!overlay) {
-      window.location.href = url;
-      return;
-    }
-
-    isTransitionActive = true;
-    targetDestination = url;
-
-    // Set dynamic destination
-    if (destLabel) destLabel.textContent = title;
-
-    // Reset animations
-    overlay.classList.remove('kr-fade-out');
-    overlay.style.display = 'flex';
-    overlay.setAttribute('aria-hidden', 'false');
-
-    if (progressBar) {
-      progressBar.style.animation = 'none';
-      void progressBar.offsetWidth; // trigger reflow
-      progressBar.style.animation = 'krProgressFill ' + (duration / 1000).toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1) forwards';
-    }
-
-    if (artworkImg) {
-      artworkImg.style.animation = 'none';
-      void artworkImg.offsetWidth;
-      artworkImg.style.animation = 'krKenBurns 4.5s ease-out forwards';
-    }
-
-    // Trigger words animation reset
-    var words = overlay.querySelectorAll('.kr-word, .kr-kinetic-hindi, .kr-kinetic-chips');
-    words.forEach(function(el) {
-      var prevAnimation = el.style.animation;
-      el.style.animation = 'none';
-      void el.offsetWidth;
-      el.style.animation = prevAnimation;
-    });
-
-    // Schedule Exit Transition at (duration - 400ms) for smooth fade out
-    if (transitionTimer) clearTimeout(transitionTimer);
-    transitionTimer = setTimeout(function() {
-      executeExitNavigation(url);
-    }, duration);
+    var url = (opts && opts.url) ? opts.url : '/';
+    window.location.href = url;
   };
 
-  // Smooth Exit and Navigation
-  function executeExitNavigation(url) {
-    var overlay = document.getElementById('krTransitionOverlay');
-    if (overlay) {
-      overlay.classList.add('kr-fade-out');
+  // Comprehensive dismiss helper that unlocks the screen immediately
+  function krDismissAllOverlays() {
+    var transOverlay = document.getElementById('krTransitionOverlay');
+    if (transOverlay) {
+      transOverlay.style.setProperty('display', 'none', 'important');
+      transOverlay.style.setProperty('pointer-events', 'none', 'important');
+      transOverlay.style.setProperty('opacity', '0', 'important');
+      transOverlay.style.setProperty('visibility', 'hidden', 'important');
+      transOverlay.style.setProperty('z-index', '-9999', 'important');
     }
-    setTimeout(function() {
-      if (url) {
-        window.location.href = url;
-      }
-    }, 380);
+    var menuOverlay = document.getElementById('menuOverlay');
+    if (menuOverlay) {
+      menuOverlay.classList.remove('visible');
+      menuOverlay.style.setProperty('display', 'none', 'important');
+      menuOverlay.style.setProperty('pointer-events', 'none', 'important');
+      menuOverlay.style.setProperty('opacity', '0', 'important');
+      menuOverlay.style.setProperty('z-index', '-1', 'important');
+    }
+    var sideMenu = document.getElementById('sideMenu');
+    if (sideMenu) {
+      sideMenu.classList.remove('open');
+      sideMenu.setAttribute('aria-hidden', 'true');
+      sideMenu.style.setProperty('transform', 'translateX(-100%)', 'important');
+    }
+    var dd = document.getElementById('krThreeDotsDropdown');
+    if (dd) {
+      dd.style.setProperty('display', 'none', 'important');
+      dd.classList.remove('open');
+    }
+    var btn = document.getElementById('menuToggle');
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      btn.classList.remove('active');
+    }
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.pointerEvents = 'auto';
+    document.documentElement.style.pointerEvents = 'auto';
   }
+  window.krDismissAllOverlays = krDismissAllOverlays;
+
+  // Force-dismiss on load, bfcache restore (pageshow), and history pop (popstate)
+  window.addEventListener('pageshow', krDismissAllOverlays);
+  window.addEventListener('popstate', krDismissAllOverlays);
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Skip Button Handler
-    var skipBtn = document.getElementById('krSkipTransitionBtn');
-    if (skipBtn) {
-      skipBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (transitionTimer) clearTimeout(transitionTimer);
-        executeExitNavigation(targetDestination || '/');
-      });
-    }
+    krDismissAllOverlays();
 
-    // 2. Direct instant link navigation - no hijacking
-    // Links navigate natively and reliably without 2.6s freezing
-
-    // 3. Floating Scroll to Top Button Interaction
+    // Floating Scroll to Top Button Interaction
     var scrollBtn = document.getElementById('krScrollToTopBtn');
     if (scrollBtn) {
       window.addEventListener('scroll', function() {

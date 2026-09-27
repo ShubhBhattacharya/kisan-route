@@ -201,10 +201,20 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .menu-overlay {
   position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important;
   background: rgba(5, 20, 10, 0.65) !important; backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important;
-  opacity: 0; pointer-events: none; transition: opacity 0.22s ease !important; z-index: 9999998 !important;
+  opacity: 0; pointer-events: none !important; transition: opacity 0.22s ease !important; z-index: -1 !important;
   display: none;
 }
-.menu-overlay.visible { display: block !important; opacity: 1 !important; pointer-events: auto !important; }
+.menu-overlay.visible { display: block !important; opacity: 1 !important; pointer-events: auto !important; z-index: 9999998 !important; }
+
+/* Enforce Zero Pointer Events and Complete Hidden State for Transition Overlays */
+#krTransitionOverlay,
+.kr-cinematic-overlay {
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  z-index: -9999 !important;
+}
 
 /* ---------------- Flash messages ---------------- */
 .flash-container {

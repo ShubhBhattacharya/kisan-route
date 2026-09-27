@@ -85,11 +85,9 @@
   }
 
   /* ---------------- Side menu toggle (Dock Menu + Overlay + Esc) ---------------- */
-  var dockMenuBtn = document.getElementById('krDockMenuBtn');
-  var overlay = document.getElementById('menuOverlay');
-
-  if (dockMenuBtn) {
-    dockMenuBtn.addEventListener('click', function (e) {
+  document.addEventListener('click', function (e) {
+    var dockBtn = e.target.closest('#krDockMenuBtn');
+    if (dockBtn) {
       e.preventDefault();
       e.stopPropagation();
       if (typeof window.krToggleSideMenu === 'function') {
@@ -97,13 +95,14 @@
       } else if (typeof window.toggleSideMenu === 'function') {
         window.toggleSideMenu(e);
       }
-    });
-  }
-  if (overlay) {
-    overlay.addEventListener('click', function(e) {
+      return;
+    }
+    var ovl = e.target.closest('#menuOverlay');
+    if (ovl && e.target === ovl) {
       if (typeof window.closeSideMenu === 'function') window.closeSideMenu();
-    });
-  }
+    }
+  });
+
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && typeof window.closeSideMenu === 'function') {
       window.closeSideMenu();
@@ -379,11 +378,7 @@
     function executeVoiceAction(action) {
       if (!action || !action.url) return;
       if (action.type === 'navigate') {
-        if (typeof window.triggerKisanTransition === 'function') {
-          window.triggerKisanTransition({ url: action.url, label: action.label || 'डैशबोर्ड' });
-        } else {
-          window.location.href = action.url;
-        }
+        window.location.href = action.url;
       }
     }
 
@@ -600,4 +595,26 @@
   } else {
     initKisanMain();
   }
+
+
+  // ===== GLOBAL LIFECYCLE HANDLERS FOR BFCACHE & INSTANT NAVIGATION =====
+  window.addEventListener('pageshow', function() {
+    document.body.style.pointerEvents = 'auto';
+    document.documentElement.style.pointerEvents = 'auto';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    if (typeof window.krDismissAllOverlays === 'function') {
+      window.krDismissAllOverlays();
+    }
+  });
+
+  window.addEventListener('popstate', function() {
+    document.body.style.pointerEvents = 'auto';
+    document.documentElement.style.pointerEvents = 'auto';
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    if (typeof window.krDismissAllOverlays === 'function') {
+      window.krDismissAllOverlays();
+    }
+  });
 })();

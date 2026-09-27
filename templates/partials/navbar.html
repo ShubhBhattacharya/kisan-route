@@ -85,9 +85,13 @@
       menuOverlay.style.setProperty('display', 'none', 'important');
       menuOverlay.style.setProperty('opacity', '0', 'important');
       menuOverlay.style.setProperty('pointer-events', 'none', 'important');
+      menuOverlay.style.setProperty('z-index', '-1', 'important');
     }
     if (btnMobile) btnMobile.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.body.style.pointerEvents = 'auto';
+    document.documentElement.style.pointerEvents = 'auto';
   };
 
   window.krToggleSideMenu = function(e) {
@@ -135,9 +139,22 @@
       });
     }
   });
+
+  // Reset dropdowns/drawers on browser back (bfcache pageshow)
+  window.addEventListener('pageshow', function() {
+    window.closeKrDotsMenu();
+    window.closeSideMenu();
+  });
+  window.addEventListener('popstate', function() {
+    window.closeKrDotsMenu();
+    window.closeSideMenu();
+  });
 })();
 
 function handleKrBackNavigation() {
+  if (typeof window.krDismissAllOverlays === 'function') {
+    window.krDismissAllOverlays();
+  }
   if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
     window.history.back();
   } else {

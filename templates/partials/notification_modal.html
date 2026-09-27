@@ -36,6 +36,34 @@
 
     <!-- Live Alerts List -->
     <div class="kr-notif-list" id="krNotifList">
+      <!-- Live Wholesaler Bids (Dynamic) -->
+      {% if live_bids %}
+        {% for b in live_bids[:4] %}
+        <a href="{{ url_for('farmer.dashboard') }}#krFarmerBidsSection" class="kr-notif-item" style="background: #f0fdf4; border-left: 3.5px solid #16a34a;">
+          <div class="kr-notif-icon" style="background: #dcfce7; color: #166534;">💰</div>
+          <div class="kr-notif-content">
+            <div class="kr-notif-item-title" style="color: #15803d; font-weight: 800;"
+                 data-en="⚡ New Wholesaler Bid: ₹{{ '{:,.0f}'.format(b.offer_price) }}/Qtl ({{ b.crop }})"
+                 data-hi="⚡ नई थोक बोली: ₹{{ '{:,.0f}'.format(b.offer_price) }}/क्विंटल ({{ b.crop }})">
+              {% if is_hi %}⚡ नई थोक बोली: ₹{{ "{:,.0f}".format(b.offer_price) }}/क्विंटल ({{ b.crop }}){% else %}⚡ New Wholesaler Bid: ₹{{ "{:,.0f}".format(b.offer_price) }}/Qtl ({{ b.crop }}){% endif %}
+            </div>
+            <div class="kr-notif-item-body"
+                 data-en="{{ b.wholesaler_name }} offered ₹{{ '{:,.2f}'.format(b.offer_price) }}/Qtl for {{ b.offer_qty }} Qtl {{ b.crop }} (Total: ₹{{ '{:,.0f}'.format(b.total_value) }}). Status: {{ b.status }}"
+                 data-hi="{{ b.wholesaler_name }} ने {{ b.crop }} के लिए ₹{{ '{:,.2f}'.format(b.offer_price) }}/क्विंटल की दर से {{ b.offer_qty }} क्विंटल की बोली लगाई (कुल सौदा: ₹{{ '{:,.0f}'.format(b.total_value) }})। स्थिति: {{ b.status }}">
+              {% if is_hi %}
+                {{ b.wholesaler_name }} ने {{ b.crop }} के लिए ₹{{ "{:,.2f}".format(b.offer_price) }}/क्विंटल की दर से {{ b.offer_qty }} क्विंटल की बोली लगाई (कुल सौदा: ₹{{ "{:,.0f}".format(b.total_value) }})। स्थिति: {{ b.status }}
+              {% else %}
+                {{ b.wholesaler_name }} offered ₹{{ "{:,.2f}".format(b.offer_price) }}/Qtl for {{ b.offer_qty }} Qtl {{ b.crop }} (Total: ₹{{ "{:,.0f}".format(b.total_value) }}). Status: {{ b.status }}
+              {% endif %}
+            </div>
+            <div class="kr-notif-item-time" data-en="{{ b.created_at }}" data-hi="{{ b.created_at }}">
+              {{ b.created_at }}
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      {% endif %}
+
       <!-- Item 1: Mandi Alert -->
       <a href="{{ url_for('farmer.mandi_rates') }}" class="kr-notif-item">
         <div class="kr-notif-icon" style="background: #e8f5e9; color: #1b5e20;">📊</div>

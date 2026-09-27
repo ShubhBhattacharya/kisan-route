@@ -8,6 +8,145 @@
 
   {% include 'partials/weather_widget.html' %}
 
+  <!-- ================= INCOMING WHOLESALER BIDS & PRICE OFFERS ================= -->
+  <div id="krFarmerBidsSection" style="margin: 24px 0 28px; background: #ffffff; border-radius: 16px; border: 1.5px solid #d1e7dd; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden;">
+    <!-- Section Header -->
+    <div style="background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%); color: #ffffff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 26px;">📋</span>
+        <div>
+          <h2 style="margin: 0; font-size: 17.5px; font-weight: 800; color: #ffffff; letter-spacing: -0.2px;">
+            Wholesaler Bids & Price Offers (थोक खरीदारों की बोलियां)
+          </h2>
+          <p style="margin: 3px 0 0; font-size: 12.5px; color: #e8f5e9; opacity: 0.92;">
+            Real-time direct procurement offers and bids placed on your crops by registered traders
+          </p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        {% if incoming_bids %}
+        <span style="background: #facc15; color: #713f12; font-weight: 800; font-size: 12px; padding: 5px 14px; border-radius: 9999px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+          ⚡ {{ incoming_bids|length }} New Offer{% if incoming_bids|length > 1 %}s{% endif %}
+        </span>
+        {% else %}
+        <span style="background: rgba(255,255,255,0.18); color: #ffffff; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.3);">
+          0 Active Offers
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Active Bids List -->
+    <div style="padding: 20px 24px;">
+      {% if incoming_bids %}
+        <!-- Notification Alert Strip -->
+        <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 12px 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">🔔</span>
+          <div style="font-size: 13.5px; color: #166534; font-weight: 700;">
+            व्यापारियों ने आपकी फसल पर नई बोलियां लगाई हैं! नीचे दिए गए भाव (Offered Rate) देखें और सीधे सौदा मंजूर करें।
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          {% for b in incoming_bids %}
+          <div style="background: #ffffff; border: 1.5px solid {% if b.status == 'Offer Sent' %}#86efac{% else %}#e2e8f0{% endif %}; border-radius: 14px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+            
+            <!-- Left: Crop & Buyer Info -->
+            <div style="display: flex; align-items: center; gap: 14px; min-width: 260px;">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: #e8f5e9; color: #1b5e20; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; border: 1px solid #c8e6c9;">
+                {% if 'rice' in b.crop|lower %}🍚{% elif 'wheat' in b.crop|lower %}🌾{% elif 'mustard' in b.crop|lower %}🌼{% elif 'potato' in b.crop|lower %}🥔{% else %}📦{% endif %}
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+                  <span style="font-weight: 900; font-size: 16px; color: #1b5e20;">{{ b.crop }}</span>
+                  <span style="font-size: 11px; font-weight: 800; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; border: 1px solid #bae6fd;">{{ b.bid_id }}</span>
+                  {% if b.lot_id %}<span style="font-size: 11.5px; color: #64748b; font-weight: 600;">(Lot: {{ b.lot_id }})</span>{% endif %}
+                </div>
+                <div style="font-size: 12.5px; color: #334155;">
+                  Wholesaler: <strong style="color: #0f172a;">{{ b.wholesaler_name }}</strong>
+                  <span style="margin: 0 5px; color: #cbd5e1;">•</span>
+                  <span style="color: #64748b;">{{ b.created_at }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Middle: Rate Highlight & Quantity -->
+            <div style="display: flex; align-items: center; gap: 28px; flex-wrap: wrap;">
+              <!-- High-Visibility Price Block -->
+              <div style="text-align: right; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 16px; border-radius: 10px;">
+                <div style="font-size: 11px; color: #15803d; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Offered Rate (बोली का भाव)</div>
+                <div style="font-size: 22px; font-weight: 900; color: #166534; line-height: 1.1;">
+                  ₹{{ "{:,.2f}".format(b.offer_price) }}<span style="font-size: 13px; font-weight: 700; color: #15803d;"> / Qtl</span>
+                </div>
+              </div>
+
+              <!-- Deal Quantity & Total -->
+              <div style="text-align: right;">
+                <div style="font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Quantity & Deal Value</div>
+                <div style="font-size: 15px; font-weight: 800; color: #0f172a;">
+                  {{ b.offer_qty }} Qtl
+                  <span style="font-size: 13px; font-weight: 700; color: #2563eb; margin-left: 4px;">(₹{{ "{:,.0f}".format(b.total_value) }})</span>
+                </div>
+              </div>
+
+              <!-- Status Badge -->
+              <div>
+                {% if b.status == 'Offer Sent' %}
+                  <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px;">
+                    <span>⏳</span> New Offer Sent
+                  </span>
+                {% elif 'Confirmed' in b.status %}
+                  <span style="background: #dcfce7; color: #166534; border: 1px solid #86efac; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 5px;">
+                    <span>✅</span> Deal Confirmed
+                  </span>
+                {% else %}
+                  <span style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px;">
+                    {{ b.status }}
+                  </span>
+                {% endif %}
+              </div>
+
+              <!-- Action Controls -->
+              <div style="display: flex; align-items: center; gap: 8px;">
+                {% if b.status == 'Offer Sent' %}
+                  <form method="post" action="{{ url_for('farmer.accept_bid', bid_id=b.bid_id) }}" style="margin: 0;">
+                    <button type="submit" style="background: #1b5e20; color: #ffffff; border: none; font-size: 13px; font-weight: 800; padding: 9px 16px; border-radius: 9px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(27,94,32,0.3); transition: 0.2s;" onmouseover="this.style.background='#2e7d32'" onmouseout="this.style.background='#1b5e20'">
+                      <span>✅</span> Accept Deal (मंजूर करें)
+                    </button>
+                  </form>
+                  <form method="post" action="{{ url_for('farmer.reject_bid', bid_id=b.bid_id) }}" style="margin: 0;">
+                    <button type="submit" style="background: #f8fafc; color: #64748b; border: 1.5px solid #cbd5e1; font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 9px; cursor: pointer;" onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fca5a5'; this.style.color='#b91c1c';" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b';">
+                      Decline
+                    </button>
+                  </form>
+                {% elif 'Confirmed' in b.status %}
+                  <a href="{{ url_for('farmer.tracking') }}" style="background: #ecfdf5; color: #047857; border: 1.5px solid #a7f3d0; font-size: 12.5px; font-weight: 800; padding: 8px 14px; border-radius: 9px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <span>🚚</span> Ready for Pickup (ट्रैक करें)
+                  </a>
+                {% endif %}
+                <a href="tel:{{ b.wholesaler_phone or '+919876543210' }}" style="background: #ffffff; color: #334155; border: 1.5px solid #cbd5e1; font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 9px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;" title="Call Wholesaler">
+                  <span>📞</span> Call
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <!-- Empty State When No Bids Placed Yet -->
+        <div style="text-align: center; padding: 36px 16px; color: #64748b;">
+          <div style="font-size: 40px; margin-bottom: 10px;">🌾</div>
+          <div style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 5px;">No Pending Wholesaler Bids Right Now</div>
+          <div style="font-size: 13.5px; color: #64748b; max-width: 480px; margin: 0 auto; line-height: 1.45;">
+            Jab bhi koi registered wholesale trader (थोक व्यापारी) aapki fasal par rate offer karega, unki boli (Offered Rate), fasal, aur quantity turant yahan live dikhai degi.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
   <div class="dashboard-grid">
     <a class="feature-card" href="{{ url_for('farmer.crop_quality') }}">
       <div class="kr-feature-badge kr-badge-emerald" aria-hidden="true">

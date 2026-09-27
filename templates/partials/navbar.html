@@ -263,12 +263,13 @@ function handleKrBackNavigation() {
     <!-- Live Alerts / Notification Bell (Always visible) -->
     <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications" title="Notifications" style="flex-shrink: 0;">
       <span>🔔</span>
-      <span class="kr-bell-badge" id="krBellBadge">4</span>
+      <span class="kr-bell-badge" id="krBellBadge">{% if live_bids %}{{ 4 + live_bids|length }}{% else %}4{% endif %}</span>
     </button>
     <script>
       (function() {
         try {
-          if (localStorage.getItem('kr_notif_seen') === 'true') {
+          var hasBids = {% if live_bids and live_bids|length > 0 %}true{% else %}false{% endif %};
+          if (!hasBids && localStorage.getItem('kr_notif_seen') === 'true') {
             var b = document.getElementById('krBellBadge');
             if (b) b.style.display = 'none';
           }

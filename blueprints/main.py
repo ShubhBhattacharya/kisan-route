@@ -87,10 +87,40 @@ def api_news():
 @main_bp.route("/api/notifications")
 def api_notifications():
     from utils.weather import get_agri_weather
+    from utils.bids import get_all_bids
     lang = request.args.get("lang") or session.get("lang", "en")
     w = get_agri_weather()
     
-    alerts_data = [
+    alerts_data = []
+
+    # Insert Live Wholesaler Bids dynamically at the very top
+    try:
+        live_bids = get_all_bids()
+        for b in live_bids[:4]:
+            w_name = b.get("wholesaler_name", "थोक व्यापारी")
+            rate = float(b.get("offer_price", 0))
+            qty = float(b.get("offer_qty", 0))
+            crop = b.get("crop", "Produce")
+            total = float(b.get("total_value", 0))
+            bid_id = b.get("bid_id", "BID")
+            status = b.get("status", "Offer Sent")
+            alerts_data.append({
+                "id": f"bid_{bid_id}",
+                "category": "bid",
+                "icon": "💰",
+                "title_hi": f"⚡ थोक बोली: ₹{rate:,.0f}/क्विंटल ({crop})",
+                "title_en": f"⚡ Wholesaler Bid: ₹{rate:,.0f}/Qtl ({crop})",
+                "body_hi": f"{w_name} ने {crop} के लिए ₹{rate:,.2f}/क्विंटल की दर से {qty} क्विंटल की सीधी बोली लगाई है (कुल: ₹{total:,.0f})। स्थिति: {status}",
+                "body_en": f"{w_name} offered ₹{rate:,.2f}/Qtl for {qty} Qtl {crop} (Total: ₹{total:,.0f}). Status: {status}",
+                "time_hi": b.get("created_at", "अभी"),
+                "time_en": b.get("created_at", "Just now"),
+                "url": "/farmer/dashboard#krFarmerBidsSection"
+            })
+    except Exception as e:
+        print("[notifications] Live bids fetch note:", e)
+
+    # Standard system alerts
+    alerts_data.extend([
         {
             "id": 1,
             "category": "mandi",
@@ -139,7 +169,7 @@ def api_notifications():
             "time_en": "1 hour ago",
             "url": "/customer/dashboard"
         }
-    ]
+    ])
 
     is_hi = (lang == "hi")
     alerts = []

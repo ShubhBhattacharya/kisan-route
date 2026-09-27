@@ -6,6 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from extensions import db
 from models import User
 from utils.auth import login_required, clean_phone, is_valid_phone
+from utils.bids import save_bid, get_all_bids
 
 wholesaler_bp = Blueprint("wholesaler", __name__, template_folder="../templates/wholesaler")
 ROLE = "wholesaler"
@@ -234,8 +235,10 @@ def dashboard():
     avg_mandi = round(sum(f["mandi_rate"] for f in FARMER_LISTINGS) / max(total_lots, 1), 0)
     est_savings_pct = round(((avg_mandi - avg_asking) / max(avg_mandi, 1)) * 100, 1)
 
-    # Initialize / retrieve bids from session
-    bids = session.get("wholesaler_bids", [])
+    # Initialize / retrieve bids from persistent store and session
+    bids = get_all_bids()
+    if not bids:
+        bids = session.get("wholesaler_bids", [])
 
     metrics = {
         "total_lots": total_lots,
@@ -288,7 +291,10 @@ def place_bid():
         "bid_id": f"BID-{int(datetime.utcnow().timestamp()) % 100000}",
         "lot_id": lot_id or (listing["id"] if listing else "LOT-DIR"),
         "farmer_name": farmer_name or (listing["name"] if listing else "Farmer"),
+        "wholesaler_name": session.get("name", "Demo Wholesaler"),
+        "wholesaler_phone": session.get("phone", "+91 98765 43210"),
         "crop": crop or (listing["crop"] if listing else "Crop"),
+        "crop_hi": (listing.get("crop_hi", "") if listing else ""),
         "offer_price": offer_price,
         "offer_qty": offer_qty,
         "total_value": total_value,
@@ -296,6 +302,9 @@ def place_bid():
         "status": "Offer Sent",
         "created_at": datetime.now().strftime("%d %b, %I:%M %p"),
     }
+
+    # Persist in centralized store
+    save_bid(new_bid)
 
     if "wholesaler_bids" not in session:
         session["wholesaler_bids"] = []
@@ -332,7 +341,10 @@ def accept_lot():
         "bid_id": f"DEAL-{int(datetime.utcnow().timestamp()) % 100000}",
         "lot_id": listing["id"],
         "farmer_name": listing["name"],
+        "wholesaler_name": session.get("name", "Demo Wholesaler"),
+        "wholesaler_phone": session.get("phone", "+91 98765 43210"),
         "crop": listing["crop"],
+        "crop_hi": listing.get("crop_hi", ""),
         "offer_price": listing["asking_rate"],
         "offer_qty": qty,
         "total_value": total_value,
@@ -340,6 +352,9 @@ def accept_lot():
         "status": "Confirmed / Ready for Pickup",
         "created_at": datetime.now().strftime("%d %b, %I:%M %p"),
     }
+
+    # Persist in centralized store
+    save_bid(confirmed_deal)
 
     if "wholesaler_bids" not in session:
         session["wholesaler_bids"] = []
@@ -379,7 +394,10 @@ def negotiate(name="LOT-101"):
                 "bid_id": f"BID-{int(datetime.utcnow().timestamp()) % 100000}",
                 "lot_id": listing["id"],
                 "farmer_name": listing["name"],
+                "wholesaler_name": session.get("name", "Demo Wholesaler"),
+                "wholesaler_phone": session.get("phone", "+91 98765 43210"),
                 "crop": listing["crop"],
+                "crop_hi": listing.get("crop_hi", ""),
                 "offer_price": offer_price,
                 "offer_qty": offer_qty,
                 "total_value": total,
@@ -387,6 +405,8 @@ def negotiate(name="LOT-101"):
                 "status": "Offer Sent",
                 "created_at": datetime.now().strftime("%d %b, %I:%M %p"),
             }
+            save_bid(new_bid)
+
             if "wholesaler_bids" not in session:
                 session["wholesaler_bids"] = []
             bids_list = list(session["wholesaler_bids"])

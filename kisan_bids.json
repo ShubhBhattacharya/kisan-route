@@ -1,0 +1,17 @@
+[
+  {
+    "bid_id": "BID-22925",
+    "lot_id": "LOT-102",
+    "farmer_name": "Suresh Kumar",
+    "wholesaler_name": "Demo Wholesaler (Azadpur Mandi)",
+    "wholesaler_phone": "+91 98765 43210",
+    "crop": "Rice",
+    "crop_hi": "बासमती धान (1121)",
+    "offer_price": 2850.0,
+    "offer_qty": 60.0,
+    "total_value": 171000.0,
+    "savings_est": 12000.0,
+    "status": "Offer Sent",
+    "created_at": "27 Sep, 03:28 PM"
+  }
+]

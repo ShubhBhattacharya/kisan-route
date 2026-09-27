@@ -13,6 +13,7 @@ from utils.crop_quality import analyze_crop_image
 from utils.mandi import get_mandi_rates, list_crops
 from utils.otp import generate_otp, verify_otp as check_otp
 from utils.storage import upload_image_to_cloud
+from utils.bids import get_farmer_incoming_bids, update_bid_status, get_all_bids
 
 farmer_bp = Blueprint("farmer", __name__, template_folder="../templates/farmer")
 ROLE = "farmer"
@@ -129,7 +130,25 @@ def logout():
 def dashboard():
     user = User.query.get(session["user_id"])
     crop_type = user.get_extra().get("crop_type") if user else None
-    return render_template("farmer/dashboard.html", crop_type=crop_type)
+    farmer_name = session.get("name", "Demo Farmer")
+    incoming_bids = get_farmer_incoming_bids(farmer_name=farmer_name, crop=crop_type)
+    return render_template("farmer/dashboard.html", crop_type=crop_type, incoming_bids=incoming_bids)
+
+
+@farmer_bp.route("/accept-bid/<bid_id>", methods=["POST"])
+@login_required(ROLE)
+def accept_bid(bid_id):
+    update_bid_status(bid_id, "Deal Confirmed / Ready for Pickup")
+    flash(f"🎉 Deal Confirmed for {bid_id}! Wholesaler has been alerted for pickup and bank payout.", "success")
+    return redirect(url_for("farmer.dashboard"))
+
+
+@farmer_bp.route("/reject-bid/<bid_id>", methods=["POST"])
+@login_required(ROLE)
+def reject_bid(bid_id):
+    update_bid_status(bid_id, "Declined by Farmer")
+    flash(f"Offer {bid_id} has been declined.", "info")
+    return redirect(url_for("farmer.dashboard"))
 
 
 @farmer_bp.route("/crop-quality", methods=["GET", "POST"])

@@ -76,12 +76,14 @@ def create_app():
 
         from utils.weather import get_agri_weather
         from utils.news import get_agri_news
+        from utils.bids import get_all_bids
         return dict(
             t=t,
             current_lang=lang,
             languages=LANGUAGES,
             agri_weather=get_agri_weather(),
-            agri_news=get_agri_news()
+            agri_news=get_agri_news(),
+            live_bids=get_all_bids()
         )
 
 

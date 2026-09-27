@@ -690,9 +690,95 @@
 
 /* Mobile Responsiveness (<= 767px) */
 @media screen and (max-width: 767px) {
-  .kr-qc-hero-banner {
-    padding: 24px 14px 18px 14px;
+  /* 1. Fix Title Text Cutoff */
+  .kr-qc-hero-title {
+    font-size: clamp(1.2rem, 4.5vw, 1.5rem) !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 90% !important;
+    margin: 0 auto 12px auto !important;
+    word-break: break-word !important;
+    white-space: normal !important;
   }
+  .kr-qc-hero-banner {
+    padding: 20px 14px 16px 14px;
+  }
+
+  /* 2. Container Grid on Mobile (Compact 2-Column Grid) */
+  .kr-qc-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    padding: 0 12px !important;
+  }
+  .kr-qc-card-item {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Card dimensions */
+  .kr-qc-card {
+    width: 100% !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Product image container: fixed height with cover & top rounded */
+  .kr-qc-card-left {
+    width: 100% !important;
+    height: 120px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    border-radius: 10px 10px 0 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .kr-qc-crop-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 10px 10px 0 0 !important;
+    display: block !important;
+  }
+  .kr-qc-ribbon-badge {
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Card details: tight padding (6px 8px) */
+  .kr-qc-card-right {
+    width: 100% !important;
+    padding: 6px 8px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  .kr-qc-item-name {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .kr-qc-farmer-rating {
+    font-size: 11px !important;
+    color: #666 !important;
+    margin-top: 2px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 3. Bottom Padding for Main Content Container */
+  .kr-qc-main-content,
+  .kr-qc-page-wrapper {
+    padding-bottom: 85px !important;
+  }
+
   .kr-qc-floating-strip {
     left: 12px !important;
     right: 12px !important;

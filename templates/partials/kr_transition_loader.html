@@ -319,27 +319,27 @@
   will-change: transform, opacity, filter;
 }
 
-/* Staggered Timings - Fast Smooth Reveal within 350ms */
+/* Staggered Timings - Cinematic 4-5s Pace */
 .w-ab {
-  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.03s forwards;
+  animation: krWordReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
 }
 .w-har {
-  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.07s forwards;
+  animation: krWordReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.75s forwards;
 }
 .w-kisan {
   color: #fde047;
   text-shadow: 0 0 28px rgba(250, 204, 21, 0.75), 0 2px 6px rgba(0,0,0,0.8);
-  animation: krWordRevealGold 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+  animation: krWordRevealGold 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.25s forwards;
 }
 .w-haq {
-  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.17s forwards;
+  animation: krWordReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
 }
 .w-khayega {
   color: #ffffff;
   text-decoration: underline;
   text-decoration-color: #facc15;
   text-underline-offset: 6px;
-  animation: krWordRevealImpact 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+  animation: krWordRevealImpact 0.6s cubic-bezier(0.16, 1, 0.3, 1) 2.35s forwards;
 }
 
 @keyframes krWordReveal {
@@ -371,7 +371,7 @@
   gap: 8px;
   opacity: 0;
   transform: translateY(14px);
-  animation: krFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.26s forwards;
+  animation: krFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 2.85s forwards;
 }
 .kr-h-icon {
   font-size: 20px;
@@ -386,7 +386,7 @@
   margin-bottom: 28px;
   opacity: 0;
   transform: translateY(14px);
-  animation: krFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards;
+  animation: krFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 3.3s forwards;
 }
 .kr-k-chip {
   background: rgba(255, 255, 255, 0.08);
@@ -421,7 +421,7 @@
   background: linear-gradient(90deg, #10b981 0%, #facc15 100%);
   border-radius: 9999px;
   box-shadow: 0 0 12px #facc15;
-  animation: krProgressFill 0.55s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: krProgressFill 4.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 @keyframes krProgressFill {
   0% { width: 0%; }
@@ -656,10 +656,10 @@
   }
   window.krDismissAllOverlays = krDismissAllOverlays;
 
-  // Render & Play the Brand Transition Screen (max 650ms strictly < 700ms)
+  // Render & Play the Brand Transition Screen (4-5 seconds cinematic experience)
   function playBrandTransition(opts) {
     opts = opts || {};
-    var duration = opts.duration || 650;
+    var duration = opts.duration || 4500;
     var onComplete = opts.onComplete;
     var overlay = document.getElementById('krTransitionOverlay');
 
@@ -683,7 +683,7 @@
     if (progressBar) {
       progressBar.style.animation = 'none';
       void progressBar.offsetWidth;
-      progressBar.style.animation = 'krProgressFill ' + (duration / 1000).toFixed(2) + 's ease-out forwards';
+      progressBar.style.animation = 'krProgressFill ' + (duration / 1000).toFixed(2) + 's cubic-bezier(0.25, 1, 0.5, 1) forwards';
     }
 
     // Reset kinetic typography and chips
@@ -695,13 +695,13 @@
       el.style.animation = prev;
     });
 
-    // Smooth fade out at (duration - 180ms)
+    // Smooth fade out at (duration - 350ms)
     transitionTimer = setTimeout(function() {
       overlay.classList.add('kr-fade-out');
       if (typeof onComplete === 'function') {
         onComplete();
       }
-    }, Math.max(300, duration - 180));
+    }, Math.max(300, duration - 350));
 
     // Hard dismiss at duration
     hideTimer = setTimeout(function() {
@@ -725,7 +725,7 @@
     isNavigating = true;
 
     playBrandTransition({
-      duration: 650,
+      duration: 4500,
       onComplete: function() {
         if (url) {
           window.location.href = url;
@@ -733,11 +733,11 @@
       }
     });
 
-    // Safety fallback: in case navigation is delayed or cancelled, unlock UI after 750ms
+    // Safety fallback: in case navigation is delayed or cancelled, unlock UI after 5200ms
     setTimeout(function() {
       isNavigating = false;
       krDismissAllOverlays();
-    }, 750);
+    }, 5200);
   };
 
   // Immediate dismiss on browser Back/Forward (BFCache / popstate) to prevent any freeze
@@ -749,8 +749,8 @@
   });
 
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Render Brand Transition Screen on Initial Page Load (smoothly auto-dismisses at 650ms)
-    playBrandTransition({ duration: 650 });
+    // 1. Render Brand Transition Screen on Initial Page Load (smoothly auto-dismisses at 4.5s)
+    playBrandTransition({ duration: 4500 });
 
     // 2. Skip Button: instantly dismiss and unlock
     var skipBtn = document.getElementById('krSkipTransitionBtn');

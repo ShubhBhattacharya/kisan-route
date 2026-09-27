@@ -852,4 +852,278 @@ document.addEventListener('DOMContentLoaded', function() {
   startAutoPlay();
 });
 </script>
+
+<!-- ================= SEQUENTIAL PROMO POPUP MODAL (ZOMATO / BLINKIT STYLE) ================= -->
+<div id="krPromoOverlay" class="kr-promo-overlay" style="display: none;">
+  <div class="kr-promo-card" id="krPromoCard" role="dialog" aria-modal="true" aria-label="KisanRoute Special Offers">
+    
+    <!-- Top-Right Close Button -->
+    <button type="button" class="kr-promo-close" id="krPromoCloseBtn" aria-label="Close promo" title="Close (बंद करें)">&times;</button>
+    
+    <!-- Clickable Banner Area -->
+    <div class="kr-promo-body" id="krPromoClickArea" title="Click to view offer">
+      <img id="krPromoImage" class="kr-promo-img" src="" alt="KisanRoute Special Offer" />
+      <div class="kr-promo-cta-bar" id="krPromoCtaBar">
+        <span id="krPromoCtaText">🛍️ अभी ऑर्डर करें! (Order Now) &rarr;</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.kr-promo-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.78) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  z-index: 9999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.kr-promo-overlay.kr-promo-visible {
+  opacity: 1 !important;
+}
+.kr-promo-card {
+  position: relative !important;
+  max-width: 410px !important;
+  width: 100% !important;
+  max-height: 88vh !important;
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1.5px rgba(255, 255, 255, 0.15) !important;
+  background: #0f2c16 !important;
+  animation: krPromoZoom 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+@keyframes krPromoZoom {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.kr-promo-close {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.2s, background 0.2s !important;
+  padding: 0 !important;
+}
+.kr-promo-close:hover {
+  background: #000000 !important;
+  transform: scale(1.12) !important;
+}
+.kr-promo-body {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+}
+.kr-promo-img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: calc(88vh - 54px) !important;
+  object-fit: contain !important;
+  background: #0f2c16 !important;
+  transition: opacity 0.2s ease !important;
+}
+.kr-promo-cta-bar {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%) !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  padding: 13px 18px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.3px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+.kr-promo-cta-bar:hover {
+  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%) !important;
+}
+@media (max-width: 480px) {
+  .kr-promo-card {
+    max-width: 92vw !important;
+    max-height: 85vh !important;
+  }
+  .kr-promo-img {
+    max-height: calc(85vh - 48px) !important;
+  }
+  .kr-promo-cta-bar {
+    padding: 11px 14px !important;
+    font-size: 13.5px !important;
+  }
+}
+</style>
+
+<script>
+(function() {
+  // If user already closed all promos in current session, do not show again
+  try {
+    if (sessionStorage.getItem('kr_promo_seen') === 'true') {
+      return;
+    }
+  } catch(e) {}
+
+  var promos = [
+    {
+      img: "{{ url_for('static', filename='images/promo_banner_1.png') }}",
+      cta: "🛍️ अभी ऑर्डर करें! (Flat 50% Off) &rarr;",
+      alt: "KisanRoute Maha Diwali Offer Flat 50% Off"
+    },
+    {
+      img: "{{ url_for('static', filename='images/promo_banner_2.png') }}",
+      cta: "🌾 प्रोग्राम में शामिल हों! (Join Program) &rarr;",
+      alt: "KisanRoute Sankalp 2026 Unnat Kheti"
+    }
+  ];
+
+  var currentIndex = 0;
+  var overlay = document.getElementById('krPromoOverlay');
+  var card = document.getElementById('krPromoCard');
+  var closeBtn = document.getElementById('krPromoCloseBtn');
+  var promoImg = document.getElementById('krPromoImage');
+  var ctaText = document.getElementById('krPromoCtaText');
+  var clickArea = document.getElementById('krPromoClickArea');
+
+  if (!overlay || !card || !promoImg) return;
+
+  function renderPromo(idx) {
+    if (idx >= promos.length) {
+      closePromoForever();
+      return;
+    }
+    var item = promos[idx];
+    promoImg.style.opacity = '0';
+    setTimeout(function() {
+      promoImg.src = item.img;
+      promoImg.alt = item.alt;
+      if (ctaText) ctaText.innerHTML = item.cta;
+      promoImg.onload = function() {
+        promoImg.style.opacity = '1';
+      };
+      // fallback in case already cached
+      promoImg.style.opacity = '1';
+    }, 120);
+  }
+
+  function openPromo() {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function() {
+      overlay.classList.add('kr-promo-visible');
+    });
+    renderPromo(0);
+  }
+
+  function advancePromo(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    currentIndex++;
+    if (currentIndex < promos.length) {
+      // Re-trigger zoom animation for next promo
+      card.style.animation = 'none';
+      void card.offsetHeight;
+      card.style.animation = 'krPromoZoom 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
+      renderPromo(currentIndex);
+    } else {
+      closePromoForever();
+    }
+  }
+
+  function closePromoForever() {
+    try {
+      sessionStorage.setItem('kr_promo_seen', 'true');
+    } catch(e) {}
+    
+    // Unlock body scroll and pointer events
+    document.body.style.overflow = '';
+    document.body.style.pointerEvents = 'auto';
+
+    if (overlay) {
+      overlay.classList.remove('kr-promo-visible');
+      overlay.style.pointerEvents = 'none';
+      setTimeout(function() {
+        if (overlay && overlay.parentNode) {
+          overlay.remove();
+        }
+      }, 250);
+    }
+  }
+
+  // Close ('✕') button advances to next promo or closes
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      advancePromo(e);
+    });
+  }
+
+  // Clicking backdrop outside card advances/closes
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      advancePromo(e);
+    }
+  });
+
+  // Clicking banner navigates to Customer login / action route
+  if (clickArea) {
+    clickArea.addEventListener('click', function(e) {
+      if (e.target === closeBtn || (closeBtn && closeBtn.contains(e.target))) {
+        return;
+      }
+      window.location.href = "{{ url_for('customer.login') }}";
+    });
+  }
+
+  // Keyboard 'Escape' key closes/advances
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay && overlay.style.display !== 'none') {
+      advancePromo(e);
+    }
+  });
+
+  // Launch popup after DOM ready (slight delay for smooth page entry)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(openPromo, 350);
+    });
+  } else {
+    setTimeout(openPromo, 350);
+  }
+})();
+</script>
 {% endblock %}

@@ -66,6 +66,10 @@ def create_app():
     app.register_blueprint(customer_bp, url_prefix="/customer")
     app.register_blueprint(driver_bp, url_prefix="/driver")
     app.register_blueprint(wholesaler_bp, url_prefix="/wholesaler")
+    
+    # Meta WhatsApp Cloud API & Kisan Mitra Assistant Blueprint
+    from routes.whatsapp_webhook import whatsapp_bp
+    app.register_blueprint(whatsapp_bp)
 
     @app.context_processor
     def inject_globals():

@@ -9,6 +9,7 @@
     </select>
   </form>
 
+  <!-- Desktop & Tablet Table View -->
   <div class="table-responsive">
     <table class="table">
       <thead><tr><th>Mandi</th><th>Rate (₹ / quintal)</th></tr></thead>
@@ -21,6 +22,26 @@
         {% endfor %}
       </tbody>
     </table>
+  </div>
+
+  <!-- Mobile Swipeable / Vertical Rate Cards (max-width: 767px) -->
+  <div class="kr-mobile-mandi-grid">
+    {% for r in rates %}
+    <div class="kr-mandi-card {% if r.region == best.region %}highlight{% endif %}">
+      <div>
+        <div style="font-weight: 800; font-size: 15px; color: #1b5e20; display: flex; align-items: center; gap: 6px;">
+          <span>📍</span> {{ r.region }}
+        </div>
+        {% if r.region == best.region %}
+        <span class="badge" style="display: inline-block; margin-top: 4px; font-size: 11px; background: #facc15; color: #713f12; font-weight: 800; padding: 2px 8px; border-radius: 9999px;">⭐ Most profitable</span>
+        {% endif %}
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 11px; color: #64748b; font-weight: 700; display: block;">Rate / Qtl</span>
+        <span style="font-size: 20px; font-weight: 900; color: #15803d;">₹{{ r.rate }}</span>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </section>
 {% endblock %}

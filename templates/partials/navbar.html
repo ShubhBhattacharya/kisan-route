@@ -257,9 +257,36 @@ function handleKrBackNavigation() {
         </span>
       </div>
     </a>
+
+    <!-- Mobile Delivery ETA Chip (Left Side next to Logo) -->
+    <a href="{{ url_for('customer.dashboard') }}" class="kr-mobile-eta-chip" title="Fast Farm Delivery">
+      <span>⚡</span> <span>45 Mins | Noida ▾</span>
+    </a>
+
+    <!-- Desktop Navigation Group with all Pills (Desktop & Tablet) -->
+    <nav id="leftNavGroup" class="desktop-only-nav">
+      <a class="btn-ghost {% if request.path == '/' %}active{% endif %}" href="{{ url_for('main.home') }}"><span>🏠</span> Home</a>
+      <a class="btn-ghost {% if '/farmer' in request.path %}active{% endif %}" href="/farmer/login"><span>🌾</span> Farmer</a>
+      <a class="btn-ghost {% if '/cluster' in request.path %}active{% endif %}" href="/cluster/login"><span>🤝</span> Cluster</a>
+      <a class="btn-ghost {% if '/customer' in request.path %}active{% endif %}" href="/customer/login"><span>🛒</span> Customer</a>
+      <a class="btn-ghost {% if '/driver' in request.path %}active{% endif %}" href="/driver/login"><span>🚚</span> Driver</a>
+      <a class="btn-ghost {% if '/wholesaler' in request.path %}active{% endif %}" href="/wholesaler/login"><span>🏬</span> Wholesaler</a>
+      <a class="btn-ghost {% if request.path == '/about' %}active{% endif %}" href="{{ url_for('main.about') }}"><span>ℹ️</span> About</a>
+    </nav>
   </div>
 
   <div class="topbar-right" style="display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; white-space: nowrap; z-index: 10;">
+    <!-- Mobile Native Quick Actions: Search & Cart Badge (Right Side) -->
+    <div class="kr-mobile-header-actions">
+      <a href="{{ url_for('customer.dashboard') }}" class="kr-mobile-quick-btn" title="Search Produce" aria-label="Search">
+        <span>🔍</span>
+      </a>
+      <a href="{{ url_for('customer.dashboard') }}" class="kr-mobile-quick-btn" title="View Cart" aria-label="Cart">
+        <span>🛒</span>
+        <span class="kr-mobile-cart-badge" id="krMobileHeaderCartBadge" style="display: none;">0</span>
+      </a>
+    </div>
+
     <!-- Live Alerts / Notification Bell (Always visible) -->
     <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications" title="Notifications" style="flex-shrink: 0;">
       <span>🔔</span>
@@ -272,6 +299,17 @@ function handleKrBackNavigation() {
           if (!hasBids && localStorage.getItem('kr_notif_seen') === 'true') {
             var b = document.getElementById('krBellBadge');
             if (b) b.style.display = 'none';
+          }
+          // Sync mobile cart badge count if cart exists in localStorage
+          var storedCart = localStorage.getItem('kr_cart');
+          if (storedCart) {
+            var parsed = JSON.parse(storedCart);
+            var count = Object.values(parsed).reduce(function(a, b) { return a + (b.qty || 0); }, 0);
+            var mBadge = document.getElementById('krMobileHeaderCartBadge');
+            if (mBadge && count > 0) {
+              mBadge.textContent = count;
+              mBadge.style.display = 'inline-block';
+            }
           }
         } catch(e) {}
       })();
@@ -504,7 +542,7 @@ function handleKrBackNavigation() {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .kr-mobile-hamburger-btn {
     display: inline-flex !important;
     align-items: center;

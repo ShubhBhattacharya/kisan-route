@@ -1,22 +1,29 @@
-<!-- ================= NATIVE MOBILE APP BOTTOM NAVIGATION DOCK (4 CLEAN TABS) ================= -->
+<!-- ================= NATIVE MOBILE APP BOTTOM NAVIGATION DOCK (4 CORE TABS) ================= -->
 <nav class="kr-app-bottom-dock" id="krAppBottomDock" aria-label="App Navigation">
   <a href="{{ url_for('main.home') }}" class="kr-dock-tab {% if request.path == '/' %}active{% endif %}">
     <span class="kr-dock-icon">🏠</span>
     <span class="kr-dock-text">Home</span>
   </a>
 
-  <a href="{{ url_for('customer.dashboard') }}" class="kr-dock-tab {% if '/customer/dashboard' in request.path %}active{% endif %}">
-    <span class="kr-dock-icon">📦</span>
-    <span class="kr-dock-text">Categories</span>
+  <a href="{% if session.get('role') == 'farmer' %}{{ url_for('farmer.dashboard') }}{% else %}/farmer/login{% endif %}" class="kr-dock-tab {% if '/farmer' in request.path %}active{% endif %}">
+    <span class="kr-dock-icon">🌾</span>
+    <span class="kr-dock-text">Mandi/Farmer</span>
   </a>
 
-  <a href="/portal/farmer" class="kr-dock-tab {% if '/farmer' in request.path %}active{% endif %}">
-    <span class="kr-dock-icon">🚜</span>
-    <span class="kr-dock-text">Farmer</span>
-  </a>
-
-  <a href="/portal/customer" class="kr-dock-tab {% if '/customer' in request.path and '/dashboard' not in request.path %}active{% endif %}">
+  <a href="{{ url_for('customer.dashboard') }}" class="kr-dock-tab {% if '/customer' in request.path %}active{% endif %}">
     <span class="kr-dock-icon">🛒</span>
-    <span class="kr-dock-text">Cart/Customer</span>
+    <span class="kr-dock-text">Shop/Customer</span>
   </a>
+
+  {% if session.get('user_id') %}
+  <a href="{{ url_for(session.get('role', 'farmer') + '.logout') }}" class="kr-dock-tab">
+    <span class="kr-dock-icon">👤</span>
+    <span class="kr-dock-text">Logout</span>
+  </a>
+  {% else %}
+  <a href="javascript:void(0)" onclick="openKrLoginModal()" class="kr-dock-tab">
+    <span class="kr-dock-icon">👤</span>
+    <span class="kr-dock-text">Account</span>
+  </a>
+  {% endif %}
 </nav>

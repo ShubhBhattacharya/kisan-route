@@ -850,7 +850,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 }
 
 /* ---------------- Responsive ---------------- */
-@media (max-width: 860px) {
+@media screen and (max-width: 767px) {
   .topbar {
     padding: 10px 14px;
     gap: 10px;
@@ -881,7 +881,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
   }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 767px) {
   /* Clean compact mobile topbar */
   .topbar {
     padding: 8px 12px !important;

@@ -1,0 +1,568 @@
+/* ==========================================================================
+   KISANROUTE STRICT DEVICE-SPECIFIC ADAPTIVE UI SYSTEM
+   --------------------------------------------------------------------------
+   Breakpoints:
+     1. Mobile:  @media screen and (max-width: 767px)
+     2. Tablet:  @media screen and (min-width: 768px) and (max-width: 1024px)
+     3. Desktop: @media screen and (min-width: 1025px) -> 100% UNTOUCHED
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. UNIVERSAL POINTER SAFETY & OVERLAY DISMISS GUARD
+   Ensures hidden overlays/modals never capture touch/click events or freeze UI
+   -------------------------------------------------------------------------- */
+[style*="display: none"],
+[style*="display:none"],
+.kr-cinematic-overlay[aria-hidden="true"],
+.menu-overlay:not(.visible),
+.kr-lang-modal-overlay:not(.open),
+.kr-notif-overlay:not(.open),
+.kr-checkout-modal-overlay:not(.open) {
+  pointer-events: none !important;
+}
+
+/* ==========================================================================
+   1. MOBILE UI SYSTEM (max-width: 767px)
+   Zepto / Blinkit high-converting app-native feel across ALL user flows
+   ========================================================================== */
+@media screen and (max-width: 767px) {
+
+  /* --- Global Wrapper Padding so bottom dock & widgets never overlap content --- */
+  main,
+  .dashboard,
+  .kr-qc-page-wrapper,
+  .cluster-container,
+  .feature-page,
+  .auth-box {
+    padding-bottom: 85px !important;
+  }
+
+  /* --- Reposition Floating Chatbot & Voice Assistant above Bottom Dock --- */
+  #krChatLauncher,
+  .chat-window,
+  .chatbot-window,
+  .voice-assistant,
+  .chatbot-trigger,
+  .kr-floating-cart,
+  #krScrollToTopBtn {
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 12px) !important;
+    z-index: 99990 !important;
+  }
+
+  /* --- Hide Desktop Navigation Pills on Mobile --- */
+  #leftNavGroup,
+  .desktop-only-nav,
+  .desktop-only-lang,
+  .desktop-only-btn,
+  .desktop-only-chip,
+  .kr-topbar-lang-btn,
+  .kr-announcement-hide-mobile {
+    display: none !important;
+  }
+
+  /* --- Mobile App Header: Compact, sticky, and touch-friendly --- */
+  .topbar {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9990 !important;
+    background: #ffffff !important;
+    border-bottom: 1.5px solid #e5e7eb !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .kr-mobile-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .kr-mobile-eta-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+    color: #15803d !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    padding: 3px 8px !important;
+    border-radius: 9999px !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+  }
+
+  .kr-mobile-quick-btn {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 15px !important;
+    color: #1b5e20 !important;
+    text-decoration: none !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
+  }
+
+  .kr-mobile-cart-badge {
+    position: absolute !important;
+    top: -3px !important;
+    right: -3px !important;
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    font-size: 10px !important;
+    font-weight: 900 !important;
+    border-radius: 9999px !important;
+    padding: 1px 5px !important;
+    min-width: 14px !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important;
+  }
+
+  /* --- Sticky Native Mobile Bottom Navigation Dock (4 Tabs) --- */
+  .kr-app-bottom-dock {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    background: #ffffff !important;
+    border-top: 1.5px solid #d1fae5 !important;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.07) !important;
+    z-index: 999999 !important;
+    box-sizing: border-box !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+  }
+
+  .kr-dock-tab {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    color: #4b5563 !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    padding: 6px 0 !important;
+    transition: color 0.15s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .kr-dock-tab.active,
+  .kr-dock-tab:active {
+    color: #15803d !important;
+  }
+
+  .kr-dock-icon {
+    font-size: 20px !important;
+    margin-bottom: 2px !important;
+    line-height: 1 !important;
+  }
+
+  /* --- Customer Dashboard / Marketplace Mobile (Zepto / Blinkit 2-Col Grid) --- */
+  .kr-qc-hero-banner {
+    padding: 18px 12px 14px 12px !important;
+  }
+
+  .kr-qc-hero-title {
+    font-size: 20px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Horizontal swipeable category chips */
+  .kr-qc-pills-wrapper {
+    padding: 10px 12px 14px 12px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    justify-content: flex-start !important;
+  }
+  .kr-qc-pills-wrapper::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .kr-qc-pills-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    gap: 8px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .kr-qc-pill {
+    padding: 6px 14px !important;
+    font-size: 12.5px !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+    flex-shrink: 0 !important;
+  }
+
+  .kr-qc-pill.active {
+    background: #15803d !important;
+    color: #ffffff !important;
+    border-color: #15803d !important;
+  }
+
+  /* 2-Column Product Grid on Mobile */
+  .kr-qc-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 4px !important;
+  }
+
+  /* Compact 1:1 Image Ratio Vertical Zepto Card */
+  .kr-qc-card {
+    flex-direction: column !important;
+    height: auto !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .kr-qc-card-left {
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    position: relative !important;
+  }
+
+  .kr-qc-crop-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .kr-qc-card-right {
+    width: 100% !important;
+    padding: 8px 10px 10px 10px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .kr-qc-item-name {
+    font-size: 13.5px !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .kr-qc-farmer-rating {
+    font-size: 10.5px !important;
+    color: #6b7280 !important;
+  }
+
+  .kr-qc-price-stock-box {
+    margin-top: 2px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .kr-qc-price-pill {
+    font-size: 13.5px !important;
+    font-weight: 900 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    color: #111827 !important;
+  }
+
+  .kr-qc-stock-bar-group {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Compact +ADD Button and Stepper */
+  .kr-qc-add-btn {
+    width: 100% !important;
+    padding: 6px 0 !important;
+    font-size: 12.5px !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+  }
+
+  .kr-qc-stepper-active {
+    width: 100% !important;
+    justify-content: space-between !important;
+    border-radius: 8px !important;
+    padding: 2px !important;
+  }
+
+  .kr-qc-step-btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  .kr-qc-step-display {
+    font-size: 11px !important;
+  }
+
+  /* Floating Bottom Checkout Strip on Mobile */
+  .kr-qc-floating-strip {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 8px) !important;
+    padding: 10px 14px !important;
+    border-radius: 14px !important;
+    z-index: 99995 !important;
+  }
+
+  .kr-qc-strip-count {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+  }
+
+  .kr-qc-strip-checkout-btn {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    padding: 8px 14px !important;
+    border-radius: 9999px !important;
+  }
+
+  /* --- Farmer Dashboard Mobile UI --- */
+  .dashboard {
+    padding: 14px 12px 85px 12px !important;
+  }
+
+  .dashboard h1 {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* Weather Widget Mobile Card */
+  .kr-weather-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .kr-weather-body {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .kr-weather-stat {
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+  }
+
+  .kr-weather-stat-val {
+    font-size: 16px !important;
+  }
+
+  /* Large Touch-Target Action Cards: Thumb-Friendly 2-Column Grid */
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .feature-card {
+    padding: 14px 12px !important;
+    border-radius: 14px !important;
+    min-height: 125px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+  }
+
+  .feature-card h2 {
+    font-size: 13.5px !important;
+    font-weight: 800 !important;
+    margin: 6px 0 2px 0 !important;
+    line-height: 1.25 !important;
+  }
+
+  .feature-card p {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+    color: #4b5563 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* Mandi Rates Mobile View */
+  .kr-mobile-mandi-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-top: 14px !important;
+  }
+
+  .kr-mandi-card {
+    background: #ffffff !important;
+    border: 1.5px solid #e5e7eb !important;
+    border-radius: 14px !important;
+    padding: 14px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+  }
+
+  .kr-mandi-card.highlight {
+    border-color: #86efac !important;
+    background: #f0fdf4 !important;
+  }
+
+  /* Cluster Hub Mobile View */
+  .cluster-container {
+    padding: 12px !important;
+  }
+
+  .cluster-metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+/* ==========================================================================
+   2. TABLET UI SYSTEM (min-width: 768px) and (max-width: 1024px)
+   Target: Clean E-Commerce Catalog & Balanced 2-Column Data Dashboard
+   ========================================================================== */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+
+  /* --- No Bottom Bar on Tablets (rely on top navigation) --- */
+  .kr-app-bottom-dock {
+    display: none !important;
+  }
+
+  /* Mobile quick views hidden on tablets */
+  .kr-mobile-qc-view,
+  .kr-mobile-header-actions {
+    display: none !important;
+  }
+
+  /* Restore standard main wrapper padding */
+  main,
+  .dashboard,
+  .kr-qc-page-wrapper,
+  .cluster-container,
+  .feature-page {
+    padding-bottom: 32px !important;
+  }
+
+  /* --- Top Slim Navbar with Role Switchers --- */
+  .topbar {
+    padding: 8px 18px !important;
+    gap: 12px !important;
+  }
+
+  #leftNavGroup,
+  .desktop-only-nav {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    max-width: 520px !important;
+  }
+
+  #leftNavGroup .btn-ghost {
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* --- Customer Marketplace: 3-Column Split Product Card Grid --- */
+  .kr-qc-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .kr-qc-card {
+    height: 160px !important;
+    border-radius: 14px !important;
+  }
+
+  .kr-qc-card-left {
+    width: 42% !important;
+  }
+
+  .kr-qc-card-right {
+    width: 58% !important;
+    padding: 10px !important;
+  }
+
+  .kr-qc-item-name {
+    font-size: 14px !important;
+  }
+
+  .kr-qc-price-pill {
+    font-size: 12px !important;
+    padding: 2px 6px !important;
+  }
+
+  /* --- Farmer Dashboard: Balanced 2-Column Grid --- */
+  .kr-farmer-tablet-layout {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 18px !important;
+    align-items: start !important;
+    margin-bottom: 20px !important;
+  }
+  .kr-farmer-tablet-layout #krFarmerBidsSection {
+    margin: 0 !important;
+  }
+
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  /* Mandi Detector on Tablet */
+  .table-responsive {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+  }
+
+  /* Cluster Pool Metrics on Tablet: 3 columns */
+  .cluster-metrics-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+}
+
+/* ==========================================================================
+   3. LAPTOP / DESKTOP (min-width: 1025px)
+   ABSOLUTE GOLDEN RULE: 100% UNTOUCHED BASELINE
+   ========================================================================== */
+@media screen and (min-width: 1025px) {
+  /* Permanently hide mobile bottom dock and mobile quick-view on desktop */
+  .kr-app-bottom-dock,
+  .kr-mobile-qc-view,
+  .kr-mobile-header-actions {
+    display: none !important;
+  }
+
+  /* Ensure desktop nav group is fully active and visible */
+  #leftNavGroup,
+  .desktop-only-nav {
+    display: inline-flex !important;
+  }
+}

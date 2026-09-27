@@ -23,6 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.7">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-adaptive.css') }}?v=1.0">
   <link rel="preload" as="image" href="{{ url_for('static', filename='images/hero_slide_1.png') }}" fetchpriority="high">
 
   <style>
@@ -50,7 +51,7 @@
       width: 100%;
     }
 
-    @media (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       /* Eliminate heavy GPU backdrop-filter blur on mobile to fix scrolling stutter */
       .kr-app-bottom-dock,
       .topbar,

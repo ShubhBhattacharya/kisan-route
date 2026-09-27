@@ -23,7 +23,7 @@
     {% endif %}
 
     <!-- Desktop Three-dot menu button (Hidden on mobile < 768px) -->
-    <button id="menuToggle" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu" onclick="toggleSideMenu()">
+    <button id="menuToggle" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
       <span></span><span></span><span></span>
     </button>
 
@@ -74,7 +74,7 @@
     {% endif %}
 
     <!-- Mobile Hamburger Menu Button [☰] (Visible on mobile < 768px) -->
-    <button type="button" id="menuToggleMobile" class="kr-mobile-hamburger-btn mobile-only-menu-btn" aria-label="Open menu drawer" aria-expanded="false" aria-controls="sideMenu" onclick="toggleSideMenu()" title="Menu">
+    <button type="button" id="menuToggleMobile" class="kr-mobile-hamburger-btn mobile-only-menu-btn" aria-label="Open menu drawer" aria-expanded="false" aria-controls="sideMenu" title="Menu">
       <span class="kr-hamburger-icon">☰</span>
     </button>
   </div>
@@ -126,11 +126,11 @@
     </li>
     {% endif %}
     <li><a href="{{ url_for('main.home') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏠</span> Home (मुख्य पृष्ठ)</a></li>
-    <li><a href="{{ url_for('farmer.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
-    <li><a href="{{ url_for('driver.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
-    <li><a href="{{ url_for('wholesaler.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
-    <li><a href="{{ url_for('cluster.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
-    <li><a href="{{ url_for('customer.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
+    <li><a href="/portal/farmer" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
+    <li><a href="/portal/driver" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
+    <li><a href="/portal/wholesaler" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
+    <li><a href="/portal/cluster" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
+    <li><a href="/portal/customer" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
     <li><a href="{{ url_for('farmer.mandi_rates') }}" onclick="closeSideMenu()"><span aria-hidden="true">📊</span> Mandi Rates (मंडी भाव)</a></li>
     <li><a href="{{ url_for('main.about') }}" onclick="closeSideMenu()"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }} (हमारे बारे में)</a></li>
     <li style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px;">
@@ -230,7 +230,12 @@
 </style>
 
 <script>
+var _krMenuLock = false;
 window.toggleSideMenu = function() {
+  if (_krMenuLock) return;
+  _krMenuLock = true;
+  setTimeout(function() { _krMenuLock = false; }, 220);
+
   var sideMenu = document.getElementById('sideMenu');
   var menuOverlay = document.getElementById('menuOverlay');
   if (sideMenu) {

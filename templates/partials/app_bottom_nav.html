@@ -5,7 +5,7 @@
     <span class="kr-dock-text">Home</span>
   </a>
 
-  <a href="{% if session.get('role') == 'farmer' %}{{ url_for('farmer.dashboard') }}{% else %}{{ url_for('farmer.login') }}{% endif %}" class="kr-dock-tab {% if '/farmer' in request.path and 'mandi' not in request.path %}active{% endif %}">
+  <a href="/portal/farmer" class="kr-dock-tab {% if '/farmer' in request.path and 'mandi' not in request.path %}active{% endif %}">
     <span class="kr-dock-icon">🌾</span>
     <span class="kr-dock-text">Farmer</span>
   </a>
@@ -15,7 +15,7 @@
     <span class="kr-dock-text">Mandi</span>
   </a>
 
-  <a href="{% if session.get('role') == 'customer' %}{{ url_for('customer.dashboard') }}{% else %}{{ url_for('customer.login') }}{% endif %}" class="kr-dock-tab {% if '/customer' in request.path %}active{% endif %}">
+  <a href="/portal/customer" class="kr-dock-tab {% if '/customer' in request.path %}active{% endif %}">
     <span class="kr-dock-icon">🛒</span>
     <span class="kr-dock-text">Customer</span>
   </a>
@@ -25,20 +25,3 @@
     <span class="kr-dock-text">Menu</span>
   </button>
 </nav>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var dockMenuBtn = document.getElementById('krDockMenuBtn');
-  if (dockMenuBtn) {
-    dockMenuBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (typeof window.toggleSideMenu === 'function') {
-        window.toggleSideMenu();
-      } else {
-        var menuToggle = document.getElementById('menuToggle') || document.getElementById('menuToggleMobile');
-        if (menuToggle) menuToggle.click();
-      }
-    });
-  }
-});
-</script>

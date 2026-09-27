@@ -26,16 +26,38 @@ document.addEventListener('DOMContentLoaded', function () {
     navGroup.className = 'desktop-only-nav';
     
     navGroup.innerHTML = `
-      <a href="/" class="btn-ghost"><span style="font-size: 14px;">🏠</span> Home</a>
-      <a href="/farmer/login" class="btn-ghost"><span style="font-size: 14px;">🌾</span> Farmer</a>
-      <a href="/cluster/login" class="btn-ghost"><span style="font-size: 14px;">🤝</span> Cluster</a>
-      <a href="/customer/login" class="btn-ghost"><span style="font-size: 14px;">🛒</span> Customer</a>
-      <a href="/driver/login" class="btn-ghost"><span style="font-size: 14px;">🚚</span> Driver</a>
-      <a href="/wholesaler/login" class="btn-ghost"><span style="font-size: 14px;">🏬</span> Wholesaler</a>
-      <a href="/about" class="btn-ghost"><span style="font-size: 14px;">ℹ️</span> About</a>
+      <a href="/" class="btn-ghost" data-role="home"><span style="font-size: 14px;">🏠</span> Home</a>
+      <a href="/portal/farmer" class="btn-ghost" data-role="farmer"><span style="font-size: 14px;">🌾</span> Farmer</a>
+      <a href="/portal/cluster" class="btn-ghost" data-role="cluster"><span style="font-size: 14px;">🤝</span> Cluster</a>
+      <a href="/portal/customer" class="btn-ghost" data-role="customer"><span style="font-size: 14px;">🛒</span> Customer</a>
+      <a href="/portal/driver" class="btn-ghost" data-role="driver"><span style="font-size: 14px;">🚚</span> Driver</a>
+      <a href="/portal/wholesaler" class="btn-ghost" data-role="wholesaler"><span style="font-size: 14px;">🏬</span> Wholesaler</a>
+      <a href="/about" class="btn-ghost" data-role="about"><span style="font-size: 14px;">ℹ️</span> About</a>
     `;
 
     brand.after(navGroup);
+
+    function updateActiveNavRole() {
+      var currentPath = window.location.pathname.toLowerCase();
+      var navLinks = navGroup.querySelectorAll('.btn-ghost');
+      if (!navLinks || !navLinks.length) return;
+
+      navLinks.forEach(function(link) {
+        link.classList.remove('active', 'is-active');
+        var role = link.getAttribute('data-role');
+        if (!role) return;
+
+        if (role === 'home' && (currentPath === '/' || currentPath === '' || currentPath === '/index.html')) {
+          link.classList.add('active', 'is-active');
+        } else if (role === 'about' && currentPath.indexOf('/about') !== -1) {
+          link.classList.add('active', 'is-active');
+        } else if (role !== 'home' && role !== 'about' && currentPath.indexOf('/' + role) === 0) {
+          link.classList.add('active', 'is-active');
+        }
+      });
+    }
+    updateActiveNavRole();
+    window.addEventListener('popstate', updateActiveNavRole);
   }
 
   /* ---------------- Dynamic Blurred Image Background for Auth Pages ---------------- */
@@ -66,8 +88,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var menuToggleMobile = document.getElementById('menuToggleMobile');
   var dockMenuBtn = document.getElementById('krDockMenuBtn');
   var overlay = document.getElementById('menuOverlay');
+  var lastMenuToggleTime = 0;
 
   window.openSideMenu = function() {
+    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
+    if (!overlay) overlay = document.getElementById('menuOverlay');
     if (!sideMenu) return;
     sideMenu.classList.add('open');
     if (overlay) overlay.classList.add('visible');
@@ -78,6 +103,8 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   window.closeSideMenu = function() {
+    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
+    if (!overlay) overlay = document.getElementById('menuOverlay');
     if (!sideMenu) return;
     sideMenu.classList.remove('open');
     if (overlay) overlay.classList.remove('visible');
@@ -88,6 +115,10 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   window.toggleSideMenu = function() {
+    var now = Date.now();
+    if (now - lastMenuToggleTime < 220) return;
+    lastMenuToggleTime = now;
+    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
     if (!sideMenu) return;
     sideMenu.classList.contains('open') ? window.closeSideMenu() : window.openSideMenu();
   };
@@ -95,18 +126,21 @@ document.addEventListener('DOMContentLoaded', function () {
   if (menuToggle) {
     menuToggle.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
       window.toggleSideMenu();
     });
   }
   if (menuToggleMobile) {
     menuToggleMobile.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
       window.toggleSideMenu();
     });
   }
   if (dockMenuBtn) {
     dockMenuBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      e.stopPropagation();
       window.toggleSideMenu();
     });
   }

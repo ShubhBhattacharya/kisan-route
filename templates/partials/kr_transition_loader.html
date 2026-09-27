@@ -690,77 +690,8 @@
       });
     }
 
-    // 2. Intercept Internal Navigation Links & Dashboard Switches
-    document.addEventListener('click', function(e) {
-      var a = e.target.closest('a');
-      if (!a) return;
-
-      // Ignore modifier clicks (open in new tab/window)
-      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
-      if (a.target === '_blank' || a.hasAttribute('download')) return;
-      
-      var href = a.getAttribute('href');
-      if (!href || href === '#' || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('whatsapp:')) return;
-
-      var destUrl;
-      try {
-        destUrl = new URL(a.href, window.location.origin);
-      } catch(err) {
-        return;
-      }
-      if (destUrl.origin !== window.location.origin) return;
-
-      // Skip if clicking same exact URL
-      if (destUrl.pathname === window.location.pathname && destUrl.search === window.location.search) return;
-
-      var destPath = destUrl.pathname.toLowerCase();
-
-      // Check if navigating to key portals, dashboards, or main tabs
-      var isDashboardTarget = destPath.indexOf('/dashboard') !== -1 ||
-                              destPath.indexOf('/mandi-rates') !== -1 ||
-                              destPath.indexOf('/profit-calculator') !== -1 ||
-                              destPath.indexOf('/crop-quality') !== -1 ||
-                              destPath.indexOf('/schemes') !== -1 ||
-                              destPath.indexOf('/insurance') !== -1 ||
-                              destPath.indexOf('/tracking') !== -1;
-
-      var isPortalSwitch = destPath.startsWith('/farmer') ||
-                           destPath.startsWith('/wholesaler') ||
-                           destPath.startsWith('/driver') ||
-                           destPath.startsWith('/cluster') ||
-                           destPath.startsWith('/customer') ||
-                           destPath === '/about' ||
-                           (destPath === '/' && window.location.pathname !== '/');
-
-      if (isDashboardTarget || isPortalSwitch) {
-        if (a.dataset.noTransition === 'true' || a.closest('.kr-bypass-overlay')) return;
-
-        e.preventDefault();
-
-        var title = '🌾 खेत से सीधे मंडी की ओर...';
-        if (destPath.indexOf('/farmer') !== -1) {
-          title = '🌾 किसान पोर्टल (Farmer Hub) की ओर...';
-        } else if (destPath.indexOf('/wholesaler') !== -1) {
-          title = '🏬 थोक व्यापारी पोर्टल (Wholesaler Hub)...';
-        } else if (destPath.indexOf('/driver') !== -1) {
-          title = '🚚 ड्राइवर व ट्रांसपोर्ट नेटवर्क (Logistics)...';
-        } else if (destPath.indexOf('/cluster') !== -1) {
-          title = '🤝 किसान क्लस्टर हब (Cluster Hub)...';
-        } else if (destPath.indexOf('/customer') !== -1) {
-          title = '🛒 ताज़ा फसल स्टोर (Customer Hub)...';
-        } else if (destPath === '/about') {
-          title = 'ℹ️ KisanRoute मिशन व विजन...';
-        } else if (destPath === '/') {
-          title = '🏠 KisanRoute मुख्य पृष्ठ...';
-        }
-
-        window.triggerKisanTransition({
-          title: title,
-          duration: 2600,
-          url: a.href
-        });
-      }
-    });
+    // 2. Direct instant link navigation - no hijacking
+    // Links navigate natively and reliably without 2.6s freezing
 
     // 3. Floating Scroll to Top Button Interaction
     var scrollBtn = document.getElementById('krScrollToTopBtn');

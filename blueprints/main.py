@@ -334,6 +334,18 @@ def phone_login():
         })
         db.session.add(user)
         db.session.commit()
+
+        # Trigger automatic Kisan Mitra WhatsApp welcome message (for roles other than pure customer)
+        if role in ('farmer', 'driver', 'cluster'):
+            try:
+                from services.whatsapp_service import send_to_whatsapp
+                welcome_msg = (
+                    f"Namaste {user.full_name or 'Kisan'} ji! KisanRoute par aapka swagat hai. "
+                    f"Main aapka 'Kisan Mitra' AI saathi hoon. Mandi rate, payment ya truck status ke liye yahan poochhein!"
+                )
+                send_to_whatsapp(user.phone, welcome_msg)
+            except Exception as e:
+                print(f"[WhatsApp Login Registration] WhatsApp welcome error: {e}")
     else:
         extra = user.get_extra()
         extra["uid"] = user_uid

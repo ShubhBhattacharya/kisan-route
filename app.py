@@ -71,6 +71,10 @@ def create_app():
     from routes.whatsapp_webhook import whatsapp_bp
     app.register_blueprint(whatsapp_bp)
 
+    # Free Self-Hosted Baileys WhatsApp Bridge Blueprint
+    from routes.local_whatsapp import local_whatsapp_bp
+    app.register_blueprint(local_whatsapp_bp)
+
     @app.context_processor
     def inject_globals():
         lang = session.get("lang", "en")

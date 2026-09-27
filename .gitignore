@@ -8,3 +8,6 @@ env/
 instance/
 *.sqlite3
 *.db
+node_modules/
+auth_info_baileys/
+package-lock.json

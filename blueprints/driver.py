@@ -48,6 +48,18 @@ def signup():
         user.set_extra({k: v for k, v in data.items() if k not in ("full_name", "phone", "password")})
         db.session.add(user)
         db.session.commit()
+
+        # Trigger automatic Kisan Mitra WhatsApp welcome message (non-blocking)
+        try:
+            from services.whatsapp_service import send_to_whatsapp
+            welcome_msg = (
+                f"Namaste {user.full_name or 'Driver'} ji! KisanRoute par aapka swagat hai. "
+                f"Main aapka 'Kisan Mitra' AI saathi hoon. Mandi rate, payment ya truck status ke liye yahan poochhein!"
+            )
+            send_to_whatsapp(user.phone, welcome_msg)
+        except Exception as e:
+            print(f"[Driver Registration] WhatsApp welcome error: {e}")
+
         flash("Account created! Please log in and finish your driver profile.", "success")
         return redirect(url_for("driver.login"))
     return render_template("driver/signup.html", form={})

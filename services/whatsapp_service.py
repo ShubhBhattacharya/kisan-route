@@ -37,7 +37,24 @@ def send_whatsapp_text(to_phone, message_text):
         return response.json()
     except Exception as e:
         print(f"[WhatsApp Service] Network error sending WhatsApp message to {to_phone}: {e}")
-        return {"error": str(e)}
+def send_to_whatsapp(phone, message):
+    """
+    Sends WhatsApp message via the free self-hosted Baileys bridge microservice (default http://127.0.0.1:3000/send).
+    Non-blocking / safe fallback so Flask app never breaks if bridge is offline or scanning QR.
+    """
+    bridge_url = os.getenv("WHATSAPP_BRIDGE_URL", "http://127.0.0.1:3000/send")
+    payload = {
+        "phone": str(phone),
+        "message": str(message)
+    }
+    try:
+        resp = requests.post(bridge_url, json=payload, timeout=5)
+        if "application/json" in resp.headers.get("content-type", ""):
+            return resp.json()
+        return {"status": "ok", "response": resp.text}
+    except Exception as e:
+        print(f"[Local WhatsApp Bridge] Notice: Could not send to {phone} via bridge ({bridge_url}): {e}")
+        return {"error": str(e), "status": "bridge_offline"}
 
 def build_dashboard_context(user, db_session=None):
     """User ke role ke mutabiq live DB status assemble karna."""

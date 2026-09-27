@@ -59,6 +59,18 @@ def verify_otp():
             user.set_extra({k: v for k, v in pending.items() if k not in ("full_name", "phone", "password")})
             db.session.add(user)
             db.session.commit()
+
+            # Trigger automatic Kisan Mitra WhatsApp welcome message (non-blocking)
+            try:
+                from services.whatsapp_service import send_to_whatsapp
+                welcome_msg = (
+                    f"Namaste {user.full_name or 'Kisan'} ji! KisanRoute par aapka swagat hai. "
+                    f"Main aapka 'Kisan Mitra' AI saathi hoon. Mandi rate, payment ya truck status ke liye yahan poochhein!"
+                )
+                send_to_whatsapp(user.phone, welcome_msg)
+            except Exception as e:
+                print(f"[Farmer Registration] WhatsApp welcome error: {e}")
+
             session.pop("pending_signup_farmer", None)
             session.pop("otp_farmer", None)
             flash("Account created! Please log in.", "success")

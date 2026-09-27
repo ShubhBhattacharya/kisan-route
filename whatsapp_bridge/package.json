@@ -1,0 +1,15 @@
+{
+  "name": "kisanroute-whatsapp-bridge",
+  "version": "1.0.0",
+  "description": "100% Free Self-Hosted Baileys WhatsApp Web Bridge for KisanRoute AI Bot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.12",
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}

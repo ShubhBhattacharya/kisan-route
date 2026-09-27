@@ -1,23 +1,933 @@
 {% extends 'base.html' %}
+{% block title %}Customer Dashboard - Quick Commerce Farm Market | KisanRoute{% endblock %}
+
 {% block content %}
-<section class="dashboard">
-  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🛒</span></h1>
-  <form method="get" class="inline-form">
-    <label class="visually-hidden" for="q">Search crops</label>
-    <input type="text" id="q" name="q" placeholder="Search crops" value="{{ query }}">
-    <button class="btn" type="submit">Search</button>
-  </form>
-  <div class="dashboard-grid">
-    {% for l in listings %}
-    <div class="card">
-      <h2>{{ l.crop }}</h2>
-      <p>From {{ l.farmer }}, {{ l.village }}</p>
-      <p class="price-tag">₹{{ l.price }} / {{ l.unit }} · {{ l.available_kg }} kg available</p>
-      <a class="btn btn-primary" href="{{ url_for('customer.order', listing_id=l.id) }}">Order</a>
+<div class="kr-qc-page-wrapper">
+
+  <!-- ================= 1. HERO HEADER & AGRI BACKGROUND BANNER ================= -->
+  <header class="kr-qc-hero-banner" style="background-image: linear-gradient(rgba(251, 248, 241, 0.75), rgba(251, 248, 241, 0.92)), url('{{ url_for('static', filename='images/crops/farm_header_bg.jpg') }}');">
+    <div class="kr-qc-hero-container">
+      <h1 class="kr-qc-hero-title">Farm-Fresh Harvest, Delivered.</h1>
+
+      <!-- Large Rounded Search Bar with Voice Microphone -->
+      <div class="kr-qc-search-bar" role="search">
+        <span class="kr-qc-search-icon" aria-hidden="true">🔍</span>
+        <input 
+          type="text" 
+          id="krQcSearchInput" 
+          class="kr-qc-search-input" 
+          placeholder="Search for fresh produce (e.g., Gehu, Tamatar)..." 
+          value="{{ query or '' }}"
+          autocomplete="off" 
+          aria-label="Search produce"
+        />
+        <button type="button" id="krQcMicBtn" class="kr-qc-mic-btn" title="Voice Search (माइक से बोलें)" aria-label="Voice Search" onclick="triggerVoiceSearch()">
+          <span class="kr-qc-mic-icon">🎙️</span>
+        </button>
+      </div>
     </div>
-    {% else %}
-    <p>No crops match "{{ query }}".</p>
-    {% endfor %}
+  </header>
+
+  <!-- ================= 2. CATEGORY NAVIGATION PILLS ================= -->
+  <nav class="kr-qc-pills-wrapper" aria-label="Produce Categories">
+    <div class="kr-qc-pills-container">
+      <button type="button" class="kr-qc-pill active" data-category="all" onclick="filterCategory('all', this)">
+        <span>🌱</span> All (सभी)
+      </button>
+      <button type="button" class="kr-qc-pill" data-category="grains" onclick="filterCategory('grains', this)">
+        <span>🌾</span> Grains (ग्रेन)
+      </button>
+      <button type="button" class="kr-qc-pill" data-category="veggies" onclick="filterCategory('veggies', this)">
+        <span>🍅</span> Veggies (सब्जी)
+      </button>
+      <button type="button" class="kr-qc-pill" data-category="fruits" onclick="filterCategory('fruits', this)">
+        <span>🍎</span> Fruits (फल)
+      </button>
+      <button type="button" class="kr-qc-pill" data-category="pulses" onclick="filterCategory('pulses', this)">
+        <span>🌰</span> Pulses (दाल)
+      </button>
+      <button type="button" class="kr-qc-pill" data-category="visits" onclick="filterCategory('visits', this)">
+        <span>🚜</span> Farm Visits
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= 3. HORIZONTAL SPLIT PRODUCT CARDS GRID ================= -->
+  <main class="kr-qc-main-content">
+    <div class="kr-qc-grid" id="krQcProductGrid">
+      {% for l in listings %}
+      <div class="kr-qc-card-item" data-category="{{ l.category }}" data-name="{{ l.crop|lower }} {{ l.name_hi|lower }} {{ l.farmer|lower }}">
+        <!-- Section Header Label (Featured Harvest / Fresh This Morning / Locally Sourced) -->
+        <div class="kr-qc-section-label">{{ l.tag }}</div>
+
+        <!-- 2-Column Split Card -->
+        <article class="kr-qc-card">
+          <!-- Left Half: High-Resolution Crop Image + Organic Badge -->
+          <div class="kr-qc-card-left">
+            <img 
+              src="{{ l.image }}" 
+              alt="{{ l.crop }}" 
+              class="kr-qc-crop-img" 
+              loading="lazy" 
+              onerror="this.onerror=null; this.src='{{ l.fallback_image }}';"
+            />
+            <div class="kr-qc-ribbon-badge {{ 'ribbon-fresh' if 'Fresh' in l.badge else 'ribbon-organic' }}">
+              {{ l.badge }}
+            </div>
+          </div>
+
+          <!-- Right Half: Product Information & Controls -->
+          <div class="kr-qc-card-right">
+            <div>
+              <h2 class="kr-qc-item-name">{{ l.name_hi or l.crop }}</h2>
+              <div class="kr-qc-farmer-rating">
+                <span class="kr-qc-star">⭐</span> {{ l.rating }} <span class="kr-qc-pipe">|</span> {{ l.farmer }}, {{ l.village }}
+              </div>
+            </div>
+
+            <!-- Pricing & Availability Progress -->
+            <div class="kr-qc-price-stock-box">
+              <div class="kr-qc-price-pill">
+                ₹{{ l.price }}/{{ l.unit }}
+              </div>
+              <div class="kr-qc-stock-bar-group">
+                <span class="kr-qc-stock-text">{{ l.pct_available }}% available</span>
+                <div class="kr-qc-progress-track">
+                  <div class="kr-qc-progress-fill" style="width: {{ l.pct_available }}%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Quantity Stepper / Add Button -->
+            <div 
+              class="kr-qc-stepper-box" 
+              id="stepper-{{ l.id }}" 
+              data-id="{{ l.id }}" 
+              data-crop="{{ l.crop }}" 
+              data-name="{{ l.name_hi or l.crop }}" 
+              data-price="{{ l.price }}" 
+              data-unit="{{ l.unit }}" 
+              data-step="{{ l.default_step or 1 }}"
+              data-avail="{{ l.available_kg }}"
+            >
+              <!-- Default Initial Button: + Add -->
+              <button type="button" class="kr-qc-add-btn" onclick="addFirstItem({{ l.id }})" aria-label="Add {{ l.crop }} to cart">
+                + Add
+              </button>
+
+              <!-- Dynamic Active Stepper [ - ] [ 5 kg ] [ + ] -->
+              <div class="kr-qc-stepper-active" style="display: none;">
+                <button type="button" class="kr-qc-step-btn minus" onclick="decrementItem({{ l.id }})" aria-label="Decrease quantity">
+                  &minus;
+                </button>
+                <span class="kr-qc-step-display" id="qty-{{ l.id }}">0 {{ l.unit }}</span>
+                <button type="button" class="kr-qc-step-btn plus" onclick="incrementItem({{ l.id }})" aria-label="Increase quantity">
+                  &plus;
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </article>
+      </div>
+      {% else %}
+      <div class="kr-qc-empty-state" style="grid-column: 1 / -1;">
+        <div style="font-size: 40px; margin-bottom: 10px;">🌾</div>
+        <h3>No produce matches your search</h3>
+        <p>Try searching for Wheat, Tomato, Onion, Potato or Apples.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <!-- ================= 4. FLOATING PERSISTENT CHECKOUT STRIP ================= -->
+  <aside id="krQcCheckoutStrip" class="kr-qc-floating-strip" style="display: none;" aria-live="polite">
+    <div class="kr-qc-strip-summary">
+      <span class="kr-qc-strip-count" id="krStripItemsCount">0 Items | ₹0</span>
+      <span class="kr-qc-strip-badge">✓ Free Farm-Gate Delivery</span>
+    </div>
+    <button type="button" class="kr-qc-strip-checkout-btn" onclick="openCheckoutModal()">
+      <span>➔</span> Review & Checkout
+    </button>
+  </aside>
+
+  <!-- ================= 5. QUICK CHECKOUT & REVIEW MODAL ================= -->
+  <div id="krCheckoutModal" class="kr-checkout-modal-overlay" style="display: none;">
+    <div class="kr-checkout-modal-card" role="dialog" aria-modal="true" aria-labelledby="checkoutModalTitle">
+      <!-- Modal Header -->
+      <div class="kr-checkout-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🛒</span>
+          <div>
+            <h3 id="checkoutModalTitle" style="margin: 0; font-size: 18px; font-weight: 800; color: #1b5e20;">Your Farm Basket</h3>
+            <span style="font-size: 12px; color: #666;">Blinkit/Zepto Fast Farm Fulfillment</span>
+          </div>
+        </div>
+        <button type="button" class="kr-checkout-close-btn" onclick="closeCheckoutModal()" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Modal Body (Cart Items Review) -->
+      <form method="post" action="{{ url_for('customer.order', listing_id=1) }}" id="krCheckoutForm" style="padding: 20px; overflow-y: auto; max-height: calc(85vh - 140px); box-sizing: border-box;">
+        <input type="hidden" name="quantity" id="checkoutQtyInput" value="5">
+        <input type="hidden" name="cart_payload" id="checkoutCartPayload" value="">
+
+        <!-- Cart Items List -->
+        <div id="krCheckoutItemsList" style="margin-bottom: 16px;"></div>
+
+        <!-- Order Summary Card -->
+        <div style="background: #fdfbf7; border: 1.5px solid #ebdcc5; border-radius: 14px; padding: 14px 18px; margin-bottom: 18px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13.5px; color: #555; margin-bottom: 6px;">
+            <span>Subtotal:</span>
+            <strong style="color: #222;" id="checkoutSubtotal">₹0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13.5px; color: #555; margin-bottom: 6px;">
+            <span>Delivery & Haulage:</span>
+            <strong style="color: #16a34a;">FREE (Zero Middleman)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; color: #1b5e20; border-top: 1px dashed #d6cbb5; padding-top: 8px; margin-top: 6px;">
+            <span>Total Payable:</span>
+            <span id="checkoutTotalVal">₹0</span>
+          </div>
+        </div>
+
+        <!-- Delivery Address -->
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px;">📍 Delivery Location</label>
+          <div style="background: #ffffff; border: 1.5px solid #d1d5db; border-radius: 10px; padding: 10px 14px; font-size: 13.5px; color: #374151;">
+            <strong>{{ session.get('name', 'Demo Customer') }}</strong> · Express Farm Delivery, Delhi-NCR
+          </div>
+        </div>
+
+        <!-- Payment Mode Selection -->
+        <div style="margin-bottom: 22px;">
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 8px;">💳 Payment Mode</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 10px; padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700; color: #166534;">
+              <input type="radio" name="payment_mode" value="upi" checked style="accent-color: #16a34a;">
+              <span>📱 Instant UPI</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; background: #ffffff; border: 1.5px solid #d1d5db; border-radius: 10px; padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700; color: #374151;">
+              <input type="radio" name="payment_mode" value="cod" style="accent-color: #16a34a;">
+              <span>💵 Cash on Delivery</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" style="width: 100%; background: linear-gradient(135deg, #1b5e20, #2e7d32); color: #ffffff; border: none; font-size: 15px; font-weight: 800; padding: 14px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(27,94,32,0.3); transition: 0.2s;" onmouseover="this.style.background='#2e7d32'" onmouseout="this.style.background='linear-gradient(135deg, #1b5e20, #2e7d32)'">
+          Place Farm Order (ऑर्डर करें) &rarr;
+        </button>
+      </form>
+    </div>
   </div>
-</section>
+
+</div>
+
+<!-- ================= SCOPED CSS STYLES (BLINKIT / ZEPTO STYLE) ================= -->
+<style>
+/* Page Wrapper & Organic Palette */
+.kr-qc-page-wrapper {
+  background-color: #fbf8f1;
+  min-height: 100vh;
+  padding-bottom: 90px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* 1. Hero Header Banner */
+.kr-qc-hero-banner {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 40px 20px 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid rgba(229, 220, 206, 0.7);
+}
+.kr-qc-hero-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.kr-qc-hero-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  color: #172b1a;
+  letter-spacing: -0.4px;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+/* Search Bar */
+.kr-qc-search-bar {
+  background: #ffffff;
+  border: 1.5px solid #dfd5c4;
+  border-radius: 9999px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  max-width: 580px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 4px 8px 4px 18px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.kr-qc-search-bar:focus-within {
+  border-color: #2e7d32;
+  box-shadow: 0 8px 28px rgba(46, 125, 50, 0.15);
+}
+.kr-qc-search-icon {
+  font-size: 16px;
+  color: #6b7280;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.kr-qc-search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 15px;
+  color: #111827;
+  padding: 8px 0;
+  font-weight: 500;
+}
+.kr-qc-search-input::placeholder {
+  color: #8c8c8c;
+}
+.kr-qc-mic-btn {
+  background: #f7f4ed;
+  border: 1px solid #e2dac9;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s;
+}
+.kr-qc-mic-btn:hover {
+  background: #e8f5e9;
+  border-color: #81c784;
+  transform: scale(1.05);
+}
+.kr-qc-mic-icon {
+  font-size: 15px;
+}
+
+/* 2. Floating Category Navigation Pills */
+.kr-qc-pills-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 16px 20px 20px 20px;
+}
+.kr-qc-pills-container {
+  background: #ffffff;
+  border: 1px solid #ebdcc5;
+  border-radius: 9999px;
+  padding: 6px 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 95vw;
+}
+.kr-qc-pill {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #4b5563;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.kr-qc-pill:hover {
+  background: #f5fbf6;
+  color: #1b5e20;
+}
+.kr-qc-pill.active {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border-color: #81c784;
+  box-shadow: 0 2px 6px rgba(27, 94, 32, 0.1);
+}
+
+/* 3. Main Product Grid */
+.kr-qc-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.kr-qc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 22px;
+}
+
+/* Card Outer & Section Label */
+.kr-qc-card-item {
+  display: flex;
+  flex-direction: column;
+}
+.kr-qc-section-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1c3820;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+/* 2-Column Split Horizontal Card */
+.kr-qc-card {
+  background: #ffffff;
+  border: 1.5px solid #ece4d4;
+  border-radius: 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  height: 155px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.kr-qc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Left Half: Photo & Ribbon */
+.kr-qc-card-left {
+  width: 40%;
+  position: relative;
+  overflow: hidden;
+  background: #f4ede0;
+  flex-shrink: 0;
+}
+.kr-qc-crop-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.kr-qc-card:hover .kr-qc-crop-img {
+  transform: scale(1.05);
+}
+.kr-qc-ribbon-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-bottom-left-radius: 8px;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.kr-qc-ribbon-badge.ribbon-organic {
+  background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%);
+}
+.kr-qc-ribbon-badge.ribbon-fresh {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+}
+
+/* Right Half: Details & Controls */
+.kr-qc-card-right {
+  width: 60%;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.kr-qc-item-name {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 3px 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kr-qc-farmer-rating {
+  font-size: 11.5px;
+  color: #555;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kr-qc-star {
+  font-size: 12px;
+  color: #f59e0b;
+}
+.kr-qc-pipe {
+  color: #d1d5db;
+  margin: 0 2px;
+}
+
+/* Pricing & Stock Progress Row */
+.kr-qc-price-stock-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.kr-qc-price-pill {
+  background: #1b5e20;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 12.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.kr-qc-stock-bar-group {
+  flex: 1;
+  max-width: 105px;
+}
+.kr-qc-stock-text {
+  font-size: 10.5px;
+  color: #6b7280;
+  font-weight: 700;
+  display: block;
+  text-align: right;
+  margin-bottom: 2px;
+}
+.kr-qc-progress-track {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.kr-qc-progress-fill {
+  height: 100%;
+  background: #16a34a;
+  border-radius: 9999px;
+}
+
+/* Stepper Controls / Add Button */
+.kr-qc-stepper-box {
+  display: flex;
+  justify-content: flex-end;
+}
+.kr-qc-add-btn {
+  background: #fdfbf7;
+  border: 1.5px solid #d6cfbf;
+  color: #1b5e20;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 5px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.kr-qc-add-btn:hover {
+  background: #1b5e20;
+  color: #ffffff;
+  border-color: #1b5e20;
+}
+.kr-qc-stepper-active {
+  display: inline-flex;
+  align-items: center;
+  background: #fdfbf7;
+  border: 1.5px solid #d6cfbf;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.kr-qc-step-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  color: #1b5e20;
+  transition: background 0.15s;
+}
+.kr-qc-step-btn:hover {
+  background: #e8f5e9;
+}
+.kr-qc-step-display {
+  padding: 0 6px;
+  font-weight: 800;
+  font-size: 12.5px;
+  color: #111827;
+  min-width: 38px;
+  text-align: center;
+  user-select: none;
+}
+
+/* 4. Floating Persistent Checkout Strip */
+.kr-qc-floating-strip {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #ffffff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 12px 18px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 99999;
+  animation: krSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes krSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kr-qc-strip-summary {
+  display: flex;
+  flex-direction: column;
+}
+.kr-qc-strip-count {
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #111827;
+}
+.kr-qc-strip-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #16a34a;
+}
+.kr-qc-strip-checkout-btn {
+  background: #1b5e20;
+  color: #ffffff;
+  border: none;
+  font-weight: 800;
+  font-size: 13.5px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
+  transition: background 0.2s, transform 0.15s;
+}
+.kr-qc-strip-checkout-btn:hover {
+  background: #2e7d32;
+  transform: translateY(-1px);
+}
+
+/* 5. Checkout Modal */
+.kr-checkout-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+.kr-checkout-modal-card {
+  max-width: 480px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  animation: krPop 0.22s ease-out;
+}
+@keyframes krPop {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.kr-checkout-modal-header {
+  padding: 16px 20px;
+  background: #fdfbf7;
+  border-bottom: 1px solid #ebdcc5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kr-checkout-close-btn {
+  background: #eee;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  transition: background 0.2s;
+}
+.kr-checkout-close-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .kr-qc-grid {
+    grid-template-columns: 1fr;
+  }
+  .kr-qc-hero-banner {
+    padding: 30px 16px 20px 16px;
+  }
+  .kr-qc-floating-strip {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    justify-content: space-between;
+  }
+}
+</style>
+
+<!-- ================= CLIENT-SIDE QUICK-COMMERCE JAVASCRIPT ================= -->
+<script>
+// In-Memory Quick-Commerce Cart Store
+var krCart = {};
+
+// 1. Instant Category Filter
+function filterCategory(cat, btn) {
+  var pills = document.querySelectorAll('.kr-qc-pill');
+  pills.forEach(function(p) { p.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  var cards = document.querySelectorAll('.kr-qc-card-item');
+  cards.forEach(function(card) {
+    var cardCat = card.getAttribute('data-category');
+    if (cat === 'all' || cardCat === cat) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// 2. Real-Time Produce Search
+var searchInput = document.getElementById('krQcSearchInput');
+if (searchInput) {
+  searchInput.addEventListener('input', function() {
+    var query = this.value.trim().toLowerCase();
+    var cards = document.querySelectorAll('.kr-qc-card-item');
+    cards.forEach(function(card) {
+      var nameAttr = card.getAttribute('data-name') || '';
+      if (!query || nameAttr.indexOf(query) !== -1) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+}
+
+// 3. Speech / Voice Search Integration
+function triggerVoiceSearch() {
+  var micBtn = document.getElementById('krQcMicBtn');
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SpeechRecognition) {
+    var recognition = new SpeechRecognition();
+    recognition.lang = 'hi-IN';
+    recognition.interimResults = false;
+
+    if (micBtn) micBtn.style.background = '#fef08a';
+
+    recognition.onresult = function(event) {
+      var transcript = event.results[0][0].transcript;
+      if (searchInput) {
+        searchInput.value = transcript;
+        searchInput.dispatchEvent(new Event('input'));
+      }
+      if (micBtn) micBtn.style.background = '#f7f4ed';
+    };
+
+    recognition.onerror = function() {
+      if (micBtn) micBtn.style.background = '#f7f4ed';
+    };
+
+    recognition.onend = function() {
+      if (micBtn) micBtn.style.background = '#f7f4ed';
+    };
+
+    recognition.start();
+  } else {
+    // Graceful fallback demo prompt
+    var demoWords = ['Gehu', 'Tamatar', 'Pyaaz', 'Aloo', 'Apple'];
+    var pick = demoWords[Math.floor(Math.random() * demoWords.length)];
+    if (searchInput) {
+      searchInput.value = pick;
+      searchInput.dispatchEvent(new Event('input'));
+    }
+  }
+}
+
+// 4. Cart Stepper Logic
+function addFirstItem(id) {
+  var box = document.getElementById('stepper-' + id);
+  if (!box) return;
+  var step = parseFloat(box.getAttribute('data-step')) || 1;
+  krCart[id] = step;
+  updateStepperUI(id);
+  updateFloatingStrip();
+}
+
+function incrementItem(id) {
+  var box = document.getElementById('stepper-' + id);
+  if (!box) return;
+  var step = parseFloat(box.getAttribute('data-step')) || 1;
+  var current = krCart[id] || 0;
+  krCart[id] = current + step;
+  updateStepperUI(id);
+  updateFloatingStrip();
+}
+
+function decrementItem(id) {
+  var box = document.getElementById('stepper-' + id);
+  if (!box) return;
+  var step = parseFloat(box.getAttribute('data-step')) || 1;
+  var current = krCart[id] || 0;
+  var nextVal = current - step;
+
+  if (nextVal <= 0) {
+    delete krCart[id];
+  } else {
+    krCart[id] = nextVal;
+  }
+  updateStepperUI(id);
+  updateFloatingStrip();
+}
+
+function updateStepperUI(id) {
+  var box = document.getElementById('stepper-' + id);
+  if (!box) return;
+  var addBtn = box.querySelector('.kr-qc-add-btn');
+  var activeControls = box.querySelector('.kr-qc-stepper-active');
+  var qtyDisplay = document.getElementById('qty-' + id);
+  var unit = box.getAttribute('data-unit') || 'kg';
+
+  var qty = krCart[id] || 0;
+
+  if (qty > 0) {
+    if (addBtn) addBtn.style.display = 'none';
+    if (activeControls) activeControls.style.display = 'inline-flex';
+    if (qtyDisplay) qtyDisplay.textContent = qty + ' ' + unit;
+  } else {
+    if (addBtn) addBtn.style.display = 'block';
+    if (activeControls) activeControls.style.display = 'none';
+  }
+}
+
+// 5. Update Floating Checkout Strip
+function updateFloatingStrip() {
+  var strip = document.getElementById('krQcCheckoutStrip');
+  var countDisplay = document.getElementById('krStripItemsCount');
+  if (!strip || !countDisplay) return;
+
+  var totalItems = 0;
+  var totalPrice = 0;
+
+  for (var id in krCart) {
+    var qty = krCart[id];
+    var box = document.getElementById('stepper-' + id);
+    if (box && qty > 0) {
+      var price = parseFloat(box.getAttribute('data-price')) || 0;
+      totalItems++;
+      totalPrice += (qty * price);
+    }
+  }
+
+  if (totalItems > 0) {
+    strip.style.display = 'flex';
+    countDisplay.textContent = totalItems + (totalItems === 1 ? ' Item' : ' Items') + ' | ₹' + totalPrice.toLocaleString('en-IN');
+  } else {
+    strip.style.display = 'none';
+  }
+}
+
+// 6. Review & Checkout Modal
+function openCheckoutModal() {
+  var modal = document.getElementById('krCheckoutModal');
+  var listContainer = document.getElementById('krCheckoutItemsList');
+  var subtotalEl = document.getElementById('checkoutSubtotal');
+  var totalEl = document.getElementById('checkoutTotalVal');
+  var qtyInput = document.getElementById('checkoutQtyInput');
+  var form = document.getElementById('krCheckoutForm');
+
+  if (!modal || !listContainer) return;
+
+  var totalItems = 0;
+  var totalPrice = 0;
+  var primaryId = 1;
+  var primaryQty = 5;
+  var itemsHtml = '';
+
+  for (var id in krCart) {
+    var qty = krCart[id];
+    var box = document.getElementById('stepper-' + id);
+    if (box && qty > 0) {
+      primaryId = id;
+      primaryQty = qty;
+      totalItems++;
+      var name = box.getAttribute('data-name');
+      var price = parseFloat(box.getAttribute('data-price')) || 0;
+      var unit = box.getAttribute('data-unit') || 'kg';
+      var itemTotal = qty * price;
+      totalPrice += itemTotal;
+
+      itemsHtml += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee;">' +
+        '<div>' +
+          '<div style="font-weight: 800; font-size: 14.5px; color: #111;">' + name + '</div>' +
+          '<div style="font-size: 12px; color: #666;">' + qty + ' ' + unit + ' × ₹' + price + '</div>' +
+        '</div>' +
+        '<div style="font-weight: 800; color: #1b5e20; font-size: 15px;">₹' + itemTotal.toLocaleString('en-IN') + '</div>' +
+      '</div>';
+    }
+  }
+
+  if (totalItems === 0) {
+    alert('Please add at least one harvest item to your basket.');
+    return;
+  }
+
+  listContainer.innerHTML = itemsHtml;
+  if (subtotalEl) subtotalEl.textContent = '₹' + totalPrice.toLocaleString('en-IN');
+  if (totalEl) totalEl.textContent = '₹' + totalPrice.toLocaleString('en-IN');
+  if (qtyInput) qtyInput.value = primaryQty;
+  if (form) form.action = '/customer/order/' + primaryId;
+
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckoutModal() {
+  var modal = document.getElementById('krCheckoutModal');
+  if (modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('krCheckoutModal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeCheckoutModal();
+    });
+  }
+});
+</script>
 {% endblock %}

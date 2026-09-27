@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
+(function () {
+  function initKisanMain() {
 
   /* ---------------- Topbar Left Navigation Setup ---------------- */
   var brand = document.querySelector('.topbar .brand');
@@ -83,72 +84,30 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(bgWrapper);
   }
 
-  /* ---------------- Side menu toggle (Desktop Three-dot + Mobile Hamburger + Dock Menu) ---------------- */
-  var menuToggle = document.getElementById('menuToggle');
-  var menuToggleMobile = document.getElementById('menuToggleMobile');
+  /* ---------------- Side menu toggle (Dock Menu + Overlay + Esc) ---------------- */
   var dockMenuBtn = document.getElementById('krDockMenuBtn');
   var overlay = document.getElementById('menuOverlay');
-  var lastMenuToggleTime = 0;
 
-  window.openSideMenu = function() {
-    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
-    if (!overlay) overlay = document.getElementById('menuOverlay');
-    if (!sideMenu) return;
-    sideMenu.classList.add('open');
-    if (overlay) overlay.classList.add('visible');
-    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
-    if (menuToggleMobile) menuToggleMobile.setAttribute('aria-expanded', 'true');
-    sideMenu.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  };
-
-  window.closeSideMenu = function() {
-    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
-    if (!overlay) overlay = document.getElementById('menuOverlay');
-    if (!sideMenu) return;
-    sideMenu.classList.remove('open');
-    if (overlay) overlay.classList.remove('visible');
-    if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
-    if (menuToggleMobile) menuToggleMobile.setAttribute('aria-expanded', 'false');
-    sideMenu.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  };
-
-  window.toggleSideMenu = function() {
-    var now = Date.now();
-    if (now - lastMenuToggleTime < 220) return;
-    lastMenuToggleTime = now;
-    if (!sideMenu) sideMenu = document.getElementById('sideMenu');
-    if (!sideMenu) return;
-    sideMenu.classList.contains('open') ? window.closeSideMenu() : window.openSideMenu();
-  };
-
-  if (menuToggle) {
-    menuToggle.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      window.toggleSideMenu();
-    });
-  }
-  if (menuToggleMobile) {
-    menuToggleMobile.addEventListener('click', function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      window.toggleSideMenu();
-    });
-  }
   if (dockMenuBtn) {
     dockMenuBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
-      window.toggleSideMenu();
+      if (typeof window.krToggleSideMenu === 'function') {
+        window.krToggleSideMenu(e);
+      } else if (typeof window.toggleSideMenu === 'function') {
+        window.toggleSideMenu(e);
+      }
     });
   }
   if (overlay) {
-    overlay.addEventListener('click', window.closeSideMenu);
+    overlay.addEventListener('click', function(e) {
+      if (typeof window.closeSideMenu === 'function') window.closeSideMenu();
+    });
   }
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') window.closeSideMenu();
+    if (e.key === 'Escape' && typeof window.closeSideMenu === 'function') {
+      window.closeSideMenu();
+    }
   });
 
   /* ---------------- Chatbot ---------------- */
@@ -634,4 +593,11 @@ document.addEventListener('DOMContentLoaded', function () {
       startListening();
     });
   })();
-});
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initKisanMain);
+  } else {
+    initKisanMain();
+  }
+})();

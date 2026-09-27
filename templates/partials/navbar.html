@@ -23,7 +23,7 @@
     {% endif %}
 
     <!-- Desktop Three-dot menu button (Hidden on mobile < 768px) -->
-    <button id="menuToggle" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
+    <button id="menuToggle" type="button" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu" onclick="window.krToggleSideMenu(event)">
       <span></span><span></span><span></span>
     </button>
 
@@ -74,7 +74,7 @@
     {% endif %}
 
     <!-- Mobile Hamburger Menu Button [☰] (Visible on mobile < 768px) -->
-    <button type="button" id="menuToggleMobile" class="kr-mobile-hamburger-btn mobile-only-menu-btn" aria-label="Open menu drawer" aria-expanded="false" aria-controls="sideMenu" title="Menu">
+    <button type="button" id="menuToggleMobile" class="kr-mobile-hamburger-btn mobile-only-menu-btn" aria-label="Open menu drawer" aria-expanded="false" aria-controls="sideMenu" onclick="window.krToggleSideMenu(event)" title="Menu">
       <span class="kr-hamburger-icon">☰</span>
     </button>
   </div>
@@ -230,43 +230,79 @@
 </style>
 
 <script>
-var _krMenuLock = false;
-window.toggleSideMenu = function() {
-  if (_krMenuLock) return;
-  _krMenuLock = true;
-  setTimeout(function() { _krMenuLock = false; }, 220);
+(function() {
+  var _krMenuLock = false;
 
-  var sideMenu = document.getElementById('sideMenu');
-  var menuOverlay = document.getElementById('menuOverlay');
-  if (sideMenu) {
-    var willOpen = !sideMenu.classList.contains('open');
-    if (willOpen) {
+  window.openSideMenu = function() {
+    var sideMenu = document.getElementById('sideMenu');
+    var menuOverlay = document.getElementById('menuOverlay');
+    var btn = document.getElementById('menuToggle');
+    var btnMobile = document.getElementById('menuToggleMobile');
+
+    if (sideMenu) {
       sideMenu.classList.add('open');
-      if (menuOverlay) menuOverlay.classList.add('visible');
-      document.body.style.overflow = 'hidden';
-    } else {
-      sideMenu.classList.remove('open');
-      if (menuOverlay) menuOverlay.classList.remove('visible');
-      document.body.style.overflow = '';
+      sideMenu.setAttribute('aria-hidden', 'false');
+      sideMenu.style.setProperty('transform', 'translateX(0)', 'important');
+      sideMenu.style.setProperty('display', 'block', 'important');
+      sideMenu.style.setProperty('visibility', 'visible', 'important');
+      sideMenu.style.setProperty('opacity', '1', 'important');
+      sideMenu.style.setProperty('z-index', '9999999', 'important');
     }
-  }
-};
+    if (menuOverlay) {
+      menuOverlay.classList.add('visible');
+      menuOverlay.style.setProperty('display', 'block', 'important');
+      menuOverlay.style.setProperty('opacity', '1', 'important');
+      menuOverlay.style.setProperty('pointer-events', 'auto', 'important');
+      menuOverlay.style.setProperty('z-index', '9999998', 'important');
+    }
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
 
-window.openSideMenu = function() {
-  var sideMenu = document.getElementById('sideMenu');
-  var menuOverlay = document.getElementById('menuOverlay');
-  if (sideMenu) sideMenu.classList.add('open');
-  if (menuOverlay) menuOverlay.classList.add('visible');
-  document.body.style.overflow = 'hidden';
-};
+  window.closeSideMenu = function() {
+    var sideMenu = document.getElementById('sideMenu');
+    var menuOverlay = document.getElementById('menuOverlay');
+    var btn = document.getElementById('menuToggle');
+    var btnMobile = document.getElementById('menuToggleMobile');
 
-window.closeSideMenu = function() {
-  var sideMenu = document.getElementById('sideMenu');
-  var menuOverlay = document.getElementById('menuOverlay');
-  if (sideMenu) sideMenu.classList.remove('open');
-  if (menuOverlay) menuOverlay.classList.remove('visible');
-  document.body.style.overflow = '';
-};
+    if (sideMenu) {
+      sideMenu.classList.remove('open');
+      sideMenu.setAttribute('aria-hidden', 'true');
+      sideMenu.style.setProperty('transform', 'translateX(-100%)', 'important');
+    }
+    if (menuOverlay) {
+      menuOverlay.classList.remove('visible');
+      menuOverlay.style.setProperty('display', 'none', 'important');
+      menuOverlay.style.setProperty('opacity', '0', 'important');
+      menuOverlay.style.setProperty('pointer-events', 'none', 'important');
+    }
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+
+  window.krToggleSideMenu = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    if (_krMenuLock) return;
+    _krMenuLock = true;
+    setTimeout(function() { _krMenuLock = false; }, 260);
+
+    var sideMenu = document.getElementById('sideMenu');
+    if (!sideMenu) return;
+    var isOpen = sideMenu.classList.contains('open') || (sideMenu.style.transform && sideMenu.style.transform.indexOf('translateX(0') !== -1);
+    if (isOpen) {
+      window.closeSideMenu();
+    } else {
+      window.openSideMenu();
+    }
+  };
+
+  window.toggleSideMenu = window.krToggleSideMenu;
+})();
 
 function handleKrBackNavigation() {
   if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {

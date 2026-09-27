@@ -280,9 +280,835 @@
   #krCarouselPrev { left: 4px !important; }
   #krCarouselNext { right: 4px !important; }
 }
+
+/* ================= MOBILE QUICK-COMMERCE (ZEPTO / BLINKIT STYLE) STYLES ================= */
+@media (min-width: 769px) {
+  .kr-mobile-qc-view {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide the massive static desktop carousel on mobile */
+  #krHeroSection {
+    display: none !important;
+  }
+
+  .kr-mobile-qc-view {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 14px 20px 14px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+
+  /* 1. Zepto-Style Top Delivery Location Strip */
+  .kr-m-top-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 2px 8px 2px;
+    margin-bottom: 6px;
+  }
+  .kr-m-location-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .kr-m-bolt {
+    background: #fef08a;
+    color: #854d0e;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .kr-m-location-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .kr-m-location-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #15803d;
+    letter-spacing: -0.2px;
+  }
+  .kr-m-location-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #4b5563;
+  }
+  .kr-m-profile-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #1b5e20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid #c8e6c9;
+  }
+
+  /* 2. Pill-Shaped Sticky Search Bar */
+  .kr-m-search-wrapper {
+    position: sticky;
+    top: 50px;
+    z-index: 100;
+    background: #fbf8f1;
+    padding: 4px 0 10px 0;
+  }
+  .kr-m-search-bar {
+    background: #ffffff;
+    border: 1.5px solid #e5dcce;
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    padding: 3px 6px 3px 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+  .kr-m-search-bar:focus-within {
+    border-color: #2e7d32;
+    box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+  }
+  .kr-m-search-icon {
+    font-size: 15px;
+    color: #9ca3af;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .kr-m-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 13.5px;
+    color: #111827;
+    padding: 7px 0;
+    font-weight: 500;
+  }
+  .kr-m-search-input::placeholder {
+    color: #9ca3af;
+  }
+  .kr-m-mic-btn {
+    background: #f7f4ed;
+    border: 1px solid #e5dcce;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* 3. Quick Category Bubbles Row */
+  .kr-m-categories-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 6px 2px 14px 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .kr-m-categories-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .kr-m-cat-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .kr-m-cat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid #e8ede8;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .kr-m-cat-bubble.active .kr-m-cat-icon {
+    border-color: #16a34a;
+    background: #f0fdf4;
+    transform: scale(1.08);
+  }
+  .kr-m-cat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #374151;
+    white-space: nowrap;
+  }
+  .kr-m-cat-bubble.active .kr-m-cat-label {
+    color: #16a34a;
+    font-weight: 800;
+  }
+
+  /* 4. Compact Promo Carousel / Banner (Max Height: 135px) */
+  .kr-m-promo-box {
+    margin: 2px 0 16px 0;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 132px;
+    background: linear-gradient(135deg, #064e3b 0%, #15803d 100%);
+    box-shadow: 0 6px 20px rgba(6, 78, 59, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    box-sizing: border-box;
+    color: #ffffff;
+  }
+  .kr-m-promo-text {
+    flex: 1;
+    max-width: 65%;
+  }
+  .kr-m-promo-tag {
+    background: #facc15;
+    color: #713f12;
+    font-size: 9.5px;
+    font-weight: 900;
+    padding: 2.5px 8px;
+    border-radius: 9999px;
+    display: inline-block;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+  .kr-m-promo-heading {
+    font-size: 16px;
+    font-weight: 900;
+    margin: 0 0 3px 0;
+    line-height: 1.15;
+    color: #ffffff;
+  }
+  .kr-m-promo-desc {
+    font-size: 10.5px;
+    color: #d1fae5;
+    margin: 0 0 8px 0;
+    line-height: 1.25;
+  }
+  .kr-m-promo-action-btn {
+    background: #ffffff;
+    color: #14532d;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .kr-m-promo-img-wrap {
+    width: 90px;
+    height: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kr-m-promo-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  /* 5. High-Converting Product Feed (Zepto 2-Column Card Architecture) */
+  .kr-m-feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 12px 0;
+    padding: 0 2px;
+  }
+  .kr-m-feed-title {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+  }
+  .kr-m-feed-seeall {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #16a34a;
+    text-decoration: none;
+  }
+  .kr-m-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kr-m-card {
+    background: #ffffff;
+    border: 1px solid #ede8de;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+    transition: transform 0.15s ease;
+  }
+  .kr-m-card-thumb {
+    width: 100%;
+    height: 108px;
+    background: #fdfbf7;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kr-m-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .kr-m-badge-ribbon {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(22, 163, 74, 0.92);
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.2px;
+  }
+  .kr-m-card-title {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 2px 0;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kr-m-card-rating {
+    font-size: 10.5px;
+    color: #6b7280;
+    font-weight: 600;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kr-m-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+  .kr-m-price-box {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .kr-m-main-price {
+    font-size: 14px;
+    font-weight: 900;
+    color: #166534;
+  }
+  .kr-m-unit {
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .kr-m-mrp {
+    font-size: 10px;
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-weight: 500;
+  }
+
+  /* Outlined + ADD Button & Stepper */
+  .kr-m-btn-wrap {
+    min-width: 60px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .kr-m-add-btn {
+    background: #ffffff;
+    border: 1.5px solid #16a34a;
+    color: #16a34a;
+    font-weight: 900;
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(22, 163, 74, 0.12);
+    transition: all 0.15s;
+  }
+  .kr-m-add-btn:active {
+    background: #16a34a;
+    color: #ffffff;
+  }
+  .kr-m-stepper-active {
+    display: inline-flex;
+    align-items: center;
+    background: #16a34a;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+  }
+  .kr-m-step-btn {
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 14px;
+    padding: 3px 8px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .kr-m-step-qty {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 12px;
+    min-width: 16px;
+    text-align: center;
+    padding: 0 2px;
+  }
+
+  /* Floating Bottom Quick Cart Bar */
+  .kr-m-floating-cart {
+    position: fixed;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 8px);
+    left: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #1b5e20 0%, #15803d 100%);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: 0 10px 25px rgba(27, 94, 32, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 99995;
+    animation: krSlideUp 0.22s ease-out;
+  }
+  .kr-m-cart-summary {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .kr-m-cart-items-text {
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .kr-m-cart-subtext {
+    font-size: 10px;
+    color: #d1fae5;
+  }
+  .kr-m-cart-cta-btn {
+    background: #ffffff;
+    color: #1b5e20;
+    border: none;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+}
 </style>
 
-<!-- ================= FLIPKART/AMAZON STYLE ROTATING HERO BANNER ================= -->
+<!-- ================= ZEPTO/BLINKIT STYLE MOBILE QUICK-COMMERCE VIEW ================= -->
+<div class="kr-mobile-qc-view">
+  <!-- 1. Top Delivery Location Strip -->
+  <div class="kr-m-top-strip">
+    <div class="kr-m-location-box" onclick="window.location.href='{{ url_for('customer.dashboard') }}'">
+      <span class="kr-m-bolt">⚡</span>
+      <div class="kr-m-location-text">
+        <span class="kr-m-location-title">Farm-Fresh in 45 Mins</span>
+        <span class="kr-m-location-sub">Deliver to: <b>Noida / Delhi-NCR</b> ▾</span>
+      </div>
+    </div>
+    <a href="{{ url_for('customer.dashboard') }}" class="kr-m-profile-btn" title="Customer Dashboard">
+      <span>🛒</span>
+    </a>
+  </div>
+
+  <!-- 2. Sticky Pill-Shaped Search Bar -->
+  <div class="kr-m-search-wrapper">
+    <div class="kr-m-search-bar">
+      <span class="kr-m-search-icon">🔍</span>
+      <input 
+        type="text" 
+        id="krMobileSearchInput" 
+        class="kr-m-search-input" 
+        placeholder="Search for 'Desi Tamatar', 'Basmati Gehu'..." 
+        autocomplete="off"
+        oninput="handleMobileSearch(this.value)"
+      />
+      <button type="button" class="kr-m-mic-btn" onclick="triggerMobileVoiceSearch()" title="Voice search">
+        🎙️
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Horizontal Scrollable Category Bubbles Row -->
+  <div class="kr-m-categories-scroll" id="krMobileCategoriesRow">
+    <div class="kr-m-cat-bubble active" onclick="filterMobileCategory('all', this)">
+      <div class="kr-m-cat-icon">🌾</div>
+      <span class="kr-m-cat-label">All</span>
+    </div>
+    <div class="kr-m-cat-bubble" onclick="filterMobileCategory('veggies', this)">
+      <div class="kr-m-cat-icon">🍅</div>
+      <span class="kr-m-cat-label">Veggies</span>
+    </div>
+    <div class="kr-m-cat-bubble" onclick="filterMobileCategory('fruits', this)">
+      <div class="kr-m-cat-icon">🍎</div>
+      <span class="kr-m-cat-label">Fruits</span>
+    </div>
+    <div class="kr-m-cat-bubble" onclick="filterMobileCategory('pulses', this)">
+      <div class="kr-m-cat-icon">🥜</div>
+      <span class="kr-m-cat-label">Pulses</span>
+    </div>
+    <div class="kr-m-cat-bubble" onclick="filterMobileCategory('dairy', this)">
+      <div class="kr-m-cat-icon">🥛</div>
+      <span class="kr-m-cat-label">Dairy</span>
+    </div>
+    <div class="kr-m-cat-bubble" onclick="filterMobileCategory('deals', this)">
+      <div class="kr-m-cat-icon">⚡</div>
+      <span class="kr-m-cat-label">Flash Deals</span>
+    </div>
+  </div>
+
+  <!-- 4. Sleek Compact Promotional Carousel / Banner (Max Height: 135px) -->
+  <div class="kr-m-promo-box">
+    <div class="kr-m-promo-text">
+      <span class="kr-m-promo-tag">⚡ FLASH HARVEST</span>
+      <h3 class="kr-m-promo-heading">Flat 50% Off</h3>
+      <p class="kr-m-promo-desc">Fresh Farm Gate Produce · Code: KRDEAL50</p>
+      <a href="{{ url_for('customer.dashboard') }}" class="kr-m-promo-action-btn">
+        Order Now &rarr;
+      </a>
+    </div>
+    <div class="kr-m-promo-img-wrap">
+      <img src="{{ url_for('static', filename='images/crops/farm_header_bg.jpg') }}" alt="KisanRoute Fresh Harvest" onerror="this.src='{{ url_for('static', filename='images/crops/wheat.jpg') }}'" />
+    </div>
+  </div>
+
+  <!-- 5. High-Converting Product Feed (Zepto 2-Column Card Architecture) -->
+  <div class="kr-m-feed-header">
+    <h2 class="kr-m-feed-title">Farm-Fresh Picks (ताज़ा फसलें)</h2>
+    <a href="{{ url_for('customer.dashboard') }}" class="kr-m-feed-seeall">See All &rsaquo;</a>
+  </div>
+
+  <div class="kr-m-product-grid" id="krMobileProductGrid">
+    <!-- Card 1: Wheat -->
+    <div class="kr-m-card" data-category="grains all" data-name="wheat gehu ram singh">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/wheat.jpg') }}" alt="Wheat" loading="lazy" />
+        <span class="kr-m-badge-ribbon">🌱 Harvested Today</span>
+      </div>
+      <div class="kr-m-card-title">Premium Gehu (Wheat)</div>
+      <div class="kr-m-card-rating">⭐ 4.8 · Ram Singh, Palwal</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹24<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹30/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-1">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(1, 'Premium Gehu', 24, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-1" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(1, 24)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-1">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(1, 24)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Tomato -->
+    <div class="kr-m-card" data-category="veggies deals all" data-name="tomato tamatar geeta devi">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/tomato.jpg') }}" alt="Tomato" loading="lazy" />
+        <span class="kr-m-badge-ribbon" style="background: rgba(220, 38, 38, 0.92);">🍅 Fresh Morning</span>
+      </div>
+      <div class="kr-m-card-title">Desi Tamatar (Tomato)</div>
+      <div class="kr-m-card-rating">⭐ 4.8 · Geeta Devi, Rohtak</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹18<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹25/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-2">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(2, 'Desi Tamatar', 18, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-2" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(2, 18)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-2">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(2, 18)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Onion -->
+    <div class="kr-m-card" data-category="veggies all" data-name="onion pyaaz anil yadav">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/onion.jpg') }}" alt="Onion" loading="lazy" />
+        <span class="kr-m-badge-ribbon">🧅 Farm Direct</span>
+      </div>
+      <div class="kr-m-card-title">Red Pyaaz (Onion)</div>
+      <div class="kr-m-card-rating">⭐ 4.7 · Anil Yadav, Meerut</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹20<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹28/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-3">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(3, 'Red Pyaaz', 20, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-3" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(3, 20)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-3">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(3, 20)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Apple -->
+    <div class="kr-m-card" data-category="fruits deals all" data-name="apple seb harpreet singh">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/apple.jpg') }}" alt="Apple" loading="lazy" />
+        <span class="kr-m-badge-ribbon" style="background: rgba(180, 83, 9, 0.92);">🍎 100% Organic</span>
+      </div>
+      <div class="kr-m-card-title">Kashmiri Seb (Apple)</div>
+      <div class="kr-m-card-rating">⭐ 4.9 · Harpreet Singh</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹85<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹120/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-4">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(4, 'Kashmiri Seb', 85, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-4" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(4, 85)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-4">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(4, 85)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Green Peas -->
+    <div class="kr-m-card" data-category="veggies all" data-name="peas matar manoj verma">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/green_peas.jpg') }}" alt="Green Peas" loading="lazy" />
+        <span class="kr-m-badge-ribbon">🌱 Morning Pick</span>
+      </div>
+      <div class="kr-m-card-title">Hari Matar (Peas)</div>
+      <div class="kr-m-card-rating">⭐ 4.8 · Manoj Verma, Hapur</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹38<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹50/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-5">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(5, 'Hari Matar', 38, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-5" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(5, 38)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-5">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(5, 38)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: Potato -->
+    <div class="kr-m-card" data-category="veggies all" data-name="potato aloo pooja sharma">
+      <div class="kr-m-card-thumb">
+        <img src="{{ url_for('static', filename='images/crops/potato.jpg') }}" alt="Potato" loading="lazy" />
+        <span class="kr-m-badge-ribbon">🥔 Grade A</span>
+      </div>
+      <div class="kr-m-card-title">Pahadi Aloo (Potato)</div>
+      <div class="kr-m-card-rating">⭐ 4.6 · Pooja Sharma</div>
+      <div class="kr-m-card-bottom">
+        <div class="kr-m-price-box">
+          <div class="kr-m-main-price">₹15<span class="kr-m-unit">/kg</span></div>
+          <span class="kr-m-mrp">₹22/kg</span>
+        </div>
+        <div class="kr-m-btn-wrap" id="m-wrap-6">
+          <button type="button" class="kr-m-add-btn" onclick="addMobileItem(6, 'Pahadi Aloo', 15, 'kg')">+ ADD</button>
+          <div class="kr-m-stepper-active" id="m-step-6" style="display: none;">
+            <button type="button" class="kr-m-step-btn" onclick="decMobileItem(6, 15)">&minus;</button>
+            <span class="kr-m-step-qty" id="m-qty-6">1</span>
+            <button type="button" class="kr-m-step-btn" onclick="incMobileItem(6, 15)">&plus;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Mobile Quick Cart Bar (Appears when items added) -->
+  <div id="krMobileFloatingCart" class="kr-m-floating-cart" style="display: none;">
+    <div class="kr-m-cart-summary">
+      <span class="kr-m-cart-items-text" id="krMobileCartText">1 Item | ₹24</span>
+      <span class="kr-m-cart-subtext">⚡ 45 Mins Express Farm Delivery</span>
+    </div>
+    <a href="{{ url_for('customer.dashboard') }}" class="kr-m-cart-cta-btn">
+      View Cart & Checkout &rarr;
+    </a>
+  </div>
+</div>
+
+<script>
+// Mobile Quick-Commerce Cart & Filter Controller
+var krMobileCart = {};
+
+function filterMobileCategory(cat, btn) {
+  var bubbles = document.querySelectorAll('.kr-m-cat-bubble');
+  bubbles.forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+
+  var cards = document.querySelectorAll('#krMobileProductGrid .kr-m-card');
+  cards.forEach(function(card) {
+    var cAttr = card.getAttribute('data-category') || '';
+    if (cat === 'all' || cAttr.indexOf(cat) !== -1) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function handleMobileSearch(val) {
+  var q = (val || '').trim().toLowerCase();
+  var cards = document.querySelectorAll('#krMobileProductGrid .kr-m-card');
+  cards.forEach(function(card) {
+    var name = card.getAttribute('data-name') || '';
+    if (!q || name.indexOf(q) !== -1) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+function triggerMobileVoiceSearch() {
+  var input = document.getElementById('krMobileSearchInput');
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    var rec = new SpeechRecognition();
+    rec.lang = 'hi-IN';
+    rec.onresult = function(e) {
+      var text = e.results[0][0].transcript;
+      if (input) {
+        input.value = text;
+        handleMobileSearch(text);
+      }
+    };
+    rec.start();
+  } else {
+    var picks = ['Tamatar', 'Gehu', 'Pyaaz', 'Aloo'];
+    var word = picks[Math.floor(Math.random() * picks.length)];
+    if (input) {
+      input.value = word;
+      handleMobileSearch(word);
+    }
+  }
+}
+
+function addMobileItem(id, name, price, unit) {
+  krMobileCart[id] = { qty: 1, name: name, price: price, unit: unit };
+  updateMobileCardUI(id);
+  updateMobileCartBar();
+}
+
+function incMobileItem(id, price) {
+  if (!krMobileCart[id]) return;
+  krMobileCart[id].qty += 1;
+  updateMobileCardUI(id);
+  updateMobileCartBar();
+}
+
+function decMobileItem(id, price) {
+  if (!krMobileCart[id]) return;
+  krMobileCart[id].qty -= 1;
+  if (krMobileCart[id].qty <= 0) {
+    delete krMobileCart[id];
+  }
+  updateMobileCardUI(id);
+  updateMobileCartBar();
+}
+
+function updateMobileCardUI(id) {
+  var wrap = document.getElementById('m-wrap-' + id);
+  if (!wrap) return;
+  var addBtn = wrap.querySelector('.kr-m-add-btn');
+  var stepper = document.getElementById('m-step-' + id);
+  var qtyEl = document.getElementById('m-qty-' + id);
+
+  var item = krMobileCart[id];
+  if (item && item.qty > 0) {
+    if (addBtn) addBtn.style.display = 'none';
+    if (stepper) stepper.style.display = 'inline-flex';
+    if (qtyEl) qtyEl.textContent = item.qty;
+  } else {
+    if (addBtn) addBtn.style.display = 'block';
+    if (stepper) stepper.style.display = 'none';
+  }
+}
+
+function updateMobileCartBar() {
+  var bar = document.getElementById('krMobileFloatingCart');
+  var textEl = document.getElementById('krMobileCartText');
+  if (!bar || !textEl) return;
+
+  var totalItems = 0;
+  var totalPrice = 0;
+  for (var id in krMobileCart) {
+    var item = krMobileCart[id];
+    totalItems += item.qty;
+    totalPrice += (item.qty * item.price);
+  }
+
+  if (totalItems > 0) {
+    bar.style.display = 'flex';
+    textEl.textContent = totalItems + (totalItems === 1 ? ' Item' : ' Items') + ' | ₹' + totalPrice.toLocaleString('en-IN');
+  } else {
+    bar.style.display = 'none';
+  }
+}
+</script>
+
+<!-- ================= FLIPKART/AMAZON STYLE ROTATING HERO BANNER (DESKTOP) ================= -->
 <section class="hero kr-hero-carousel-container" id="krHeroSection" style="position: relative; overflow: hidden; min-height: 520px; display: flex; align-items: center; justify-content: center; border-radius: 20px; margin: 15px auto 48px auto; max-width: 1200px; width: 95%; isolation: isolate; background-color: #1b5e20; box-shadow: 0 10px 30px rgba(0,0,0,0.18);">
 
   <!-- Carousel Slides Wrapper -->

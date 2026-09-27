@@ -1280,8 +1280,8 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.06);
-    z-index: 99990;
+    box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.08);
+    z-index: 999999 !important;
     align-items: center;
     justify-content: space-around;
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -1351,18 +1351,18 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
     padding-bottom: calc(85px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* Offset floating assistants above the bottom dock */
+  /* Offset floating assistants comfortably above the bottom dock */
   #krChatLauncher {
     position: fixed !important;
-    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 18px) !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 10px) !important;
     right: 14px !important;
-    z-index: 99996 !important;
+    z-index: 99990 !important;
   }
   .voice-assistant {
     position: fixed !important;
-    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 18px) !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 10px) !important;
     right: 66px !important;
-    z-index: 99996 !important;
+    z-index: 99990 !important;
   }
   .kr-lang-floating-btn {
     display: none !important;

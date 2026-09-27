@@ -55,9 +55,8 @@ class Config:
     OPENROUTESERVICE_KEY = os.environ.get("OPENROUTESERVICE_KEY") or os.environ.get("ORS_API_KEY") or _ORS_SEC
     os.environ.setdefault("OPENROUTESERVICE_KEY", OPENROUTESERVICE_KEY)
 
-    # Fast2SMS Quick OTP Gateway
-    FAST2SMS_API_KEY = os.environ.get("FAST2SMS_API_KEY") or os.environ.get("SMS_API_KEY", "")
-    os.environ.setdefault("FAST2SMS_API_KEY", FAST2SMS_API_KEY)
+    # WhatsApp Direct Handshake Authentication (100% Free, Zero Third-Party Cost)
+    WHATSAPP_RECEIVER_NUMBER = os.environ.get("WHATSAPP_RECEIVER_NUMBER", "918700257488")
 
     # Bank-grade session and cookie security
     SESSION_COOKIE_HTTPONLY = True

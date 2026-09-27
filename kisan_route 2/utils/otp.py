@@ -1,8 +1,6 @@
-"""Mock OTP system.
+"""WhatsApp Direct Handshake & Verification Utilities.
 
-Real SMS delivery (via MSG91, Twilio, etc.) can replace `generate_otp`'s
-internals later without touching any calling code — callers only see a
-4-digit string and a verify function.
+Generates a 4-digit numeric verification code for the Kisan Direct Handshake.
 """
 import random
 

@@ -234,40 +234,12 @@ def maintenance_bypass():
     return redirect(url_for("main.home"))
 
 
-@main_bp.route("/api/send-otp", methods=["POST"])
-def send_otp():
-    """Send SMS OTP via seamless sandbox gateway with instant demoOtp response."""
-    payload = request.get_json(silent=True) or {}
-    phone_raw = payload.get("phone", "")
-    otp = str(payload.get("otp", "")).strip()
-
-    if not phone_raw:
-        return jsonify({"success": False, "message": "Phone number is required."}), 400
-
-    phone_10 = clean_phone(phone_raw)
-    if len(phone_10) != 10 or not phone_10.isdigit():
-        return jsonify({
-            "success": False,
-            "message": "Invalid phone number format. Strictly a 10-digit Indian mobile number is required (e.g. 8700257488)."
-        }), 400
-
-    import random
-    if not (len(otp) == 6 and otp.isdigit()):
-        otp = str(random.randint(100000, 999999))
-
-    return jsonify({
-        "success": True,
-        "demoOtp": otp,
-        "phone": phone_10,
-        "message": "Demo SMS dispatched successfully via sandbox gateway."
-    })
-
-
 @main_bp.route("/api/auth/phone-login", methods=["POST"])
+@main_bp.route("/api/auth/whatsapp-login", methods=["POST"])
 @main_bp.route("/api/auth/firebase-login", methods=["POST"])
 def phone_login():
-    """Verify phone authentication, create or restore user session in Supabase
-    users/profiles tables, persist local database user, and establish platform session.
+    """Verify WhatsApp direct handshake authentication, create or restore user session
+    in Supabase users/profiles tables, persist local database user, and establish platform session.
     """
     payload = request.get_json(silent=True) or {}
     phone_raw = payload.get("phone", "")
@@ -302,11 +274,11 @@ def phone_login():
             role=role,
             full_name=display_name,
             phone=phone_10,
-            password_hash=generate_password_hash(f"otp_{phone_10}_{user_uid}"),
+            password_hash=generate_password_hash(f"wa_{phone_10}_{user_uid}"),
         )
         user.set_extra({
             "uid": user_uid,
-            "auth_provider": "fast2sms_otp",
+            "auth_provider": "whatsapp_handshake",
             "full_phone": formatted_phone,
             "verified_at": datetime.utcnow().isoformat()
         })
@@ -315,7 +287,7 @@ def phone_login():
     else:
         extra = user.get_extra()
         extra["uid"] = user_uid
-        extra["auth_provider"] = "fast2sms_otp"
+        extra["auth_provider"] = "whatsapp_handshake"
         extra["full_phone"] = formatted_phone
         extra["last_otp_login"] = datetime.utcnow().isoformat()
         user.set_extra(extra)
@@ -328,7 +300,7 @@ def phone_login():
     session["role"] = user.role
     session["name"] = user.full_name
     session["phone"] = user.phone
-    session["auth_provider"] = "fast2sms_otp"
+    session["auth_provider"] = "whatsapp_handshake"
     session.permanent = True
 
     # 3. Supabase Sync: Upsert user record into 'users' and 'profiles'
@@ -337,7 +309,7 @@ def phone_login():
         "raw_phone": phone_10,
         "role": role,
         "full_name": user.full_name,
-        "auth_provider": "fast2sms_otp",
+        "auth_provider": "whatsapp_handshake",
         "updated_at": datetime.utcnow().isoformat()
     }
 
@@ -352,7 +324,7 @@ def phone_login():
                 "phone": formatted_phone,
                 "role": role,
                 "full_name": user.full_name,
-                "auth_provider": "fast2sms_otp",
+                "auth_provider": "whatsapp_handshake",
                 "updated_at": datetime.utcnow().isoformat()
             }
             supabase.upsert("profiles", profile_data, on_conflict="phone")

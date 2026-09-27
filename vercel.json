@@ -2,19 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/send-otp.js",
-      "use": "@vercel/node"
-    },
-    {
       "src": "app.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
-    {
-      "src": "/api/send-otp",
-      "dest": "api/send-otp.js"
-    },
     {
       "src": "/(.*)",
       "dest": "app.py"

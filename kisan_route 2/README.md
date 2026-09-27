@@ -170,7 +170,7 @@ means editing one file, not hunting through templates:
 
 | Mock module | Replace with, eventually |
 |---|---|
-| `utils/otp.py` | Real SMS via MSG91, Twilio, etc. |
+| `utils/otp.py` | 100% Free WhatsApp Direct Handshake Authentication |
 | `utils/payment.py` | Real UPI/payment gateway (Razorpay, Cashfree, etc.) |
 | `utils/crop_quality.py` | A real trained CNN/vision model served via an API |
 | `utils/mandi.py` | A live mandi price API or scraped/official dataset |

@@ -28,11 +28,11 @@
     
     navGroup.innerHTML = `
       <a href="/" class="btn-ghost" data-role="home"><span style="font-size: 14px;">🏠</span> Home</a>
-      <a href="/portal/farmer" class="btn-ghost" data-role="farmer"><span style="font-size: 14px;">🌾</span> Farmer</a>
-      <a href="/portal/cluster" class="btn-ghost" data-role="cluster"><span style="font-size: 14px;">🤝</span> Cluster</a>
-      <a href="/portal/customer" class="btn-ghost" data-role="customer"><span style="font-size: 14px;">🛒</span> Customer</a>
-      <a href="/portal/driver" class="btn-ghost" data-role="driver"><span style="font-size: 14px;">🚚</span> Driver</a>
-      <a href="/portal/wholesaler" class="btn-ghost" data-role="wholesaler"><span style="font-size: 14px;">🏬</span> Wholesaler</a>
+      <a href="/farmer/login" class="btn-ghost" data-role="farmer"><span style="font-size: 14px;">🌾</span> Farmer</a>
+      <a href="/cluster/login" class="btn-ghost" data-role="cluster"><span style="font-size: 14px;">🤝</span> Cluster</a>
+      <a href="/customer/login" class="btn-ghost" data-role="customer"><span style="font-size: 14px;">🛒</span> Customer</a>
+      <a href="/driver/login" class="btn-ghost" data-role="driver"><span style="font-size: 14px;">🚚</span> Driver</a>
+      <a href="/wholesaler/login" class="btn-ghost" data-role="wholesaler"><span style="font-size: 14px;">🏬</span> Wholesaler</a>
       <a href="/about" class="btn-ghost" data-role="about"><span style="font-size: 14px;">ℹ️</span> About</a>
     `;
 

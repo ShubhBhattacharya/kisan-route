@@ -182,7 +182,7 @@ function handleKrBackNavigation() {
 </div>
 
 <header class="topbar">
-  <div class="topbar-left" style="display: flex; align-items: center; gap: 8px;">
+  <div class="topbar-left" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1 1 auto; overflow: hidden;">
     <!-- Universal Back Button (shown on inner pages/dashboards) -->
     {% if request.path != '/' %}
     <button type="button" class="kr-topbar-back-btn" onclick="handleKrBackNavigation()" aria-label="Go back" title="Go back (पीछे जाएं)">
@@ -192,7 +192,7 @@ function handleKrBackNavigation() {
     {% endif %}
 
     <!-- Three-dot menu button with Direct Anchored Dropdown (Universal) -->
-    <div class="kr-dots-menu-container" style="position: relative; display: inline-flex; align-items: center;">
+    <div class="kr-dots-menu-container" style="position: relative; display: inline-flex; align-items: center; flex-shrink: 0;">
       <button id="menuToggle" type="button" class="dots-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="krThreeDotsDropdown" onclick="window.toggleKrDotsMenu(event)" title="Navigation Menu (मेनू)">
         <span></span><span></span><span></span>
       </button>
@@ -201,7 +201,7 @@ function handleKrBackNavigation() {
       <div id="krThreeDotsDropdown" class="kr-dots-dropdown" role="menu" aria-label="Kisan Navigation Menu" style="display: none;">
         {% if session.get('user_id') %}
         <div class="kr-dropdown-user-header">
-          <div style="font-size: 11px; color: #15803d; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">● {{ session.get('role')|capitalize }} Logged In</div>
+          <div style="font-size: 11px; color: #15803d; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">● {{ session.get('role', 'farmer')|capitalize }} Logged In</div>
           <div style="font-size: 13.5px; font-weight: 800; color: #1b5e20;">{{ session.get('name') }}</div>
         </div>
         {% else %}
@@ -215,11 +215,11 @@ function handleKrBackNavigation() {
         <div class="kr-dropdown-section-title">PORTALS / मुख्य पोर्टल</div>
         <div class="kr-dropdown-items-grid">
           <a href="/" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🏠</span> <span>Home (मुख्य पृष्ठ)</span></a>
-          <a href="/portal/farmer" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🌾</span> <span>{{ t('nav_farmer') }} (किसान)</span></a>
-          <a href="/portal/driver" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🚚</span> <span>{{ t('nav_driver') }} (चालक)</span></a>
-          <a href="/portal/wholesaler" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🏬</span> <span>{{ t('nav_wholesaler') }} (आढ़ती)</span></a>
-          <a href="/portal/cluster" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🤝</span> <span>{{ t('nav_cluster') }} (समूह)</span></a>
-          <a href="/portal/customer" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🛒</span> <span>{{ t('nav_customer') }} (खरीदार)</span></a>
+          <a href="/farmer/login" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🌾</span> <span>{{ t('nav_farmer') }} (किसान)</span></a>
+          <a href="/driver/login" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🚚</span> <span>{{ t('nav_driver') }} (चालक)</span></a>
+          <a href="/wholesaler/login" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🏬</span> <span>{{ t('nav_wholesaler') }} (आढ़ती)</span></a>
+          <a href="/cluster/login" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🤝</span> <span>{{ t('nav_cluster') }} (समूह)</span></a>
+          <a href="/customer/login" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🛒</span> <span>{{ t('nav_customer') }} (खरीदार)</span></a>
         </div>
 
         <div class="kr-dropdown-section-title" style="margin-top: 6px; border-top: 1px solid #f1f5f9; padding-top: 6px;">FEATURES / सुविधाएं</div>
@@ -239,7 +239,7 @@ function handleKrBackNavigation() {
 
         {% if session.get('user_id') %}
         <div style="border-top: 1px solid #f1f5f9; padding-top: 6px; margin-top: 6px;">
-          <a href="{{ url_for(session.get('role') + '.logout') }}" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()" style="color: #dc2626; font-weight: 700;">
+          <a href="{{ url_for(session.get('role', 'farmer') + '.logout') }}" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()" style="color: #dc2626; font-weight: 700;">
             <span class="kr-dd-icon">🚪</span> <span>Logout (लॉगआउट)</span>
           </a>
         </div>
@@ -248,7 +248,7 @@ function handleKrBackNavigation() {
     </div>
 
     <!-- 2. Navbar Brand Identity -->
-    <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+    <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0;">
       <span class="kr-brand-emblem">🌾</span>
       <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.15;">
         <span class="kr-brand-text">{{ t('site_name') }}</span>
@@ -259,9 +259,9 @@ function handleKrBackNavigation() {
     </a>
   </div>
 
-  <div class="topbar-right">
+  <div class="topbar-right" style="display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; white-space: nowrap; z-index: 10;">
     <!-- Live Alerts / Notification Bell (Always visible) -->
-    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications" title="Notifications">
+    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications" title="Notifications" style="flex-shrink: 0;">
       <span>🔔</span>
       <span class="kr-bell-badge" id="krBellBadge">4</span>
     </button>
@@ -277,17 +277,17 @@ function handleKrBackNavigation() {
     </script>
 
     <!-- Universal Language Selector Button (Desktop Only: hidden on mobile < 768px, moved to drawer) -->
-    <button type="button" class="kr-topbar-lang-btn desktop-only-lang notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
+    <button type="button" class="kr-topbar-lang-btn desktop-only-lang notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)" style="flex-shrink: 0; white-space: nowrap;">
       <span style="font-size: 15px;">🌐</span>
       <span class="kr-lang-btn-text">भाषा / Language</span>
     </button>
 
     <!-- WhatsApp Login Button (Desktop Only: hidden on mobile < 768px, pinned in drawer) -->
     {% if session.get('user_id') %}
-      <span class="user-chip desktop-only-chip">{{ session.get('name') }}</span>
-      <a class="btn-ghost desktop-only-chip" href="{{ url_for(session.get('role') + '.logout') }}">Log out</a>
+      <span class="user-chip desktop-only-chip" style="font-weight: 700; color: #1b5e20; background: #e8f5e9; padding: 4px 10px; border-radius: 999px; border: 1px solid #a5d6a7; font-size: 13px; white-space: nowrap; flex-shrink: 0;">{{ session.get('name') }}</span>
+      <a class="btn-ghost desktop-only-chip" href="{{ url_for(session.get('role', 'farmer') + '.logout') }}" style="color: #dc2626; border-color: #fca5a5; font-weight: 700; white-space: nowrap; flex-shrink: 0; padding: 6px 12px; font-size: 12.5px;">Log out</a>
     {% else %}
-      <button type="button" class="kr-topbar-otp-btn desktop-only-btn" onclick="openKrLoginModal()" title="WhatsApp Login (व्हाट्सएप लॉगिन)" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; border: none; border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(37,211,102,0.35);">
+      <button type="button" class="kr-topbar-otp-btn desktop-only-btn" onclick="openKrLoginModal()" title="WhatsApp Login (व्हाट्सएप लॉगिन)" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; border: none; border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(37,211,102,0.35); flex-shrink: 0; white-space: nowrap;">
         <span>💬</span>
         <span class="kr-otp-btn-label">WhatsApp Login</span>
       </button>
@@ -346,11 +346,11 @@ function handleKrBackNavigation() {
     </li>
     {% endif %}
     <li><a href="{{ url_for('main.home') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏠</span> Home (मुख्य पृष्ठ)</a></li>
-    <li><a href="/portal/farmer" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
-    <li><a href="/portal/driver" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
-    <li><a href="/portal/wholesaler" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
-    <li><a href="/portal/cluster" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
-    <li><a href="/portal/customer" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
+    <li><a href="/farmer/login" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
+    <li><a href="/driver/login" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
+    <li><a href="/wholesaler/login" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
+    <li><a href="/cluster/login" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
+    <li><a href="/customer/login" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
     <li><a href="{{ url_for('farmer.mandi_rates') }}" onclick="closeSideMenu()"><span aria-hidden="true">📊</span> Mandi Rates (मंडी भाव)</a></li>
     <li><a href="{{ url_for('main.about') }}" onclick="closeSideMenu()"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }} (हमारे बारे में)</a></li>
     <li style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px;">

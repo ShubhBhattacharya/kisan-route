@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from flask import (Blueprint, current_app, flash, redirect, render_template,
+from flask import (Blueprint, current_app, flash, jsonify, redirect, render_template,
                     request, session, url_for)
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
@@ -132,6 +132,12 @@ def dashboard():
     crop_type = user.get_extra().get("crop_type") if user else None
     farmer_name = session.get("name", "Demo Farmer")
     incoming_bids = get_farmer_incoming_bids(farmer_name=farmer_name, crop=crop_type)
+    # Ensure no declined or rejected bids appear in active offers list
+    incoming_bids = [
+        b for b in incoming_bids
+        if "declined" not in str(b.get("status", "")).lower()
+        and "rejected" not in str(b.get("status", "")).lower()
+    ]
     return render_template("farmer/dashboard.html", crop_type=crop_type, incoming_bids=incoming_bids)
 
 
@@ -139,6 +145,8 @@ def dashboard():
 @login_required(ROLE)
 def accept_bid(bid_id):
     update_bid_status(bid_id, "Deal Confirmed / Ready for Pickup")
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+        return jsonify({"status": "success", "bid_id": bid_id, "message": f"Deal Confirmed for {bid_id}!"})
     flash(f"🎉 Deal Confirmed for {bid_id}! Wholesaler has been alerted for pickup and bank payout.", "success")
     return redirect(url_for("farmer.dashboard"))
 
@@ -147,8 +155,11 @@ def accept_bid(bid_id):
 @login_required(ROLE)
 def reject_bid(bid_id):
     update_bid_status(bid_id, "Declined by Farmer")
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
+        return jsonify({"status": "success", "bid_id": bid_id, "message": f"Offer {bid_id} has been declined."})
     flash(f"Offer {bid_id} has been declined.", "info")
     return redirect(url_for("farmer.dashboard"))
+
 
 
 @farmer_bp.route("/crop-quality", methods=["GET", "POST"])

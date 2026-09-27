@@ -49,7 +49,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 14px;">
           {% for b in incoming_bids %}
-          <div style="background: #ffffff; border: 1.5px solid {% if b.status == 'Offer Sent' %}#86efac{% else %}#e2e8f0{% endif %}; border-radius: 14px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: transform 0.15s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+          <div id="kr-bid-card-{{ b.bid_id }}" style="background: #ffffff; border: 1.5px solid {% if b.status == 'Offer Sent' %}#86efac{% else %}#e2e8f0{% endif %}; border-radius: 14px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
             
             <!-- Left: Crop & Buyer Info -->
             <div style="display: flex; align-items: center; gap: 14px; min-width: 260px;">
@@ -114,8 +114,8 @@
                       <span>✅</span> Accept Deal (मंजूर करें)
                     </button>
                   </form>
-                  <form method="post" action="{{ url_for('farmer.reject_bid', bid_id=b.bid_id) }}" style="margin: 0;">
-                    <button type="submit" style="background: #f8fafc; color: #64748b; border: 1.5px solid #cbd5e1; font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 9px; cursor: pointer;" onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fca5a5'; this.style.color='#b91c1c';" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b';">
+                  <form method="post" action="{{ url_for('farmer.reject_bid', bid_id=b.bid_id) }}" style="margin: 0;" onsubmit="handleDeclineOffer(event, '{{ b.bid_id }}', this)">
+                    <button type="submit" style="background: #f8fafc; color: #64748b; border: 1.5px solid #cbd5e1; font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 9px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='#fee2e2'; this.style.borderColor='#fca5a5'; this.style.color='#b91c1c';" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b';">
                       Decline
                     </button>
                   </form>
@@ -146,6 +146,45 @@
       {% endif %}
     </div>
   </div>
+
+  <script>
+  function handleDeclineOffer(event, bidId, formEl) {
+    if (event) event.preventDefault();
+    var card = document.getElementById('kr-bid-card-' + bidId);
+    if (card) {
+      card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.96) translateY(-8px)';
+      card.style.pointerEvents = 'none';
+      setTimeout(function() {
+        card.style.maxHeight = card.offsetHeight + 'px';
+        setTimeout(function() {
+          card.style.maxHeight = '0';
+          card.style.padding = '0';
+          card.style.margin = '0';
+          card.style.overflow = 'hidden';
+          setTimeout(function() {
+            card.remove();
+            var remaining = document.querySelectorAll('[id^="kr-bid-card-"]');
+            if (remaining.length === 0) {
+              window.location.reload();
+            }
+          }, 300);
+        }, 50);
+      }, 150);
+    }
+    fetch(formEl.action, {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(function(res) {
+      if (!res.ok) {
+        formEl.submit();
+      }
+    }).catch(function() {
+      formEl.submit();
+    });
+  }
+  </script>
 
   <div class="dashboard-grid">
     <a class="feature-card" href="{{ url_for('farmer.crop_quality') }}">

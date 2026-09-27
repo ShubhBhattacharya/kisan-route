@@ -95,7 +95,8 @@ def api_notifications():
 
     # Insert Live Wholesaler Bids dynamically at the very top
     try:
-        live_bids = get_all_bids()
+        all_recent = get_all_bids()
+        live_bids = [b for b in all_recent if "declined" not in str(b.get("status", "")).lower() and "rejected" not in str(b.get("status", "")).lower()]
         for b in live_bids[:4]:
             w_name = b.get("wholesaler_name", "थोक व्यापारी")
             rate = float(b.get("offer_price", 0))

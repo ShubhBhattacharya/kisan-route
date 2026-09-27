@@ -83,7 +83,7 @@ def create_app():
             languages=LANGUAGES,
             agri_weather=get_agri_weather(),
             agri_news=get_agri_news(),
-            live_bids=get_all_bids()
+            live_bids=[b for b in get_all_bids() if "declined" not in str(b.get("status", "")).lower() and "rejected" not in str(b.get("status", "")).lower()]
         )
 
 

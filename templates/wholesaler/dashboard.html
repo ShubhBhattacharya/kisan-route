@@ -119,8 +119,12 @@
             </td>
             <td style="padding: 14px 16px;">
               {% if 'Confirmed' in b.status %}
-              <span style="background: #e8f5e9; color: #1b5e20; border: 1px solid #81c784; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+              <span style="background: #e8f5e9; color: #1b5e20; border: 1.5px solid #81c784; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
                 <span>✅</span> Confirmed
+              </span>
+              {% elif 'Declined' in b.status or 'declined' in b.status|lower or 'Rejected' in b.status or 'rejected' in b.status|lower %}
+              <span style="background: #fef2f2; color: #991b1b; border: 1.5px solid #fca5a5; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                <span>❌</span> Offer Declined
               </span>
               {% else %}
               <span style="background: #fff8e1; color: #b78103; border: 1px solid #ffe082; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">

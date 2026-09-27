@@ -239,6 +239,11 @@ def dashboard():
     bids = get_all_bids()
     if not bids:
         bids = session.get("wholesaler_bids", [])
+    else:
+        # Keep session synchronized with latest bid statuses from database/JSON
+        session["wholesaler_bids"] = bids
+        session.modified = True
+
 
     metrics = {
         "total_lots": total_lots,

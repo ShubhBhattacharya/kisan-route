@@ -126,54 +126,86 @@ def save_bid(bid_dict):
 
 
 def update_bid_status(bid_id, new_status):
-    """Update status of an existing bid (e.g. 'Accepted by Farmer')."""
+    """Update status of an existing bid (e.g. 'Deal Confirmed / Ready for Pickup', 'Declined by Farmer')."""
+    if not bid_id:
+        return
+    clean_id = str(bid_id).strip()
+
     # 1. Update in DB
     try:
         from extensions import db
         from models import Bid
-        b = Bid.query.filter_by(bid_id=bid_id).first()
+        b = Bid.query.filter_by(bid_id=clean_id).first()
+        if not b:
+            b = Bid.query.filter(Bid.bid_id.ilike(clean_id)).first()
         if b:
             b.status = new_status
             db.session.commit()
     except Exception as e:
         print("[bids] DB status update note:", e)
 
-    # 2. Update in JSON
+    # 2. Update in all persistent JSON storage locations
     with _LOCK:
-        target = _get_target_path()
-        if os.path.exists(target):
-            try:
-                with open(target, "r", encoding="utf-8") as f:
-                    bids = json.load(f)
-                for item in bids:
-                    if item.get("bid_id") == bid_id:
-                        item["status"] = new_status
-                with open(target, "w", encoding="utf-8") as f:
-                    json.dump(bids, f, ensure_ascii=False, indent=2)
-            except Exception:
-                pass
+        for p in [_get_target_path(), _JSON_PATH, _TMP_JSON_PATH]:
+            if os.path.exists(p):
+                try:
+                    with open(p, "r", encoding="utf-8") as f:
+                        bids = json.load(f)
+                    changed = False
+                    for item in bids:
+                        if str(item.get("bid_id", "")).strip().lower() == clean_id.lower():
+                            item["status"] = new_status
+                            changed = True
+                    if changed:
+                        with open(p, "w", encoding="utf-8") as f:
+                            json.dump(bids, f, ensure_ascii=False, indent=2)
+                except Exception as e:
+                    print(f"[bids] JSON status update note for {p}:", e)
+
+    # 3. Synchronize in session if request context is active
+    try:
+        from flask import session, has_request_context
+        if has_request_context() and "wholesaler_bids" in session:
+            wb = list(session.get("wholesaler_bids", []))
+            changed = False
+            for item in wb:
+                if str(item.get("bid_id", "")).strip().lower() == clean_id.lower():
+                    item["status"] = new_status
+                    changed = True
+            if changed:
+                session["wholesaler_bids"] = wb
+                session.modified = True
+    except Exception:
+        pass
 
 
 def get_farmer_incoming_bids(farmer_name=None, crop=None):
-    """Get bids meant for the farmer dashboard.
-    If farmer is Demo Farmer or name matches or crop matches, return relevant bids.
-    Always includes all recent wholesaler bids if specific match is empty,
-    ensuring Demo Farmer can test and review any wholesaler's bid immediately.
+    """Get active incoming bids meant for the farmer dashboard.
+    Automatically filters out any declined or rejected bids so they immediately
+    disappear from the farmer's active offers list upon declining.
     """
     all_bids = get_all_bids()
     if not all_bids:
         return []
 
+    # Exclude declined or rejected bids
+    active_bids = [
+        b for b in all_bids
+        if "declined" not in str(b.get("status", "")).lower()
+        and "rejected" not in str(b.get("status", "")).lower()
+    ]
+
     # Filter for farmer if specific name or crop matches
     if farmer_name and farmer_name not in ("Demo Farmer", "Farmer", ""):
-        matched = [b for b in all_bids if b.get("farmer_name", "").lower() == farmer_name.lower()]
+        matched = [b for b in active_bids if b.get("farmer_name", "").lower() == farmer_name.lower()]
         if matched:
             return matched
 
     if crop:
-        matched = [b for b in all_bids if b.get("crop", "").lower() == crop.lower()]
+        matched = [b for b in active_bids if b.get("crop", "").lower() == crop.lower()]
         if matched:
             return matched
 
-    # For Demo Farmer or overview, return all active bids
-    return all_bids
+    # For Demo Farmer or overview, return active non-declined bids
+    return active_bids
+

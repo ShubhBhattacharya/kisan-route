@@ -147,17 +147,20 @@ app.post('/send', async (req, res) => {
         });
     }
 
-    // Format Indian and International phone numbers into WhatsApp JID
-    let cleanPhone = String(phone).replace(/\D/g, '');
-    if (cleanPhone.length === 10) {
-        cleanPhone = '91' + cleanPhone;
+    // Sanitize the recipient phone
+    let cleanPhone = String(phone).replace(/[^0-9]/g, "");
+    if (cleanPhone.length === 10) cleanPhone = "91" + cleanPhone;
+    let targetJid = `${cleanPhone}@s.whatsapp.net`;
+
+    // If sending to the bot's own connected account:
+    if (sock.user && cleanPhone === sock.user.id.split(':')[0]) {
+        targetJid = sock.user.id; // Send directly to full JID
     }
-    const jid = `${cleanPhone}@s.whatsapp.net`;
 
     try {
-        console.log(`[WhatsApp Bridge] Dispatching message to ${cleanPhone}: "${String(message).substring(0, 50)}..."`);
-        const result = await sock.sendMessage(jid, { text: String(message) });
-        return res.json({ status: 'sent', messageId: result?.key?.id, to: cleanPhone });
+        console.log(`[WhatsApp Bridge] Dispatching message to ${cleanPhone} (${targetJid}): "${String(message).substring(0, 50)}..."`);
+        const result = await sock.sendMessage(targetJid, { text: String(message) });
+        return res.json({ status: 'sent', messageId: result?.key?.id, to: cleanPhone, jid: targetJid });
     } catch (err) {
         console.error(`[WhatsApp Bridge] Failed to send message to ${cleanPhone}:`, err.message);
         return res.status(500).json({ error: err.message });

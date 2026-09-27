@@ -219,15 +219,6 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 }
 .menu-overlay.visible { display: block !important; opacity: 1 !important; pointer-events: auto !important; z-index: 9999998 !important; }
 
-/* Enforce Zero Pointer Events and Complete Hidden State for Transition Overlays */
-#krTransitionOverlay,
-.kr-cinematic-overlay {
-  display: none !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  z-index: -9999 !important;
-}
 
 /* ---------------- Flash messages ---------------- */
 .flash-container {

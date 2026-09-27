@@ -1,5 +1,5 @@
 <!-- ================= CINEMATIC GREEN FULL-SCREEN PAGE TRANSITION OVERLAY ================= -->
-<div id="krTransitionOverlay" class="kr-cinematic-overlay" aria-hidden="true" style="display: none !important; pointer-events: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;">
+<div id="krTransitionOverlay" class="kr-cinematic-overlay" aria-hidden="false">
   
   <!-- Subtle Glowing Ambient Floating Particles (Gold & Wheat Spikes) -->
   <div class="kr-ambient-particles">
@@ -109,35 +109,34 @@
 <!-- ================= CINEMATIC TRANSITION CSS STYLES ================= -->
 <style>
 /* Full-screen Overlay Container */
-.kr-cinematic-overlay,
-#krTransitionOverlay {
+.kr-cinematic-overlay {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -9999 !important;
+  z-index: 999999;
   background: radial-gradient(circle at 60% 40%, #133821 0%, #071f12 70%, #030f08 100%);
-  display: none !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 24px 32px;
   box-sizing: border-box;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
 .kr-cinematic-overlay.kr-fade-out {
-  display: none !important;
   opacity: 0 !important;
-  visibility: hidden !important;
-  transform: scale(1.025) !important;
+  transform: scale(1.02) !important;
   pointer-events: none !important;
-  z-index: -9999 !important;
+}
+
+.kr-skip-transition-btn {
+  pointer-events: auto !important;
 }
 
 /* Ambient Floating Particles */
@@ -320,27 +319,27 @@
   will-change: transform, opacity, filter;
 }
 
-/* Staggered Timings as requested */
+/* Staggered Timings - Fast Smooth Reveal within 350ms */
 .w-ab {
-  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.03s forwards;
 }
 .w-har {
-  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.07s forwards;
 }
 .w-kisan {
   color: #fde047;
   text-shadow: 0 0 28px rgba(250, 204, 21, 0.75), 0 2px 6px rgba(0,0,0,0.8);
-  animation: krWordRevealGold 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+  animation: krWordRevealGold 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
 }
 .w-haq {
-  animation: krWordReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
+  animation: krWordReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.17s forwards;
 }
 .w-khayega {
   color: #ffffff;
   text-decoration: underline;
   text-decoration-color: #facc15;
   text-underline-offset: 6px;
-  animation: krWordRevealImpact 0.65s cubic-bezier(0.16, 1, 0.3, 1) 1.4s forwards;
+  animation: krWordRevealImpact 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
 }
 
 @keyframes krWordReveal {
@@ -372,7 +371,7 @@
   gap: 8px;
   opacity: 0;
   transform: translateY(14px);
-  animation: krFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.7s forwards;
+  animation: krFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.26s forwards;
 }
 .kr-h-icon {
   font-size: 20px;
@@ -387,7 +386,7 @@
   margin-bottom: 28px;
   opacity: 0;
   transform: translateY(14px);
-  animation: krFadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) 1.9s forwards;
+  animation: krFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards;
 }
 .kr-k-chip {
   background: rgba(255, 255, 255, 0.08);
@@ -422,7 +421,7 @@
   background: linear-gradient(90deg, #10b981 0%, #facc15 100%);
   border-radius: 9999px;
   box-shadow: 0 0 12px #facc15;
-  animation: krProgressFill 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: krProgressFill 0.55s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 @keyframes krProgressFill {
   0% { width: 0%; }
@@ -609,21 +608,22 @@
 <!-- ================= CINEMATIC TRANSITION CONTROLLER SCRIPT ================= -->
 <script>
 (function() {
-  // Direct instant navigation — bypasses intermediate banner overlay completely
-  window.triggerKisanTransition = function(opts) {
-    var url = (opts && opts.url) ? opts.url : '/';
-    window.location.href = url;
-  };
+  var transitionTimer = null;
+  var hideTimer = null;
+  var isNavigating = false;
 
-  // Comprehensive dismiss helper that unlocks the screen immediately
+  // Safe dismiss helper: hides overlay, unlocks pointer events, restores page
   function krDismissAllOverlays() {
-    var transOverlay = document.getElementById('krTransitionOverlay');
-    if (transOverlay) {
-      transOverlay.style.setProperty('display', 'none', 'important');
-      transOverlay.style.setProperty('pointer-events', 'none', 'important');
-      transOverlay.style.setProperty('opacity', '0', 'important');
-      transOverlay.style.setProperty('visibility', 'hidden', 'important');
-      transOverlay.style.setProperty('z-index', '-9999', 'important');
+    if (transitionTimer) { clearTimeout(transitionTimer); transitionTimer = null; }
+    if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+    isNavigating = false;
+
+    var overlay = document.getElementById('krTransitionOverlay');
+    if (overlay) {
+      overlay.classList.add('kr-fade-out');
+      overlay.style.pointerEvents = 'none';
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
     }
     var menuOverlay = document.getElementById('menuOverlay');
     if (menuOverlay) {
@@ -656,14 +656,183 @@
   }
   window.krDismissAllOverlays = krDismissAllOverlays;
 
-  // Force-dismiss on load, bfcache restore (pageshow), and history pop (popstate)
-  window.addEventListener('pageshow', krDismissAllOverlays);
-  window.addEventListener('popstate', krDismissAllOverlays);
+  // Render & Play the Brand Transition Screen (max 650ms strictly < 700ms)
+  function playBrandTransition(opts) {
+    opts = opts || {};
+    var duration = opts.duration || 650;
+    var onComplete = opts.onComplete;
+    var overlay = document.getElementById('krTransitionOverlay');
+
+    if (!overlay) {
+      if (typeof onComplete === 'function') onComplete();
+      return;
+    }
+
+    if (transitionTimer) clearTimeout(transitionTimer);
+    if (hideTimer) clearTimeout(hideTimer);
+
+    // Show overlay with pointerEvents = none so underlying UI is never blocked
+    overlay.classList.remove('kr-fade-out');
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
+    overlay.style.pointerEvents = 'none';
+    overlay.setAttribute('aria-hidden', 'false');
+
+    // Reset progress bar animation
+    var progressBar = document.getElementById('krTransitionProgressBar');
+    if (progressBar) {
+      progressBar.style.animation = 'none';
+      void progressBar.offsetWidth;
+      progressBar.style.animation = 'krProgressFill ' + (duration / 1000).toFixed(2) + 's ease-out forwards';
+    }
+
+    // Reset kinetic typography and chips
+    var animElements = overlay.querySelectorAll('.kr-word, .kr-kinetic-hindi, .kr-kinetic-chips');
+    animElements.forEach(function(el) {
+      var prev = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = prev;
+    });
+
+    // Smooth fade out at (duration - 180ms)
+    transitionTimer = setTimeout(function() {
+      overlay.classList.add('kr-fade-out');
+      if (typeof onComplete === 'function') {
+        onComplete();
+      }
+    }, Math.max(300, duration - 180));
+
+    // Hard dismiss at duration
+    hideTimer = setTimeout(function() {
+      overlay.style.display = 'none';
+      overlay.style.pointerEvents = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.pointerEvents = 'auto';
+      document.documentElement.style.pointerEvents = 'auto';
+    }, duration);
+  }
+
+  // Global Trigger Function for page transitions
+  window.triggerKisanTransition = function(opts) {
+    opts = opts || {};
+    var url = opts.url || '/';
+    var title = opts.title || 'खेत से सीधे मंडी की ओर...';
+    var destLabel = document.getElementById('krTransitionDestLabel');
+    if (destLabel) destLabel.textContent = title;
+
+    if (isNavigating) return;
+    isNavigating = true;
+
+    playBrandTransition({
+      duration: 650,
+      onComplete: function() {
+        if (url) {
+          window.location.href = url;
+        }
+      }
+    });
+
+    // Safety fallback: in case navigation is delayed or cancelled, unlock UI after 750ms
+    setTimeout(function() {
+      isNavigating = false;
+      krDismissAllOverlays();
+    }, 750);
+  };
+
+  // Immediate dismiss on browser Back/Forward (BFCache / popstate) to prevent any freeze
+  window.addEventListener('pageshow', function() {
+    krDismissAllOverlays();
+  });
+  window.addEventListener('popstate', function() {
+    krDismissAllOverlays();
+  });
 
   document.addEventListener('DOMContentLoaded', function() {
-    krDismissAllOverlays();
+    // 1. Render Brand Transition Screen on Initial Page Load (smoothly auto-dismisses at 650ms)
+    playBrandTransition({ duration: 650 });
 
-    // Floating Scroll to Top Button Interaction
+    // 2. Skip Button: instantly dismiss and unlock
+    var skipBtn = document.getElementById('krSkipTransitionBtn');
+    if (skipBtn) {
+      skipBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        krDismissAllOverlays();
+      });
+    }
+
+    // 3. Intercept Internal Navigation Links & Dashboard Switches to render transition
+    document.addEventListener('click', function(e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+
+      // Ignore modifier keys / middle click / downloads / external targets
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if (a.target === '_blank' || a.hasAttribute('download')) return;
+
+      var href = a.getAttribute('href');
+      if (!href || href === '#' || href.startsWith('javascript:') || href.startsWith('tel:') || href.startsWith('mailto:') || href.startsWith('whatsapp:')) return;
+
+      var destUrl;
+      try {
+        destUrl = new URL(a.href, window.location.origin);
+      } catch(err) {
+        return;
+      }
+      if (destUrl.origin !== window.location.origin) return;
+      if (destUrl.pathname === window.location.pathname && destUrl.search === window.location.search) return;
+
+      var destPath = destUrl.pathname.toLowerCase();
+
+      // Check if navigating to portals, dashboards, or main tabs
+      var isDashboardTarget = destPath.indexOf('/dashboard') !== -1 ||
+                              destPath.indexOf('/mandi-rates') !== -1 ||
+                              destPath.indexOf('/profit-calculator') !== -1 ||
+                              destPath.indexOf('/crop-quality') !== -1 ||
+                              destPath.indexOf('/schemes') !== -1 ||
+                              destPath.indexOf('/insurance') !== -1 ||
+                              destPath.indexOf('/tracking') !== -1;
+
+      var isPortalSwitch = destPath.startsWith('/farmer') ||
+                           destPath.startsWith('/wholesaler') ||
+                           destPath.startsWith('/driver') ||
+                           destPath.startsWith('/cluster') ||
+                           destPath.startsWith('/customer') ||
+                           destPath === '/about' ||
+                           (destPath === '/' && window.location.pathname !== '/');
+
+      if (isDashboardTarget || isPortalSwitch) {
+        if (a.dataset.noTransition === 'true' || a.closest('.kr-bypass-overlay')) return;
+        if (a.classList.contains('logout-link') || a.id === 'logoutBtn') return;
+
+        e.preventDefault();
+
+        var title = '🌾 खेत से सीधे मंडी की ओर...';
+        if (destPath.indexOf('/farmer') !== -1) {
+          title = '🌾 किसान पोर्टल (Farmer Hub) की ओर...';
+        } else if (destPath.indexOf('/wholesaler') !== -1) {
+          title = '🏬 थोक व्यापारी पोर्टल (Wholesaler Hub)...';
+        } else if (destPath.indexOf('/driver') !== -1) {
+          title = '🚚 ड्राइवर व ट्रांसपोर्ट नेटवर्क (Logistics)...';
+        } else if (destPath.indexOf('/cluster') !== -1) {
+          title = '🤝 किसान क्लस्टर हब (Cluster Hub)...';
+        } else if (destPath.indexOf('/customer') !== -1) {
+          title = '🛒 ताज़ा फसल स्टोर (Customer Hub)...';
+        } else if (destPath === '/about') {
+          title = 'ℹ️ KisanRoute मिशन व विजन...';
+        } else if (destPath === '/') {
+          title = '🏠 KisanRoute मुख्य पृष्ठ...';
+        }
+
+        window.triggerKisanTransition({
+          title: title,
+          url: a.href
+        });
+      }
+    });
+
+    // 4. Floating Scroll to Top Button Interaction
     var scrollBtn = document.getElementById('krScrollToTopBtn');
     if (scrollBtn) {
       window.addEventListener('scroll', function() {

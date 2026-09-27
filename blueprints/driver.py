@@ -188,10 +188,11 @@ def api_live_route():
     return jsonify({"success": False, "message": "Live route unavailable, using local fallback"})
 
 
+@driver_bp.route("/route")
 @driver_bp.route("/accept/<int:request_id>")
 @login_required(ROLE)
-def accept_request(request_id):
-    req = next((r for r in REQUESTS if r["id"] == request_id), None)
+def accept_request(request_id=1):
+    req = next((r for r in REQUESTS if r["id"] == request_id), REQUESTS[0] if REQUESTS else None)
     if not req:
         flash("Request not found.", "error")
         return redirect(url_for("driver.dashboard"))
@@ -199,9 +200,10 @@ def accept_request(request_id):
     return render_template("driver/route.html", req=req, route=route)
 
 
+@driver_bp.route("/tracking")
 @driver_bp.route("/tracking/<int:request_id>")
 @login_required(ROLE)
-def tracking(request_id):
+def tracking(request_id=1):
     now = datetime.datetime.now()
     steps = ["Accepted", "Pickup Complete", "In Transit", "Delivered"]
     timeline = [

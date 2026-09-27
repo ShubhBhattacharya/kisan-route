@@ -122,10 +122,11 @@ def dashboard():
     return render_template("customer/dashboard.html", listings=listings, query=query)
 
 
+@customer_bp.route("/order")
 @customer_bp.route("/order/<int:listing_id>", methods=["GET", "POST"])
 @login_required(ROLE)
-def order(listing_id):
-    listing = next((l for l in LISTINGS if l["id"] == listing_id), None)
+def order(listing_id=1):
+    listing = next((l for l in LISTINGS if l["id"] == listing_id), LISTINGS[0] if LISTINGS else None)
     if not listing:
         flash("Listing not found.", "error")
         return redirect(url_for("customer.dashboard"))
@@ -148,7 +149,10 @@ def order(listing_id):
 def payment():
     pending = session.get("pending_order")
     if not pending:
-        return redirect(url_for("customer.dashboard"))
+        # Graceful demo order if visited directly
+        listing = LISTINGS[0]
+        pending = {"listing": listing, "quantity": 25, "mode": "upi", "amount": 25 * listing["price"]}
+        session["pending_order"] = pending
     if request.method == "POST":
         result = simulate_payment(pending["amount"], "UPI")
         session["last_order"] = pending

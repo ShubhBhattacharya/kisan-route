@@ -353,10 +353,11 @@ def accept_lot():
     return redirect(url_for("wholesaler.dashboard"))
 
 
+@wholesaler_bp.route("/negotiate")
 @wholesaler_bp.route("/negotiate/<name>", methods=["GET", "POST"])
 @login_required(ROLE)
-def negotiate(name):
-    listing = next((f for f in FARMER_LISTINGS if f["name"].lower() == name.lower() or f["id"].lower() == name.lower()), None)
+def negotiate(name="LOT-101"):
+    listing = next((f for f in FARMER_LISTINGS if f["name"].lower() == name.lower() or f["id"].lower() == name.lower()), FARMER_LISTINGS[0] if FARMER_LISTINGS else None)
     if not listing:
         flash("Listing not found.", "error")
         return redirect(url_for("wholesaler.dashboard"))

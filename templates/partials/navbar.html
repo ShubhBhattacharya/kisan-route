@@ -1,9 +1,9 @@
 <!-- 1. Top Announcement Bar (Sticky Catchy Ribbon) -->
-<div class="kr-top-announcement-bar" style="background: linear-gradient(90deg, #064e3b 0%, #047857 50%, #064e3b 100%); color: #ffffff; padding: 7px 14px; text-align: center; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 2px solid #10b981; position: relative; z-index: 1001; font-family: 'Inter', -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-  <span style="background: #facc15; color: #064e3b; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); flex-shrink: 0;">
+<div class="kr-top-announcement-bar" style="background: linear-gradient(90deg, #064e3b 0%, #047857 50%, #064e3b 100%); color: #ffffff; padding: 6px 12px; text-align: center; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 2px solid #10b981; position: relative; z-index: 1001; font-family: 'Inter', -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.15); overflow: hidden; white-space: nowrap;">
+  <span style="background: #facc15; color: #064e3b; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); flex-shrink: 0;">
     <span>🌾</span> SANKALP
   </span>
-  <span style="font-size: clamp(12px, 2.2vw, 13.5px); font-weight: 600; letter-spacing: 0.2px;">
+  <span style="font-size: clamp(11.5px, 2.2vw, 13px); font-weight: 600; letter-spacing: 0.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
     <strong style="color: #ffffff;">Mission:</strong>
     <span style="color: #fef08a; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.4);">“Ab Har Kisan Apne Haq Ka Khayega”</span>
     <span class="kr-announcement-hide-mobile" style="color: #a7f3d0; font-weight: 700; opacity: 0.95;">(अब हर किसान अपने हक का खाएगा)</span>
@@ -13,8 +13,8 @@
 </div>
 
 <header class="topbar">
-  <div style="display: flex; align-items: center; gap: 8px;">
-    <!-- Universal Back Button (shown on all inner pages, dashboards and forms) -->
+  <div class="topbar-left" style="display: flex; align-items: center; gap: 8px;">
+    <!-- Universal Back Button (shown on inner pages/dashboards) -->
     {% if request.path != '/' %}
     <button type="button" class="kr-topbar-back-btn" onclick="handleKrBackNavigation()" aria-label="Go back" title="Go back (पीछे जाएं)">
       <span class="kr-back-arrow">←</span>
@@ -22,25 +22,26 @@
     </button>
     {% endif %}
 
-    <button id="menuToggle" class="dots-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu">
+    <!-- Desktop Three-dot menu button (Hidden on mobile < 768px) -->
+    <button id="menuToggle" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu" onclick="toggleSideMenu()">
       <span></span><span></span><span></span>
     </button>
+
+    <!-- 2. Navbar Brand Identity -->
+    <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+      <span class="kr-brand-emblem">🌾</span>
+      <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.15;">
+        <span class="kr-brand-text">{{ t('site_name') }}</span>
+        <span class="kr-brand-subtext" style="color: #1b5e20; font-size: 11px; font-weight: 800; background: #ecfdf5; border: 1px solid #86efac; border-radius: 999px; padding: 1.5px 8px; margin-top: 2px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;">
+          <span style="color: #16a34a; font-size: 8px;">●</span> “Ab har kisan apne haq ka khayega”
+        </span>
+      </div>
+    </a>
   </div>
 
-  <!-- 2. Navbar Brand Identity with Core Tagline -->
-  <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
-    <span class="kr-brand-emblem">🌾</span>
-    <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.15;">
-      <span class="kr-brand-text">{{ t('site_name') }}</span>
-      <span class="kr-brand-subtext" style="color: #1b5e20; font-size: 11px; font-weight: 800; background: #ecfdf5; border: 1px solid #86efac; border-radius: 999px; padding: 1.5px 8px; margin-top: 2px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px;">
-        <span style="color: #16a34a; font-size: 8px;">●</span> “Ab har kisan apne haq ka khayega”
-      </span>
-    </div>
-  </a>
-
   <div class="topbar-right">
-    <!-- Live Alerts / Notification Bell -->
-    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications">
+    <!-- Live Alerts / Notification Bell (Always visible) -->
+    <button type="button" class="kr-app-topbar-bell" id="krNotifBtn" onclick="toggleKrNotifications()" aria-label="Notifications" title="Notifications">
       <span>🔔</span>
       <span class="kr-bell-badge" id="krBellBadge">4</span>
     </button>
@@ -55,61 +56,91 @@
       })();
     </script>
 
-    <!-- Universal Language Selector Button (Visible on Desktop and Mobile) -->
-    <button type="button" class="kr-topbar-lang-btn notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
+    <!-- Universal Language Selector Button (Desktop Only: hidden on mobile < 768px, moved to drawer) -->
+    <button type="button" class="kr-topbar-lang-btn desktop-only-lang notranslate skiptranslate" id="krTopbarLangBtn" onclick="window.openKrLanguageModal(event)" aria-label="Change Language" translate="no" title="Change Language (भाषा बदलें)">
       <span style="font-size: 15px;">🌐</span>
       <span class="kr-lang-btn-text">भाषा / Language</span>
     </button>
 
+    <!-- WhatsApp Login Button (Desktop Only: hidden on mobile < 768px, pinned in drawer) -->
     {% if session.get('user_id') %}
-      <span class="user-chip">{{ session.get('name') }}</span>
-      <a class="btn-ghost" href="{{ url_for(session.get('role') + '.logout') }}">Log out</a>
+      <span class="user-chip desktop-only-chip">{{ session.get('name') }}</span>
+      <a class="btn-ghost desktop-only-chip" href="{{ url_for(session.get('role') + '.logout') }}">Log out</a>
     {% else %}
-      <button type="button" class="kr-topbar-otp-btn" onclick="openKrLoginModal()" title="WhatsApp Login (व्हाट्सएप लॉगिन)" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; border: none; border-radius: 999px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(37,211,102,0.35);">
+      <button type="button" class="kr-topbar-otp-btn desktop-only-btn" onclick="openKrLoginModal()" title="WhatsApp Login (व्हाट्सएप लॉगिन)" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; border: none; border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 6px rgba(37,211,102,0.35);">
         <span>💬</span>
         <span class="kr-otp-btn-label">WhatsApp Login</span>
       </button>
     {% endif %}
+
+    <!-- Mobile Hamburger Menu Button [☰] (Visible on mobile < 768px) -->
+    <button type="button" id="menuToggleMobile" class="kr-mobile-hamburger-btn mobile-only-menu-btn" aria-label="Open menu drawer" aria-expanded="false" aria-controls="sideMenu" onclick="toggleSideMenu()" title="Menu">
+      <span class="kr-hamburger-icon">☰</span>
+    </button>
   </div>
 </header>
 
-<nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="Choose your role">
-  <h2>{{ t('menu_title') }}</h2>
+<!-- Smooth Slide-Over Mobile Drawer Menu -->
+<nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="KisanRoute Navigation Menu">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.15);">
+    <h2 style="margin: 0; font-size: 1.15rem; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+      <span>🌾</span> {{ t('menu_title') }}
+    </h2>
+    <button type="button" class="kr-side-menu-close" onclick="closeSideMenu()" aria-label="Close menu" title="Close menu" style="background: rgba(255,255,255,0.15); border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; line-height: 1;">
+      &times;
+    </button>
+  </div>
+
+  <!-- Pinned WhatsApp Login or User Session Card at Top of Drawer -->
+  {% if not session.get('user_id') %}
+  <div style="padding: 12px; margin-bottom: 14px; background: rgba(37, 211, 102, 0.12); border: 1.5px solid #25D366; border-radius: 12px; text-align: center;">
+    <div style="font-size: 11px; color: #86efac; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Free Handshake Auth</div>
+    <button type="button" onclick="openKrLoginModal(); closeSideMenu();" style="width: 100%; background: linear-gradient(135deg, #25D366, #128C7E); color: #ffffff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.35);">
+      <span>💬</span> <span>WhatsApp Login (लॉगिन)</span>
+    </button>
+  </div>
+  {% else %}
+  <div style="padding: 10px 14px; margin-bottom: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
+    <div>
+      <div style="font-size: 11px; color: #a7f3d0; font-weight: 600;">Logged in as:</div>
+      <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;">{{ session.get('name') }}</div>
+      <span style="font-size: 11px; color: #fde047; text-transform: capitalize;">{{ session.get('role') }} Portal</span>
+    </div>
+    <a href="{{ url_for(session.get('role') + '.logout') }}" style="color: #f87171; font-size: 12px; font-weight: 700; text-decoration: underline;">Logout</a>
+  </div>
+  {% endif %}
+
+  <!-- Drawer Language Selector Button -->
+  <div style="margin-bottom: 14px;">
+    <button type="button" onclick="window.openKrLanguageModal(event); closeSideMenu();" class="notranslate skiptranslate" style="width: 100%; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25); color: #ffffff; border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s;">
+      <span style="font-size: 16px;">🌐</span> <span>भाषा बदलें (Select Language)</span>
+    </button>
+  </div>
+
   <ul>
-    {% if not session.get('user_id') %}
-    <li style="margin-bottom: 6px;">
-      <a href="javascript:void(0)" onclick="openKrLoginModal(); if(document.getElementById('menuToggle')) document.getElementById('menuToggle').click();" style="color: #ffffff; background: linear-gradient(135deg, #25D366, #128C7E); font-weight: 800; border-radius: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-        <span aria-hidden="true">💬</span> व्हाट्सएप लॉगिन (WhatsApp Login)
-      </a>
-    </li>
-    {% endif %}
     {% if request.path != '/' %}
-    <li>
+    <li style="margin-bottom: 6px;">
       <a href="javascript:void(0)" onclick="handleKrBackNavigation()" style="color: #1b5e20; font-weight: 700; background: #f1f8e9; border-radius: 8px;">
         <span aria-hidden="true">←</span> पीछे जाएं (Go Back)
       </a>
     </li>
     {% endif %}
-    <li><a href="{{ url_for('main.home') }}"><span aria-hidden="true">🏠</span> Home</a></li>
-    <li><a href="{{ url_for('farmer.login') }}"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }}</a></li>
-    <li><a href="{{ url_for('cluster.login') }}"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }}</a></li>
-    <li><a href="{{ url_for('customer.login') }}"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }}</a></li>
-    <li><a href="{{ url_for('driver.login') }}"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }}</a></li>
-    <li><a href="{{ url_for('wholesaler.login') }}"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }}</a></li>
-    <li><a href="{{ url_for('main.about') }}"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }}</a></li>
-    <li>
-      <a href="javascript:void(0)" onclick="window.openKrLanguageModal(event)" style="color: #1b5e20; font-weight: 700;">
-        <span aria-hidden="true">🌐</span> भाषा चुनें (Select Language)
-      </a>
-    </li>
-    <li style="margin-top: 14px; border-top: 1px solid #dcedc8; padding-top: 10px;">
-      <a href="javascript:void(0)" onclick="if(window.triggerKisanInstall){window.triggerKisanInstall();}else{alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');}" style="color: #1b5e20; font-weight: 700; background: #e8f5e9; border-radius: 8px;">
+    <li><a href="{{ url_for('main.home') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏠</span> Home (मुख्य पृष्ठ)</a></li>
+    <li><a href="{{ url_for('farmer.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
+    <li><a href="{{ url_for('driver.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
+    <li><a href="{{ url_for('wholesaler.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
+    <li><a href="{{ url_for('cluster.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
+    <li><a href="{{ url_for('customer.login') }}" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
+    <li><a href="{{ url_for('farmer.mandi_rates') }}" onclick="closeSideMenu()"><span aria-hidden="true">📊</span> Mandi Rates (मंडी भाव)</a></li>
+    <li><a href="{{ url_for('main.about') }}" onclick="closeSideMenu()"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }} (हमारे बारे में)</a></li>
+    <li style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px;">
+      <a href="javascript:void(0)" onclick="if(window.triggerKisanInstall){window.triggerKisanInstall();}else{alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');} closeSideMenu();" style="color: #1b5e20; font-weight: 700; background: #e8f5e9; border-radius: 8px;">
         <span aria-hidden="true">📲</span> ऐप इंस्टॉल करें (Install App)
       </a>
     </li>
   </ul>
 </nav>
-<div id="menuOverlay" class="menu-overlay"></div>
+<div id="menuOverlay" class="menu-overlay" onclick="closeSideMenu()"></div>
 
 <style>
 .kr-topbar-back-btn {
@@ -145,26 +176,93 @@
   font-weight: 900;
   line-height: 1;
 }
-@media (max-width: 500px) {
+
+/* Mobile Hamburger Menu Button */
+.kr-mobile-hamburger-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .kr-mobile-hamburger-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    color: #1b5e20;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: all 0.15s ease;
+    line-height: 1;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kr-mobile-hamburger-btn:hover,
+  .kr-mobile-hamburger-btn:active {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #15803d;
+  }
+  .desktop-only-menu-btn,
+  .desktop-only-lang,
+  .desktop-only-btn,
+  .desktop-only-chip,
+  .kr-brand-subtext {
+    display: none !important;
+  }
   .kr-topbar-back-btn {
     padding: 6px 9px;
     font-size: 12px;
   }
-}
-@media (max-width: 480px) {
-  .kr-brand-subtext {
-    max-width: 135px !important;
-    font-size: 9.5px !important;
+  .brand {
+    font-size: 1.18rem !important;
   }
 }
 @media (max-width: 360px) {
-  .kr-brand-subtext {
-    display: none !important;
+  .brand {
+    font-size: 1.05rem !important;
   }
 }
 </style>
 
 <script>
+window.toggleSideMenu = function() {
+  var sideMenu = document.getElementById('sideMenu');
+  var menuOverlay = document.getElementById('menuOverlay');
+  if (sideMenu) {
+    var willOpen = !sideMenu.classList.contains('open');
+    if (willOpen) {
+      sideMenu.classList.add('open');
+      if (menuOverlay) menuOverlay.classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    } else {
+      sideMenu.classList.remove('open');
+      if (menuOverlay) menuOverlay.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+  }
+};
+
+window.openSideMenu = function() {
+  var sideMenu = document.getElementById('sideMenu');
+  var menuOverlay = document.getElementById('menuOverlay');
+  if (sideMenu) sideMenu.classList.add('open');
+  if (menuOverlay) menuOverlay.classList.add('visible');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeSideMenu = function() {
+  var sideMenu = document.getElementById('sideMenu');
+  var menuOverlay = document.getElementById('menuOverlay');
+  if (sideMenu) sideMenu.classList.remove('open');
+  if (menuOverlay) menuOverlay.classList.remove('visible');
+  document.body.style.overflow = '';
+};
+
 function handleKrBackNavigation() {
   if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
     window.history.back();

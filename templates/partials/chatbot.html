@@ -1,24 +1,69 @@
 <!-- Floating Chatbot Launcher Button -->
-<div id="krChatLauncher" style="position: fixed; bottom: 24px; right: 24px; z-index: 99999;">
-  <button id="krChatToggleBtn" type="button" aria-label="Open Kisan Route Assistant" style="
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1b5e20, #2e7d32);
-    color: #ffffff;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    outline: none;
-  ">
+<div id="krChatLauncher" class="kr-chat-launcher">
+  <button id="krChatToggleBtn" type="button" aria-label="Open Kisan Route Assistant">
     💬
   </button>
 </div>
+
+<style>
+.kr-chat-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99996;
+}
+#krChatToggleBtn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+@media (max-width: 768px) {
+  .kr-chat-launcher,
+  #krChatLauncher {
+    position: fixed !important;
+    right: 14px !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 18px) !important;
+    z-index: 99996 !important;
+  }
+  #krChatToggleBtn {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 20px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+  }
+  .voice-assistant {
+    position: fixed !important;
+    right: 66px !important;
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 18px) !important;
+    z-index: 99996 !important;
+  }
+  .voice-btn {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.15rem !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.22) !important;
+  }
+  #krChatContainer {
+    bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 68px) !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+  }
+}
+</style>
 
 <!-- Chatbot Popup Modal/Window -->
 <div id="krChatContainer" style="

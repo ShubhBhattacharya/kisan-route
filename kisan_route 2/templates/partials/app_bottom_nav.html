@@ -29,11 +29,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var dockMenuBtn = document.getElementById('krDockMenuBtn');
-  var menuToggle = document.getElementById('menuToggle');
-  if (dockMenuBtn && menuToggle) {
+  if (dockMenuBtn) {
     dockMenuBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      menuToggle.click();
+      if (typeof window.toggleSideMenu === 'function') {
+        window.toggleSideMenu();
+      } else {
+        var menuToggle = document.getElementById('menuToggle') || document.getElementById('menuToggleMobile');
+        if (menuToggle) menuToggle.click();
+      }
     });
   }
 });

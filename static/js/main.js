@@ -61,35 +61,61 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(bgWrapper);
   }
 
-  /* ---------------- Three-dot side menu toggle ---------------- */
+  /* ---------------- Side menu toggle (Desktop Three-dot + Mobile Hamburger + Dock Menu) ---------------- */
   var menuToggle = document.getElementById('menuToggle');
+  var menuToggleMobile = document.getElementById('menuToggleMobile');
+  var dockMenuBtn = document.getElementById('krDockMenuBtn');
   var overlay = document.getElementById('menuOverlay');
 
-  function openMenu() {
+  window.openSideMenu = function() {
     if (!sideMenu) return;
     sideMenu.classList.add('open');
     if (overlay) overlay.classList.add('visible');
     if (menuToggle) menuToggle.setAttribute('aria-expanded', 'true');
+    if (menuToggleMobile) menuToggleMobile.setAttribute('aria-expanded', 'true');
     sideMenu.setAttribute('aria-hidden', 'false');
-  }
+    document.body.style.overflow = 'hidden';
+  };
 
-  function closeMenu() {
+  window.closeSideMenu = function() {
     if (!sideMenu) return;
     sideMenu.classList.remove('open');
     if (overlay) overlay.classList.remove('visible');
     if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+    if (menuToggleMobile) menuToggleMobile.setAttribute('aria-expanded', 'false');
     sideMenu.setAttribute('aria-hidden', 'true');
-  }
+    document.body.style.overflow = '';
+  };
 
-  if (menuToggle && sideMenu && overlay) {
-    menuToggle.addEventListener('click', function () {
-      sideMenu.classList.contains('open') ? closeMenu() : openMenu();
-    });
-    overlay.addEventListener('click', closeMenu);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMenu();
+  window.toggleSideMenu = function() {
+    if (!sideMenu) return;
+    sideMenu.classList.contains('open') ? window.closeSideMenu() : window.openSideMenu();
+  };
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.toggleSideMenu();
     });
   }
+  if (menuToggleMobile) {
+    menuToggleMobile.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.toggleSideMenu();
+    });
+  }
+  if (dockMenuBtn) {
+    dockMenuBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.toggleSideMenu();
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener('click', window.closeSideMenu);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') window.closeSideMenu();
+  });
 
   /* ---------------- Chatbot ---------------- */
   var chatbotToggle = document.getElementById('chatbotToggle');

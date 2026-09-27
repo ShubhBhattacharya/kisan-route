@@ -49,7 +49,9 @@ def login_required(role: str):
                 session["user_id"] = target_user.id
                 session["role"] = role
                 session["name"] = target_user.full_name
+                session["user_name"] = target_user.full_name
                 session["phone"] = target_user.phone
+                session["user_phone"] = target_user.phone
 
             return view_func(*args, **kwargs)
         return wrapped

@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 from config import Config
 from models import db, User
 from translations.strings import LANGUAGES
-from utils.auth import clean_phone
+from utils.auth import clean_phone as sanitize_phone
 from utils.chatbot import get_prompts, get_response
 from utils.supabase_client import supabase
 
@@ -305,7 +305,7 @@ def phone_login():
         return jsonify({"success": False, "error": "Phone number is required."}), 400
 
     # Normalize phone: extract last 10 digits
-    cleaned = clean_phone(phone_raw)
+    cleaned = sanitize_phone(phone_raw)
     phone_10 = cleaned[-10:] if len(cleaned) >= 10 else cleaned
     if len(phone_10) != 10 or not phone_10.isdigit():
         return jsonify({"success": False, "error": "Invalid Indian phone number format. 10 numeric digits required."}), 400
@@ -319,7 +319,7 @@ def phone_login():
         user = User.query.filter_by(role=role, phone=formatted_phone).first()
 
     if not user:
-        display_name = full_name or f"{role.title()} {phone_10[-4:]}"
+        display_name = full_name or f"+91 {phone_10[:5]} {phone_10[5:]}"
         user = User(
             role=role,
             full_name=display_name,
@@ -334,18 +334,6 @@ def phone_login():
         })
         db.session.add(user)
         db.session.commit()
-
-        # Trigger automatic Kisan Mitra WhatsApp welcome message (for roles other than pure customer)
-        if role in ('farmer', 'driver', 'cluster'):
-            try:
-                from services.whatsapp_service import send_to_whatsapp
-                welcome_msg = (
-                    f"Namaste {user.full_name or 'Kisan'} ji! KisanRoute par aapka swagat hai. "
-                    f"Main aapka 'Kisan Mitra' AI saathi hoon. Mandi rate, payment ya truck status ke liye yahan poochhein!"
-                )
-                send_to_whatsapp(user.phone, welcome_msg)
-            except Exception as e:
-                print(f"[WhatsApp Login Registration] WhatsApp welcome error: {e}")
     else:
         extra = user.get_extra()
         extra["uid"] = user_uid
@@ -353,17 +341,44 @@ def phone_login():
         extra["full_phone"] = formatted_phone
         extra["last_otp_login"] = datetime.utcnow().isoformat()
         user.set_extra(extra)
-        if full_name and (user.full_name.startswith("Farmer") or user.full_name.startswith("Driver") or user.full_name.startswith("Cluster")):
+        if full_name:
             user.full_name = full_name
+        elif not user.full_name or user.full_name == "Ramesh Patel":
+            user.full_name = f"+91 {phone_10[:5]} {phone_10[5:]}"
         db.session.commit()
 
-    # 2. Establish user session across the platform
+    # 2. Establish user session across the platform with dynamic user_name & phone
+    display_name = user.full_name or full_name or f"+91 {phone_10[:5]} {phone_10[5:]}"
+    user_phone_val = user.phone or phone_10
+
     session["user_id"] = user.id
     session["role"] = user.role
-    session["name"] = user.full_name
-    session["phone"] = user.phone
+    session["name"] = display_name
+    session["user_name"] = display_name
+    session["phone"] = user_phone_val
+    session["user_phone"] = user_phone_val
     session["auth_provider"] = "whatsapp_handshake"
     session.permanent = True
+
+    # 2b. Fire WhatsApp bot message on login / verification via local Baileys gateway on port 3000
+    import requests
+
+    phone_to_send = session.get('user_phone') or user.phone
+    clean_phone = str(phone_to_send).strip().replace("+", "")
+    if len(clean_phone) == 10:
+        clean_phone = "91" + clean_phone
+
+    try:
+        requests.post(
+            "http://127.0.0.1:3000/send",
+            json={
+                "phone": clean_phone,
+                "message": f"Namaste! KisanRoute me login karne ke liye dhanyawad. Main hoon aapka Kisan Mitra AI. Mandi bhav ya shipment status ke liye yahan poochhein."
+            },
+            timeout=5
+        )
+    except Exception as err:
+        print(f"Failed to dispatch WhatsApp alert: {err}")
 
     # 3. Supabase Sync: Upsert user record into 'users' and 'profiles'
     supabase_record = {

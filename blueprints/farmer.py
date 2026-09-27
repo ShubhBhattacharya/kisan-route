@@ -98,6 +98,9 @@ def login():
             session["user_id"] = user.id
             session["role"] = ROLE
             session["name"] = user.full_name
+            session["user_name"] = user.full_name
+            session["phone"] = user.phone
+            session["user_phone"] = user.phone
             flash("Logged in successfully as Demo Farmer! 🌾", "success")
             return redirect(url_for("farmer.dashboard"))
 
@@ -120,6 +123,9 @@ def login():
                 session["user_id"] = user.id
                 session["role"] = ROLE
                 session["name"] = user.full_name
+                session["user_name"] = user.full_name
+                session["phone"] = user.phone
+                session["user_phone"] = user.phone
                 return redirect(url_for("farmer.dashboard"))
             else:
                 flash("Incorrect password. Please try again or use 1-Click Demo.", "error")

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <section class="dashboard">
-  <h1>Welcome, {{ session.get('name') }} <span aria-hidden="true">🌾</span></h1>
+  <h1>Welcome, {{ session.get('user_name') or 'Kisan Sathi' }} <span aria-hidden="true">🌾</span></h1>
   {% if crop_type %}
   <p class="dashboard-subtitle">Growing: <strong>{{ crop_type }}</strong></p>
   {% endif %}

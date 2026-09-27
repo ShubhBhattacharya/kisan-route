@@ -82,7 +82,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
   padding: 14px 20px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 30;
+  position: sticky; top: 0; z-index: 9999 !important;
 }
 
 .dots-btn {
@@ -100,7 +100,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .dots-btn * { pointer-events: none; }
 .dots-btn span { width: 4px; height: 4px; border-radius: 50%; background: var(--green-700); display: block; }
 .dots-btn:hover { background: #f1f8e9; border-color: #81c784; }
-.dots-btn:active { transform: scale(0.92); }
+.dots-btn:active, .dots-btn.active { background: #e8f5e9 !important; border-color: #2e7d32 !important; box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.18) !important; transform: scale(0.96); }
 
 .brand {
   font-family: var(--font-display);
@@ -808,9 +808,16 @@ main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 .desktop-only-nav {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-left: 14px;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-left: 10px;
+}
+#leftNavGroup::-webkit-scrollbar,
+.desktop-only-nav::-webkit-scrollbar {
+  display: none;
 }
 
 /* ---------------- Responsive ---------------- */

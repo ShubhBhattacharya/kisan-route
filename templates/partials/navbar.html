@@ -1,3 +1,155 @@
+<script>
+(function() {
+  // 1. Anchored Three-Dots Dropdown Menu Logic
+  window.openKrDotsMenu = function() {
+    var dd = document.getElementById('krThreeDotsDropdown');
+    var btn = document.getElementById('menuToggle');
+    if (dd) {
+      dd.style.setProperty('display', 'block', 'important');
+      dd.classList.add('open');
+    }
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'true');
+      btn.classList.add('active');
+    }
+  };
+
+  window.closeKrDotsMenu = function() {
+    var dd = document.getElementById('krThreeDotsDropdown');
+    var btn = document.getElementById('menuToggle');
+    if (dd) {
+      dd.style.setProperty('display', 'none', 'important');
+      dd.classList.remove('open');
+    }
+    if (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      btn.classList.remove('active');
+    }
+  };
+
+  window.toggleKrDotsMenu = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    var dd = document.getElementById('krThreeDotsDropdown');
+    if (!dd) return;
+    var isClosed = dd.style.display === 'none' || !dd.classList.contains('open');
+    if (isClosed) {
+      window.openKrDotsMenu();
+    } else {
+      window.closeKrDotsMenu();
+    }
+  };
+
+  window.krHandleDotsMenuClick = window.toggleKrDotsMenu;
+
+  // 2. Off-Canvas Slide Drawer Logic (Mobile & Dock)
+  window.openSideMenu = function() {
+    var sideMenu = document.getElementById('sideMenu');
+    var menuOverlay = document.getElementById('menuOverlay');
+    var btnMobile = document.getElementById('menuToggleMobile');
+
+    if (sideMenu) {
+      sideMenu.classList.add('open');
+      sideMenu.setAttribute('aria-hidden', 'false');
+      sideMenu.style.setProperty('transform', 'translateX(0)', 'important');
+      sideMenu.style.setProperty('display', 'block', 'important');
+      sideMenu.style.setProperty('visibility', 'visible', 'important');
+      sideMenu.style.setProperty('opacity', '1', 'important');
+      sideMenu.style.setProperty('z-index', '9999999', 'important');
+    }
+    if (menuOverlay) {
+      menuOverlay.classList.add('visible');
+      menuOverlay.style.setProperty('display', 'block', 'important');
+      menuOverlay.style.setProperty('opacity', '1', 'important');
+      menuOverlay.style.setProperty('pointer-events', 'auto', 'important');
+      menuOverlay.style.setProperty('z-index', '9999998', 'important');
+    }
+    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeSideMenu = function() {
+    var sideMenu = document.getElementById('sideMenu');
+    var menuOverlay = document.getElementById('menuOverlay');
+    var btnMobile = document.getElementById('menuToggleMobile');
+
+    if (sideMenu) {
+      sideMenu.classList.remove('open');
+      sideMenu.setAttribute('aria-hidden', 'true');
+      sideMenu.style.setProperty('transform', 'translateX(-100%)', 'important');
+    }
+    if (menuOverlay) {
+      menuOverlay.classList.remove('visible');
+      menuOverlay.style.setProperty('display', 'none', 'important');
+      menuOverlay.style.setProperty('opacity', '0', 'important');
+      menuOverlay.style.setProperty('pointer-events', 'none', 'important');
+    }
+    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+
+  window.krToggleSideMenu = function(e) {
+    if (e) {
+      if (e.preventDefault) e.preventDefault();
+      if (e.stopPropagation) e.stopPropagation();
+    }
+    var sideMenu = document.getElementById('sideMenu');
+    if (!sideMenu) return;
+    var isOpen = sideMenu.classList.contains('open');
+    if (isOpen) {
+      window.closeSideMenu();
+    } else {
+      window.openSideMenu();
+    }
+  };
+
+  window.toggleSideMenu = window.krToggleSideMenu;
+
+  // Global dismiss on click outside & Escape key
+  document.addEventListener('click', function(e) {
+    var dd = document.getElementById('krThreeDotsDropdown');
+    var btn = document.getElementById('menuToggle');
+    if (dd && (dd.classList.contains('open') || dd.style.display === 'block')) {
+      if (btn && btn.contains(e.target)) return;
+      if (!dd.contains(e.target)) {
+        window.closeKrDotsMenu();
+      }
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      window.closeKrDotsMenu();
+      window.closeSideMenu();
+    }
+  });
+
+  // Ensure DOM listener is also hooked
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('menuToggle');
+    if (btn) {
+      btn.addEventListener('click', function(e) {
+        window.toggleKrDotsMenu(e);
+      });
+    }
+  });
+})();
+
+function handleKrBackNavigation() {
+  if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
+    window.history.back();
+  } else {
+    {% if session.get('role') %}
+      window.location.href = "{{ url_for(session.get('role') + '.dashboard') }}";
+    {% else %}
+      window.location.href = "{{ url_for('main.home') }}";
+    {% endif %}
+  }
+}
+</script>
+
 <!-- 1. Top Announcement Bar (Sticky Catchy Ribbon) -->
 <div class="kr-top-announcement-bar" style="background: linear-gradient(90deg, #064e3b 0%, #047857 50%, #064e3b 100%); color: #ffffff; padding: 6px 12px; text-align: center; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 2px solid #10b981; position: relative; z-index: 1001; font-family: 'Inter', -apple-system, sans-serif; box-shadow: 0 2px 8px rgba(0,0,0,0.15); overflow: hidden; white-space: nowrap;">
   <span style="background: #facc15; color: #064e3b; font-size: 10.5px; font-weight: 800; padding: 2px 7px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.25); flex-shrink: 0;">
@@ -22,10 +174,61 @@
     </button>
     {% endif %}
 
-    <!-- Desktop Three-dot menu button (Hidden on mobile < 768px) -->
-    <button id="menuToggle" type="button" class="dots-btn desktop-only-menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sideMenu" onclick="window.krToggleSideMenu(event)">
-      <span></span><span></span><span></span>
-    </button>
+    <!-- Three-dot menu button with Direct Anchored Dropdown (Universal) -->
+    <div class="kr-dots-menu-container" style="position: relative; display: inline-flex; align-items: center;">
+      <button id="menuToggle" type="button" class="dots-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="krThreeDotsDropdown" onclick="window.toggleKrDotsMenu(event)" title="Navigation Menu (मेनू)">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Anchored Dropdown Menu (Directly beneath the 3 dots) -->
+      <div id="krThreeDotsDropdown" class="kr-dots-dropdown" role="menu" aria-label="Kisan Navigation Menu" style="display: none;">
+        {% if session.get('user_id') %}
+        <div class="kr-dropdown-user-header">
+          <div style="font-size: 11px; color: #15803d; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">● {{ session.get('role')|capitalize }} Logged In</div>
+          <div style="font-size: 13.5px; font-weight: 800; color: #1b5e20;">{{ session.get('name') }}</div>
+        </div>
+        {% else %}
+        <div style="padding: 4px 4px 10px 4px; border-bottom: 1px solid #f0fdf4;">
+          <button type="button" onclick="openKrLoginModal(); window.closeKrDotsMenu();" style="width: 100%; background: linear-gradient(135deg, #25D366, #128C7E); color: #ffffff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(37,211,102,0.3);">
+            <span>💬</span> <span>WhatsApp Login (लॉगिन)</span>
+          </button>
+        </div>
+        {% endif %}
+
+        <div class="kr-dropdown-section-title">PORTALS / मुख्य पोर्टल</div>
+        <div class="kr-dropdown-items-grid">
+          <a href="/" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🏠</span> <span>Home (मुख्य पृष्ठ)</span></a>
+          <a href="/portal/farmer" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🌾</span> <span>{{ t('nav_farmer') }} (किसान)</span></a>
+          <a href="/portal/driver" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🚚</span> <span>{{ t('nav_driver') }} (चालक)</span></a>
+          <a href="/portal/wholesaler" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🏬</span> <span>{{ t('nav_wholesaler') }} (आढ़ती)</span></a>
+          <a href="/portal/cluster" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🤝</span> <span>{{ t('nav_cluster') }} (समूह)</span></a>
+          <a href="/portal/customer" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">🛒</span> <span>{{ t('nav_customer') }} (खरीदार)</span></a>
+        </div>
+
+        <div class="kr-dropdown-section-title" style="margin-top: 6px; border-top: 1px solid #f1f5f9; padding-top: 6px;">FEATURES / सुविधाएं</div>
+        <a href="{{ url_for('farmer.mandi_rates') }}" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">📊</span> <span>Mandi Rates (मंडी भाव)</span></a>
+        <a href="{{ url_for('main.about') }}" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()"><span class="kr-dd-icon">ℹ️</span> <span>{{ t('nav_about') }} (हमारे बारे में)</span></a>
+        
+        <button type="button" class="kr-dropdown-item notranslate skiptranslate" translate="no" onclick="window.openKrLanguageModal(event); window.closeKrDotsMenu();" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit; font-size: 13.5px; cursor: pointer; color: #1b5e20; font-weight: 700;">
+          <span class="kr-dd-icon">🌐</span> <span>भाषा बदलें (Select Language)</span>
+        </button>
+        <button type="button" class="kr-dropdown-item" onclick="if(window.triggerKisanInstall){window.triggerKisanInstall();}else{alert('ऐप इंस्टॉल करने के लिए ब्राउज़र के 3 डॉट्स (⋮) पर जाकर Install App चुनें।');} window.closeKrDotsMenu();" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit; font-size: 13.5px; cursor: pointer; color: #166534; font-weight: 700;">
+          <span class="kr-dd-icon">📲</span> <span>ऐप इंस्टॉल करें (Install App)</span>
+        </button>
+
+        <button type="button" class="kr-dropdown-item" onclick="window.closeKrDotsMenu(); window.openSideMenu();" style="width: 100%; text-align: left; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; margin-top: 6px; color: #166534; font-weight: 700; font-size: 12.5px;">
+          <span class="kr-dd-icon">☰</span> <span>Side Drawer (विस्तृत मेनू)</span>
+        </button>
+
+        {% if session.get('user_id') %}
+        <div style="border-top: 1px solid #f1f5f9; padding-top: 6px; margin-top: 6px;">
+          <a href="{{ url_for(session.get('role') + '.logout') }}" class="kr-dropdown-item" onclick="window.closeKrDotsMenu()" style="color: #dc2626; font-weight: 700;">
+            <span class="kr-dd-icon">🚪</span> <span>Logout (लॉगआउट)</span>
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
 
     <!-- 2. Navbar Brand Identity -->
     <a class="brand" href="{{ url_for('main.home') }}" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
@@ -143,6 +346,107 @@
 <div id="menuOverlay" class="menu-overlay" onclick="closeSideMenu()"></div>
 
 <style>
+/* Three-dots Anchored Dropdown Menu */
+.kr-dots-menu-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.kr-dots-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 285px;
+  max-width: calc(100vw - 20px);
+  background: #ffffff !important;
+  border: 1.5px solid #86efac !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.22), 0 4px 14px rgba(22, 101, 52, 0.08) !important;
+  padding: 12px !important;
+  z-index: 10000000 !important;
+  box-sizing: border-box !important;
+  animation: krDropdownSlideDown 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes krDropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kr-dots-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 14px;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-left: 1.5px solid #86efac;
+  border-top: 1.5px solid #86efac;
+  transform: rotate(45deg);
+  border-top-left-radius: 2px;
+}
+
+.kr-dropdown-user-header {
+  padding: 8px 10px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.kr-dropdown-section-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 4px 8px 3px;
+}
+
+.kr-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #1e293b !important;
+  text-decoration: none !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease;
+  line-height: 1.3;
+  box-sizing: border-box;
+}
+
+.kr-dropdown-item:hover,
+.kr-dropdown-item:active {
+  background: #ecfdf5 !important;
+  color: #166534 !important;
+  transform: translateX(3px);
+}
+
+.kr-dd-icon {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.dots-btn.active {
+  background: #e8f5e9 !important;
+  border-color: #2e7d32 !important;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.18) !important;
+}
+
 .kr-topbar-back-btn {
   display: inline-flex;
   align-items: center;
@@ -207,7 +511,6 @@
     border-color: #86efac;
     color: #15803d;
   }
-  .desktop-only-menu-btn,
   .desktop-only-lang,
   .desktop-only-btn,
   .desktop-only-chip,
@@ -228,91 +531,3 @@
   }
 }
 </style>
-
-<script>
-(function() {
-  var _krMenuLock = false;
-
-  window.openSideMenu = function() {
-    var sideMenu = document.getElementById('sideMenu');
-    var menuOverlay = document.getElementById('menuOverlay');
-    var btn = document.getElementById('menuToggle');
-    var btnMobile = document.getElementById('menuToggleMobile');
-
-    if (sideMenu) {
-      sideMenu.classList.add('open');
-      sideMenu.setAttribute('aria-hidden', 'false');
-      sideMenu.style.setProperty('transform', 'translateX(0)', 'important');
-      sideMenu.style.setProperty('display', 'block', 'important');
-      sideMenu.style.setProperty('visibility', 'visible', 'important');
-      sideMenu.style.setProperty('opacity', '1', 'important');
-      sideMenu.style.setProperty('z-index', '9999999', 'important');
-    }
-    if (menuOverlay) {
-      menuOverlay.classList.add('visible');
-      menuOverlay.style.setProperty('display', 'block', 'important');
-      menuOverlay.style.setProperty('opacity', '1', 'important');
-      menuOverlay.style.setProperty('pointer-events', 'auto', 'important');
-      menuOverlay.style.setProperty('z-index', '9999998', 'important');
-    }
-    if (btn) btn.setAttribute('aria-expanded', 'true');
-    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  };
-
-  window.closeSideMenu = function() {
-    var sideMenu = document.getElementById('sideMenu');
-    var menuOverlay = document.getElementById('menuOverlay');
-    var btn = document.getElementById('menuToggle');
-    var btnMobile = document.getElementById('menuToggleMobile');
-
-    if (sideMenu) {
-      sideMenu.classList.remove('open');
-      sideMenu.setAttribute('aria-hidden', 'true');
-      sideMenu.style.setProperty('transform', 'translateX(-100%)', 'important');
-    }
-    if (menuOverlay) {
-      menuOverlay.classList.remove('visible');
-      menuOverlay.style.setProperty('display', 'none', 'important');
-      menuOverlay.style.setProperty('opacity', '0', 'important');
-      menuOverlay.style.setProperty('pointer-events', 'none', 'important');
-    }
-    if (btn) btn.setAttribute('aria-expanded', 'false');
-    if (btnMobile) btnMobile.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  };
-
-  window.krToggleSideMenu = function(e) {
-    if (e) {
-      if (e.preventDefault) e.preventDefault();
-      if (e.stopPropagation) e.stopPropagation();
-    }
-    if (_krMenuLock) return;
-    _krMenuLock = true;
-    setTimeout(function() { _krMenuLock = false; }, 260);
-
-    var sideMenu = document.getElementById('sideMenu');
-    if (!sideMenu) return;
-    var isOpen = sideMenu.classList.contains('open') || (sideMenu.style.transform && sideMenu.style.transform.indexOf('translateX(0') !== -1);
-    if (isOpen) {
-      window.closeSideMenu();
-    } else {
-      window.openSideMenu();
-    }
-  };
-
-  window.toggleSideMenu = window.krToggleSideMenu;
-})();
-
-function handleKrBackNavigation() {
-  if (window.history.length > 1 && document.referrer && document.referrer.indexOf(window.location.host) !== -1) {
-    window.history.back();
-  } else {
-    {% if session.get('role') %}
-      window.location.href = "{{ url_for(session.get('role') + '.dashboard') }}";
-    {% else %}
-      window.location.href = "{{ url_for('main.home') }}";
-    {% endif %}
-  }
-}
-</script>

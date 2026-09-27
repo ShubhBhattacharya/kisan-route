@@ -304,7 +304,7 @@ function handleKrBackNavigation() {
 <nav id="sideMenu" class="side-menu" aria-hidden="true" aria-label="KisanRoute Navigation Menu">
   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.15);">
     <h2 style="margin: 0; font-size: 1.15rem; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-      <span>🌾</span> {{ t('menu_title') }}
+      <span>🌾</span> Choose your role
     </h2>
     <button type="button" class="kr-side-menu-close" onclick="closeSideMenu()" aria-label="Close menu" title="Close menu" style="background: rgba(255,255,255,0.15); border: none; color: #ffffff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; line-height: 1;">
       &times;
@@ -324,9 +324,9 @@ function handleKrBackNavigation() {
     <div>
       <div style="font-size: 11px; color: #a7f3d0; font-weight: 600;">Logged in as:</div>
       <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;">{{ session.get('name') }}</div>
-      <span style="font-size: 11px; color: #fde047; text-transform: capitalize;">{{ session.get('role') }} Portal</span>
+      <span style="font-size: 11px; color: #fde047; text-transform: capitalize;">{{ session.get('role', 'farmer') }} Portal</span>
     </div>
-    <a href="{{ url_for(session.get('role') + '.logout') }}" style="color: #f87171; font-size: 12px; font-weight: 700; text-decoration: underline;">Logout</a>
+    <a href="{{ url_for(session.get('role', 'farmer') + '.logout') }}" style="color: #f87171; font-size: 12px; font-weight: 700; text-decoration: underline;">Logout</a>
   </div>
   {% endif %}
 
@@ -346,11 +346,11 @@ function handleKrBackNavigation() {
     </li>
     {% endif %}
     <li><a href="{{ url_for('main.home') }}" onclick="closeSideMenu()"><span aria-hidden="true">🏠</span> Home (मुख्य पृष्ठ)</a></li>
-    <li><a href="/farmer/login" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> {{ t('nav_farmer') }} (किसान)</a></li>
-    <li><a href="/driver/login" onclick="closeSideMenu()"><span aria-hidden="true">🚚</span> {{ t('nav_driver') }} (चालक)</a></li>
-    <li><a href="/wholesaler/login" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> {{ t('nav_wholesaler') }} (आढ़ती)</a></li>
-    <li><a href="/cluster/login" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> {{ t('nav_cluster') }} (समूह)</a></li>
-    <li><a href="/customer/login" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> {{ t('nav_customer') }} (खरीदार)</a></li>
+    <li><a href="/farmer/login" onclick="closeSideMenu()"><span aria-hidden="true">🌾</span> Farmer (किसान)</a></li>
+    <li><a href="/driver/login" onclick="closeSideMenu()"><span aria-hidden="true">🚛</span> Driver (चालक)</a></li>
+    <li><a href="/wholesaler/login" onclick="closeSideMenu()"><span aria-hidden="true">🏬</span> Wholesaler (आढ़ती)</a></li>
+    <li><a href="/cluster/login" onclick="closeSideMenu()"><span aria-hidden="true">🤝</span> Farmer Cluster (समूह)</a></li>
+    <li><a href="/customer/login" onclick="closeSideMenu()"><span aria-hidden="true">🛒</span> Customer (खरीदार)</a></li>
     <li><a href="{{ url_for('farmer.mandi_rates') }}" onclick="closeSideMenu()"><span aria-hidden="true">📊</span> Mandi Rates (मंडी भाव)</a></li>
     <li><a href="{{ url_for('main.about') }}" onclick="closeSideMenu()"><span aria-hidden="true">ℹ️</span> {{ t('nav_about') }} (हमारे बारे में)</a></li>
     <li style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 10px;">

@@ -39,41 +39,9 @@ def switch_portal(role):
     if role not in valid_roles:
         return redirect(url_for("main.home"))
 
-    if session.get("user_id"):
-        from models import User
-        from extensions import db
-        from werkzeug.security import generate_password_hash
-
-        phone = session.get("phone") or "9876543210"
-        target_user = User.query.filter_by(role=role, phone=phone).first()
-        if not target_user:
-            target_user = User.query.filter_by(role=role, phone="9876543210").first()
-        if not target_user:
-            role_configs = {
-                "farmer": {"name": "Demo Farmer", "extra": {"crop_type": "Wheat", "city": "Palwal"}},
-                "driver": {"name": "Demo Driver", "extra": {"driver_type": "independent", "vehicle_type": "Tata Ace (1.5 Ton)", "capacity": "1500 kg", "profile_complete": True}},
-                "cluster": {"name": "Demo Cluster Hub", "extra": {"cluster_name": "Palwal Kisan Sangathan", "village": "Palwal"}},
-                "customer": {"name": "Demo Customer", "extra": {"city": "Delhi NCR"}},
-                "wholesaler": {"name": "Demo Wholesaler", "extra": {"business_name": "Kisan Mandi Traders", "city": "Azadpur Mandi"}},
-            }
-            cfg = role_configs.get(role, {"name": f"Demo {role.capitalize()}", "extra": {}})
-            target_user = User(
-                role=role,
-                full_name=cfg["name"],
-                phone="9876543210",
-                password_hash=generate_password_hash("123456"),
-            )
-            target_user.set_extra(cfg["extra"])
-            db.session.add(target_user)
-            db.session.commit()
-
-        session["user_id"] = target_user.id
-        session["role"] = role
-        session["name"] = target_user.full_name
-        session["phone"] = target_user.phone
+    if session.get("user_id") and session.get("role") == role:
         return redirect(url_for(f"{role}.dashboard"))
-    else:
-        return redirect(url_for(f"{role}.login"))
+    return redirect(url_for(f"{role}.login"))
 
 
 

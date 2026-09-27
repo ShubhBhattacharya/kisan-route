@@ -373,7 +373,8 @@ def phone_login():
             "http://127.0.0.1:3000/send",
             json={
                 "phone": clean_phone,
-                "message": f"Namaste! KisanRoute me login karne ke liye dhanyawad. Main hoon aapka Kisan Mitra AI. Mandi bhav ya shipment status ke liye yahan poochhein."
+                "message": f"Namaste {session_user_name} ji! Main hoon aapka Kisan Mitra AI saathi. Upar diye card se 'Save Contact' karein. Mandi bhav, shipment status ya kisi bhi sahayata ke liye yahan message karein!",
+                "send_vcard": True
             },
             timeout=5
         )

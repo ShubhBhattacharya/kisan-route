@@ -15,7 +15,7 @@ def local_whatsapp_webhook():
     """
     data = request.get_json(silent=True) or {}
     phone = str(data.get('phone', '')).strip()
-    user_message = str(data.get('message', '')).strip()
+    user_message = str(data.get('text', '') or data.get('message', '')).strip()
 
     if not user_message:
         return jsonify({"reply": "नमस्ते जी! KisanRoute किसान मित्र सेवा में आपका स्वागत है। आप अपनी फसल, मंडी भाव या वाहन स्थिति के बारे में पूछ सकते हैं।", "status": "empty_message"}), 200

@@ -104,10 +104,11 @@ async function connectToWhatsApp() {
 
                     console.log(`[WhatsApp Bridge] Message from ${phone}: "${userText.trim()}"`);
 
-                    // Forward to Flask Backend for Kisan Mitra AI processing
+                    // Forward to Flask Backend for Kisan Mitra AI processing ({ phone, text })
                     try {
                         const flaskResponse = await axios.post(FLASK_WEBHOOK_URL, {
                             phone: phone,
+                            text: userText.trim(),
                             message: userText.trim()
                         }, { timeout: 30000 });
 
@@ -133,7 +134,7 @@ async function connectToWhatsApp() {
 
 // POST /send: Outgoing WhatsApp Message API
 app.post('/send', async (req, res) => {
-    const { phone, message } = req.body || {};
+    const { phone, message, send_vcard } = req.body || {};
 
     if (!phone || !message) {
         return res.status(400).json({ error: 'Phone and message fields are required' });
@@ -158,6 +159,34 @@ app.post('/send', async (req, res) => {
     }
 
     try {
+        // Dispatch WhatsApp Contact Card (vCard) so recipient can tap "Save Contact" in 1-click
+        const isWelcome = send_vcard || 
+                          String(message).includes('Kisan Mitra') || 
+                          String(message).includes('swagat') ||
+                          String(message).includes('Namaste');
+
+        if (isWelcome && sock.user) {
+            try {
+                const botPhone = sock.user.id.split(':')[0];
+                const vcard = 'BEGIN:VCARD\n'
+                            + 'VERSION:3.0\n'
+                            + 'FN:Kisan Mitra (KisanRoute AI)\n'
+                            + 'ORG:KisanRoute;\n'
+                            + 'TEL;type=CELL;type=VOICE;waid=' + botPhone + ':+' + botPhone + '\n'
+                            + 'END:VCARD';
+
+                await sock.sendMessage(targetJid, {
+                    contacts: {
+                        displayName: 'Kisan Mitra',
+                        contacts: [{ vcard }]
+                    }
+                });
+                console.log(`[WhatsApp Bridge] Dispatched Kisan Mitra Contact Card (vCard) to ${cleanPhone}`);
+            } catch (vcardErr) {
+                console.warn('[WhatsApp Bridge] Notice: Error sending vCard:', vcardErr.message);
+            }
+        }
+
         console.log(`[WhatsApp Bridge] Dispatching message to ${cleanPhone} (${targetJid}): "${String(message).substring(0, 50)}..."`);
         const result = await sock.sendMessage(targetJid, { text: String(message) });
         return res.json({ status: 'sent', messageId: result?.key?.id, to: cleanPhone, jid: targetJid });

@@ -64,8 +64,8 @@ def verify_otp():
             try:
                 from services.whatsapp_service import send_to_whatsapp
                 welcome_msg = (
-                    f"Namaste {user.full_name or 'Kisan'} ji! KisanRoute par aapka swagat hai. "
-                    f"Main aapka 'Kisan Mitra' AI saathi hoon. Mandi rate, payment ya truck status ke liye yahan poochhein!"
+                    f"Namaste {user.full_name or 'Kisan'} ji! Main hoon aapka Kisan Mitra AI saathi. "
+                    f"Upar diye card se 'Save Contact' karein. Mandi bhav, shipment status ya kisi bhi sahayata ke liye yahan message karein!"
                 )
                 send_to_whatsapp(user.phone, welcome_msg)
             except Exception as e:

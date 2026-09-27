@@ -12,7 +12,7 @@
 
   {% if result %}
   <div class="result-card">
-    {% if image_url %}<img src="{{ image_url }}" alt="Uploaded crop photo" class="result-image">{% endif %}
+    {% if image_url %}<img src="{{ image_url }}" alt="Uploaded crop photo" class="result-image" loading="lazy" decoding="async">{% endif %}
     <h2>Grade: {{ result.grade }}</h2>
     <p>Confidence: {{ result.confidence }}%</p>
     <p class="form-note">Placeholder grading for the prototype — a real computer-vision model will replace this later.</p>

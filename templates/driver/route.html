@@ -63,6 +63,13 @@
             L.marker(latLngs[latLngs.length - 1], { icon: endIcon }).addTo(map).bindPopup("<strong>Destination:</strong> {{ req.drop }}");
 
             map.fitBounds(polyline.getBounds(), { padding: [35, 35] });
+
+            setTimeout(function() {
+              if (map) {
+                map.invalidateSize();
+                map.fitBounds(polyline.getBounds(), { padding: [35, 35] });
+              }
+            }, 250);
           }
         } catch(e) {
           console.error("Map rendering error:", e);

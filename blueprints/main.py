@@ -210,6 +210,22 @@ def icon_512():
     return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "icon-512.png", mimetype="image/png")
 
 
+@main_bp.route("/apple-touch-icon.png")
+def apple_touch_icon():
+    return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "apple-touch-icon.png", mimetype="image/png")
+
+
+@main_bp.route("/icon-maskable-192.png")
+def icon_maskable_192():
+    return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "icon-maskable-192.png", mimetype="image/png")
+
+
+@main_bp.route("/icon-maskable-512.png")
+def icon_maskable_512():
+    return send_from_directory(os.path.join(current_app.static_folder, "images", "icons"), "icon-maskable-512.png", mimetype="image/png")
+
+
+
 @main_bp.route("/sw.js")
 def service_worker():
     response = send_from_directory(current_app.static_folder, "sw.js", mimetype="application/javascript")

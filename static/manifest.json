@@ -1,21 +1,36 @@
 {
-  "name": "Kisan Marg - Farm to Market",
-  "short_name": "Kisan Marg",
-  "description": "Kisanon aur grahako ke liye direct platform",
+  "name": "KisanRoute - Farm to Market Direct",
+  "short_name": "KisanRoute",
+  "description": "Kisanon aur grahako ke liye 0% middlemen direct agri platform",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1B4332",
   "theme_color": "#1B4332",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/images/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

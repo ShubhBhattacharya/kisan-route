@@ -43,7 +43,10 @@ def signup():
     return render_template("farmer/signup.html", form={}, crops=list_crops())
 
 
+from utils.rate_limiter import rate_limit
+
 @farmer_bp.route("/verify-otp", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def verify_otp():
     pending = session.get("pending_signup_farmer")
     if not pending:
@@ -80,6 +83,7 @@ def verify_otp():
 
 
 @farmer_bp.route("/login", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def login():
     if request.method == "POST":
         # 1. Quick 1-Click Demo Login
@@ -116,10 +120,10 @@ def login():
             flash("Please enter your password.", "error")
             return render_template("farmer/login.html")
 
-        # 2. Regular Login Check
+        # 2. Regular Login Check with secure hash verification
         user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
-            if check_password_hash(user.password_hash, password) or password == "123456":
+            if check_password_hash(user.password_hash, password):
                 session["user_id"] = user.id
                 session["role"] = ROLE
                 session["name"] = user.full_name
@@ -162,6 +166,14 @@ def dashboard():
 @farmer_bp.route("/accept-bid/<bid_id>", methods=["POST"])
 @login_required(ROLE)
 def accept_bid(bid_id):
+    from models import Bid
+    bid = Bid.query.filter_by(bid_id=bid_id).first()
+    current_farmer = session.get("name", "")
+    if bid and current_farmer not in ("Demo Farmer", "Farmer", ""):
+        if bid.farmer_name and bid.farmer_name.lower() != current_farmer.lower():
+            flash("Unauthorized: You do not have permission to modify this bid.", "error")
+            return redirect(url_for("farmer.dashboard")), 403
+
     update_bid_status(bid_id, "Deal Confirmed / Ready for Pickup")
     if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
         return jsonify({"status": "success", "bid_id": bid_id, "message": f"Deal Confirmed for {bid_id}!"})
@@ -172,6 +184,14 @@ def accept_bid(bid_id):
 @farmer_bp.route("/reject-bid/<bid_id>", methods=["POST"])
 @login_required(ROLE)
 def reject_bid(bid_id):
+    from models import Bid
+    bid = Bid.query.filter_by(bid_id=bid_id).first()
+    current_farmer = session.get("name", "")
+    if bid and current_farmer not in ("Demo Farmer", "Farmer", ""):
+        if bid.farmer_name and bid.farmer_name.lower() != current_farmer.lower():
+            flash("Unauthorized: You do not have permission to modify this bid.", "error")
+            return redirect(url_for("farmer.dashboard")), 403
+
     update_bid_status(bid_id, "Declined by Farmer")
     if request.headers.get("X-Requested-With") == "XMLHttpRequest" or request.is_json:
         return jsonify({"status": "success", "bid_id": bid_id, "message": f"Offer {bid_id} has been declined."})
@@ -179,6 +199,7 @@ def reject_bid(bid_id):
     return redirect(url_for("farmer.dashboard"))
 
 
+ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif"}
 
 @farmer_bp.route("/crop-quality", methods=["GET", "POST"])
 @login_required(ROLE)
@@ -187,6 +208,11 @@ def crop_quality():
     if request.method == "POST":
         file = request.files.get("crop_image")
         if file and file.filename:
+            ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+            if ext not in ALLOWED_IMAGE_EXTENSIONS:
+                flash("Invalid file format. Please upload a valid image (JPG, PNG, WEBP, GIF).", "error")
+                return render_template("farmer/crop_quality.html", result=None, image_url=None)
+
             filename = secure_filename(file.filename)
             # 1. Upload to Cloudinary Permanent Cloud Storage
             success, cloud_url = upload_image_to_cloud(file, folder="kisanroute/crops", filename=filename)

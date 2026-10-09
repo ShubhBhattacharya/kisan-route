@@ -52,14 +52,25 @@ def local_whatsapp_webhook():
             "error": str(e)
         }), 200
 
+import hmac
+from utils.rate_limiter import rate_limit
+
 @local_whatsapp_bp.route('/admin/local-broadcast-promo', methods=['POST'])
 @local_whatsapp_bp.route('/admin/broadcast-promo', methods=['POST'])
+@rate_limit(limit=5, window_seconds=60)
 def local_broadcast_promo():
     """
     Admin endpoint to broadcast updates/promotional messages to farmers, drivers, etc.,
     via the 100% free self-hosted Baileys WhatsApp Web bridge.
+    Requires X-Admin-Key header or admin_key in JSON body.
     """
     data = request.get_json(silent=True) or {}
+    admin_key = request.headers.get("X-Admin-Key") or data.get("admin_key")
+    configured_key = os.environ.get("ADMIN_API_KEY", "kisan_admin_secure_key")
+
+    if not admin_key or not hmac.compare_digest(str(admin_key).strip(), str(configured_key).strip()):
+        return jsonify({"error": "Unauthorized: Invalid or missing admin key"}), 403
+
     target_role = str(data.get('role', 'farmer')).strip().lower()
     promo_text = data.get('message', '').strip()
 

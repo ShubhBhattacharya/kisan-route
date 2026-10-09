@@ -148,7 +148,10 @@ def signup():
     return render_template("wholesaler/signup.html", form={})
 
 
+from utils.rate_limiter import rate_limit
+
 @wholesaler_bp.route("/login", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def login():
     if request.method == "POST":
         # 1. Quick 1-Click Demo Login
@@ -167,6 +170,9 @@ def login():
             session["user_id"] = user.id
             session["role"] = ROLE
             session["name"] = user.full_name
+            session["user_name"] = user.full_name
+            session["phone"] = user.phone
+            session["user_phone"] = user.phone
             flash("Logged in successfully as Demo Wholesaler! 🏬", "success")
             return redirect(url_for("wholesaler.dashboard"))
 
@@ -185,10 +191,13 @@ def login():
         # 2. Regular Login Check
         user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
-            if check_password_hash(user.password_hash, password) or password == "123456":
+            if check_password_hash(user.password_hash, password):
                 session["user_id"] = user.id
                 session["role"] = ROLE
                 session["name"] = user.full_name
+                session["user_name"] = user.full_name
+                session["phone"] = user.phone
+                session["user_phone"] = user.phone
                 return redirect(url_for("wholesaler.dashboard"))
             else:
                 flash("Incorrect password. Please try again or use 1-Click Demo.", "error")

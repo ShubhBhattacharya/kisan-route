@@ -24,12 +24,17 @@ def about():
     return render_template("about.html")
 
 
+from utils.rate_limiter import rate_limit
+
 @main_bp.route("/set-language/<lang_code>")
 def set_language(lang_code):
     valid_codes = {code for code, _label in LANGUAGES}
     if lang_code in valid_codes:
         session["lang"] = lang_code
-    next_url = request.referrer or url_for("main.home")
+    next_url = request.referrer
+    # Prevent Open Redirect: Only redirect to local relative paths or same host
+    if not next_url or not next_url.startswith(request.host_url):
+        next_url = url_for("main.home")
     return redirect(next_url)
 
 
@@ -52,6 +57,7 @@ def chatbot_prompts():
 
 
 @main_bp.route("/api/chatbot/ask", methods=["POST"])
+@rate_limit(limit=25, window_seconds=60)
 def chatbot_ask():
     payload = request.get_json(silent=True) or {}
     message = payload.get("message", "")
@@ -59,6 +65,7 @@ def chatbot_ask():
 
 
 @main_bp.route("/api/voice/process", methods=["POST"])
+@rate_limit(limit=25, window_seconds=60)
 def api_voice_process():
     from utils.voice import process_voice_query
     payload = request.get_json(silent=True) or {}
@@ -287,6 +294,7 @@ def maintenance_bypass():
 @main_bp.route("/api/auth/phone-login", methods=["POST"])
 @main_bp.route("/api/auth/whatsapp-login", methods=["POST"])
 @main_bp.route("/api/auth/firebase-login", methods=["POST"])
+@rate_limit(limit=10, window_seconds=60)
 def phone_login():
     """Verify WhatsApp direct handshake authentication, create or restore user session
     in Supabase users/profiles tables, persist local database user, and establish platform session.

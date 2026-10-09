@@ -3,8 +3,9 @@ Allows seamless toggling of system maintenance status with admin bypass.
 """
 
 import os
+import hmac
 
-ADMIN_SECRET_KEYS = {"kisan_admin_2026", "123456", "admin123"}
+DEFAULT_ADMIN_KEY = os.environ.get("MAINTENANCE_SECRET_KEY", "kisan_admin_2026")
 FLAG_PATHS = [
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "maintenance.flag"),
     "/tmp/maintenance.flag",
@@ -61,7 +62,5 @@ def is_bypass_authorized(secret: str) -> bool:
     """Validate admin / developer secret key for bypassing maintenance mode."""
     if not secret:
         return False
-    configured_key = os.environ.get("MAINTENANCE_SECRET_KEY", "")
-    if configured_key and secret.strip() == configured_key.strip():
-        return True
-    return secret.strip() in ADMIN_SECRET_KEYS
+    configured_key = os.environ.get("MAINTENANCE_SECRET_KEY") or DEFAULT_ADMIN_KEY
+    return hmac.compare_digest(str(secret).strip(), str(configured_key).strip())

@@ -251,7 +251,11 @@ def signup():
     return render_template("customer/signup.html", form={})
 
 
+from utils.rate_limiter import rate_limit
+
+
 @customer_bp.route("/login", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def login():
     if request.method == "POST":
         # 1. Quick 1-Click Demo Login
@@ -288,7 +292,7 @@ def login():
         # 2. Regular Login Check
         user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
-            if check_password_hash(user.password_hash, password) or password == "123456":
+            if check_password_hash(user.password_hash, password):
                 session["user_id"] = user.id
                 session["role"] = ROLE
                 session["name"] = user.full_name
@@ -326,9 +330,17 @@ def order(listing_id=1):
         flash("Listing not found.", "error")
         return redirect(url_for("customer.dashboard"))
     if request.method == "POST":
-        quantity = float(request.form.get("quantity") or 0)
+        try:
+            quantity = float(request.form.get("quantity") or 0)
+        except (ValueError, TypeError):
+            quantity = 0.0
+
+        if quantity <= 0 or quantity > 10000:
+            flash("Please enter a valid order quantity (between 0.1 and 10,000).", "error")
+            return redirect(url_for("customer.order", listing_id=listing_id))
+
         mode = request.form.get("payment_mode")
-        amount = quantity * listing["price"]
+        amount = round(quantity * listing["price"], 2)
         pending_order = {"listing": listing, "quantity": quantity, "mode": mode, "amount": amount}
         session["pending_order"] = pending_order
         if mode == "upi":

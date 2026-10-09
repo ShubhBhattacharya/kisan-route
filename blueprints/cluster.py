@@ -49,7 +49,11 @@ def signup():
     return render_template("cluster/signup.html", form={})
 
 
+from utils.rate_limiter import rate_limit
+
+
 @cluster_bp.route("/verify-otp", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def verify_otp():
     pending = session.get("pending_signup_cluster")
     if not pending:
@@ -86,6 +90,7 @@ def verify_otp():
 
 
 @cluster_bp.route("/login", methods=["GET", "POST"])
+@rate_limit(limit=10, window_seconds=60)
 def login():
     if request.method == "POST":
         # 1. Quick 1-Click Demo Login
@@ -122,7 +127,7 @@ def login():
         # 2. Regular Login Check
         user = User.query.filter_by(role=ROLE, phone=cleaned_phone).first()
         if user:
-            if check_password_hash(user.password_hash, password) or password == "123456":
+            if check_password_hash(user.password_hash, password):
                 session["user_id"] = user.id
                 session["role"] = ROLE
                 session["name"] = user.full_name

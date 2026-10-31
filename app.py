@@ -79,6 +79,10 @@ def create_app():
     from blueprints.guardian import guardian_bp
     app.register_blueprint(guardian_bp)
 
+    # Module 23: Private Owner-Only AI Control, Backend Operations & Access Management
+    from blueprints.owner import owner_bp
+    app.register_blueprint(owner_bp)
+
     @app.context_processor
     def inject_globals():
         lang = session.get("lang", "en")

@@ -75,6 +75,10 @@ def create_app():
     from routes.local_whatsapp import local_whatsapp_bp
     app.register_blueprint(local_whatsapp_bp)
 
+    # Protected Kisan Route Guardian AI Admin Control Center & Background Engine
+    from blueprints.guardian import guardian_bp
+    app.register_blueprint(guardian_bp)
+
     @app.context_processor
     def inject_globals():
         lang = session.get("lang", "en")

@@ -1,0 +1,153 @@
+{
+  "tier2_1793451530": {
+    "id": "tier2_1793451530",
+    "title": "Degraded component detected: customer_store_degraded",
+    "category": "workflow",
+    "severity": "medium",
+    "tier": 2,
+    "status": "detected",
+    "detected_at": "2026-10-31T12:58:50.509115",
+    "details": {
+      "trigger": "audit_test",
+      "results": {
+        "timestamp": 1793451527.6884105,
+        "overall_status": "degraded",
+        "roles": {
+          "farmer": {
+            "status": "degraded",
+            "latency_ms": 1049.68,
+            "login_view": 200,
+            "mandi_rates": 302,
+            "profit_calc": 302
+          },
+          "cluster": {
+            "status": "healthy",
+            "latency_ms": 4.14,
+            "login_view": 200
+          },
+          "customer": {
+            "status": "degraded",
+            "latency_ms": 3.0,
+            "storefront": 302
+          },
+          "driver": {
+            "status": "healthy",
+            "latency_ms": 2.0,
+            "login_view": 200
+          },
+          "wholesaler": {
+            "status": "healthy",
+            "latency_ms": 4.3,
+            "login_view": 200
+          }
+        },
+        "integrations": {
+          "weather_api": "healthy",
+          "news_api": "healthy",
+          "kisan_route_assistant": "healthy",
+          "api_latency_ms": 1.1,
+          "database": {
+            "status": "healthy",
+            "user_records": 6,
+            "latency_ms": 3.03
+          }
+        },
+        "performance": {},
+        "failed_checks": [
+          "farmer_journey_degraded",
+          "customer_store_degraded"
+        ]
+      }
+    },
+    "resolution": null
+  },
+  "tier3_1793451676": {
+    "id": "tier3_1793451676",
+    "title": "Degraded component detected: farmer_journey_degraded",
+    "category": "workflow",
+    "severity": "high",
+    "tier": 3,
+    "status": "detected",
+    "detected_at": "2026-10-31T13:01:16.453172",
+    "details": {
+      "trigger": "verify_synthetic",
+      "results": {
+        "timestamp": 1793451673.836235,
+        "overall_status": "degraded",
+        "roles": {
+          "farmer": {
+            "status": "degraded",
+            "latency_ms": 989.47,
+            "login_view": 200,
+            "mandi_rates": 302,
+            "profit_calc": 302
+          },
+          "cluster": {
+            "status": "healthy",
+            "latency_ms": 0.0,
+            "login_view": 200
+          },
+          "customer": {
+            "status": "healthy",
+            "latency_ms": 0.0,
+            "login_view": 200,
+            "storefront_authenticated": 200
+          },
+          "driver": {
+            "status": "healthy",
+            "latency_ms": 15.68,
+            "login_view": 200
+          },
+          "wholesaler": {
+            "status": "healthy",
+            "latency_ms": 0.0,
+            "login_view": 200
+          }
+        },
+        "integrations": {
+          "weather_api": "healthy",
+          "news_api": "healthy",
+          "kisan_route_assistant": "healthy",
+          "api_latency_ms": 0.0,
+          "database": {
+            "status": "healthy",
+            "user_records": 6,
+            "latency_ms": 0.0
+          }
+        },
+        "performance": {},
+        "failed_checks": [
+          "farmer_journey_degraded"
+        ]
+      }
+    },
+    "resolution": null
+  },
+  "tier1_1793452205": {
+    "id": "tier1_1793452205",
+    "title": "Weather upstream timeout",
+    "category": "integration",
+    "severity": "low",
+    "tier": 1,
+    "status": "resolved",
+    "detected_at": "2026-10-31T13:10:05.755474",
+    "details": {
+      "retry": true
+    },
+    "resolution": "Auto-remediated: Ensured existence of upload directory: /tmp/uploads",
+    "resolved_at": "2026-10-31T13:10:05.758132"
+  },
+  "tier3_1793452205": {
+    "id": "tier3_1793452205",
+    "title": "[BLOCKED] Sensitive Operation Detected: Modify farmer payout balance in payment gateway",
+    "category": "financial",
+    "severity": "critical",
+    "tier": 3,
+    "status": "detected",
+    "detected_at": "2026-10-31T13:10:05.760481",
+    "details": {
+      "action": "alter balance"
+    },
+    "resolution": null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "active",
+  "last_execution": "2026-10-31T13:09:24.775756",
+  "next_execution": null,
+  "execution_count": 7,
+  "uptime_percent": 100.0,
+  "last_health_status": "healthy",
+  "active_alerts_count": 2,
+  "resolved_issues_count": 0,
+  "pending_patches_count": 1,
+  "total_cost_usd": 0.0,
+  "quota_tokens_used": 0,
+  "free_tier_provider": "google_gemini_free",
+  "created_at": "2026-10-31T12:58:50.513111"
+}

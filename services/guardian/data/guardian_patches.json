@@ -1,0 +1,15 @@
+{
+  "patch_1793451530": {
+    "id": "patch_1793451530",
+    "issue_id": "tier2_1793451530",
+    "summary": "Fix for: Degraded component detected: customer_store_degraded (Generate diagnostic trace and isolate issue in sandbox before patching.)",
+    "diff_text": "# Proposed Remediation Patch\n# Analysis: Unhandled exception or anomaly detected in workflow.\n# Target Action: Generate diagnostic trace and isolate issue in sandbox before patching.\n",
+    "affected_files": [
+      "utils/"
+    ],
+    "tier": 2,
+    "status": "pending_review",
+    "created_at": "2026-10-31T12:58:50.511110",
+    "review_notes": null
+  }
+}

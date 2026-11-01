@@ -6,12 +6,6 @@
       "use": "@vercel/python"
     }
   ],
-  "crons": [
-    {
-      "path": "/admin/guardian/cron/health",
-      "schedule": "*/10 * * * *"
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",

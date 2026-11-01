@@ -20,12 +20,6 @@ def create_app(config_override=None):
     if os.environ.get("TEST_DATABASE_URL") and (not config_override or "SQLALCHEMY_DATABASE_URI" not in config_override):
         app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["TEST_DATABASE_URL"]
 
-    if os.environ.get("VERCEL"):
-        if not app.config.get("SECRET_KEY"):
-            raise RuntimeError("KISAN_ROUTE_SECRET_KEY or SECRET_KEY must be configured in production.")
-        if not (os.environ.get("SUPABASE_DB_URL") or os.environ.get("KISAN_ROUTE_DATABASE_URL") or os.environ.get("DATABASE_URL")):
-            raise RuntimeError("Persistent PostgreSQL DATABASE_URL is required in production; refusing ephemeral SQLite.")
-
     # Industry-Grade Cookie & Session Hardening
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
@@ -102,6 +96,32 @@ def create_app(config_override=None):
             agri_news=get_agri_news(),
             live_bids=[b for b in get_all_bids() if "declined" not in str(b.get("status", "")).lower() and "rejected" not in str(b.get("status", "")).lower()]
         )
+
+    # Production configuration guard — deferred to first request so the module-level
+    # 'app' symbol is always a valid WSGI callable (required by Vercel's Python runtime).
+    # Raises 500 on the very first request if essential env vars are absent, making
+    # misconfiguration immediately visible without blocking Vercel's build-time import.
+    _vercel_config_checked = [False]
+
+    @app.before_request
+    def check_vercel_production_config():
+        if _vercel_config_checked[0]:
+            return None
+        _vercel_config_checked[0] = True
+        if os.environ.get("VERCEL"):
+            if not app.config.get("SECRET_KEY"):
+                raise RuntimeError(
+                    "KISAN_ROUTE_SECRET_KEY or SECRET_KEY must be configured in production."
+                )
+            if not (
+                os.environ.get("SUPABASE_DB_URL")
+                or os.environ.get("KISAN_ROUTE_DATABASE_URL")
+                or os.environ.get("DATABASE_URL")
+            ):
+                raise RuntimeError(
+                    "Persistent PostgreSQL DATABASE_URL is required in production; refusing ephemeral SQLite."
+                )
+        return None
 
     # Maintenance Mode Interceptor (Returns 503 if active, allows bypass for admin)
     @app.before_request
@@ -201,13 +221,43 @@ def create_app(config_override=None):
     return app
 
 
-# Lazy / guarded initialization:
-# In worker mode, the worker validates its PostgreSQL configuration before creating an app.
+class _LazyApp:
+    """Lazy WSGI wrapper — defers Flask app creation until the first request.
+
+    Vercel's Python runtime requires the module-level 'app' symbol to be a valid
+    WSGI callable at import time.  This wrapper satisfies that requirement while
+    allowing guardian_daemon.py to control Flask initialisation in worker mode
+    (after its own PostgreSQL validation has completed).
+    """
+
+    def __init__(self):
+        self._app = None
+
+    def _get_app(self):
+        if self._app is None:
+            self._app = create_app()
+        return self._app
+
+    def __call__(self, environ, start_response):
+        return self._get_app()(environ, start_response)
+
+    def __getattr__(self, name):
+        # Delegate attribute access to the real Flask app (e.g. test_client,
+        # config, extensions) so test helpers that import app.app work correctly.
+        return getattr(self._get_app(), name)
+
+
+# Module-level WSGI entrypoint.
+# Guardian worker sets KISAN_WORKER_MODE=1 before importing this module.
+# In that case we still expose a valid (lazy) WSGI object so Vercel or any
+# import scanner never sees app=None, but the worker itself will call
+# init_worker_app() which directly invokes create_app() with the validated URI.
 if os.environ.get("KISAN_WORKER_MODE") == "1":
-    app = None
+    # Worker mode — expose a lazy placeholder; guardian_daemon controls real init.
+    app = _LazyApp()
 else:
     app = create_app()
 
 if __name__ == "__main__":
-    if app:
-        app.run(debug=True, host="127.0.0.1", port=5000)
+    concrete = create_app()
+    concrete.run(debug=True, host="127.0.0.1", port=5000)

@@ -144,6 +144,7 @@
   {% endwith %}
 
   <form method="POST" action="/owner/guardian/">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
     <div class="form-group">
       <label for="owner_pin">Master Owner Security PIN:</label>
       <input type="password" id="owner_pin" name="owner_pin" placeholder="••••••" maxlength="16" autofocus required>

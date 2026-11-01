@@ -53,8 +53,8 @@ class TestGuardianAI(unittest.TestCase):
         self.assertEqual(results["roles"]["farmer"]["status"], "healthy")
         self.assertEqual(results["roles"]["customer"]["status"], "healthy")
 
-    def test_03_ai_orchestrator_and_zero_cost_tracking(self):
-        """Verify multi-model orchestrator provides analysis and maintains $0.00 cost tracking."""
+    def test_03_ai_orchestrator_analysis_shape(self):
+        """Verify the incident analyzer returns its expected structure; this is not a billing test."""
         analysis = orchestrator.analyze_incident(
             incident_title="Transient Weather API 504 Timeout",
             error_details={"api": "open-meteo", "timeout": 5.0},
@@ -62,8 +62,6 @@ class TestGuardianAI(unittest.TestCase):
         )
         self.assertIn("root_cause", analysis)
         self.assertIn("tier", analysis)
-        state = get_state()
-        self.assertEqual(state["total_cost_usd"], 0.0)
 
     def test_04_safe_fixer_tier_boundaries(self):
         """Verify Level 1 auto-fixes safely, Level 2 queues patches, and Level 3 halts sensitive operations."""
@@ -85,24 +83,23 @@ class TestGuardianAI(unittest.TestCase):
         self.assertEqual(res3["tier"], 3)
 
     def test_05_admin_control_center_auth_gate(self):
-        """Verify unauthenticated requests are blocked by the PIN barrier."""
+        """Legacy admin UI redirects to the owner-only dashboard."""
         anon_client = self.app.test_client()
         res = anon_client.get("/admin/guardian/")
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(b"Enter Master Admin PIN", res.data)
+        self.assertEqual(res.status_code, 302)
+        self.assertIn("/owner/guardian/", res.headers.get("Location", ""))
 
-        # Authenticated access
+        # A legacy admin session is not an owner identity.
         with anon_client.session_transaction() as sess:
             sess["guardian_admin_auth"] = True
         res_auth = anon_client.get("/admin/guardian/")
-        self.assertEqual(res_auth.status_code, 200)
-        self.assertIn(b"KisanRoute Guardian AI", res_auth.data)
+        self.assertEqual(res_auth.status_code, 302)
 
     def test_06_guardian_cron_endpoints(self):
         """Verify both public and authorized cron health endpoints operate cleanly."""
         res_public = self.client.get("/admin/guardian/cron/health")
         self.assertEqual(res_public.status_code, 200)
-        self.assertEqual(res_public.get_json().get("status"), "healthy")
+        self.assertEqual(res_public.get_json().get("status"), "ok")
 
 
 if __name__ == "__main__":

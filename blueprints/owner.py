@@ -15,6 +15,7 @@ Implements Module 23 specifications:
 """
 
 import os
+import secrets
 from functools import wraps
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash, abort
@@ -22,43 +23,47 @@ from services.guardian import (
     guardian_service, get_state, get_recent_logs, get_all_issues, get_all_patches
 )
 from services.guardian.storage import update_patch_status, append_log
+from utils.security import configured_secret, secret_matches
+from utils.rate_limiter import rate_limit
 
 owner_bp = Blueprint("owner_guardian", __name__, url_prefix="/owner/guardian")
 
-OWNER_PIN = os.environ.get("OWNER_PIN") or os.environ.get("ADMIN_PIN") or "123456"
-OWNER_TOKEN = os.environ.get("OWNER_TOKEN") or os.environ.get("GUARDIAN_ADMIN_TOKEN") or "kisanroute_guardian_owner_secret_2026"
-OWNER_PHONE = os.environ.get("OWNER_PHONE") or "8700257488"
+OWNER_PIN = configured_secret("OWNER_PIN", "ADMIN_PIN")
+OWNER_TOKEN = configured_secret("OWNER_TOKEN", "GUARDIAN_ADMIN_TOKEN")
+OWNER_PHONE = os.environ.get("OWNER_PHONE", "").strip()
+
+
+
+@owner_bp.before_request
+def owner_csrf_guard():
+    """Protect browser form submissions with a per-session CSRF token."""
+    if request.method == "GET":
+        session.setdefault("_owner_csrf_token", secrets.token_urlsafe(32))
+        return None
+    if request.endpoint == "owner_guardian.cron_pulse":
+        return None
+    expected = session.get("_owner_csrf_token", "")
+    supplied = request.form.get("_csrf_token", "") or request.headers.get("X-CSRF-Token", "")
+    if not secret_matches(supplied, expected):
+        abort(400, description="Invalid or missing CSRF token.")
+
+
+@owner_bp.context_processor
+def owner_csrf_context():
+    return {"owner_csrf_token": session.get("_owner_csrf_token", "")}
 
 
 def require_owner(f):
     """Enforce strict server-side owner authorization."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # 1. Bearer Token Check (for external authenticated daemon / webhook triggers)
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header.split(" ", 1)[1].strip()
-            if token == OWNER_TOKEN:
-                return f(*args, **kwargs)
-
-        # 2. Token in header/query for secure API access
-        header_token = request.headers.get("x-guardian-owner-token", "")
-        if header_token and header_token == OWNER_TOKEN:
-            return f(*args, **kwargs)
-
-        query_token = request.args.get("token", "")
-        if query_token and query_token == OWNER_TOKEN:
-            return f(*args, **kwargs)
-
-        # 3. Check for existing authenticated owner session
+        # Browser dashboard access requires the explicit owner PIN session.
         if session.get("is_owner_authenticated"):
-            # Ensure normal user roles cannot hijack this session
-            user_role = session.get("role")
-            if user_role and user_role not in ["owner", "admin", None]:
+            if session.get("owner_auth_method") != "owner_pin":
                 # If a normal user tries to access owner resources, reject with 403 Forbidden
                 append_log(
                     "SECURITY_ALERT_ACCESS_DENIED",
-                    f"Non-owner role '{user_role}' attempted access to owner route: {request.path}",
+                    f"Rejected owner session authentication method on route: {request.path}",
                     level="WARNING",
                     details={"ip": request.remote_addr, "user_id": session.get("user_id")}
                 )
@@ -68,8 +73,13 @@ def require_owner(f):
         # 4. Check submitted Owner PIN in login POST
         if request.method == "POST":
             submitted_pin = request.form.get("owner_pin") or request.form.get("pin")
-            if submitted_pin and submitted_pin == OWNER_PIN:
+            if submitted_pin and not OWNER_PIN:
+                return jsonify({"error": "Owner authentication is not configured. Set OWNER_PIN."}), 503
+            if submitted_pin and secret_matches(submitted_pin, OWNER_PIN):
+                session.clear()
                 session["is_owner_authenticated"] = True
+                session["owner_auth_method"] = "owner_pin"
+                session["owner_role"] = "owner"
                 session["owner_login_time"] = datetime.utcnow().isoformat()
                 append_log("OWNER_LOGIN_SUCCESS", "Website Owner authenticated into Control Center.", level="INFO")
                 return redirect(url_for("owner_guardian.dashboard"))
@@ -84,6 +94,7 @@ def require_owner(f):
 
 # ================= OWNER DASHBOARD =================
 @owner_bp.route("/", methods=["GET", "POST"])
+@rate_limit(limit=8, window_seconds=300, by_ip=True)
 @require_owner
 def dashboard():
     """Private Owner-Only Control Center Dashboard."""
@@ -145,11 +156,10 @@ def reject_patch(patch_id):
     return redirect(url_for("owner_guardian.dashboard"))
 
 
-@owner_bp.route("/logout", methods=["GET", "POST"])
+@owner_bp.route("/logout", methods=["POST"])
 def logout():
     """Secure logout from Owner Control Center."""
-    session.pop("is_owner_authenticated", None)
-    session.pop("guardian_admin_auth", None)
+    session.clear()
     flash("Successfully logged out from Owner Control Center.", "info")
     return redirect(url_for("owner_guardian.dashboard"))
 
@@ -167,10 +177,7 @@ def cron_pulse():
         token = auth_header.split(" ", 1)[1].strip()
     elif request.headers.get("x-guardian-owner-token"):
         token = request.headers.get("x-guardian-owner-token").strip()
-    elif request.args.get("token"):
-        token = request.args.get("token").strip()
-
-    if token != OWNER_TOKEN and not session.get("is_owner_authenticated"):
+    if not secret_matches(token, OWNER_TOKEN) and not session.get("is_owner_authenticated"):
         # Deny access completely; never leak internal details
         return jsonify({"error": "Unauthorized: Owner token required.", "status": 403}), 403
 

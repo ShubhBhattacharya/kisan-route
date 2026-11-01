@@ -8,7 +8,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 class Config:
     """Central place for all app settings."""
     # Cryptographically secure random secret key if not set in environment
-    SECRET_KEY = os.environ.get("KISAN_ROUTE_SECRET_KEY") or os.environ.get("SECRET_KEY") or secrets.token_hex(32)
+    SECRET_KEY = os.environ.get("KISAN_ROUTE_SECRET_KEY") or os.environ.get("SECRET_KEY") or (secrets.token_hex(32) if not os.environ.get("VERCEL") else "")
 
     # Supabase SQL & Database Credentials (strictly from environment)
     SUPABASE_PUBLISHABLE_KEY = os.environ.get("SUPABASE_PUBLISHABLE_KEY", "")

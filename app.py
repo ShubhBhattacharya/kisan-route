@@ -14,6 +14,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    if os.environ.get("VERCEL"):
+        if not app.config.get("SECRET_KEY"):
+            raise RuntimeError("KISAN_ROUTE_SECRET_KEY or SECRET_KEY must be configured in production.")
+        if not (os.environ.get("SUPABASE_DB_URL") or os.environ.get("KISAN_ROUTE_DATABASE_URL") or os.environ.get("DATABASE_URL")):
+            raise RuntimeError("Persistent PostgreSQL DATABASE_URL is required in production; refusing ephemeral SQLite.")
+
     # Industry-Grade Cookie & Session Hardening
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
@@ -32,17 +38,6 @@ def create_app():
             if remote_db.startswith("postgres://"):
                 remote_db = remote_db.replace("postgres://", "postgresql://", 1)
             app.config["SQLALCHEMY_DATABASE_URI"] = remote_db
-        else:
-            tmp_db = "/tmp/kisanroute.db"
-            app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{tmp_db}"
-            src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kisanroute.db")
-            if not os.path.exists(tmp_db) and os.path.exists(src_db):
-                import shutil
-                try:
-                    shutil.copyfile(src_db, tmp_db)
-                    print("Copied initial database to /tmp")
-                except Exception as e:
-                    print("Database copy to /tmp skipped:", e)
 
     db.init_app(app)
 
@@ -116,12 +111,9 @@ def create_app():
 
         from utils.maintenance import is_maintenance_mode, is_bypass_authorized
 
-        # Check bypass via URL query param e.g. ?bypass=123456
-        bypass_key = request.args.get("bypass", "")
-        if bypass_key and is_bypass_authorized(bypass_key):
-            session["maintenance_bypass"] = True
-
-        if session.get("maintenance_bypass"):
+        # Maintenance bypass must be established through the authenticated
+        # maintenance control flow, never through a URL query parameter.
+        if session.get("maintenance_bypass") and session.get("maintenance_auth_method") == "owner_session":
             return None
 
         # If maintenance mode is active, return 503 with maintenance template
@@ -168,13 +160,15 @@ def create_app():
             from models import User
             from werkzeug.security import generate_password_hash
 
-            demo_accounts = [
-                ("customer", "Demo Customer", "9876543210", "123456"),
-                ("farmer", "Demo Farmer", "9876543210", "123456"),
-                ("driver", "Demo Driver", "9876543210", "123456"),
-                ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
-                ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
-            ]
+            demo_accounts = []
+            if os.environ.get("ENABLE_DEMO_ACCOUNTS", "").lower() in ("1", "true", "yes") and not os.environ.get("VERCEL"):
+                demo_accounts = [
+                    ("customer", "Demo Customer", "9876543210", "123456"),
+                    ("farmer", "Demo Farmer", "9876543210", "123456"),
+                    ("driver", "Demo Driver", "9876543210", "123456"),
+                    ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
+                    ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
+                ]
             for role, name, phone, pwd in demo_accounts:
                 if not User.query.filter_by(role=role, phone=phone).first():
                     u = User(
@@ -194,6 +188,9 @@ def create_app():
                     db.session.add(u)
             db.session.commit()
         except Exception as e:
+            db.session.rollback()
+            if os.environ.get("VERCEL"):
+                raise RuntimeError("Production database initialization failed; refusing to start.") from e
             print("Database initialization/seed handled:", e)
 
     return app

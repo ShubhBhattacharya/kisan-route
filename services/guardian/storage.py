@@ -1,160 +1,222 @@
-"""KisanRoute Guardian AI - Core Storage and Task Registry.
+"""Durable Guardian storage backed by the application's SQLAlchemy database.
 
-Manages persistent operational state, execution logs, issue tracking, and patch reviews
-safely in JSON format or SQLite, fully compatible with both local and serverless runtimes.
+All Guardian state, logs, issues and patch reviews are stored in relational tables.
+There is deliberately no filesystem or /tmp fallback: database errors are surfaced.
 """
-
-import os
 import json
 import time
 from datetime import datetime
 
-DATA_DIR = os.environ.get("GUARDIAN_DATA_DIR") or (
-    "/tmp/guardian_data" if os.environ.get("VERCEL") else os.path.join(os.path.dirname(__file__), "data")
-)
-os.makedirs(DATA_DIR, exist_ok=True)
-
-STATE_FILE = os.path.join(DATA_DIR, "guardian_state.json")
-LOGS_FILE = os.path.join(DATA_DIR, "guardian_logs.jsonl")
-ISSUES_FILE = os.path.join(DATA_DIR, "guardian_issues.json")
-PATCHES_FILE = os.path.join(DATA_DIR, "guardian_patches.json")
+from extensions import db
 
 
-def _read_json(filepath, default=None):
-    if default is None:
-        default = {}
-    if not os.path.exists(filepath):
-        return default
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return default
+class GuardianStateRecord(db.Model):
+    __tablename__ = "guardian_state"
+    id = db.Column(db.Integer, primary_key=True, default=1)
+    payload = db.Column(db.Text, nullable=False)
 
 
-def _write_json(filepath, data):
-    try:
-        tmp_path = f"{filepath}.tmp"
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-        if os.path.exists(filepath):
-            os.replace(tmp_path, filepath)
-        else:
-            os.rename(tmp_path, filepath)
-    except Exception as e:
-        print(f"[Guardian Storage] Write error for {filepath}: {e}")
+class GuardianLogRecord(db.Model):
+    __tablename__ = "guardian_logs"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
+    level = db.Column(db.String(16), nullable=False, index=True)
+    event_type = db.Column(db.String(80), nullable=False, index=True)
+    payload = db.Column(db.Text, nullable=False)
+
+
+class GuardianIssueRecord(db.Model):
+    __tablename__ = "guardian_issues"
+    issue_id = db.Column(db.String(120), primary_key=True)
+    status = db.Column(db.String(32), nullable=False, index=True)
+    severity = db.Column(db.String(24), nullable=False, index=True)
+    detected_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
+    payload = db.Column(db.Text, nullable=False)
+
+
+class GuardianPatchRecord(db.Model):
+    __tablename__ = "guardian_patches"
+    patch_id = db.Column(db.String(120), primary_key=True)
+    status = db.Column(db.String(32), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
+    payload = db.Column(db.Text, nullable=False)
+
+class GuardianWorkerHeartbeat(db.Model):
+    __tablename__ = "guardian_worker_heartbeats"
+    worker_id = db.Column(db.String(120), primary_key=True)
+    last_seen_at = db.Column(db.DateTime, nullable=False, index=True)
+    status = db.Column(db.String(24), nullable=False)
+    last_cycle_at = db.Column(db.DateTime, nullable=True)
+    details = db.Column(db.Text, nullable=False, default="{}")
+
+
+def record_worker_heartbeat(worker_id: str, status: str = "running", last_cycle_at=None, details=None):
+    now = _utcnow()
+    row = db.session.get(GuardianWorkerHeartbeat, worker_id)
+    if row is None:
+        row = GuardianWorkerHeartbeat(worker_id=worker_id, last_seen_at=now,
+                                      status=status, last_cycle_at=last_cycle_at,
+                                      details=_dump(details or {}))
+        db.session.add(row)
+    else:
+        row.last_seen_at = now
+        row.status = status
+        if last_cycle_at is not None:
+            row.last_cycle_at = last_cycle_at
+        row.details = _dump(details or {})
+    db.session.commit()
+    return row
+
+
+def get_worker_health(stale_after_seconds: int = 300):
+    rows = GuardianWorkerHeartbeat.query.all()
+    if not rows:
+        return {"status": "not_configured", "workers": [], "checked_at": _utcnow().isoformat()}
+    now = _utcnow()
+    workers = []
+    for row in rows:
+        age = max(0, int((now - row.last_seen_at).total_seconds()))
+        workers.append({
+            "worker_id": row.worker_id,
+            "status": row.status if age <= stale_after_seconds else "stale",
+            "last_seen_at": row.last_seen_at.isoformat(),
+            "last_cycle_at": row.last_cycle_at.isoformat() if row.last_cycle_at else None,
+            "age_seconds": age,
+        })
+    overall = "active" if any(w["status"] == "running" for w in workers) else "offline"
+    return {"status": overall, "workers": workers, "checked_at": now.isoformat()}
+
+
+def _dump(value):
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+
+def _load(value):
+    return json.loads(value)
+
+
+def _utcnow():
+    return datetime.utcnow()
 
 
 def get_state():
-    """Retrieve Guardian AI operational status and summary metrics."""
-    default_state = {
-        "status": "active",  # active, paused, maintenance
+    """Read the singleton state row; absent row means unconfigured, not healthy."""
+    default = {
+        "status": "not_configured",
         "last_execution": None,
         "next_execution": None,
         "execution_count": 0,
-        "uptime_percent": 100.0,
-        "last_health_status": "healthy",
+        "uptime_percent": 0.0,
+        "last_health_status": "unknown",
         "active_alerts_count": 0,
         "resolved_issues_count": 0,
         "pending_patches_count": 0,
-        "total_cost_usd": 0.0,
+        "total_cost_usd": None,
         "quota_tokens_used": 0,
-        "free_tier_provider": "google_gemini_free",
-        "created_at": datetime.utcnow().isoformat()
+        "free_tier_provider": "not_configured",
+        "created_at": _utcnow().isoformat(),
     }
-    state = _read_json(STATE_FILE, default_state)
-    for k, v in default_state.items():
-        if k not in state:
-            state[k] = v
+    row = db.session.get(GuardianStateRecord, 1)
+    if row is None:
+        return default
+    state = _load(row.payload)
+    for key, value in default.items():
+        state.setdefault(key, value)
     return state
 
 
 def update_state(updates: dict):
+    row = db.session.get(GuardianStateRecord, 1)
     state = get_state()
     state.update(updates)
-    _write_json(STATE_FILE, state)
+    if row is None:
+        row = GuardianStateRecord(id=1, payload=_dump(state))
+        db.session.add(row)
+    else:
+        row.payload = _dump(state)
+    db.session.commit()
     return state
 
 
 def append_log(event_type: str, message: str, level: str = "INFO", details: dict = None):
-    """Log an operational event to the append-only logs."""
     entry = {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": _utcnow().isoformat(),
         "epoch": time.time(),
         "level": level.upper(),
         "event_type": event_type,
         "message": message,
-        "details": details or {}
+        "details": details or {},
     }
-    try:
-        with open(LOGS_FILE, "a", encoding="utf-8") as f:
-            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-    except Exception as e:
-        print(f"[Guardian Log] Failed to write log: {e}")
+    db.session.add(GuardianLogRecord(
+        created_at=_utcnow(),
+        level=entry["level"],
+        event_type=event_type,
+        payload=_dump(entry),
+    ))
+    db.session.commit()
     return entry
 
 
 def get_recent_logs(limit: int = 100):
-    """Return the most recent log entries up to `limit`."""
-    if not os.path.exists(LOGS_FILE):
-        return []
-    lines = []
-    try:
-        with open(LOGS_FILE, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    lines.append(line)
-        parsed = []
-        for l in reversed(lines[-limit:]):
-            try:
-                parsed.append(json.loads(l))
-            except Exception:
-                continue
-        return parsed
-    except Exception:
-        return []
+    safe_limit = max(1, min(int(limit), 1000))
+    rows = (GuardianLogRecord.query
+            .order_by(GuardianLogRecord.id.desc())
+            .limit(safe_limit)
+            .all())
+    return [_load(row.payload) for row in rows]
 
 
-def record_issue(issue_id: str, title: str, category: str, severity: str, details: dict, tier: int = 1):
-    """Register a detected problem."""
-    issues = _read_json(ISSUES_FILE, {})
+def record_issue(issue_id: str, title: str, category: str, severity: str,
+                 details: dict, tier: int = 1):
     issue = {
         "id": issue_id,
         "title": title,
-        "category": category,  # frontend, backend, integration, security, workflow
-        "severity": severity,  # low, medium, high, critical
-        "tier": tier,          # 1=auto-safe, 2=patch-review, 3=manual-only
-        "status": "detected",  # detected, analyzing, auto_fixed, patch_pending, resolved, rejected
-        "detected_at": datetime.utcnow().isoformat(),
+        "category": category,
+        "severity": severity,
+        "tier": tier,
+        "status": "detected",
+        "detected_at": _utcnow().isoformat(),
         "details": details,
-        "resolution": None
+        "resolution": None,
     }
-    issues[issue_id] = issue
-    _write_json(ISSUES_FILE, issues)
-    append_log("ISSUE_DETECTED", f"Issue [{category}] {title} (Tier {tier}, {severity})", level="WARNING", details=issue)
+    row = db.session.get(GuardianIssueRecord, issue_id)
+    if row is None:
+        row = GuardianIssueRecord(issue_id=issue_id, status="detected",
+                                  severity=severity, detected_at=_utcnow(),
+                                  payload=_dump(issue))
+        db.session.add(row)
+    else:
+        row.status = "detected"
+        row.severity = severity
+        row.payload = _dump(issue)
+    db.session.commit()
+    append_log("ISSUE_DETECTED", f"Issue [{category}] {title} (Tier {tier}, {severity})",
+               level="WARNING", details=issue)
     return issue
 
 
 def resolve_issue(issue_id: str, resolution_note: str, status: str = "resolved"):
-    issues = _read_json(ISSUES_FILE, {})
-    if issue_id in issues:
-        issues[issue_id]["status"] = status
-        issues[issue_id]["resolved_at"] = datetime.utcnow().isoformat()
-        issues[issue_id]["resolution"] = resolution_note
-        _write_json(ISSUES_FILE, issues)
-        append_log("ISSUE_RESOLVED", f"Resolved issue {issue_id}: {resolution_note}", level="INFO")
-        return issues[issue_id]
-    return None
+    row = db.session.get(GuardianIssueRecord, issue_id)
+    if row is None:
+        return None
+    issue = _load(row.payload)
+    issue["status"] = status
+    issue["resolved_at"] = _utcnow().isoformat()
+    issue["resolution"] = resolution_note
+    row.status = status
+    row.payload = _dump(issue)
+    db.session.commit()
+    append_log("ISSUE_RESOLVED", f"Resolved issue {issue_id}: {resolution_note}")
+    return issue
 
 
 def get_all_issues():
-    return _read_json(ISSUES_FILE, {})
+    rows = GuardianIssueRecord.query.order_by(GuardianIssueRecord.detected_at.desc()).all()
+    return {row.issue_id: _load(row.payload) for row in rows}
 
 
-def queue_patch(patch_id: str, issue_id: str, summary: str, diff_text: str, affected_files: list, tier: int = 2):
-    """Queue a Tier 2 code patch for administrator review."""
-    patches = _read_json(PATCHES_FILE, {})
+def queue_patch(patch_id: str, issue_id: str, summary: str, diff_text: str,
+                affected_files: list, tier: int = 2):
     patch = {
         "id": patch_id,
         "issue_id": issue_id,
@@ -162,27 +224,38 @@ def queue_patch(patch_id: str, issue_id: str, summary: str, diff_text: str, affe
         "diff_text": diff_text,
         "affected_files": affected_files,
         "tier": tier,
-        "status": "pending_review",  # pending_review, approved, rejected, applied, rolled_back
-        "created_at": datetime.utcnow().isoformat(),
-        "review_notes": None
+        "status": "pending_review",
+        "created_at": _utcnow().isoformat(),
+        "review_notes": None,
     }
-    patches[patch_id] = patch
-    _write_json(PATCHES_FILE, patches)
-    append_log("PATCH_QUEUED", f"Patch queued for review: {summary} ({patch_id})", level="INFO", details=patch)
+    row = db.session.get(GuardianPatchRecord, patch_id)
+    if row is None:
+        row = GuardianPatchRecord(patch_id=patch_id, status="pending_review",
+                                  created_at=_utcnow(), payload=_dump(patch))
+        db.session.add(row)
+    else:
+        row.status = "pending_review"
+        row.payload = _dump(patch)
+    db.session.commit()
+    append_log("PATCH_QUEUED", f"Patch queued for review: {summary} ({patch_id})")
     return patch
 
 
 def get_all_patches():
-    return _read_json(PATCHES_FILE, {})
+    rows = GuardianPatchRecord.query.order_by(GuardianPatchRecord.created_at.desc()).all()
+    return {row.patch_id: _load(row.payload) for row in rows}
 
 
 def update_patch_status(patch_id: str, status: str, notes: str = ""):
-    patches = _read_json(PATCHES_FILE, {})
-    if patch_id in patches:
-        patches[patch_id]["status"] = status
-        patches[patch_id]["reviewed_at"] = datetime.utcnow().isoformat()
-        patches[patch_id]["review_notes"] = notes
-        _write_json(PATCHES_FILE, patches)
-        append_log("PATCH_STATUS_CHANGED", f"Patch {patch_id} status changed to {status}: {notes}", level="INFO")
-        return patches[patch_id]
-    return None
+    row = db.session.get(GuardianPatchRecord, patch_id)
+    if row is None:
+        return None
+    patch = _load(row.payload)
+    patch["status"] = status
+    patch["reviewed_at"] = _utcnow().isoformat()
+    patch["review_notes"] = notes
+    row.status = status
+    row.payload = _dump(patch)
+    db.session.commit()
+    append_log("PATCH_STATUS_CHANGED", f"Patch {patch_id} status changed to {status}: {notes}")
+    return patch

@@ -111,12 +111,9 @@ def create_app():
 
         from utils.maintenance import is_maintenance_mode, is_bypass_authorized
 
-        # Check bypass via URL query param e.g. ?bypass=123456
-        bypass_key = request.args.get("bypass", "")
-        if bypass_key and is_bypass_authorized(bypass_key):
-            session["maintenance_bypass"] = True
-
-        if session.get("maintenance_bypass"):
+        # Maintenance bypass must be established through the authenticated
+        # maintenance control flow, never through a URL query parameter.
+        if session.get("maintenance_bypass") and session.get("maintenance_auth_method") == "owner_session":
             return None
 
         # If maintenance mode is active, return 503 with maintenance template

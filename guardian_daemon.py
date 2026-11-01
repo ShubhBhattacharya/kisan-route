@@ -7,7 +7,7 @@ import socket
 import time
 from datetime import datetime
 
-from app import create_app
+from app import app
 from services.guardian import guardian_service
 from services.guardian.storage import append_log, record_worker_heartbeat
 
@@ -26,7 +26,6 @@ signal.signal(signal.SIGTERM, signal_handler)
 def run_daemon(interval_seconds=120, once=False):
     if interval_seconds < 30:
         raise ValueError("Worker interval must be at least 30 seconds.")
-    app = create_app()
     worker_id = os.environ.get("GUARDIAN_WORKER_ID") or socket.gethostname()
     with app.app_context():
         append_log("DAEMON_STARTUP", f"Guardian worker {worker_id} started", level="INFO")
@@ -40,10 +39,14 @@ def run_daemon(interval_seconds=120, once=False):
                                          details={"last_result": result.get("status", "unknown")})
                 print(f"[Guardian] cycle={result.get('status')} worker={worker_id}")
             except Exception as exc:
-                record_worker_heartbeat(worker_id, "degraded",
-                                         details={"error_type": type(exc).__name__})
-                append_log("DAEMON_CYCLE_ERROR", f"Guardian worker cycle failed: {type(exc).__name__}",
-                           level="ERROR")
+                # A database outage can also prevent heartbeat/log persistence.
+                try:
+                    record_worker_heartbeat(worker_id, "degraded",
+                                             details={"error_type": type(exc).__name__})
+                    append_log("DAEMON_CYCLE_ERROR", f"Guardian worker cycle failed: {type(exc).__name__}",
+                               level="ERROR")
+                except Exception as telemetry_exc:
+                    print(f"[Guardian] telemetry unavailable: {type(telemetry_exc).__name__}")
                 print(f"[Guardian] cycle failed: {type(exc).__name__}")
             if once:
                 break

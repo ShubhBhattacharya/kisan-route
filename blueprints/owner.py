@@ -41,7 +41,7 @@ def require_owner(f):
                 # If a normal user tries to access owner resources, reject with 403 Forbidden
                 append_log(
                     "SECURITY_ALERT_ACCESS_DENIED",
-                    f"Non-owner role '{user_role}' attempted access to owner route: {request.path}",
+                    f"Rejected owner session authentication method on route: {request.path}",
                     level="WARNING",
                     details={"ip": request.remote_addr, "user_id": session.get("user_id")}
                 )

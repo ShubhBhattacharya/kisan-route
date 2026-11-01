@@ -163,13 +163,15 @@ def create_app():
             from models import User
             from werkzeug.security import generate_password_hash
 
-            demo_accounts = [
-                ("customer", "Demo Customer", "9876543210", "123456"),
-                ("farmer", "Demo Farmer", "9876543210", "123456"),
-                ("driver", "Demo Driver", "9876543210", "123456"),
-                ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
-                ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
-            ]
+            demo_accounts = []
+            if os.environ.get("ENABLE_DEMO_ACCOUNTS", "").lower() in ("1", "true", "yes") and not os.environ.get("VERCEL"):
+                demo_accounts = [
+                    ("customer", "Demo Customer", "9876543210", "123456"),
+                    ("farmer", "Demo Farmer", "9876543210", "123456"),
+                    ("driver", "Demo Driver", "9876543210", "123456"),
+                    ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
+                    ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
+                ]
             for role, name, phone, pwd in demo_accounts:
                 if not User.query.filter_by(role=role, phone=phone).first():
                     u = User(
@@ -189,6 +191,9 @@ def create_app():
                     db.session.add(u)
             db.session.commit()
         except Exception as e:
+            db.session.rollback()
+            if os.environ.get("VERCEL"):
+                raise RuntimeError("Production database initialization failed; refusing to start.") from e
             print("Database initialization/seed handled:", e)
 
     return app

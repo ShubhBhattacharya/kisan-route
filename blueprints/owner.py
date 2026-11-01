@@ -35,23 +35,9 @@ def require_owner(f):
     """Enforce strict server-side owner authorization."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # 1. Bearer Token Check (for external authenticated daemon / webhook triggers)
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header.split(" ", 1)[1].strip()
-            if secret_matches(token, OWNER_TOKEN):
-                return f(*args, **kwargs)
-
-        # 2. Token in header/query for secure API access
-        header_token = request.headers.get("x-guardian-owner-token", "")
-        if secret_matches(header_token, OWNER_TOKEN):
-            return f(*args, **kwargs)
-
-        # 3. Check for existing authenticated owner session
+        # Browser dashboard access requires the explicit owner PIN session.
         if session.get("is_owner_authenticated"):
-            # Ensure normal user roles cannot hijack this session
-            user_role = session.get("role")
-            if user_role and user_role not in ["owner", "admin", None]:
+            if session.get("owner_auth_method") != "owner_pin":
                 # If a normal user tries to access owner resources, reject with 403 Forbidden
                 append_log(
                     "SECURITY_ALERT_ACCESS_DENIED",
@@ -70,6 +56,8 @@ def require_owner(f):
             if submitted_pin and secret_matches(submitted_pin, OWNER_PIN):
                 session.clear()
                 session["is_owner_authenticated"] = True
+                session["owner_auth_method"] = "owner_pin"
+                session["owner_role"] = "owner"
                 session["owner_login_time"] = datetime.utcnow().isoformat()
                 append_log("OWNER_LOGIN_SUCCESS", "Website Owner authenticated into Control Center.", level="INFO")
                 return redirect(url_for("owner_guardian.dashboard"))
@@ -145,11 +133,10 @@ def reject_patch(patch_id):
     return redirect(url_for("owner_guardian.dashboard"))
 
 
-@owner_bp.route("/logout", methods=["GET", "POST"])
+@owner_bp.route("/logout", methods=["POST"])
 def logout():
     """Secure logout from Owner Control Center."""
-    session.pop("is_owner_authenticated", None)
-    session.pop("guardian_admin_auth", None)
+    session.clear()
     flash("Successfully logged out from Owner Control Center.", "info")
     return redirect(url_for("owner_guardian.dashboard"))
 

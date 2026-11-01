@@ -15,6 +15,7 @@ Implements Module 23 specifications:
 """
 
 import os
+import secrets
 from functools import wraps
 from datetime import datetime
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash, abort
@@ -29,6 +30,26 @@ owner_bp = Blueprint("owner_guardian", __name__, url_prefix="/owner/guardian")
 OWNER_PIN = configured_secret("OWNER_PIN", "ADMIN_PIN")
 OWNER_TOKEN = configured_secret("OWNER_TOKEN", "GUARDIAN_ADMIN_TOKEN")
 OWNER_PHONE = os.environ.get("OWNER_PHONE", "").strip()
+
+
+
+@owner_bp.before_request
+def owner_csrf_guard():
+    """Protect browser form submissions with a per-session CSRF token."""
+    if request.method == "GET":
+        session.setdefault("_owner_csrf_token", secrets.token_urlsafe(32))
+        return None
+    if request.endpoint == "owner_guardian.cron_pulse":
+        return None
+    expected = session.get("_owner_csrf_token", "")
+    supplied = request.form.get("_csrf_token", "") or request.headers.get("X-CSRF-Token", "")
+    if not secret_matches(supplied, expected):
+        abort(400, description="Invalid or missing CSRF token.")
+
+
+@owner_bp.context_processor
+def owner_csrf_context():
+    return {"owner_csrf_token": session.get("_owner_csrf_token", "")}
 
 
 def require_owner(f):

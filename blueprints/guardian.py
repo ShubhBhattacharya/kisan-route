@@ -18,30 +18,12 @@ ADMIN_TOKEN = configured_secret("GUARDIAN_ADMIN_TOKEN", "OWNER_TOKEN")
 
 
 def require_admin(f):
+    """Legacy Guardian UI is accessible only through the authenticated owner session."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        # 1. Bearer Token Check (for automated external cron / scripts)
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header.split(" ", 1)[1].strip()
-            if secret_matches(token, ADMIN_TOKEN):
-                return f(*args, **kwargs)
-
-        # 3. Session PIN Auth Check
-        if session.get("guardian_admin_auth"):
+        if session.get("is_owner_authenticated") and session.get("owner_auth_method") == "owner_pin":
             return f(*args, **kwargs)
-
-        # Check submitted PIN in form/query
-        submitted_pin = request.form.get("pin")
-        if submitted_pin and not ADMIN_PIN:
-            return jsonify({"error": "Guardian admin authentication is not configured."}), 503
-        if submitted_pin and secret_matches(submitted_pin, ADMIN_PIN):
-            session.clear()
-            session["guardian_admin_auth"] = True
-            return f(*args, **kwargs)
-
-        # Render PIN gate if not authorized
-        return render_template("guardian/login.html")
+        return redirect("/owner/guardian/")
     return decorated_function
 
 

@@ -1,11 +1,11 @@
 # Render Background Worker Specification for KisanRoute Guardian AI
-# Target runtime: Python 3.12+
+# Target runtime: Python 3.12+ (pinned in .python-version)
 # Runbook: docs/GUARDIAN_WORKER_DEPLOYMENT.md
 services:
   - type: worker
     name: kisanroute-guardian-worker
     runtime: python
-    region: oregon
+    region: singapore
     plan: starter
     buildCommand: pip install -r requirements.txt
     startCommand: python guardian_daemon.py --interval 120
@@ -18,8 +18,4 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: KISAN_ROUTE_SECRET_KEY
-        sync: false
-      - key: OWNER_PIN
-        sync: false
-      - key: OWNER_TOKEN
         sync: false

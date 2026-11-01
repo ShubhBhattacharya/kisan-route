@@ -14,6 +14,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    if os.environ.get("VERCEL"):
+        if not app.config.get("SECRET_KEY"):
+            raise RuntimeError("KISAN_ROUTE_SECRET_KEY or SECRET_KEY must be configured in production.")
+        if not (os.environ.get("SUPABASE_DB_URL") or os.environ.get("KISAN_ROUTE_DATABASE_URL") or os.environ.get("DATABASE_URL")):
+            raise RuntimeError("Persistent PostgreSQL DATABASE_URL is required in production; refusing ephemeral SQLite.")
+
     # Industry-Grade Cookie & Session Hardening
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
@@ -32,17 +38,6 @@ def create_app():
             if remote_db.startswith("postgres://"):
                 remote_db = remote_db.replace("postgres://", "postgresql://", 1)
             app.config["SQLALCHEMY_DATABASE_URI"] = remote_db
-        else:
-            tmp_db = "/tmp/kisanroute.db"
-            app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{tmp_db}"
-            src_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kisanroute.db")
-            if not os.path.exists(tmp_db) and os.path.exists(src_db):
-                import shutil
-                try:
-                    shutil.copyfile(src_db, tmp_db)
-                    print("Copied initial database to /tmp")
-                except Exception as e:
-                    print("Database copy to /tmp skipped:", e)
 
     db.init_app(app)
 

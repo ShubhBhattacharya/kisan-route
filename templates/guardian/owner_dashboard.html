@@ -211,6 +211,7 @@
       </div>
 
       <form method="POST" action="/owner/guardian/action/run-audit" style="display:inline;">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
         <button type="submit" class="btn-action green">
           <span>⚡</span> <span>Run Full Audit</span>
         </button>
@@ -218,21 +219,24 @@
 
       {% if state.status == 'active' %}
       <form method="POST" action="/owner/guardian/action/pause" style="display:inline;">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
         <button type="submit" class="btn-action amber">
           <span>⏸️</span> <span>Pause Agent</span>
         </button>
       </form>
       {% else %}
       <form method="POST" action="/owner/guardian/action/resume" style="display:inline;">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
         <button type="submit" class="btn-action green">
           <span>▶️</span> <span>Resume Agent</span>
         </button>
       </form>
       {% endif %}
 
-      <a href="/owner/guardian/logout" class="btn-action red">
-        <span>🚪</span> <span>Logout</span>
-      </a>
+      <form method="POST" action="/owner/guardian/logout" style="display:inline;">
+        <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
+        <button type="submit" class="btn-action red"><span>🚪</span> <span>Logout</span></button>
+      </form>
     </div>
   </header>
 
@@ -387,9 +391,11 @@
                   {% if p.status == 'pending_review' %}
                   <div style="display:flex; gap:6px;">
                     <form method="POST" action="/owner/guardian/action/approve-patch/{{ p.id }}">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
                       <button type="submit" class="btn-action green" style="padding: 4px 10px; font-size: 11.5px;">Approve</button>
                     </form>
                     <form method="POST" action="/owner/guardian/action/reject-patch/{{ p.id }}">
+    <input type="hidden" name="_csrf_token" value="{{ owner_csrf_token }}">
                       <button type="submit" class="btn-action ghost" style="padding: 4px 10px; font-size: 11.5px;">Reject</button>
                     </form>
                   </div>

@@ -48,18 +48,18 @@ def _write_json(filepath, data):
 def get_state():
     """Retrieve Guardian AI operational status and summary metrics."""
     default_state = {
-        "status": "active",  # active, paused, maintenance
+        "status": "not_configured",  # active only after a real worker heartbeat; paused, maintenance, not_configured
         "last_execution": None,
         "next_execution": None,
         "execution_count": 0,
-        "uptime_percent": 100.0,
-        "last_health_status": "healthy",
+        "uptime_percent": 0.0,
+        "last_health_status": "unknown",
         "active_alerts_count": 0,
         "resolved_issues_count": 0,
         "pending_patches_count": 0,
-        "total_cost_usd": 0.0,
+        "total_cost_usd": None,
         "quota_tokens_used": 0,
-        "free_tier_provider": "google_gemini_free",
+        "free_tier_provider": "not_configured",
         "created_at": datetime.utcnow().isoformat()
     }
     state = _read_json(STATE_FILE, default_state)

@@ -41,6 +41,51 @@ class GuardianPatchRecord(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
     payload = db.Column(db.Text, nullable=False)
 
+class GuardianWorkerHeartbeat(db.Model):
+    __tablename__ = "guardian_worker_heartbeats"
+    worker_id = db.Column(db.String(120), primary_key=True)
+    last_seen_at = db.Column(db.DateTime, nullable=False, index=True)
+    status = db.Column(db.String(24), nullable=False)
+    last_cycle_at = db.Column(db.DateTime, nullable=True)
+    details = db.Column(db.Text, nullable=False, default="{}")
+
+
+def record_worker_heartbeat(worker_id: str, status: str = "running", last_cycle_at=None, details=None):
+    now = _utcnow()
+    row = db.session.get(GuardianWorkerHeartbeat, worker_id)
+    if row is None:
+        row = GuardianWorkerHeartbeat(worker_id=worker_id, last_seen_at=now,
+                                      status=status, last_cycle_at=last_cycle_at,
+                                      details=_dump(details or {}))
+        db.session.add(row)
+    else:
+        row.last_seen_at = now
+        row.status = status
+        if last_cycle_at is not None:
+            row.last_cycle_at = last_cycle_at
+        row.details = _dump(details or {})
+    db.session.commit()
+    return row
+
+
+def get_worker_health(stale_after_seconds: int = 300):
+    rows = GuardianWorkerHeartbeat.query.all()
+    if not rows:
+        return {"status": "not_configured", "workers": [], "checked_at": _utcnow().isoformat()}
+    now = _utcnow()
+    workers = []
+    for row in rows:
+        age = max(0, int((now - row.last_seen_at).total_seconds()))
+        workers.append({
+            "worker_id": row.worker_id,
+            "status": row.status if age <= stale_after_seconds else "stale",
+            "last_seen_at": row.last_seen_at.isoformat(),
+            "last_cycle_at": row.last_cycle_at.isoformat() if row.last_cycle_at else None,
+            "age_seconds": age,
+        })
+    overall = "active" if any(w["status"] == "running" for w in workers) else "offline"
+    return {"status": overall, "workers": workers, "checked_at": now.isoformat()}
+
 
 def _dump(value):
     return json.dumps(value, ensure_ascii=False, separators=(",", ":"))

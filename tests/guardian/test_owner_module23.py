@@ -1,13 +1,30 @@
 """Comprehensive Test Suite for Module 23 - Private Owner Control & Access Management."""
 
+import os
 import unittest
 from app import create_app
+from extensions import db
 
 
 class TestModule23OwnerControl(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = create_app()
+        os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+        os.environ["OWNER_PIN"] = "123456"
+        os.environ["OWNER_TOKEN"] = "kisanroute_guardian_owner_secret_2026"
+        cls.app = create_app(config_override={
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+        })
+        with cls.app.app_context():
+            db.create_all()
+
+    def setUp(self):
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+
+    def tearDown(self):
+        self.ctx.pop()
 
     def test_01_unauthenticated_owner_route_denied(self):
         """Unauthenticated visitor cannot access /owner/guardian/."""
@@ -62,7 +79,7 @@ class TestModule23OwnerControl(unittest.TestCase):
         """Owner can pause and resume the Guardian AI sentinel."""
         client = self.app.test_client()
         client.post("/owner/guardian/", data={"owner_pin": "123456"})
-        
+
         # Pause
         res_pause = client.post("/owner/guardian/action/pause", follow_redirects=True)
         self.assertEqual(res_pause.status_code, 200)

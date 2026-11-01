@@ -7,10 +7,9 @@ import socket
 import time
 from datetime import datetime
 
-from app import app
-from extensions import db
-from services.guardian import guardian_service
-from services.guardian.storage import append_log, record_worker_heartbeat
+# NOTE: Do NOT import app or database models at module level.
+# The worker must validate required PostgreSQL environment configuration
+# BEFORE initializing the Flask app, creating tables, or touching any database.
 
 RUNNING = True
 
@@ -32,7 +31,7 @@ def validate_database_uri(uri: str | None) -> str:
     """
     if not uri or not str(uri).strip():
         raise RuntimeError(
-            "Persistent PostgreSQL DATABASE_URL is mandatory for the Guardian worker; no database URL configured."
+            "Persistent PostgreSQL DATABASE_URL is mandatory for the Guardian worker; no database URL configured in environment."
         )
     normalized = str(uri).strip().lower()
     if normalized.startswith("sqlite:") or ":memory:" in normalized:
@@ -44,29 +43,64 @@ def validate_database_uri(uri: str | None) -> str:
         raise RuntimeError(
             f"Invalid database scheme for Guardian worker: expected postgresql://, got '{scheme}'."
         )
-    return uri
+    return uri.strip()
 
 
-def run_daemon(interval_seconds=120, once=False):
+def get_worker_database_uri() -> str:
+    """Extract and validate the database URI from the worker environment.
+
+    Does NOT inspect app.config or import Flask; strictly validates environment variables
+    before any application or database initialization can occur.
+    """
+    raw_uri = (
+        os.environ.get("DATABASE_URL")
+        or os.environ.get("SUPABASE_DB_URL")
+        or os.environ.get("KISAN_ROUTE_DATABASE_URL")
+    )
+    return validate_database_uri(raw_uri)
+
+
+def init_worker_app(db_uri: str):
+    """Initialize the Flask application using the validated PostgreSQL URI."""
+    normalized_uri = db_uri
+    if normalized_uri.startswith("postgres://"):
+        normalized_uri = normalized_uri.replace("postgres://", "postgresql://", 1)
+
+    os.environ["DATABASE_URL"] = normalized_uri
+    os.environ["KISAN_WORKER_MODE"] = "1"
+
+    from app import create_app
+    app = create_app(config_override={"SQLALCHEMY_DATABASE_URI": normalized_uri})
+    return app
+
+
+def run_daemon(interval_seconds=120, once=False, app=None):
+    """Execute the persistent Guardian daemon loop.
+
+    Ensures RUNNING flag is reset on every invocation for reentrancy.
+    Validates PostgreSQL configuration before any application or database initialization.
+    """
+    global RUNNING
+    RUNNING = True
+
     if interval_seconds < 30:
         raise ValueError("Worker interval must be at least 30 seconds.")
 
+    # 1. Enforce PostgreSQL configuration BEFORE touching Flask or SQLAlchemy
+    validated_uri = get_worker_database_uri()
+
+    # 2. Initialize application only after environment validation succeeds (or use injected app)
+    if app is None:
+        app = init_worker_app(validated_uri)
+
+    # 3. Import database and storage services within the validated application context
+    from extensions import db
+    from services.guardian import guardian_service
+    from services.guardian.storage import append_log, record_worker_heartbeat
+
+    worker_id = os.environ.get("GUARDIAN_WORKER_ID") or socket.gethostname()
+
     with app.app_context():
-        # Enforce PostgreSQL configuration for the persistent worker process
-        env_db = (
-            os.environ.get("DATABASE_URL")
-            or os.environ.get("SUPABASE_DB_URL")
-            or os.environ.get("KISAN_ROUTE_DATABASE_URL")
-        )
-        db_uri = env_db or app.config.get("SQLALCHEMY_DATABASE_URI")
-        if not env_db and (not db_uri or str(db_uri).startswith("sqlite:")):
-            raise RuntimeError(
-                "Persistent PostgreSQL DATABASE_URL is mandatory for the Guardian worker; missing DATABASE_URL environment variable."
-            )
-        validate_database_uri(db_uri)
-
-        worker_id = os.environ.get("GUARDIAN_WORKER_ID") or socket.gethostname()
-
         # Startup recording
         try:
             record_worker_heartbeat(worker_id, "running")

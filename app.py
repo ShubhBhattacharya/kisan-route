@@ -10,9 +10,15 @@ from extensions import db
 from translations.strings import LANGUAGES, translate
 
 
-def create_app():
+def create_app(config_override=None):
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    if config_override:
+        app.config.update(config_override)
+
+    if os.environ.get("TEST_DATABASE_URL") and (not config_override or "SQLALCHEMY_DATABASE_URI" not in config_override):
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["TEST_DATABASE_URL"]
 
     if os.environ.get("VERCEL"):
         if not app.config.get("SECRET_KEY"):
@@ -61,7 +67,7 @@ def create_app():
     app.register_blueprint(customer_bp, url_prefix="/customer")
     app.register_blueprint(driver_bp, url_prefix="/driver")
     app.register_blueprint(wholesaler_bp, url_prefix="/wholesaler")
-    
+
     # Meta WhatsApp Cloud API & Kisan Mitra Assistant Blueprint
     from routes.whatsapp_webhook import whatsapp_bp
     app.register_blueprint(whatsapp_bp)
@@ -96,7 +102,6 @@ def create_app():
             agri_news=get_agri_news(),
             live_bids=[b for b in get_all_bids() if "declined" not in str(b.get("status", "")).lower() and "rejected" not in str(b.get("status", "")).lower()]
         )
-
 
     # Maintenance Mode Interceptor (Returns 503 if active, allows bypass for admin)
     @app.before_request
@@ -196,7 +201,13 @@ def create_app():
     return app
 
 
-app = create_app()
+# Lazy / guarded initialization:
+# In worker mode, the worker validates its PostgreSQL configuration before creating an app.
+if os.environ.get("KISAN_WORKER_MODE") == "1":
+    app = None
+else:
+    app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    if app:
+        app.run(debug=True, host="127.0.0.1", port=5000)

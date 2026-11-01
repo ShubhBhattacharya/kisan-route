@@ -43,7 +43,7 @@ For Supabase staging and production instances hosted in **AWS Mumbai (`ap-south-
 2. Connect your GitHub repository `ShubhBhattacharya/kisan-route`.
 3. Select branch: `market-readiness/hardening-phase-1` (or your staging branch).
 4. Render will auto-detect [`render.yaml`](../render.yaml) or configure manually:
-   - **Environment:** `Python 3` (version `3.12.10` pinned in [`.python-version`](../.python-version))
+   - **Environment:** `Python 3` (minor version `3.12` pinned in [`.python-version`](../.python-version))
    - **Region:** `Singapore` (`singapore`)
    - **Build Command:** `pip install -r requirements.txt`
    - **Start Command:** `python guardian_daemon.py --interval 120`
@@ -75,7 +75,38 @@ For Supabase staging and production instances hosted in **AWS Mumbai (`ap-south-
 
 ---
 
-## 4. Verification & Health Monitoring
+## 4. Platform & Deployment Troubleshooting
+
+### Vercel Deployment Configurations
+If builds fail on Vercel preview environments, check the following resolutions:
+
+1. **`Python 3.12.x interpreter unavailable` (`kisan-route`, `kisan-route-8gv6`):**
+   - **Cause:** Vercel's Python runtime (`@vercel/python`) requires minor-version specifications like `3.12`. Exact micro/patch pins (e.g. `3.12.10`) fail because Vercel looks for a minor-version release.
+   - **Fix:** Pinned `3.12` in [`.python-version`](../.python-version) and updated CI workflows to match.
+2. **`Root Directory 'kisan_route 2' does not exist` (`kisan-route-vrjb`):**
+   - **Cause:** External configuration mismatch in Vercel Project Settings. The local folder on the developer machine was `kisan_route 2`, which was mistakenly entered into Vercel's Dashboard as the project Root Directory. In the Git repository, the files reside directly at repository root `.`.
+   - **Action Required in Vercel Dashboard:**
+     - Open project `kisan-route-vrjb` in Vercel Dashboard.
+     - Go to **Settings** > **General** > **Root Directory**.
+     - Clear `kisan_route 2` and reset to `./` (empty / repository root).
+     - Save and trigger a new deployment.
+
+---
+
+## 5. Row Level Security (RLS) & Access Control Notes
+
+When configuring PostgreSQL security policies:
+1. **GRANT Privileges vs. RLS Policies:**
+   - `REVOKE ALL ON ... FROM anon, authenticated` removes table-level privileges, blocking PostgREST queries immediately before RLS is evaluated.
+   - RLS (`ENABLE ROW LEVEL SECURITY`) acts as row-level filtering for roles with table access.
+2. **Supabase `service_role` Mechanics:**
+   - In Supabase, `service_role` and `postgres` have the PostgreSQL `BYPASSRLS` attribute enabled by default. They automatically bypass RLS policies.
+   - Explicit policies in [`migrations/sql/002_propose_guardian_rls_design.sql`](../migrations/sql/002_propose_guardian_rls_design.sql) provide defense-in-depth and serve as a specification, not a prerequisite for backend worker operations.
+   - **Notice:** Keep RLS SQL scripts as proposals only until explicitly scheduled for migration.
+
+---
+
+## 6. Verification & Health Monitoring
 
 After starting the worker, verify its live operation:
 
@@ -95,7 +126,7 @@ After starting the worker, verify its live operation:
 
 ---
 
-## 5. Failure Handling & Rollback Runbook
+## 7. Failure Handling & Rollback Runbook
 
 ### Automatic Error Handling & Session Recovery
 - If database connectivity drops or a cycle throws an error, the worker immediately calls `db.session.rollback()` to prevent transaction poisoning.

@@ -9,8 +9,10 @@ Validates:
 6. Zero regression across existing website and in-app assistants.
 """
 
+import os
 import unittest
 from app import create_app
+from extensions import db
 from services.guardian import guardian_service, safe_fix_engine, workflow_runner, orchestrator
 from services.guardian.storage import get_state, get_recent_logs, get_all_issues, get_all_patches
 
@@ -18,8 +20,21 @@ from services.guardian.storage import get_state, get_recent_logs, get_all_issues
 class TestGuardianAI(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = create_app()
+        os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+        cls.app = create_app(config_override={
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+        })
+        with cls.app.app_context():
+            db.create_all()
         cls.client = cls.app.test_client()
+
+    def setUp(self):
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+
+    def tearDown(self):
+        self.ctx.pop()
 
     def test_01_existing_website_and_assistants_intact(self):
         """Verify baseline website and both customer-facing assistants are completely intact."""
@@ -42,6 +57,7 @@ class TestGuardianAI(unittest.TestCase):
     def test_02_synthetic_workflows_all_5_roles(self):
         """Verify synthetic runner checks Farmer, Cluster, Customer, Driver, Wholesaler."""
         runner = workflow_runner
+        runner.app = self.app
         results = runner.run_all_checks()
         self.assertEqual(results["overall_status"], "healthy")
         self.assertEqual(results["failed_checks"], [])

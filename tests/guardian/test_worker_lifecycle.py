@@ -2,23 +2,33 @@
 
 import unittest
 import os
+import sys
 import json
 import signal
+import subprocess
 from datetime import datetime, timedelta
 from unittest.mock import patch, MagicMock
+
+# Force in-memory database before any test app imports
+os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
 
 from app import create_app
 from extensions import db
 from services.guardian.storage import record_worker_heartbeat, get_worker_health, GuardianWorkerHeartbeat
-from guardian_daemon import validate_database_uri, signal_handler, run_daemon
+from guardian_daemon import validate_database_uri, signal_handler, run_daemon, get_worker_database_uri
 import guardian_daemon
 
 
 class GuardianWorkerLifecycleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = create_app()
-        cls.app.config.update(TESTING=True)
+        os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
+        cls.app = create_app(config_override={
+            "TESTING": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
+        })
+        with cls.app.app_context():
+            db.create_all()
 
     def setUp(self):
         self.ctx = self.app.app_context()
@@ -109,67 +119,119 @@ class GuardianWorkerLifecycleTests(unittest.TestCase):
         legacy_uri = "postgres://user:pass@db.supabase.co:6543/postgres"
         self.assertEqual(validate_database_uri(legacy_uri), legacy_uri)
 
+    # --- Initialization Order: Validation BEFORE Flask or DB Creation ---
+
+    def test_worker_fails_before_app_creation_on_missing_db(self):
+        """Worker fails fast on missing DB without initializing Flask app or creating tables."""
+        env_clean = {k: v for k, v in os.environ.items() if k not in ("DATABASE_URL", "SUPABASE_DB_URL", "KISAN_ROUTE_DATABASE_URL")}
+        with patch.dict(os.environ, env_clean, clear=True):
+            with patch("guardian_daemon.init_worker_app") as mock_init:
+                with self.assertRaises(RuntimeError) as cm:
+                    run_daemon(once=True)
+                self.assertIn("mandatory", str(cm.exception))
+                mock_init.assert_not_called()
+
+    def test_worker_fails_before_app_creation_on_sqlite(self):
+        """Worker fails fast on SQLite without initializing Flask app or creating tables."""
+        with patch.dict(os.environ, {"DATABASE_URL": "sqlite:///kisanroute.db"}):
+            with patch("guardian_daemon.init_worker_app") as mock_init:
+                with self.assertRaises(RuntimeError) as cm:
+                    run_daemon(once=True)
+                self.assertIn("SQLite is strictly prohibited", str(cm.exception))
+                mock_init.assert_not_called()
+
     # --- Worker Startup Failure Handling ---
 
     def test_worker_startup_failure_rolls_back_and_fails_fast(self):
         """Worker startup rolls back database session and raises if initial heartbeat fails."""
         with patch.dict(os.environ, {"DATABASE_URL": "postgresql://mock:mock@localhost:5432/mock"}):
             with patch("guardian_daemon.validate_database_uri", return_value="postgresql://mock:mock@localhost:5432/mock"):
-                with patch("guardian_daemon.record_worker_heartbeat", side_effect=Exception("DB connection refused")):
-                    with patch("guardian_daemon.db.session.rollback") as mock_rollback:
-                        with self.assertRaises(Exception) as cm:
-                            run_daemon(once=True)
-                        self.assertIn("DB connection refused", str(cm.exception))
-                        mock_rollback.assert_called()
+                with patch("guardian_daemon.init_worker_app", return_value=self.app):
+                    with patch("services.guardian.storage.record_worker_heartbeat", side_effect=Exception("DB connection refused")):
+                        with patch.object(db.session, "rollback") as mock_rollback:
+                            with self.assertRaises(Exception) as cm:
+                                run_daemon(once=True, app=self.app)
+                            self.assertIn("DB connection refused", str(cm.exception))
+                            mock_rollback.assert_called()
 
     # --- Worker Cycle Error & Session Recovery ---
 
     def test_worker_cycle_error_db_recovery(self):
         """Worker rolls back session on cycle error and records degraded state."""
-        guardian_daemon.RUNNING = True
         with patch.dict(os.environ, {"DATABASE_URL": "postgresql://mock:mock@localhost:5432/mock"}):
             with patch("guardian_daemon.validate_database_uri", return_value="postgresql://mock:mock@localhost:5432/mock"):
-                with patch("guardian_daemon.guardian_service.run_cycle", side_effect=RuntimeError("Synthetic check timeout")):
-                    with patch("guardian_daemon.db.session.rollback") as mock_rollback:
-                        with patch("guardian_daemon.record_worker_heartbeat") as mock_heartbeat:
-                            with patch("guardian_daemon.append_log") as mock_log:
-                                run_daemon(once=True)
-                                # Rollback was invoked to clear aborted transaction
+                with patch("services.guardian.guardian_service.run_cycle", side_effect=RuntimeError("Synthetic check timeout")):
+                    with patch.object(db.session, "rollback") as mock_rollback:
+                        with patch("services.guardian.storage.record_worker_heartbeat") as mock_heartbeat:
+                            with patch("services.guardian.storage.append_log"):
+                                run_daemon(once=True, app=self.app)
                                 mock_rollback.assert_called()
-                                # Degraded heartbeat recorded
                                 degraded_calls = [
                                     call for call in mock_heartbeat.call_args_list
                                     if len(call.args) > 1 and call.args[1] == "degraded"
                                 ]
                                 self.assertTrue(len(degraded_calls) >= 1)
 
-    # --- Worker Shutdown Handling ---
+    # --- Worker Lifecycle Reentrancy & Signal Handling ---
 
-    def test_worker_sigterm_signal_handler(self):
-        """SIGTERM and SIGINT toggle the RUNNING flag to initiate graceful shutdown."""
+    def test_worker_repeated_invocations_in_same_process(self):
+        """Worker resets RUNNING flag and runs successfully across repeated invocations in the same process."""
+        with patch.dict(os.environ, {"DATABASE_URL": "postgresql://mock:mock@localhost:5432/mock"}):
+            with patch("guardian_daemon.validate_database_uri", return_value="postgresql://mock:mock@localhost:5432/mock"):
+                with patch("services.guardian.guardian_service.run_cycle", return_value={"status": "healthy"}):
+                    # Run 1
+                    run_daemon(once=True, app=self.app)
+                    self.assertTrue(guardian_daemon.RUNNING)
+
+                    # Run 2 in same process
+                    run_daemon(once=True, app=self.app)
+                    self.assertTrue(guardian_daemon.RUNNING)
+
+    def test_worker_sigterm_shutdown_and_subsequent_restart(self):
+        """Worker catches SIGTERM, shuts down cleanly, and restarts properly on subsequent invocation."""
         guardian_daemon.RUNNING = True
         signal_handler(signal.SIGTERM, None)
         self.assertFalse(guardian_daemon.RUNNING)
 
-        # Reset flag
-        guardian_daemon.RUNNING = True
+        # Subsequent call must reset RUNNING to True and complete
+        with patch.dict(os.environ, {"DATABASE_URL": "postgresql://mock:mock@localhost:5432/mock"}):
+            with patch("guardian_daemon.validate_database_uri", return_value="postgresql://mock:mock@localhost:5432/mock"):
+                with patch("services.guardian.guardian_service.run_cycle", return_value={"status": "healthy"}):
+                    run_daemon(once=True, app=self.app)
+                    self.assertTrue(guardian_daemon.RUNNING)
 
     def test_worker_shutdown_db_error_does_not_crash(self):
         """Worker catches database failure during shutdown and exits cleanly with rollback."""
-        guardian_daemon.RUNNING = False  # Exit loop immediately to trigger shutdown
         with patch.dict(os.environ, {"DATABASE_URL": "postgresql://mock:mock@localhost:5432/mock"}):
             with patch("guardian_daemon.validate_database_uri", return_value="postgresql://mock:mock@localhost:5432/mock"):
-                with patch("guardian_daemon.append_log"):
-                    # First heartbeat (startup) succeeds, second heartbeat (stopped) fails
+                with patch("services.guardian.storage.append_log"):
                     mock_hb = MagicMock(side_effect=[None, RuntimeError("DB gone during shutdown")])
-                    with patch("guardian_daemon.record_worker_heartbeat", mock_hb):
-                        with patch("guardian_daemon.db.session.rollback") as mock_rollback:
-                            # Must not raise unhandled exception
+                    with patch("services.guardian.storage.record_worker_heartbeat", mock_hb):
+                        with patch.object(db.session, "rollback") as mock_rollback:
                             try:
-                                run_daemon(once=True)
+                                run_daemon(once=True, app=self.app)
                             except Exception as e:
                                 self.fail(f"run_daemon raised unhandled exception during shutdown DB error: {e}")
                             mock_rollback.assert_called()
+
+    # --- Process-Level Subprocess Tests ---
+
+    def test_process_level_worker_rejection_without_touching_db(self):
+        """Process-level test: executing guardian_daemon.py with missing DATABASE_URL fails fast with code 1."""
+        env = os.environ.copy()
+        env.pop("DATABASE_URL", None)
+        env.pop("SUPABASE_DB_URL", None)
+        env.pop("KISAN_ROUTE_DATABASE_URL", None)
+
+        proc = subprocess.run(
+            [sys.executable, "guardian_daemon.py", "--once"],
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        self.assertIn("Persistent PostgreSQL DATABASE_URL is mandatory", proc.stderr)
 
     # --- Deployment Configuration & Security Integrity ---
 
@@ -200,18 +262,17 @@ class GuardianWorkerLifecycleTests(unittest.TestCase):
             self.assertIn("kisanroute-guardian-worker", render_text)
             self.assertIn("guardian_daemon.py", render_text)
             self.assertIn("region: singapore", render_text)
-            # Ensure unnecessary owner browser secrets are excluded
             self.assertNotIn("OWNER_PIN", render_text)
             self.assertNotIn("OWNER_TOKEN", render_text)
 
     def test_python_version_file_pinned(self):
-        """Verify .python-version exists and explicitly pins Python 3.12."""
+        """Verify .python-version exists and explicitly pins Vercel-compatible Python 3.12."""
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         version_file = os.path.join(base_dir, ".python-version")
         self.assertTrue(os.path.exists(version_file), ".python-version must exist")
         with open(version_file, "r", encoding="utf-8") as f:
             version = f.read().strip()
-        self.assertTrue(version.startswith("3.12"), f"Expected Python 3.12.x, got: {version}")
+        self.assertEqual(version, "3.12", f"Expected Vercel-compatible '3.12', got: '{version}'")
 
 
 if __name__ == "__main__":

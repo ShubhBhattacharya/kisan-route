@@ -48,4 +48,12 @@ CREATE TABLE IF NOT EXISTS guardian_worker_heartbeats (
 CREATE INDEX IF NOT EXISTS ix_guardian_worker_heartbeats_last_seen_at
     ON guardian_worker_heartbeats(last_seen_at);
 
+
+-- One-time import ledger for legacy JSON backup bundles.
+CREATE TABLE IF NOT EXISTS guardian_import_ledger (
+    bundle_sha256 VARCHAR(64) PRIMARY KEY,
+    imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    counts_json TEXT NOT NULL
+);
+
 COMMIT;

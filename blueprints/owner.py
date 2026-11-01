@@ -24,6 +24,7 @@ from services.guardian import (
 )
 from services.guardian.storage import update_patch_status, append_log
 from utils.security import configured_secret, secret_matches
+from utils.rate_limiter import rate_limit
 
 owner_bp = Blueprint("owner_guardian", __name__, url_prefix="/owner/guardian")
 
@@ -93,6 +94,7 @@ def require_owner(f):
 
 # ================= OWNER DASHBOARD =================
 @owner_bp.route("/", methods=["GET", "POST"])
+@rate_limit(limit=8, window_seconds=300, by_ip=True)
 @require_owner
 def dashboard():
     """Private Owner-Only Control Center Dashboard."""

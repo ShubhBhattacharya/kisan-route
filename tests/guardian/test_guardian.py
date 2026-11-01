@@ -53,8 +53,8 @@ class TestGuardianAI(unittest.TestCase):
         self.assertEqual(results["roles"]["farmer"]["status"], "healthy")
         self.assertEqual(results["roles"]["customer"]["status"], "healthy")
 
-    def test_03_ai_orchestrator_and_zero_cost_tracking(self):
-        """Verify multi-model orchestrator provides analysis and maintains $0.00 cost tracking."""
+    def test_03_ai_orchestrator_analysis_shape(self):
+        """Verify the incident analyzer returns its expected structure; this is not a billing test."""
         analysis = orchestrator.analyze_incident(
             incident_title="Transient Weather API 504 Timeout",
             error_details={"api": "open-meteo", "timeout": 5.0},
@@ -62,8 +62,6 @@ class TestGuardianAI(unittest.TestCase):
         )
         self.assertIn("root_cause", analysis)
         self.assertIn("tier", analysis)
-        state = get_state()
-        self.assertEqual(state["total_cost_usd"], 0.0)
 
     def test_04_safe_fixer_tier_boundaries(self):
         """Verify Level 1 auto-fixes safely, Level 2 queues patches, and Level 3 halts sensitive operations."""

@@ -18,7 +18,7 @@ class GuardianStateRecord(db.Model):
 
 class GuardianLogRecord(db.Model):
     __tablename__ = "guardian_logs"
-    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
     level = db.Column(db.String(16), nullable=False, index=True)
     event_type = db.Column(db.String(80), nullable=False, index=True)

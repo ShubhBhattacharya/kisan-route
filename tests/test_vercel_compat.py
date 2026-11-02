@@ -19,7 +19,6 @@ to be a valid WSGI callable at import time. These tests ensure:
 
 import importlib
 import os
-import sys
 import unittest
 from unittest.mock import patch
 
@@ -27,34 +26,37 @@ from unittest.mock import patch
 class TestVercelEntrypoint(unittest.TestCase):
     """app.py must expose valid WSGI callables as module-level 'app', 'application', and 'handler'."""
 
-    def _reload_app_module(self, env_overrides=None):
-        """
-        Reload app.py with custom environment variables set.
-        Cleans up the cached module after each sub-test to avoid state leakage.
-        """
-        env_backup = os.environ.copy()
-        try:
-            # Baseline test environment
-            os.environ["TEST_DATABASE_URL"] = "sqlite:///:memory:"
-            os.environ.pop("KISAN_ROUTE_SECRET_KEY", None)
-            os.environ.pop("SECRET_KEY", None)
-            os.environ.pop("KISAN_WORKER_MODE", None)
+    @classmethod
+    def tearDownClass(cls):
+        import app as app_module
+        with patch.dict(os.environ, {"TEST_DATABASE_URL": "sqlite:///:memory:"}):
             os.environ.pop("VERCEL", None)
+            os.environ.pop("KISAN_WORKER_MODE", None)
+            importlib.reload(app_module)
 
+    def _reload_app_module(self, env_overrides=None):
+        """Reload app.py within a clean environment patch."""
+        base_env = {
+            "TEST_DATABASE_URL": "sqlite:///:memory:",
+            "SECRET_KEY": "test-secret-key-32chars-for-tests",
+        }
+        if env_overrides:
+            base_env.update({k: v for k, v in env_overrides.items() if v is not None})
+
+        with patch.dict(os.environ, base_env):
+            # If any key was explicitly set to None, remove it
             if env_overrides:
                 for k, v in env_overrides.items():
                     if v is None:
                         os.environ.pop(k, None)
-                    else:
-                        os.environ[k] = v
+            if not env_overrides or "VERCEL" not in env_overrides:
+                os.environ.pop("VERCEL", None)
+            if not env_overrides or "KISAN_WORKER_MODE" not in env_overrides:
+                os.environ.pop("KISAN_WORKER_MODE", None)
 
-            sys.modules.pop("app", None)
-            app_module = importlib.import_module("app")
+            import app as app_module
+            importlib.reload(app_module)
             return app_module
-        finally:
-            os.environ.clear()
-            os.environ.update(env_backup)
-            sys.modules.pop("app", None)
 
     def test_app_is_not_none_in_normal_mode(self):
         """app.app must be a non-None WSGI callable in normal (non-worker) mode."""
@@ -95,34 +97,30 @@ class TestVercelEntrypoint(unittest.TestCase):
 class TestProductionStartupSafety(unittest.TestCase):
     """Production startup must never perform uncontrolled db.create_all()."""
 
-    def setUp(self):
-        self.env_backup = os.environ.copy()
-
-    def tearDown(self):
-        os.environ.clear()
-        os.environ.update(self.env_backup)
-        sys.modules.pop("app", None)
-
     def test_create_all_not_called_in_vercel_mode(self):
         """In VERCEL mode, create_app() must NOT call db.create_all()."""
-        os.environ["VERCEL"] = "1"
-        os.environ["DATABASE_URL"] = "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute"
-        os.environ["SECRET_KEY"] = "test-secret-key-for-unit-test"
-
-        with patch("extensions.db.create_all") as mock_create_all:
-            from app import create_app
-            app = create_app()
-            mock_create_all.assert_not_called()
+        env = {
+            "VERCEL": "1",
+            "DATABASE_URL": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+            "SECRET_KEY": "test-secret-key-for-unit-test",
+        }
+        with patch.dict(os.environ, env):
+            with patch("extensions.db.create_all") as mock_create_all:
+                from app import create_app
+                app = create_app()
+                mock_create_all.assert_not_called()
 
     def test_create_all_not_called_in_worker_mode(self):
         """In worker mode, create_app() must NOT call db.create_all()."""
-        os.environ["KISAN_WORKER_MODE"] = "1"
-        os.environ["DATABASE_URL"] = "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute"
-
-        with patch("extensions.db.create_all") as mock_create_all:
-            from app import create_app
-            app = create_app(config_override={"SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute"})
-            mock_create_all.assert_not_called()
+        env = {
+            "KISAN_WORKER_MODE": "1",
+            "DATABASE_URL": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+        }
+        with patch.dict(os.environ, env):
+            with patch("extensions.db.create_all") as mock_create_all:
+                from app import create_app
+                app = create_app(config_override={"SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute"})
+                mock_create_all.assert_not_called()
 
     def test_create_all_not_called_for_postgresql_database(self):
         """When connected to PostgreSQL, create_app() must NOT call db.create_all()."""
@@ -135,115 +133,122 @@ class TestProductionStartupSafety(unittest.TestCase):
 class TestConfigurationGuard(unittest.TestCase):
     """Test Vercel production configuration guard and regression handling."""
 
-    def setUp(self):
-        self.env_backup = os.environ.copy()
-
-    def tearDown(self):
-        os.environ.clear()
-        os.environ.update(self.env_backup)
-        sys.modules.pop("app", None)
-
     def test_guard_fails_when_secret_key_missing_on_vercel(self):
         """Request fails with RuntimeError when SECRET_KEY is missing on Vercel."""
-        os.environ["VERCEL"] = "1"
-        os.environ.pop("SECRET_KEY", None)
-        os.environ.pop("KISAN_ROUTE_SECRET_KEY", None)
+        env = {
+            "VERCEL": "1",
+            "DATABASE_URL": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+        }
+        with patch.dict(os.environ, env):
+            os.environ.pop("SECRET_KEY", None)
+            os.environ.pop("KISAN_ROUTE_SECRET_KEY", None)
 
-        from app import create_app
-        app = create_app(config_override={
-            "SECRET_KEY": "",
-            "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"
-        })
+            from app import create_app
+            app = create_app(config_override={
+                "SECRET_KEY": "",
+                "TESTING": True,
+                "SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute"
+            })
 
-        # Verification flag starts False
-        self.assertFalse(app._vercel_config_checked[0])
+            # Verification flag starts False
+            self.assertFalse(app._vercel_config_checked[0])
 
-        client = app.test_client()
-        with self.assertRaises(RuntimeError) as ctx:
-            client.get("/")
-        self.assertIn("SECRET_KEY must be configured", str(ctx.exception))
+            client = app.test_client()
+            with self.assertRaises(RuntimeError) as ctx:
+                client.get("/")
+            self.assertIn("SECRET_KEY must be configured", str(ctx.exception))
 
-        # Failed validation must NOT set checked flag to True
-        self.assertFalse(
-            app._vercel_config_checked[0],
-            "Failed validation must leave _vercel_config_checked as False"
-        )
+            # Failed validation must NOT set checked flag to True
+            self.assertFalse(
+                app._vercel_config_checked[0],
+                "Failed validation must leave _vercel_config_checked as False"
+            )
 
-        # Subsequent request must also fail (not bypass)
-        with self.assertRaises(RuntimeError) as ctx2:
-            client.get("/")
-        self.assertIn("SECRET_KEY must be configured", str(ctx2.exception))
-        self.assertFalse(app._vercel_config_checked[0])
+            # Subsequent request must also fail (not bypass)
+            with self.assertRaises(RuntimeError) as ctx2:
+                client.get("/")
+            self.assertIn("SECRET_KEY must be configured", str(ctx2.exception))
+            self.assertFalse(app._vercel_config_checked[0])
 
     def test_guard_rejects_sqlite_in_production(self):
         """Request fails with RuntimeError when SQLite is configured on Vercel."""
-        os.environ["VERCEL"] = "1"
-
-        from app import create_app
-        app = create_app(config_override={
+        env = {
+            "VERCEL": "1",
             "SECRET_KEY": "a-valid-production-secret-key-32chars",
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///local.db",
-            "TESTING": True
-        })
+            "DATABASE_URL": "sqlite:///local.db",
+        }
+        with patch.dict(os.environ, env):
+            from app import create_app
+            app = create_app(config_override={
+                "SECRET_KEY": "a-valid-production-secret-key-32chars",
+                "SQLALCHEMY_DATABASE_URI": "sqlite:///local.db",
+                "TESTING": True
+            })
 
-        client = app.test_client()
-        with self.assertRaises(RuntimeError) as ctx:
-            client.get("/")
-        self.assertIn("SQLite is strictly prohibited", str(ctx.exception))
-        self.assertFalse(app._vercel_config_checked[0])
+            client = app.test_client()
+            with self.assertRaises(RuntimeError) as ctx:
+                client.get("/")
+            self.assertIn("SQLite is strictly prohibited", str(ctx.exception))
+            self.assertFalse(app._vercel_config_checked[0])
 
-        # Subsequent request must also fail
-        with self.assertRaises(RuntimeError) as ctx2:
-            client.get("/")
-        self.assertIn("SQLite is strictly prohibited", str(ctx2.exception))
-        self.assertFalse(app._vercel_config_checked[0])
+            # Subsequent request must also fail
+            with self.assertRaises(RuntimeError) as ctx2:
+                client.get("/")
+            self.assertIn("SQLite is strictly prohibited", str(ctx2.exception))
+            self.assertFalse(app._vercel_config_checked[0])
 
     def test_guard_rejects_non_postgresql_scheme(self):
         """Request fails with RuntimeError when database scheme is not postgresql."""
-        os.environ["VERCEL"] = "1"
-
-        from app import create_app
-        app = create_app(config_override={
+        env = {
+            "VERCEL": "1",
             "SECRET_KEY": "a-valid-production-secret-key-32chars",
-            "SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
-            "TESTING": True
-        })
-        os.environ["DATABASE_URL"] = "http://invalid-database-host"
+        }
+        with patch.dict(os.environ, env):
+            from app import create_app
+            app = create_app(config_override={
+                "SECRET_KEY": "a-valid-production-secret-key-32chars",
+                "SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+                "TESTING": True
+            })
+            app.config["SQLALCHEMY_DATABASE_URI"] = "invalid-scheme://localhost/db"
 
-        client = app.test_client()
-        with self.assertRaises(RuntimeError) as ctx:
-            client.get("/")
-        self.assertIn("expected postgresql:// URI", str(ctx.exception))
-        self.assertFalse(app._vercel_config_checked[0])
+            client = app.test_client()
+            with self.assertRaises(RuntimeError) as ctx:
+                client.get("/")
+            self.assertIn("expected postgresql:// URI", str(ctx.exception))
+            self.assertFalse(app._vercel_config_checked[0])
 
     def test_guard_succeeds_with_valid_postgresql_config(self):
         """With valid PostgreSQL and SECRET_KEY, request passes and sets checked flag to True."""
-        os.environ["VERCEL"] = "1"
-
-        from app import create_app
-        app = create_app(config_override={
+        env = {
+            "VERCEL": "1",
             "SECRET_KEY": "a-valid-production-secret-key-32chars",
-            "SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
-            "TESTING": True
-        })
+            "DATABASE_URL": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+        }
+        with patch.dict(os.environ, env):
+            from app import create_app
+            app = create_app(config_override={
+                "SECRET_KEY": "a-valid-production-secret-key-32chars",
+                "SQLALCHEMY_DATABASE_URI": "postgresql://user:pass@ep-staging.ap-south-1.aws.neon.tech/kisanroute",
+                "TESTING": True
+            })
 
-        self.assertFalse(app._vercel_config_checked[0])
+            self.assertFalse(app._vercel_config_checked[0])
 
-        client = app.test_client()
-        response = client.get("/manifest.json")
-        self.assertIn(response.status_code, (200, 404))
+            client = app.test_client()
+            response = client.get("/manifest.json")
+            self.assertIn(response.status_code, (200, 404))
 
-        # Flag must now be marked True
-        self.assertTrue(
-            app._vercel_config_checked[0],
-            "Successful validation must mark _vercel_config_checked as True"
-        )
+            # Flag must now be marked True
+            self.assertTrue(
+                app._vercel_config_checked[0],
+                "Successful validation must mark _vercel_config_checked as True"
+            )
 
-        # Subsequent request should reuse checked state (fast path)
-        response2 = client.get("/manifest.json")
-        self.assertIn(response2.status_code, (200, 404))
-        self.assertTrue(app._vercel_config_checked[0])
+            # Subsequent request should reuse checked state (fast path)
+            response2 = client.get("/manifest.json")
+            self.assertIn(response2.status_code, (200, 404))
+            self.assertTrue(app._vercel_config_checked[0])
 
 
 if __name__ == "__main__":

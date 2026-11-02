@@ -29,15 +29,16 @@ def create_app(config_override=None):
     # Vercel Serverless environment compatibility
     if os.environ.get("VERCEL"):
         app.config["UPLOAD_FOLDER"] = "/tmp/uploads"
-        remote_db = (
-            os.environ.get("SUPABASE_DB_URL")
-            or os.environ.get("KISAN_ROUTE_DATABASE_URL")
-            or os.environ.get("DATABASE_URL")
-        )
-        if remote_db:
-            if remote_db.startswith("postgres://"):
-                remote_db = remote_db.replace("postgres://", "postgresql://", 1)
-            app.config["SQLALCHEMY_DATABASE_URI"] = remote_db
+        if not config_override or "SQLALCHEMY_DATABASE_URI" not in config_override:
+            remote_db = (
+                os.environ.get("SUPABASE_DB_URL")
+                or os.environ.get("KISAN_ROUTE_DATABASE_URL")
+                or os.environ.get("DATABASE_URL")
+            )
+            if remote_db:
+                if remote_db.startswith("postgres://"):
+                    remote_db = remote_db.replace("postgres://", "postgresql://", 1)
+                app.config["SQLALCHEMY_DATABASE_URI"] = remote_db
 
     db.init_app(app)
 
@@ -120,10 +121,10 @@ def create_app(config_override=None):
 
             # 2. Database URI validation — persistent PostgreSQL is mandatory
             db_uri = (
-                os.environ.get("SUPABASE_DB_URL")
+                app.config.get("SQLALCHEMY_DATABASE_URI")
+                or os.environ.get("SUPABASE_DB_URL")
                 or os.environ.get("KISAN_ROUTE_DATABASE_URL")
                 or os.environ.get("DATABASE_URL")
-                or app.config.get("SQLALCHEMY_DATABASE_URI")
             )
             if not db_uri or not str(db_uri).strip():
                 raise RuntimeError(

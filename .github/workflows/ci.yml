@@ -38,8 +38,11 @@ jobs:
           TEST_DATABASE_URL: "sqlite:///:memory:"
         run: |
           python -m unittest discover -s tests -t . -v > test_output.txt 2>&1 || {
-            tail -n 20 test_output.txt | while IFS= read -r line; do
-              echo "::error title=TestFailure::$line"
+            grep -E "^(ERROR|FAIL):" test_output.txt | while IFS= read -r line; do
+              echo "::error title=FailedTest::$line"
+            done
+            grep -E -A 15 "^(ERROR|FAIL):" test_output.txt | head -n 60 | while IFS= read -r line; do
+              echo "::warning title=Traceback::$line"
             done
             cat test_output.txt
             exit 1

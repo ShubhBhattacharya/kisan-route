@@ -38,10 +38,9 @@ jobs:
           TEST_DATABASE_URL: "sqlite:///:memory:"
         run: |
           python -m unittest discover -s tests -t . -v > test_output.txt 2>&1 || {
-            echo "### Unit Test Failures" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            tail -n 100 test_output.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -n 20 test_output.txt | while IFS= read -r line; do
+              echo "::error title=TestFailure::$line"
+            done
             cat test_output.txt
             exit 1
           }

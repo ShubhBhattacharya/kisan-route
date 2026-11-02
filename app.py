@@ -99,28 +99,50 @@ def create_app(config_override=None):
 
     # Production configuration guard — deferred to first request so the module-level
     # 'app' symbol is always a valid WSGI callable (required by Vercel's Python runtime).
-    # Raises 500 on the very first request if essential env vars are absent, making
-    # misconfiguration immediately visible without blocking Vercel's build-time import.
+    # Raises RuntimeError on requests if essential production configuration is absent.
+    # The flag _vercel_config_checked is ONLY set to True after ALL validations succeed,
+    # ensuring failed validation cannot be bypassed by subsequent requests.
     _vercel_config_checked = [False]
+    app._vercel_config_checked = _vercel_config_checked
 
     @app.before_request
     def check_vercel_production_config():
         if _vercel_config_checked[0]:
             return None
-        _vercel_config_checked[0] = True
+
         if os.environ.get("VERCEL"):
-            if not app.config.get("SECRET_KEY"):
+            # 1. SECRET_KEY validation
+            secret_key = app.config.get("SECRET_KEY")
+            if not secret_key or not str(secret_key).strip():
                 raise RuntimeError(
                     "KISAN_ROUTE_SECRET_KEY or SECRET_KEY must be configured in production."
                 )
-            if not (
+
+            # 2. Database URI validation — persistent PostgreSQL is mandatory
+            db_uri = (
                 os.environ.get("SUPABASE_DB_URL")
                 or os.environ.get("KISAN_ROUTE_DATABASE_URL")
                 or os.environ.get("DATABASE_URL")
-            ):
+                or app.config.get("SQLALCHEMY_DATABASE_URI")
+            )
+            if not db_uri or not str(db_uri).strip():
                 raise RuntimeError(
                     "Persistent PostgreSQL DATABASE_URL is required in production; refusing ephemeral SQLite."
                 )
+
+            normalized_db = str(db_uri).strip().lower()
+            if normalized_db.startswith("sqlite:") or ":memory:" in normalized_db:
+                raise RuntimeError(
+                    "Persistent PostgreSQL DATABASE_URL is required in production; SQLite is strictly prohibited."
+                )
+
+            if not (normalized_db.startswith("postgresql://") or normalized_db.startswith("postgres://")):
+                raise RuntimeError(
+                    "Persistent PostgreSQL DATABASE_URL is required in production; expected postgresql:// URI."
+                )
+
+        # Mark as checked ONLY after all validation checks have passed successfully.
+        _vercel_config_checked[0] = True
         return None
 
     # Maintenance Mode Interceptor (Returns 503 if active, allows bypass for admin)
@@ -178,45 +200,53 @@ def create_app(config_override=None):
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
         return response
 
-    # Database create and auto-seed demo accounts
-    with app.app_context():
-        try:
-            db.create_all()
-            from models import User
-            from werkzeug.security import generate_password_hash
+    # Schema management:
+    # Production startup must never perform uncontrolled schema creation (db.create_all()).
+    # Schema changes in production must strictly be applied via managed database migrations.
+    # For local SQLite development only, auto-create tables if database is new.
+    is_production = bool(
+        os.environ.get("VERCEL")
+        or os.environ.get("KISAN_WORKER_MODE") == "1"
+        or not str(app.config.get("SQLALCHEMY_DATABASE_URI", "")).startswith("sqlite")
+    )
 
-            demo_accounts = []
-            if os.environ.get("ENABLE_DEMO_ACCOUNTS", "").lower() in ("1", "true", "yes") and not os.environ.get("VERCEL"):
-                demo_accounts = [
-                    ("customer", "Demo Customer", "9876543210", "123456"),
-                    ("farmer", "Demo Farmer", "9876543210", "123456"),
-                    ("driver", "Demo Driver", "9876543210", "123456"),
-                    ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
-                    ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
-                ]
-            for role, name, phone, pwd in demo_accounts:
-                if not User.query.filter_by(role=role, phone=phone).first():
-                    u = User(
-                        role=role,
-                        full_name=name,
-                        phone=phone,
-                        password_hash=generate_password_hash(pwd),
-                    )
-                    u.set_extra({
-                        "address": "Sector 18, Krishi Bhawan",
-                        "city": "Noida",
-                        "state": "Uttar Pradesh",
-                        "pincode": "201301",
-                        "crop_type": "Wheat",
-                        "profile_complete": True
-                    })
-                    db.session.add(u)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            if os.environ.get("VERCEL"):
-                raise RuntimeError("Production database initialization failed; refusing to start.") from e
-            print("Database initialization/seed handled:", e)
+    if not is_production:
+        with app.app_context():
+            try:
+                db.create_all()
+                from models import User
+                from werkzeug.security import generate_password_hash
+
+                demo_accounts = []
+                if os.environ.get("ENABLE_DEMO_ACCOUNTS", "").lower() in ("1", "true", "yes"):
+                    demo_accounts = [
+                        ("customer", "Demo Customer", "9876543210", "123456"),
+                        ("farmer", "Demo Farmer", "9876543210", "123456"),
+                        ("driver", "Demo Driver", "9876543210", "123456"),
+                        ("wholesaler", "Demo Wholesaler", "9876543210", "123456"),
+                        ("cluster", "Demo Cluster Hub", "9876543210", "123456"),
+                    ]
+                for role, name, phone, pwd in demo_accounts:
+                    if not User.query.filter_by(role=role, phone=phone).first():
+                        u = User(
+                            role=role,
+                            full_name=name,
+                            phone=phone,
+                            password_hash=generate_password_hash(pwd),
+                        )
+                        u.set_extra({
+                            "address": "Sector 18, Krishi Bhawan",
+                            "city": "Noida",
+                            "state": "Uttar Pradesh",
+                            "pincode": "201301",
+                            "crop_type": "Wheat",
+                            "profile_complete": True,
+                        })
+                        db.session.add(u)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print("Local database initialization/seed handled:", e)
 
     return app
 
@@ -247,16 +277,14 @@ class _LazyApp:
         return getattr(self._get_app(), name)
 
 
-# Module-level WSGI entrypoint.
-# Guardian worker sets KISAN_WORKER_MODE=1 before importing this module.
-# In that case we still expose a valid (lazy) WSGI object so Vercel or any
-# import scanner never sees app=None, but the worker itself will call
-# init_worker_app() which directly invokes create_app() with the validated URI.
-if os.environ.get("KISAN_WORKER_MODE") == "1":
-    # Worker mode — expose a lazy placeholder; guardian_daemon controls real init.
-    app = _LazyApp()
-else:
-    app = create_app()
+# Module-level WSGI entrypoints.
+# Vercel's Python runtime inspects app.py for 'app', 'application', or 'handler'.
+# Using _LazyApp ensures that module import is always instantaneous and safe across
+# all environments (Vercel serverless, Guardian worker, CLI, tests), deferring
+# application creation until first use or first request.
+app = _LazyApp()
+application = app
+handler = app
 
 if __name__ == "__main__":
     concrete = create_app()

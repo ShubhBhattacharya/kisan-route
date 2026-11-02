@@ -36,4 +36,13 @@ jobs:
           SECRET_KEY: ci-only-not-for-production
           FLASK_DEBUG: "1"
           TEST_DATABASE_URL: "sqlite:///:memory:"
-        run: python -m unittest discover -s tests -t . -v
+        run: |
+          python -m unittest discover -s tests -t . -v > test_output.txt 2>&1 || {
+            echo "### Unit Test Failures" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -n 100 test_output.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat test_output.txt
+            exit 1
+          }
+          cat test_output.txt

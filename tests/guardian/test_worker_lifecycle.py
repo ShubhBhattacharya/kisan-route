@@ -274,6 +274,41 @@ class GuardianWorkerLifecycleTests(unittest.TestCase):
             version = f.read().strip()
         self.assertEqual(version, "3.12", f"Expected Vercel-compatible '3.12', got: '{version}'")
 
+    def test_proposed_rls_migration_covers_all_six_guardian_tables(self):
+        """Verify proposed RLS specification exists and protects all six Guardian tables."""
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        rls_file = os.path.join(base_dir, "migrations", "sql", "002_propose_guardian_rls_design.sql")
+        self.assertTrue(os.path.exists(rls_file), "002_propose_guardian_rls_design.sql must exist")
+
+        with open(rls_file, "r", encoding="utf-8") as f:
+            sql_content = f.read()
+
+        # Must explicitly warn that it is a specification / proposal only
+        self.assertIn("STATUS: PROPOSED", sql_content)
+        self.assertIn("DO NOT APPLY DIRECTLY", sql_content)
+
+        guardian_tables = [
+            "guardian_state",
+            "guardian_logs",
+            "guardian_issues",
+            "guardian_patches",
+            "guardian_worker_heartbeats",
+            "guardian_import_ledger",
+        ]
+
+        for table in guardian_tables:
+            # 1. RLS must be enabled
+            enable_stmt = f"ALTER TABLE IF EXISTS {table} ENABLE ROW LEVEL SECURITY;"
+            self.assertIn(enable_stmt, sql_content, f"Missing ENABLE ROW LEVEL SECURITY for {table}")
+
+            # 2. Privileges must be revoked from anon and authenticated
+            revoke_stmt = f"REVOKE ALL ON TABLE {table} FROM anon, authenticated;"
+            self.assertIn(revoke_stmt, sql_content, f"Missing REVOKE ALL for {table}")
+
+            # 3. service_role policy must be defined
+            policy_stmt = f"{table}_service_role_policy"
+            self.assertIn(policy_stmt, sql_content, f"Missing service_role policy for {table}")
+
 
 if __name__ == "__main__":
     unittest.main()

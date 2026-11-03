@@ -119,3 +119,31 @@ CREATE POLICY guardian_import_ledger_service_role_policy
     TO service_role
     USING (true)
     WITH CHECK (true);
+
+-- 4. Explicit Table & Sequence Grants for Backend Service Roles
+GRANT ALL ON TABLE guardian_state, guardian_logs, guardian_issues, guardian_patches, guardian_worker_heartbeats, guardian_import_ledger TO service_role, postgres;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_class WHERE relkind = 'S' AND relname = 'guardian_logs_id_seq') THEN
+        REVOKE ALL ON SEQUENCE guardian_logs_id_seq FROM anon, authenticated;
+        GRANT ALL ON SEQUENCE guardian_logs_id_seq TO service_role, postgres;
+    END IF;
+END $$;
+
+-- ==============================================================================
+-- ROLLBACK SPECIFICATION (DO NOT EXECUTE UNLESS REVERTING APPLIED MIGRATION):
+-- ==============================================================================
+-- ALTER TABLE IF EXISTS guardian_state DISABLE ROW LEVEL SECURITY;
+-- ALTER TABLE IF EXISTS guardian_logs DISABLE ROW LEVEL SECURITY;
+-- ALTER TABLE IF EXISTS guardian_issues DISABLE ROW LEVEL SECURITY;
+-- ALTER TABLE IF EXISTS guardian_patches DISABLE ROW LEVEL SECURITY;
+-- ALTER TABLE IF EXISTS guardian_worker_heartbeats DISABLE ROW LEVEL SECURITY;
+-- ALTER TABLE IF EXISTS guardian_import_ledger DISABLE ROW LEVEL SECURITY;
+--
+-- DROP POLICY IF EXISTS guardian_state_service_role_policy ON guardian_state;
+-- DROP POLICY IF EXISTS guardian_logs_service_role_policy ON guardian_logs;
+-- DROP POLICY IF EXISTS guardian_issues_service_role_policy ON guardian_issues;
+-- DROP POLICY IF EXISTS guardian_patches_service_role_policy ON guardian_patches;
+-- DROP POLICY IF EXISTS guardian_worker_heartbeats_service_role_policy ON guardian_worker_heartbeats;
+-- DROP POLICY IF EXISTS guardian_import_ledger_service_role_policy ON guardian_import_ledger;
+-- ==============================================================================

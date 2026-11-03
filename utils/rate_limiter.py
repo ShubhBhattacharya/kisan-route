@@ -1,7 +1,7 @@
 import time
 import threading
 from functools import wraps
-from flask import request, jsonify, make_response, render_template
+from flask import current_app, request, jsonify, make_response, render_template
 
 _LOCK = threading.Lock()
 _HITS = {}  # key -> list of timestamps
@@ -11,10 +11,14 @@ def rate_limit(limit: int = 15, window_seconds: int = 60, by_ip: bool = True, ke
     """
     Thread-safe in-memory sliding-window rate limiter decorator for Flask.
     Protects against brute force and DDoS on authentication & transaction APIs.
+    Bypassed automatically when TESTING is enabled in application config.
     """
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
+            if current_app and current_app.config.get("TESTING"):
+                return f(*args, **kwargs)
+
             now = time.time()
             ident_parts = [f.__name__]
             if by_ip:

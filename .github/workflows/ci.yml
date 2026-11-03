@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
           cache: pip
       - name: Install dependencies
         run: |
@@ -32,6 +32,19 @@ jobs:
         run: python -m compileall -q .
       - name: Run unit tests
         env:
+          PYTHONPATH: .
           SECRET_KEY: ci-only-not-for-production
           FLASK_DEBUG: "1"
-        run: python -m unittest discover -s tests -v
+          TEST_DATABASE_URL: "sqlite:///:memory:"
+        run: |
+          python -m unittest discover -s tests -t . -v > test_output.txt 2>&1 || {
+            grep -E "^[A-Za-z]+(Error|Exception):" test_output.txt | while IFS= read -r line; do
+              echo "::error title=ExactException::$line"
+            done
+            grep -E "^(ERROR|FAIL):" test_output.txt | while IFS= read -r line; do
+              echo "::error title=FailedTest::$line"
+            done
+            cat test_output.txt
+            exit 1
+          }
+          cat test_output.txt

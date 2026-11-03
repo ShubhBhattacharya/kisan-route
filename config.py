@@ -15,9 +15,10 @@ class Config:
     SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY", "")
     SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 
-    # Database URI (supports SQLite locally, Supabase PostgreSQL in Cloud)
+    # Database URI (supports SQLite locally, Supabase PostgreSQL in Cloud, in-memory for testing)
     _raw_db = (
-        os.environ.get("SUPABASE_DB_URL")
+        os.environ.get("TEST_DATABASE_URL")
+        or os.environ.get("SUPABASE_DB_URL")
         or os.environ.get("KISAN_ROUTE_DATABASE_URL")
         or os.environ.get("DATABASE_URL")
         or f"sqlite:///{os.path.join(BASE_DIR, 'kisanroute.db')}"

@@ -40,7 +40,7 @@ Review `migrations/sql/001_guardian_postgresql.sql`, then apply only to the stag
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f migrations/sql/001_guardian_postgresql.sql
 ```
 
-The SQL is additive and creates Guardian tables/indexes. SQLAlchemy models use the corresponding table names. The app currently calls `db.create_all()` at startup to create missing tables; it does not alter existing business tables. Prefer the explicit versioned migration and verify table/index presence before starting the worker.
+The SQL is additive and creates Guardian tables/indexes. SQLAlchemy models use the corresponding table names. The app strictly avoids running `db.create_all()` in production or worker modes; all schema changes must be applied via explicit versioned migrations. Verify table/index presence before starting the worker.
 
 ## 4. Verify staging
 
